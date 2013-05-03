@@ -1,4 +1,4 @@
-Joindin Datagenerator (JoDa)
+# Joindin Datagenerator 
 
 tl;dr
 =====
@@ -28,8 +28,6 @@ All the usernames and passwords can be deducted from the full name of the user. 
     Username:  jhale                 (first letter firstname + lastname)
     Email:     j.hale@example.org    (first letter, a dot, last name @example.org)
     Password:  jhalepass             (username + the text "pass")
-
-
 
 
 Tweaking JoDa
