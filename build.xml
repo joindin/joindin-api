@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="joindin" default="build" basedir=".">
+ <property name="source" value="src/system/application/"/>
+ <property name="apiv2source" value="src/api-v2/" />
+ <property name="apiv1tester" value="doc/apiv1_tester" />
+ <property name="basedir" value="."/>
+
+ <target name="clean" description="Clean up and create artifact directories">
+  <delete dir="${basedir}/build/api"/>
+  <delete dir="${basedir}/build/coverage"/>
+  <delete dir="${basedir}/build/logs"/>
+  <delete dir="${basedir}/build/pdepend"/>
+
+  <mkdir dir="${basedir}/build/api"/>
+  <mkdir dir="${basedir}/build/code-browser"/>
+  <mkdir dir="${basedir}/build/coverage"/>
+  <mkdir dir="${basedir}/build/logs"/>
+  <mkdir dir="${basedir}/build/pdepend"/>
+ </target>
+
+ <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
+  <exec command="phpunit -c src/tests/phpunit.xml" logoutput="/dev/stdout" />
+ </target>
+
+ <target name="buildTasks" description="Run the phpmd, phpcs, phpdoc, phploc and lint tasks.">
+   <phingcall target="phpmd"/>
+   <phingcall target="phpcs"/>
+   <phingcall target="phpdoc"/>
+   <phingcall target="phploc"/>
+   <phingcall target="phplint"/>
+ </target>
+
+ <target name="phpmd" description="Generate pmd.xml using PHPMD">
+  <phpmd rulesets="codesize,design,naming,unusedcode">
+   <fileset dir="${source}" />
+   <formatter type="xml" outfile="${basedir}/build/logs/pmd.xml" />
+  </phpmd>
+ </target>
+
+ <target name="phploc" description="Generate phploc.csv">
+  <exec command="phploc --log-csv ${basedir}/build/logs/phploc.csv ${source}" />
+ </target>
+
+ <target name="frisby" description="Run new API tests in Frisby">
+     <exec command="jasmine-node --nocolor --junitreport --output ../../../build/logs/frisby/ ." 
+         dir="${basedir}/src/tests/api_tests">
+  </exec>
+ </target>
+
+ <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
+     <phpcodesniffer standard="doc/codesniffer/JoindIn/" verbosity="0">
+   <fileset dir="${source}">
+       <exclude name="views/**"/>
+       <exclude name="libraries/Template.php" />
+   </fileset>
+   <fileset dir="${apiv1tester}">
+   </fileset>
+   <formatter type="checkstyle" outfile="${basedir}/build/logs/checkstyle.xml" />
+  </phpcodesniffer>
+ </target>
+
+ <target name="phpcs-human-summary" description="Generate human-readable Codesniffer output">
+     <phpcodesniffer standard="doc/codesniffer/JoindIn/">
+   <fileset dir="${source}">
+       <exclude name="views/**"/>
+       <exclude name="libraries/Template.php" />
+   </fileset>
+   <formatter type="summary" usefile="false" />
+  </phpcodesniffer>
+ </target>
+ 
+<target name="phpcs-human" description="Check codes style with PHP_CodeSniffer">
+    <phpcodesniffer standard="doc/codesniffer/JoindIn/">
+        <fileset dir="${source}">
+            <patternset>
+                <include name="**/${filename}" />
+            </patternset>
+            <exclude name="views/**"></exclude>
+            <exclude name="libraries/Template.php" />
+        </fileset>
+        <fileset dir="${apiv2source}">
+            <patternset>
+                <include name="**/${filename}" />
+            </patternset>
+        </fileset>
+    </phpcodesniffer>
+</target>
+
+ <target name="phpdoc" description="Generate API documentation using PHPDocumentor">
+  <phpdoc2 destdir="${basedir}/build/api">
+   <fileset dir="${source}" />
+  </phpdoc2>
+ </target>
+
+ <target name="phplint" description="Run php -l over the fileset">
+   <phplint haltonfailure="true">
+     <fileset dir="${source}">
+       <patternset>
+         <include name="**/*.php"/>
+       </patternset>
+     </fileset>
+   </phplint>
+ </target>
+
+ <target name="build" depends="clean,buildTasks,phpunit"/>
+
+ <target name="launch">
+  <exec command="src/scripts/jenkinslaunch.sh" />
+ </target>
+
+</project>
