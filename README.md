@@ -10,6 +10,7 @@ This is the API behind the joind.in website (the new version of it), the mobile 
  * initialise, patch, and populate the database.
 
     scripts/patchdb.sh -t /path/to/joind.in -d joindin -u username -p password -i
+
 (use the correct username and password)
 
 If you are using Windows And/Or Git bash you may see an error regarding "o being an invalid option" when running step 6.
@@ -59,6 +60,14 @@ or failed from the phing target. A better way to test when you are developing is
 to run the tests from within the tests directory by just typing
 `phpunit`. The phpunit.xml in each directory will configure the bootstrap as well
 as any files that should not be included.
+
+### Database Patches
+
+If you need to include a new patch, then create the SQL needed and add it to the next patch number in the `db` directory. You need to include a line that looks like this at the end of your script:
+
+    INSERT INTO patch_history SET patch_number = 17;  
+
+The number in that line should match the filename of your new patch number - check out the existing database patches in the project for examples.
 
 ### Coding Style
 
