@@ -25,3 +25,56 @@ This should also work for git via the commandline (cmd.exe)
 Go to http://api.joind.in and click around!
 
 There's more documentation here: http://joind.in/api/v2docs
+
+## Tools and Tests
+
+### API Tests
+
+We have tests that make HTTP requests from the outside of the API, functional tests, if you will.
+
+To run the frisby tests (frisby.js), you will first need to install node.js and
+npm.  Then run:
+
+        npm install -g frisby jasmine-node
+
+I also found that I needed:
+
+        export NODE_PATH=/usr/local/lib/node_modules
+
+You should set the URL that the tests run against to be your local installation:
+
+        export JOINDIN_API_BASE_URL=http://api.joindin.localhost
+
+Then run the tests by going to `/src/tests/api_tests` and running:
+
+        jasmine-node newapi_spec.js
+
+### Unit Tests
+
+There are some tests set up, which use PHPUnit; these can be found in the
+tests directory.  There is a phing task
+configured to run them - from the root directory simply run `phing phpunit` to run
+the tests. Unfortunately, there will be no output about whether the tests passed
+or failed from the phing target. A better way to test when you are developing is
+to run the tests from within the tests directory by just typing
+`phpunit`. The phpunit.xml in each directory will configure the bootstrap as well
+as any files that should not be included.
+
+### Coding Style
+
+Please do your best to ensure that any code you contributed adheres to the
+Joind.in coding style. This is roughly equivalent to the PEAR coding standard with
+a couple of rules added or taken out. You can run php codesniffer using phing on an
+individual file like so:
+
+    phing phpcs-human -Dfilename.php
+
+This will run codesniffer on any file within the regular source for Joind.in or the
+API-v2 source. Wildcards work as does specifying part of the path in case the
+filename alone results in sniffing more files than you wanted.
+
+To see a summary of the codesniff errors and warnings across the entire project, run
+
+    phing phpcs-human-summary
+
+
