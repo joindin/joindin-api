@@ -1,7 +1,7 @@
 <?php
 namespace JoindinTest\Inc;
 
-require_once __DIR__ . '/../../inc/Timezone.php';
+require_once __DIR__ . '/../../src/inc/Timezone.php';
 class TimezoneTest extends \PHPUnit_Framework_TestCase
 {
 

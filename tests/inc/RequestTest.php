@@ -1,7 +1,7 @@
 <?php
 namespace JoindinTest\Inc;
 
-require_once __DIR__ . '/../../inc/Request.php';
+require_once __DIR__ . '/../../src/inc/Request.php';
 
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
