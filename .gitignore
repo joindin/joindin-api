@@ -1,0 +1,9 @@
+.buildpath
+.cache
+.project
+.settings
+build/
+.DS_Store
+.vagrant
+src/database.php
+
