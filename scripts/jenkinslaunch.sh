@@ -40,14 +40,8 @@ mkdir -p $TARGET \
 && git fetch deployremote \
 && git archive $LAUNCHREF | tar xC $TARGET \
 && (echo $TARGET ; echo $LAUNCHREF) > $TARGET/src/release.txt \
-&& ln -s $TARGETBASE/config.php $TARGET/src/system/application/config/config.php \
-&& ln -s $TARGETBASE/database.php $TARGET/src/system/application/config/database.php \
-&& ln -s $TARGETBASE/database.php $TARGET/src/api-v2/database.php \
-&& ln -s $TARGETBASE/tmp/csv $TARGET/src/inc/tmp \
-&& mv $TARGET/src/inc/img/event_icons $TARGET/src/inc/img/event_icons.removed \
-&& ln -s $TARGETBASE/tmp/event_icons $TARGET/src/inc/img/event_icons \
+&& ln -s $TARGETBASE/database.php $TARGET/src/database.php \
 && ln -s $TARGET $TARGETBASE/www.new \
-&& $TARGET/src/scripts/patchdb.sh $DBNAME \
 && mv -Tf $TARGETBASE/www.new $TARGETBASE/www
 "
 
