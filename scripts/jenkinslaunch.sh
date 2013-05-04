@@ -42,6 +42,7 @@ mkdir -p $TARGET \
 && (echo $TARGET ; echo $LAUNCHREF) > $TARGET/src/release.txt \
 && ln -s $TARGETBASE/database.php $TARGET/src/database.php \
 && ln -s $TARGET $TARGETBASE/www.new \
+&& $TARGET/src/scripts/patchdb.sh $DBNAME \
 && mv -Tf $TARGETBASE/www.new $TARGETBASE/www
 "
 
