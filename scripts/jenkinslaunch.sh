@@ -20,7 +20,7 @@ export TARGET
 
 if [ -z $GITHUB_REPO ]
 then
-	GITHUB_REPO=joind.in
+	GITHUB_REPO=joindin-api
 fi
 
 if [ -z $GITHUB_USER ]
