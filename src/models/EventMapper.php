@@ -98,6 +98,14 @@ class EventMapper extends ApiMapper
     protected function getEvents($resultsperpage, $start, $where = null, $order = null) 
     {
         $data = array();
+
+        // if the user is logged in, use their ID, otherwise use zero (which should never match)
+        if(isset($this->_request->user_id)) {
+            $data['user_id'] = $this->_request->user_id;
+        } else {
+            $data['user_id'] = 0;
+        }
+
         $sql = 'select events.*, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
                 as attendee_count, '
@@ -110,13 +118,15 @@ class EventMapper extends ApiMapper
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                END as comments_enabled, '
-            . '0 as attending '
+            . 'count(current_ua.uid) as attending '
             . 'from events '
-            . 'left join user_attend current_ua on (current_ua.eid = events.ID)';
+            . 'left join user_attend ua on (ua.eid = events.ID) '
+            . 'left join user_attend current_ua on (current_ua.eid = events.ID and current_ua.uid = :user_id)';
+
         $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
             . 'private <> "y" ';
-        
+
         // where
         if ($where) {
             $sql .= ' and ' . $where;
@@ -366,7 +376,7 @@ class EventMapper extends ApiMapper
     }
 
     /**
-     * Events that the currently logged-in user is marked as attending
+     * Events that a particular user is marked as attending
      * 
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
@@ -376,7 +386,7 @@ class EventMapper extends ApiMapper
      */
     public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false) 
     {
-        $where = ' current_ua.uid = ' . (int)$user_id;
+        $where = ' ua.uid = ' . (int)$user_id;
         $order = ' events.event_start desc ';
         $results = $this->getEvents($resultsperpage, $start, $where, $order);
         if (is_array($results)) {
