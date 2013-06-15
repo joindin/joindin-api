@@ -36,6 +36,10 @@ class EventsController extends ApiController {
                             $talk_comment_mapper = new TalkCommentMapper($db, $request);
                             $list = $talk_comment_mapper->getCommentsByEventId($event_id, $resultsperpage, $start, $verbose, $sort);
                             break;
+                case 'attendees':
+                            $user_mapper= new UserMapper($db, $request);
+                            $list = $user_mapper->getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose);
+                            break;
                 default:
                             throw new InvalidArgumentException('Unknown Subrequest', 404);
                             break;
