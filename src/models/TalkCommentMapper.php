@@ -46,9 +46,8 @@ class TalkCommentMapper extends ApiMapper {
         $sql = $this->getBasicSQL();
         $sql .= 'and event_id = :event_id ';
 
-        if($sort == 'newest') {
-            $sql .= ' order by tc.date_made desc';
-        }
+        // default to newest
+        $sql .= ' order by tc.date_made desc';
 
         $sql .= $this->buildLimit($resultsperpage, $start);
 
