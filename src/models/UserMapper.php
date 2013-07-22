@@ -56,12 +56,16 @@ class UserMapper extends ApiMapper
     {
         $sql = 'select user.* '
             . 'from user '
+            . 'left join user_attend ua on (ua.uid = user.ID) '
             . 'where active = 1 ';
         
         // where
         if ($where) {
             $sql .= ' and ' . $where;
         }
+
+        // group by because of adding the user_attend join
+        $sql .= ' group by user.ID ';
 
         // order by
         if ($order) {
@@ -85,6 +89,17 @@ class UserMapper extends ApiMapper
     {
         $order = 'user.ID';
         $results = $this->getUsers($resultsperpage, $start, null, $order);
+        if (is_array($results)) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+    public function getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose)
+    {
+        $where = "ua.eid = " . $event_id;
+        $results = $this->getUsers($resultsperpage, $start, $where);
         if (is_array($results)) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
