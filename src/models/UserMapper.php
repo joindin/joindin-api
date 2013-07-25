@@ -43,7 +43,7 @@ class UserMapper extends ApiMapper
 
     public function getUserById($user_id, $verbose = false) 
     {
-        $results = $this->getUsers(1, 0, 'ID=' . (int)$user_id, null);
+        $results = $this->getUsers(1, 0, 'user.ID=' . (int)$user_id, null);
         if ($results) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
