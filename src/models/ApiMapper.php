@@ -44,7 +44,7 @@ class ApiMapper
                     }
                     $entry[$key] = Timezone::formattedEventDatetimeFromUnixtime($row[$value], $tz, 'c');
                 } else {
-                    $entry[$key] = $row[$value];
+                    $entry[$key] = array_key_exists($value, $row) ? $row[$value] : null;
                 }
             }
             $retval[] = $entry;
