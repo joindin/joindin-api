@@ -121,6 +121,19 @@ frisby.create('Non-existent user')
   .expectJSON(["User not found"])
   .toss();
 
+frisby.create('Existing user')
+  .get(baseURL + "/v2.1/users/1")
+  .expectStatus(200)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .afterJSON(function(allUsers) {
+    if (typeof allUsers.users == "object") {
+      for (var u in allUsers.users) {
+        var user = allUsers.users[u];
+        checkUser(user);
+      }
+    }
+  })
+  .toss();
 
 function checkDate(fieldValue) {
   dateVal = new Date(fieldValue);
@@ -298,3 +311,21 @@ function checkTalk(talk) {
   expect(typeof talk.type).toBe('string');
 }
 
+function checkUser(user) {
+    expect(user.username).toBeDefined();
+    expect(typeof user.username).toBe('string');
+    expect(user.username).toBeDefined();
+    expect(typeof user.username).toBe('string');
+    expect(user.username).toBeDefined();
+    expect(typeof user.username).toBe('string');
+    expect(user.uri).toBeDefined();
+    expect(typeof user.uri).toBe('string');
+    expect(user.verbose_uri).toBeDefined();
+    expect(typeof user.verbose_uri).toBe('string');
+    expect(user.website_uri).toBeDefined();
+    expect(typeof user.website_uri).toBe('string');
+    expect(user.talks_uri).toBeDefined();
+    expect(typeof user.talks_uri).toBe('string');
+    expect(user.attended_events_uri).toBeDefined();
+    expect(typeof user.attended_events_uri).toBe('string');
+}
