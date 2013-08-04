@@ -144,7 +144,7 @@ insert into talks (
 	1,
 	NULL,
 	1,
-    45,
+	45,
 	NULL
 );
 SET @ftalkid:=LAST_INSERT_ID();
@@ -188,7 +188,7 @@ insert into talks (
 	1,
 	NULL,
 	1,
-    45,
+	45,
 	NULL
 );
 SET @stalkid:=LAST_INSERT_ID();
