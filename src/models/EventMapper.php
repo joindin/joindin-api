@@ -310,6 +310,8 @@ class EventMapper extends ApiMapper
                     . $row['ID'] . '/comments';
                 $list[$key]['talks_uri'] = $base . '/' . $version . '/events/' 
                 . $row['ID'] . '/talks';
+                $list[$key]['attendance_uri'] = $base . '/' . $version . '/events/'
+                . $row['ID'] . '/attendance';
                 $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
                 // handle the slug
                 if(!empty($row['event_stub'])) {
