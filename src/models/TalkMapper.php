@@ -116,7 +116,7 @@ class TalkMapper extends ApiMapper {
         $base = $this->_request->base;
         $version = $this->_request->version;
 
-        $speaker_sql = 'select ts.*, user.full_name from talk_speaker ts '
+        $speaker_sql = 'select ts.*, user.full_name, user.email from talk_speaker ts '
             . 'left join user on user.ID = ts.speaker_id '
             . 'where ts.talk_id = :talk_id and ts.status IS NULL';
         $speaker_stmt = $this->_db->prepare($speaker_sql);
@@ -131,6 +131,11 @@ class TalkMapper extends ApiMapper {
                    $entry['speaker_uri'] = $base . '/' . $version . '/users/' . $person['speaker_id'];
                } else {
                    $entry['speaker_name'] = $person['speaker_name'];
+               }
+
+               if ($person['email']) {
+                   $imgUrl = 'http://www.gravatar.com/avatar/' . md5($person['email']) . '?d=mm';
+                   $entry['speaker_img'] = $imgUrl;
                }
                $retval[] = $entry;
            }
