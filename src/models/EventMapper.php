@@ -269,6 +269,20 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * User attending an event?
+     * 
+     * @param int $event_id the event to check
+     * @param int $user_id the user you're interested in
+     */
+
+    public function getUserAttendance($event_id, $user_id)
+    {
+        $retval = array();
+        $retval['is_attending'] = $this->isUserAttendingEvent($event_id, $user_id);
+        return $retval;
+    }
+
+    /**
      * Is this user attending this event?
      *
      * @param int $event_id the Event of interest
@@ -334,6 +348,10 @@ class EventMapper extends ApiMapper
                     $list[$key]['all_talk_comments_uri'] = $base . '/' . $version . '/events/' 
                         . $row['ID'] . '/talk_comments';
                     $list[$key]['hosts'] = $this->getHosts($row['ID']);
+                    if(isset($this->_request->user_id)) {
+                        $list[$key]['attending_uri'] = $base . '/' . $version . '/events/' 
+                            . $row['ID'] . '/attending';
+                    }
                 }
                 $list[$key]['attendees_uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'] . '/attendees';
