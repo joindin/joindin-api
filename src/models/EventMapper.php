@@ -250,20 +250,14 @@ class EventMapper extends ApiMapper
     }
 
     /**
-     * Updates a user's attending status for an event
+     * Set a user as attending for an event
      *
      * @param int $event_id The event ID to update for
      * @param int $user_id The user's ID
-     * @param booleanb $is_attending Whether the user is attending or not
      */
-    public function setUserAttendance($event_id, $user_id, $is_attending)
+    public function setUserAttendance($event_id, $user_id)
     {
-        if ($is_attending) {
-            $sql = 'insert into user_attend (uid,eid) values (:uid, :eid)';
-        }
-        else {
-            $sql = 'delete from user_attend where uid=:uid and eid=:eid';
-        }
+        $sql = 'insert into user_attend (uid,eid) values (:uid, :eid)';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array('uid' => $user_id, 'eid' => $event_id));
     }

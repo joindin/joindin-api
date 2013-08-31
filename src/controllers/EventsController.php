@@ -90,11 +90,12 @@ class EventsController extends ApiController {
         }
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
-                case 'attendance':
-                    $is_attending = ($request->getParameter('is_attending') == 1);
+                case 'attending':
+                    // the body of this request is completely irrelevant
+                    // The logged in user *is* attending the event.  Use DELETE to unattend
                     $event_id = $this->getItemId($request);
                     $event_mapper = new EventMapper($db, $request);
-                    $event_mapper->setUserAttendance($event_id, $request->user_id, $is_attending);
+                    $event_mapper->setUserAttendance($event_id, $request->user_id);
                     return;
 
                 case 'talks':
