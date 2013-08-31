@@ -185,7 +185,7 @@ function checkEvent(ev) {
   expect(ev.comments_uri).toBeDefined();
   expect(ev.talks_uri).toBeDefined();
   expect(ev.website_uri).toBeDefined();
-  expect(ev.attendance_uri).toBeDefined();
+  expect(ev.attending_uri).toBeDefined();
   expect(typeof ev.name).toBe('string');
   checkDate(ev.start_date);
   checkDate(ev.end_date);
