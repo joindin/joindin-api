@@ -99,13 +99,6 @@ class EventMapper extends ApiMapper
     {
         $data = array();
 
-        // if the user is logged in, use their ID, otherwise use zero (which should never match)
-        if(isset($this->_request->user_id)) {
-            $data['user_id'] = $this->_request->user_id;
-        } else {
-            $data['user_id'] = 0;
-        }
-
         $sql = 'select events.*, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
                 as attendee_count, '
@@ -117,11 +110,9 @@ class EventMapper extends ApiMapper
             . 'CASE 
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-               END as comments_enabled, '
-            . 'count(current_ua.uid) as attending '
+               END as comments_enabled '
             . 'from events '
-            . 'left join user_attend ua on (ua.eid = events.ID) '
-            . 'left join user_attend current_ua on (current_ua.eid = events.ID and current_ua.uid = :user_id)';
+            . 'left join user_attend ua on (ua.eid = events.ID) ';
 
         $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
@@ -259,6 +250,70 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Set a user as attending for an event
+     *
+     * @param int $event_id The event ID to update for
+     * @param int $user_id The user's ID
+     */
+    public function setUserAttendance($event_id, $user_id)
+    {
+        $sql = 'insert into user_attend (uid,eid) values (:uid, :eid)';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('uid' => $user_id, 'eid' => $event_id));
+        return true;
+    }
+
+    /**
+     * Set a user as not attending an event
+     *
+     * @param int $event_id The event ID 
+     * @param int $user_id The user's ID
+     */
+    public function setUserNonAttendance($event_id, $user_id)
+    {
+        $sql = 'delete from user_attend where uid = :uid and eid = :eid';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('uid' => $user_id, 'eid' => $event_id));
+        // we don't mind if the delete failed; the record didn't exist and that's fine
+        return true;
+    }
+
+    /**
+     * User attending an event?
+     * 
+     * @param int $event_id the event to check
+     * @param int $user_id the user you're interested in
+     */
+
+    public function getUserAttendance($event_id, $user_id)
+    {
+        $retval = array();
+        $retval['is_attending'] = $this->isUserAttendingEvent($event_id, $user_id);
+        return $retval;
+    }
+
+    /**
+     * Is this user attending this event?
+     *
+     * @param int $event_id the Event of interest
+     * @param int $user_id which user (often the current one)
+     */
+
+    protected function isUserAttendingEvent($event_id, $user_id)
+    {
+        $sql = "select * from user_attend where eid = :event_id and uid = :user_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
+        $result = $stmt->fetch();
+
+        if(is_array($result)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Turn results into arrays with correct fields, add hypermedia
      * 
      * @param array $results Results of the database query
@@ -275,9 +330,9 @@ class EventMapper extends ApiMapper
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                // flip the attending to be true/false rather than user id or null
-                if($row['attending']) {
-                    $list[$key]['attending'] = true;
+                // if the user is logged in, get their attending data
+                if(isset($this->_request->user_id)) {
+                    $list[$key]['attending'] = $this->isUserAttendingEvent($row['ID'], $this->_request->user_id);
                 } else {
                     $list[$key]['attending'] = false;
                 }
@@ -291,6 +346,8 @@ class EventMapper extends ApiMapper
                     . $row['ID'] . '/comments';
                 $list[$key]['talks_uri'] = $base . '/' . $version . '/events/' 
                 . $row['ID'] . '/talks';
+                $list[$key]['attending_uri'] = $base . '/' . $version . '/events/' 
+                    . $row['ID'] . '/attending';
                 $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
                 // handle the slug
                 if(!empty($row['event_stub'])) {
