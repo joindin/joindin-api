@@ -260,6 +260,22 @@ class EventMapper extends ApiMapper
         $sql = 'insert into user_attend (uid,eid) values (:uid, :eid)';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array('uid' => $user_id, 'eid' => $event_id));
+        return true;
+    }
+
+    /**
+     * Set a user as not attending an event
+     *
+     * @param int $event_id The event ID 
+     * @param int $user_id The user's ID
+     */
+    public function setUserNonAttendance($event_id, $user_id)
+    {
+        $sql = 'delete from user_attend where uid = :uid and eid = :eid';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('uid' => $user_id, 'eid' => $event_id));
+        // we don't mind if the delete failed; the record didn't exist and that's fine
+        return true;
     }
 
     /**

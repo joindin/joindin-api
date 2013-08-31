@@ -7,6 +7,8 @@ class EventsController extends ApiController {
             return $this->getAction($request, $db);
         } elseif ($request->getVerb() == 'POST') {
             return $this->postAction($request, $db);
+        } elseif ($request->getVerb() == 'DELETE') {
+            return $this->deleteAction($request, $db);
         }
         return false;
     }
@@ -96,8 +98,8 @@ class EventsController extends ApiController {
                     $event_id = $this->getItemId($request);
                     $event_mapper = new EventMapper($db, $request);
                     $event_mapper->setUserAttendance($event_id, $request->user_id);
+                    header("Location: " . $request->base . $request->path_info, NULL, 201);
                     return;
-
                 case 'talks':
                     $talk['event_id'] = $this->getItemId($request);
                     if(empty($talk['event_id'])) {
@@ -155,5 +157,26 @@ class EventsController extends ApiController {
             throw new Exception("Operation not supported, sorry", 404);
         }
 
+    }
+
+    public function deleteAction($request, $db) {
+        if(!isset($request->user_id)) {
+            throw new Exception("You must be logged in to delete data", 400);
+        }
+        if(isset($request->url_elements[4])) {
+            switch($request->url_elements[4]) {
+                case 'attending':
+                    $event_id = $this->getItemId($request);
+                    $event_mapper = new EventMapper($db, $request);
+                    $event_mapper->setUserNonAttendance($event_id, $request->user_id);
+                    header("Location: " . $request->base . $request->path_info, NULL, 200);
+                    return;
+                    break;
+                default:
+                    throw new Exception("Operation not supported, sorry", 404);
+            }
+        } else {
+            throw new Exception("Operation not supported, sorry", 404);
+        }
     }
 }
