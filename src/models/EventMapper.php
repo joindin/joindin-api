@@ -292,6 +292,8 @@ class EventMapper extends ApiMapper
                         . $row['ID'] . '/talk_comments';
                     $list[$key]['hosts'] = $this->getHosts($row['ID']);
                 }
+                $list[$key]['attendees_uri'] = $base . '/' . $version . '/events/' 
+                    . $row['ID'] . '/attendees';
             }
         }
         $retval = array();
