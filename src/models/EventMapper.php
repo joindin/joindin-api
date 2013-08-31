@@ -275,7 +275,7 @@ class EventMapper extends ApiMapper
      * @param int $user_id which user (often the current one)
      */
 
-    public function isUserAttendingEvent($event_id, $user_id)
+    protected function isUserAttendingEvent($event_id, $user_id)
     {
         $sql = "select * from user_attend where eid = :event_id and uid = :user_id";
         $stmt = $this->_db->prepare($sql);
