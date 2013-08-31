@@ -346,8 +346,8 @@ class EventMapper extends ApiMapper
                     . $row['ID'] . '/comments';
                 $list[$key]['talks_uri'] = $base . '/' . $version . '/events/' 
                 . $row['ID'] . '/talks';
-                $list[$key]['attendance_uri'] = $base . '/' . $version . '/events/'
-                . $row['ID'] . '/attendance';
+                $list[$key]['attending_uri'] = $base . '/' . $version . '/events/' 
+                    . $row['ID'] . '/attending';
                 $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
                 // handle the slug
                 if(!empty($row['event_stub'])) {
@@ -358,10 +358,6 @@ class EventMapper extends ApiMapper
                     $list[$key]['all_talk_comments_uri'] = $base . '/' . $version . '/events/' 
                         . $row['ID'] . '/talk_comments';
                     $list[$key]['hosts'] = $this->getHosts($row['ID']);
-                    if(isset($this->_request->user_id)) {
-                        $list[$key]['attending_uri'] = $base . '/' . $version . '/events/' 
-                            . $row['ID'] . '/attending';
-                    }
                 }
                 $list[$key]['attendees_uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'] . '/attendees';
