@@ -259,6 +259,25 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Updates a user's attending status for an event
+     *
+     * @param int $event_id The event ID to update for
+     * @param int $user_id The user's ID
+     * @param booleanb $is_attending Whether the user is attending or not
+     */
+    public function setUserAttendance($event_id, $user_id, $is_attending)
+    {
+        if ($is_attending) {
+            $sql = 'insert into user_attend (uid,eid) values (:uid, :eid)';
+        }
+        else {
+            $sql = 'delete from user_attend where uid=:uid and eid=:eid';
+        }
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('uid' => $user_id, 'eid' => $event_id));
+    }
+
+    /**
      * Turn results into arrays with correct fields, add hypermedia
      * 
      * @param array $results Results of the database query
@@ -291,6 +310,8 @@ class EventMapper extends ApiMapper
                     . $row['ID'] . '/comments';
                 $list[$key]['talks_uri'] = $base . '/' . $version . '/events/' 
                 . $row['ID'] . '/talks';
+                $list[$key]['attendance_uri'] = $base . '/' . $version . '/events/'
+                . $row['ID'] . '/attendance';
                 $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
                 // handle the slug
                 if(!empty($row['event_stub'])) {
