@@ -82,6 +82,19 @@ frisby.create('Initial discovery')
                     }
 					      }).toss();
 
+                frisby.create('Attendees to ' + evt.name)
+                    .get(evt.attendees_uri + '?resultsperpage=3')
+                  .expectStatus(200)
+                  .expectHeader("content-type", "application/json; charset=utf8")
+                  .afterJSON(function(evUsers) {
+                    if(typeof evUsers.users == 'object') {
+                      for(var i in evUsers.users) {
+                        var user = evUsers.users[i];
+                        checkUser(user);
+                      }
+                    }
+					      }).toss();
+
               }).toss();
           }
   		  }).toss();
@@ -315,10 +328,10 @@ function checkTalk(talk) {
 function checkUser(user) {
     expect(user.username).toBeDefined();
     expect(typeof user.username).toBe('string');
-    expect(user.username).toBeDefined();
-    expect(typeof user.username).toBe('string');
-    expect(user.username).toBeDefined();
-    expect(typeof user.username).toBe('string');
+    expect(user.full_name).toBeDefined();
+    expect(typeof user.full_name).toBe('string');
+    expect(user.twitter_username).toBeDefined();
+    expect(typeof user.twitter_username).toBe('string');
     expect(user.uri).toBeDefined();
     expect(typeof user.uri).toBe('string');
     expect(user.verbose_uri).toBeDefined();
