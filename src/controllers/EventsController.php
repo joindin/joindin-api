@@ -163,6 +163,9 @@ class EventsController extends ApiController {
                     if(!isset($request->user_id) || empty($request->user_id)) {
                         throw new Exception('You must log in to comment');
                     }
+                    $user_mapper = new UserMapper($db, $request);
+                    $users = $user_mapper->getUserById($request->user_id);
+                    $thisUser = $users['users'][0];
 
                     $commentText = filter_var($request->getParameter('comment'), FILTER_SANITIZE_STRING);
                     if(empty($commentText)) {
@@ -171,6 +174,7 @@ class EventsController extends ApiController {
 
                     $comment['user_id'] = $request->user_id;
                     $comment['comment'] = $commentText;
+                    $comment['cname'] = $thisUser['full_name'];
 
                     $comment_mapper = new EventCommentMapper($db, $request);
                     $new_id = $comment_mapper->save($comment);
