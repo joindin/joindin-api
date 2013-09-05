@@ -150,6 +150,34 @@ class EventsController extends ApiController {
                     header("Location: " . $request->base . $request->path_info .'/' . $new_id, NULL, 201);
                     $new_talk = $talk_mapper->getTalkById($new_id);
                     return $new_talk;
+                case 'comments':
+                    $comment = array();
+                    $comment['event_id'] = $this->getItemId($request);
+                    if(empty($comment['event_id'])) {
+                        throw new Exception(
+                            "POST expects a comment representation sent to a specific event URL",
+                            400
+                        );
+                    }
+                    // no anonymous comments over the API
+                    if(!isset($request->user_id) || empty($request->user_id)) {
+                        throw new Exception('You must log in to comment');
+                    }
+
+                    $commentText = filter_var($request->getParameter('comment'), FILTER_SANITIZE_STRING);
+                    if(empty($commentText)) {
+                        throw new Exception('The field "comment" is required', 400);
+                    }
+
+                    $comment['user_id'] = $request->user_id;
+                    $comment['comment'] = $commentText;
+
+                    $comment_mapper = new EventCommentMapper($db, $request);
+                    $new_id = $comment_mapper->save($comment);
+
+                    header("Location: " . $request->base . $request->path_info, true, 201);
+                    $new_comment = $comment_mapper->getCommentById($new_id);
+                    return $new_comment;
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
             }
