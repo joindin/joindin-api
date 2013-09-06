@@ -178,10 +178,9 @@ class EventsController extends ApiController {
 
                     $comment_mapper = new EventCommentMapper($db, $request);
                     $new_id = $comment_mapper->save($comment);
-
-                    header("Location: " . $request->base . $request->path_info, true, 201);
-                    $new_comment = $comment_mapper->getCommentById($new_id);
-                    return $new_comment;
+                    $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
+                    header("Location: " . $uri, NULL, 201);
+                    exit;
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
             }

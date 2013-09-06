@@ -110,5 +110,9 @@ class EventCommentMapper extends ApiMapper {
             ':cname' => $data['cname'],
             ':user_id' => $data['user_id']
             ));
+
+        $comment_id = $this->_db->lastInsertId();
+
+        return $comment_id;
     }
 }
