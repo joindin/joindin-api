@@ -130,5 +130,9 @@ class TalkCommentMapper extends ApiMapper {
             ':comment' => $data['comment'],
             ':user_id' => $data['user_id']
             ));
+
+        $comment_id = $this->_db->lastInsertId();
+
+        return $comment_id;
     }
 }
