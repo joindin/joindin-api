@@ -331,7 +331,9 @@ function checkUser(user) {
     expect(user.full_name).toBeDefined();
     expect(typeof user.full_name).toBe('string');
     expect(user.twitter_username).toBeDefined();
-    expect(typeof user.twitter_username).toBe('string');
+    if(typeof user.twitter_username != 'undefined') {
+      expect(typeof user.twitter_username).toBe('string');
+    }
     expect(user.uri).toBeDefined();
     expect(typeof user.uri).toBe('string');
     expect(user.verbose_uri).toBeDefined();
