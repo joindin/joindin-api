@@ -50,7 +50,7 @@ class Request
             $this->setScheme('http://');
         }
 
-        $this->setBase($this->getScheme() . $this->getHost());
+        $this->setBase($this->getScheme() . $this->getHost() . $this->getBaseUrl());
 
         if ($parseParams) {
             $this->parseParameters();
@@ -413,4 +413,97 @@ class Request
     {
         return $this->base;
     }
+
+    /*
+     * The following methods are derived from code of the Zend Framework (1.10dev - 2010-01-24)
+     *
+     * Code subject to the new BSD license (http://framework.zend.com/license/new-bsd).
+     *
+     * Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+     */
+
+    /**
+     * Returns the root url from which this request is executed
+     *
+     * @return string
+     */
+    private function getBaseUrl()
+    {
+        $filename = (isset($_SERVER['SCRIPT_FILENAME'])) ? basename($_SERVER['SCRIPT_FILENAME']) : '';
+
+        if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) === $filename) {
+            $baseUrl = $_SERVER['SCRIPT_NAME'];
+        } else if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) === $filename) {
+            $baseUrl = $_SERVER['PHP_SELF'];
+        } else {
+            // Backtrack up the script_filename to find the portion matching php_self
+            $path    = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
+            $file    = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
+            $segs    = explode('/', trim($file, '/'));
+            $segs    = array_reverse($segs);
+            $index   = 0;
+            $last    = count($segs);
+            $baseUrl = '';
+            do {
+                $seg     = $segs[$index];
+                $baseUrl = '/' . $seg . $baseUrl;
+                ++$index;
+            } while (($last > $index) && (false !== ($pos = strpos($path, $baseUrl))) && (0 != $pos));
+        }
+
+        // Does the baseUrl have anything in common with the request_uri?
+        $requestUri = $this->getRequestUri();
+
+        if (strpos($requestUri, $baseUrl) === 0) {
+            // Full $baseUrl matches
+            return rtrim(str_replace(basename($baseUrl), '', $baseUrl), '/');
+        }
+
+        if (strpos($requestUri, dirname($baseUrl)) === 0) {
+            // Directory portion of $baseUrl matches
+            return rtrim(dirname($baseUrl), '/');
+        }
+
+        $truncatedRequestUri = $requestUri;
+        $pos = strpos($requestUri, '?');
+
+        if ($pos !== false) {
+            $truncatedRequestUri = substr($requestUri, 0, $pos);
+        }
+
+        $basename = basename($baseUrl);
+
+        if (empty($basename) || !strpos($truncatedRequestUri, $basename)) {
+            // No match whatsoever; set it blank
+            return '';
+        }
+
+        // If using mod_rewrite or ISAPI_Rewrite strip the script filename
+        // out of baseUrl. $pos !== 0 makes sure it is not matching a value
+        // from PATH_INFO or QUERY_STRING
+        $pos = strpos($requestUri, $baseUrl);
+
+        if ((strlen($requestUri) >= strlen($baseUrl)) && ((false !== $pos) && ($pos !== 0))) {
+            $baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));
+        }
+
+        return rtrim($baseUrl, '/');
+    }
+
+    /**
+     * Returns the requested URI
+     *
+     * @return string
+     */
+    private function getRequestUri()
+    {
+        if (!isset($_SERVER['REQUEST_URI'])) {
+            return '/';
+        }
+
+        $urlParts = parse_url($_SERVER['REQUEST_URI']);
+
+        return $urlParts['path'];
+    }
+
 }
