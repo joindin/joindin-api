@@ -71,8 +71,9 @@ class TalksController extends ApiController {
                 $data['comment'] = $comment;
                 $data['rating'] = $rating;
 
-                $comment_mapper->save($data);
-                header("Location: " . $request->base . $request->path_info, true, 201);
+                $new_id = $comment_mapper->save($data);
+                $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
+                header("Location: " . $uri, true, 201);
                 exit;
             }
         } else {
