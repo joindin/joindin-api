@@ -139,7 +139,7 @@ class Generator {
     // Generate $count talks for random events
     protected function _generateTalks($count) {
         echo "TRUNCATE talks;\n";
-        echo "INSERT INTO talks (talk_title, speaker, slides_link, date_given, event_id, ID, talk_desc, active, owner_id, lang) VALUES \n";
+        echo "INSERT INTO talks (talk_title, speaker, slides_link, date_given, event_id, ID, talk_desc, active, owner_id, lang, duration) VALUES \n";
 
         $first = true;
         for ($id=1; $id!=$count+1; $id++) {
@@ -166,10 +166,14 @@ class Generator {
             $talk->description = $this->_genLorum(50);
             $talk->lang_id = array_rand($this->getData()->getLanguageData());
 
+            // all talks are 60 minutes for now
+            $talk->duration = 60;
+
             if (! $first) echo ",\n";
 
-            printf ("('%s', NULL, '%s', %d, %d, %d, '%s', 1, NULL, %d)",
-                                   $talk->title, $talk->slides_link, $talk->date_given, $talk->event_id, $id, $talk->description, $talk->lang_id);
+            printf ("('%s', NULL, '%s', %d, %d, %d, '%s', 1, NULL, %d, %d)",
+                                   $talk->title, $talk->slides_link, $talk->date_given, $talk->event_id,
+                                   $id, $talk->description, $talk->lang_id, $talk->duration);
 
             $first = false;
         }
