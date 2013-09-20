@@ -34,6 +34,7 @@ class TalkMapper extends ApiMapper {
     public function getTalksByEventId($event_id, $resultsperpage, $start, $verbose = false) {
         $sql = $this->getBasicSQL();
         $sql .= ' and t.event_id = :event_id';
+        $sql .= ' order by t.date_given';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
         $stmt = $this->_db->prepare($sql);
