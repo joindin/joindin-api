@@ -65,11 +65,14 @@ class TalksController extends ApiController {
                     throw new Exception('The field "rating" is required', 400);
                 }
 
+                $private = ($request->getParameter('private') ? 1 : 0);
+
                 $comment_mapper = new TalkCommentMapper($db, $request);
                 $data['user_id'] = $request->user_id;
                 $data['talk_id'] = $talk_id;
                 $data['comment'] = $comment;
                 $data['rating'] = $rating;
+                $data['private'] = $private;
 
                 $new_id = $comment_mapper->save($data);
                 $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
