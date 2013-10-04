@@ -77,6 +77,9 @@ class EventsController extends ApiController {
                             throw new InvalidArgumentException('Unknown event filter', 404);
                             break;
                     }
+                } elseif(isset($request->parameters['title'])) {
+                    $title = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
+                    $list = $mapper->getEventsByTitle($title, $verbose);
                 } else {
                     $list = $mapper->getEventList($resultsperpage, $start, $verbose);
                 }
