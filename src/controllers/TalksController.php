@@ -73,6 +73,7 @@ class TalksController extends ApiController {
                 $data['comment'] = $comment;
                 $data['rating'] = $rating;
                 $data['private'] = $private;
+                $data['consumer_id'] = $request->consumer['id'];
 
                 $new_id = $comment_mapper->save($data);
                 $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
