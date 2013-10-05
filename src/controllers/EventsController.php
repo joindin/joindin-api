@@ -175,6 +175,7 @@ class EventsController extends ApiController {
                     $comment['user_id'] = $request->user_id;
                     $comment['comment'] = $commentText;
                     $comment['cname'] = $thisUser['full_name'];
+                    $comment['consumer_id'] = $request->consumer['id'];
 
                     $comment_mapper = new EventCommentMapper($db, $request);
                     $new_id = $comment_mapper->save($comment);
