@@ -8,12 +8,45 @@
  *
  *
  * Usage:
- * php -f patchdb.php -t "c:\wamp\path\to\joindin-api\db\  -d joindindatabasename -u mysqluser -p mysqlpassword -i initialise and seed db
+ * php -f patchdb.php -t "c:\wamp\path\to\joindin-api\db\  -d joindindatabasename -u mysqluser -p mysqlpassword -i
  *
  */
 
 $options = getopt("t:d:u:p:i::");
 
+
+
+// No options? Let's help out...
+if (!$options || count($options) == 0) {
+    
+    echo <<<HELPTEXT
+
+
+
+Joind.in database initialiser help script 
+
+Command line options:
+
+    -t   Required.  Path to the directory contianing the init_db.sql and patch files
+
+    -d   Database name to user.  Defaults to `joindin`.
+
+    -u   Required.  Database user to use to run the updates
+
+    -p   Password for the database user.
+
+    -i   Whether to run the init_db.sql to set things up
+
+For example:
+
+    php -f patchdb.php -t "c:\wamp\pathto\joindin-api\db\ -d joindindatabasename -u mysqluser -p mysqlpassword -i
+
+
+
+HELPTEXT;
+
+    exit;
+}
 
 
 
