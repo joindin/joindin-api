@@ -72,7 +72,7 @@ if (!is_dir($options['t'])) {
 }
 
 
-$options['t'] .= '/db';
+$options['t'] .= DIRECTORY_SEPARATOR . 'db';
 
 
 ///////////////////////////////////////////////
@@ -96,14 +96,14 @@ $baseMysqlCmd = "mysql -u{$options['u']} "
 //////////////////////////////////////////////
 if (array_key_exists('i', $options)) {
 
-    if (!file_exists($options['t'] . '/init_db.sql')) {
+    if (!file_exists($options['t'] . DIRECTORY_SEPARATOR . 'init_db.sql')) {
         echo "Couldn't find the init_db.sql file to initialise db";
         exit;
     }
     
 
     echo "Initialising DB";
-    exec($baseMysqlCmd . " < " . $options['t'] . '/init_db.sql');
+    exec($baseMysqlCmd . " < " . $options['t'] . DIRECTORY_SEPARATOR . 'init_db.sql');
     echo " ... done\n";
 }
 
@@ -135,7 +135,7 @@ echo "Applying patches... ";
 
 foreach ($matchedNums as $patchNum) {
     echo $patchNum . ", ";
-    exec($baseMysqlCmd . " < " . $options['t'] . '/patch' . $patchNum . '.sql');
+    exec($baseMysqlCmd . " < " . $options['t'] . DIRECTORY_SEPARATOR . 'patch' . $patchNum . '.sql');
 }
 
 echo "\nAll done\n";
