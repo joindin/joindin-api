@@ -13,7 +13,7 @@
  */
 
 $options = getopt("t:d:u:p:i::");
-print_r($options);
+
 
 
 
@@ -68,15 +68,43 @@ if (array_key_exists('i', $options)) {
     
 
     echo "Initialising DB";
-    $initDb = exec($baseMysqlCmd . " < " . $options['t'] . '/init_db.sql');
-    if ($initDb) {
-        echo " ... OK \n";
-    } else {
-        echo " ... Failed \n";
-        exit;
-    }
-
+    exec($baseMysqlCmd . " < " . $options['t'] . '/init_db.sql');
+    echo " ... done\n";
 }
+
+
+/////////////////////////////////////////////
+// Do some patching
+/////////////////////////////////////////////
+
+// First, look through the directory for patch123.sql files
+// and get all the {123} numbers, so we can run them all 
+// in order.
+if ($dh = opendir($options['t'])) {
+    while (($file = readdir($dh)) !== false) {
+        
+        preg_match("/patch([\d]+)\.sql/", $file, $matches);
+        if ($matches && array_key_exists(1, $matches)) {
+            $matchedNums[] = (int)$matches[1];
+        }
+
+    }
+    closedir($dh);
+}
+
+
+// Now we've got them, run the patches
+sort($matchedNums);
+
+echo "Applying patches... ";
+
+foreach ($matchedNums as $patchNum) {
+    echo $patchNum . ", ";
+    exec($baseMysqlCmd . " < " . $options['t'] . '/patch' . $patchNum . '.sql');
+}
+
+echo "\nAll done\n";
+
 
 
 
