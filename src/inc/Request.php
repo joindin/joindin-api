@@ -17,6 +17,7 @@ class Request
     public $parameters = array();
     public $view;
     public $user_id;
+    public $consumer;
 
     protected $oauthModel;
 
@@ -161,7 +162,9 @@ class Request
         }
         $oauth_model   = $this->getOauthModel($db);
         $user_id       = $oauth_model->verifyAccessToken($oauth_pieces[1]);
+        $consumer      = $oauth_model->getConsumerInfo($oauth_pieces[1]);
         $this->user_id = $user_id;
+        $this->consumer = $consumer;
 
         return true;
     }
