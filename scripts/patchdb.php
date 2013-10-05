@@ -92,10 +92,12 @@ $baseMysqlCmd = "mysql -u{$options['u']} "
 
 ///////////////////////////////////////////////
 // Try getting the max patch_level so far
+
 exec($baseMysqlCmd . ' -r '
     . '-e "select max(patch_number) as num from `' . $options['d'] . '`.patch_history',
     $res
 );
+
 $maxPatchNum = 0;
 if ($res && array_key_exists(1, $res) && $res[1] > 0) {
     $maxPatchNum = $res[1];
@@ -133,11 +135,12 @@ if (array_key_exists('i', $options)) {
 // First, look through the directory for patch123.sql files
 // and get all the {123} numbers, so we can run them all 
 // in order.
+$matchedNums = array();
 if ($dh = opendir($options['t'])) {
     while (($file = readdir($dh)) !== false) {
         
         preg_match("/patch([\d]+)\.sql/", $file, $matches);
-        if ($matches && array_key_exists(1, $matches)) {
+        if ($matches && array_key_exists(1, $matches) && $matches[1] > $maxPatchNum) {
             $matchedNums[] = (int)$matches[1];
         }
 
