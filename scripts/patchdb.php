@@ -90,6 +90,24 @@ $baseMysqlCmd = "mysql -u{$options['u']} "
     . "{$options['d']}";
 
 
+///////////////////////////////////////////////
+// Try getting the max patch_level so far
+exec($baseMysqlCmd . ' -r '
+    . '-e "select max(patch_number) as num from `' . $options['d'] . '`.patch_history',
+    $res
+);
+$maxPatchNum = 0;
+if ($res && array_key_exists(1, $res) && $res[1] > 0) {
+    $maxPatchNum = $res[1];
+} else if (is_array($res) && count($res) === 0) {
+    $maxPatchNum = false;
+}
+
+if ($maxPatchNum === false && !array_key_exists('i', $options)) {
+    echo "It doesn't look like you've initialised your db.  Exiting now.";
+    exit;
+}
+
 
 //////////////////////////////////////////////
 // Initialise db
