@@ -8,7 +8,7 @@
  *
  *
  * Usage:
- * php -f patchdb.php -t "c:\wamp\path\to\joindin-api\db\  -d joindindatabasename -u mysqluser -p mysqlpassword -i
+ * php -f patchdb.php -t c:\wamp\path\to\joindin-api\  -d joindindatabasename -u mysqluser -p mysqlpassword -i
  *
  */
 
@@ -27,7 +27,7 @@ Joind.in database initialiser help script
 
 Command line options:
 
-    -t   Required.  Path to the directory contianing the init_db.sql and patch files
+    -t   Required.  Path to the joind.in directory
 
     -d   Database name to user.  Defaults to `joindin`.
 
@@ -39,7 +39,7 @@ Command line options:
 
 For example:
 
-    php -f patchdb.php -t "c:\wamp\pathto\joindin-api\db\ -d joindindatabasename -u mysqluser -p mysqlpassword -i
+    php -f patchdb.php -t c:\wamp\pathto\joindin-api\ -d joindindatabasename -u mysqluser -p mysqlpassword -i
 
 
 
@@ -71,6 +71,8 @@ if (!is_dir($options['t'])) {
     exit;
 }
 
+
+$options['t'] .= '/db';
 
 
 ///////////////////////////////////////////////
