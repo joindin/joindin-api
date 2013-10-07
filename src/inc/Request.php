@@ -17,6 +17,7 @@ class Request
     public $parameters = array();
     public $view;
     public $user_id;
+    public $version;
 
     protected $oauthModel;
 
