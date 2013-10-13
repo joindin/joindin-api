@@ -14,6 +14,7 @@ set_exception_handler('handle_exception');
 
 // config setup
 define('BASEPATH', '.');
+include('../config.php');
 include('../database.php');
 $ji_db = new PDO('mysql:host=' . $db['default']['hostname'] . 
     ';dbname=' . $db['default']['database'],
@@ -64,7 +65,7 @@ switch ($version) {
     case 'v2.1':
         // default routing for version 2.1
         $request->version = "v2.1";
-        $return_data = routeV2($request, $ji_db);
+        $return_data = routeV2($request, $ji_db, $config);
         break;
     
     case '':
@@ -100,13 +101,13 @@ exit;
  * @param PDO $ji_db
  * @return array
  */
-function routeV2($request, $ji_db)
+function routeV2($request, $ji_db, $config)
 {
     // Route: call the handle() method of the class with the first URL element
     if(isset($request->url_elements[2])) {
         $class = ucfirst($request->url_elements[2]) . 'Controller';
         if(class_exists($class)) {
-            $handler = new $class();
+            $handler = new $class($config);
             $return_data = $handler->handle($request, $ji_db); // the DB is set by the database config
         } else {
             throw new Exception('Unknown controller ' . $request->url_elements[2], 400);
