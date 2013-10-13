@@ -8,19 +8,18 @@ class OAuthModel {
 
     /**
      * Object constructor, sets up the db and some objects need request too
-     * 
+     *
      * @param PDO     $db      The database connection handle
      */
     public function __construct(PDO $db, Request $request) {
         $this->_db     = $db;
         $this->base    = $request->base;
         $this->version = $request->version;
-
     }
 
     /**
-     * verifyAccessToken 
-     * 
+     * verifyAccessToken
+     *
      * @param string $token The valid access token
      * @access public
      * @return int The ID of the user this belongs to
@@ -52,36 +51,67 @@ class OAuthModel {
      * @param  string $password password
      * @return string           access token
      */
-    public function createAccessTokenFromPassword(
-                $clientId, $username, $password)
+    public function createAccessTokenFromPassword($clientId, $username, $password)
+    {
+        // is the username/password combination correct?
+        $userId = $this->getUserId($username, $password);
+        if (!$userId) {
+            return false;
+        }
+
+        // expire old tokens (Does this need to be in a different place?)
+        $this->expireOldTokens($clientId);
+
+        // remove current token for this client if there is one - i.e
+        // re-logging in causes the current token to be expired.
+        $this->removeTokenForUser($clientId, $userId);
+
+        // create new token
+        $accessToken = $this->newAccessToken($clientId, $userId);
+
+        // we also want to send back the logged in user's uri
+        $userUri = $this->base . '/' . $this->version . '/users/' . $userId;
+
+        return array('access_token' => $accessToken, 'user_uri' => $userUri);
+    }
+
+    /**
+     * Retrieve the user's record from the database.
+     *
+     * @param  string $username user's username
+     * @param  string $password user's password
+     * @return mixed            user's id on success or false
+     */
+    protected function getUserId($username, $password)
     {
         $sql = 'SELECT ID, email FROM user
                 WHERE username=:username AND password=:password';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("username" => $username, "password" => md5($password)));
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$result) {
-            return false;
+        if ($result) {
+            return $result['ID'];
         }
 
-        // expire old tokens (this needs to be in a different place)
-        $this->expireOldTokens($clientId);
+        return $result;
+    }
 
-        // remove current token
+    /**
+     * Remove any current tokens for this user / client id combination
+     *
+     * @param  string $clientId aka consumer_key
+     * @param  int $userId      user's id
+     * @return boolean          True on success, false on failure
+     */
+    protected function removeTokenForUser($clientId, $userId)
+    {
         $sql = "DELETE FROM oauth_access_tokens WHERE
                 consumer_key=:consumer_key AND user_id=:user_id";
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("consumer_key" => 'web2',
-            'user_id' => $result['ID']));
+        $result = $stmt->execute(array("consumer_key" => $clientId,
+            'user_id' => $userId));
 
-        // create new token
-        $accessToken = $this->newAccessToken($clientId, $result['ID']);
-
-        // we also want the logged in user's uri
-        $userUri = $this->base . '/' . $this->version . '/users/' . $result['ID'];
-
-        return array('access_token' => $accessToken, 'user_uri' => $userUri);
+        return $result;
     }
 
     /**
