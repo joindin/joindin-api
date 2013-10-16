@@ -485,4 +485,29 @@ class EventMapper extends ApiMapper
         } 
         return false;
     }
+
+    /**
+     * Fetch events matching or partially matching a given title
+     * 
+     * @param string  $title   the title we are looking for
+     * @param int $resultsperpage how many records to return
+     * @param int $start offset to start returning records from
+     * @param boolean $verbose used to determine how many fields are needed
+     * 
+     * @return array the matching events, if any
+     */
+    public function getEventsByTitle($title, $resultsperpage, $start, $verbose = false) 
+    {
+        $order = 'events.event_start desc';
+        $where = 'LOWER(events.event_name) like "%' . strtolower($title) . '%"';
+        $results = $this->getEvents($resultsperpage, $start, $where, $order);
+        if ($results) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+
+    }
+
+
 }
