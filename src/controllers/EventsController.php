@@ -80,6 +80,9 @@ class EventsController extends ApiController {
                 } elseif(isset($request->parameters['stub'])) {
                     $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
                     $list = $mapper->getEventByStub($stub, $verbose);
+                    if ($list === false) {
+                        throw new Exception('Stub not found', 404);
+                    }
                 } else {
                     $list = $mapper->getEventList($resultsperpage, $start, $verbose);
                 }
