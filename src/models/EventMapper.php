@@ -485,4 +485,24 @@ class EventMapper extends ApiMapper
         } 
         return false;
     }
+    /**
+     * Fetch the details for a an event by its stub
+     * 
+     * @param string  $stub    the string identifier for this event
+     * @param boolean $verbose used to determine how many fields are needed
+     * 
+     * @return array the event detail
+     */
+    public function getEventByStub($stub, $verbose = false) 
+    {
+        $order = 'events.event_start desc';
+        $where = 'events.event_stub="' . $stub . '"';
+        $results = $this->getEvents(1, 0, $where, $order);
+        if ($results) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
 }
