@@ -1,0 +1,9 @@
+<?php
+
+$config =  array(
+    'oauth' => array(
+        'password_client_ids' => array(
+            'web2',
+        )
+    ),
+);
