@@ -17,6 +17,7 @@ class Request
     public $parameters = array();
     public $view;
     public $user_id;
+    public $access_token;
 
     protected $oauthModel;
 
@@ -159,8 +160,9 @@ class Request
         if (strtolower($oauth_pieces[0]) != "oauth") {
             throw new InvalidArgumentException('Unknown Authorization Header Received', '400');
         }
+        $this->access_token = $oauth_pieces[1];
         $oauth_model   = $this->getOauthModel($db);
-        $user_id       = $oauth_model->verifyAccessToken($oauth_pieces[1]);
+        $user_id       = $oauth_model->verifyAccessToken($this->access_token);
         $this->user_id = $user_id;
 
         return true;

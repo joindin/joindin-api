@@ -35,4 +35,22 @@ class OAuthModel {
         // return the user ID this token belongs to
         return $result['user_id'];
     }
+
+    /**
+     * getConsumerInfo
+     *
+     * @param string $token The valid access token
+     * @access public
+     * @return array An array of data describing the consumer
+     */
+    public function getConsumerInfo($token) {
+        $sql = 'select c.* from oauth_consumers c'
+            . ' inner join oauth_access_tokens t USING (consumer_key)'
+            . ' where t.access_token=:access_token';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("access_token" => $token));
+        $result = $stmt->fetch();
+
+        return $result;
+    }
 }
