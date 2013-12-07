@@ -62,10 +62,6 @@ class OAuthModel {
         // expire old tokens (Does this need to be in a different place?)
         $this->expireOldTokens($clientId);
 
-        // remove current token for this client if there is one - i.e
-        // re-logging in causes the current token to be expired.
-        $this->removeTokenForUser($clientId, $userId);
-
         // create new token
         $accessToken = $this->newAccessToken($clientId, $userId);
 
