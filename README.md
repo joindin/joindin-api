@@ -6,6 +6,7 @@ This is the API behind the joind.in website (the new version of it), the mobile 
 ## Quick Start
 
  * point a new virtual host at the public directory, one level below this file.
+ * copy `src/config.php.dist` to `src/config.php` in your joind.in installation.
  * copy `src/database.php.dist` to `src/database.php` in your joind.in installation; if you have the website project installed too, these files are the same and you may copy or symlink.
  * initialise, patch, and populate the database.
 
