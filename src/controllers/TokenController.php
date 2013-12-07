@@ -25,12 +25,21 @@ class TokenController extends ApiController
         $username = $request->getParameter('username');
         $password = $request->getParameter('password');
 
+        // all fields are required or this makes no sense
+        if(empty($grantType)) {
+            throw new Exception('The field "grant_type" is required', 400);
+        }
+
+        if(empty($username) || empty($password)) {
+            throw new Exception('The fields "username" and "password" are both required', 400);
+        }
+        
         if ($grantType == 'password') {
             // authenticate the user for web2
             
             $clientId = $request->getParameter('client_id');
             if (!in_array($clientId, $this->config['oauth']['password_client_ids'])) {
-                throw new Exception("This client cannot authentiate using the password grant type", 403);
+                throw new Exception("This client cannot authenticate using the password grant type", 403);
             }
 
             // generate a temporary access token and then redirect back to the callback
