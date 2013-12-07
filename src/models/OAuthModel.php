@@ -97,24 +97,6 @@ class OAuthModel {
     }
 
     /**
-     * Remove any current tokens for this user / client id combination
-     *
-     * @param  string $clientId aka consumer_key
-     * @param  int $userId      user's id
-     * @return boolean          True on success, false on failure
-     */
-    protected function removeTokenForUser($clientId, $userId)
-    {
-        $sql = "DELETE FROM oauth_access_tokens WHERE
-                consumer_key=:consumer_key AND user_id=:user_id";
-        $stmt = $this->_db->prepare($sql);
-        $result = $stmt->execute(array("consumer_key" => $clientId,
-            'user_id' => $userId));
-
-        return $result;
-    }
-
-    /**
      * Expire any tokens belonging to $clientId that are over a day old.
      *
      * @param  string $clientId aka consumer_key
