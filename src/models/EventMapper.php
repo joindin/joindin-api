@@ -337,6 +337,9 @@ class EventMapper extends ApiMapper
                     $list[$key]['attending'] = false;
                 }
 
+                if($verbose) {
+                    $list[$key]['talk_comments_count'] = $this->getTalkCommentCount($row['ID']);
+                }
                 $list[$key]['tags'] = $this->getTags($row['ID']);;
                 $list[$key]['uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'];
@@ -528,6 +531,25 @@ class EventMapper extends ApiMapper
         }
         return false;
 
+    }
+
+
+    /**
+     * Count the number of talk comments for an event
+     * 
+     * @param int $event_id The event to count talk comments for
+     * @return int Number of comments across all talks
+     */
+    protected function getTalkCommentCount($event_id)
+    {
+        $comment_sql = 'select count(*) as comment_count from talk_comments tc '
+            . 'inner join talks t on tc.talk_id = t.ID '
+            . 'inner join events e on t.event_id = e.ID '
+            . 'where e.ID = :event_id';
+        $comment_stmt = $this->_db->prepare($comment_sql);
+        $comment_stmt->execute(array("event_id" => $event_id));
+        $comments = $comment_stmt->fetch(PDO::FETCH_ASSOC);
+        return $comments['comment_count'];
     }
 
 }
