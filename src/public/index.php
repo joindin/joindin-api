@@ -27,7 +27,7 @@ $ji_db->query('SET CHARACTER SET utf8');
 
 
 // collect URL and headers
-$request = new Request();
+$request = new Request($config);
 
 // identify our user if applicable
 $headers = apache_request_headers();
