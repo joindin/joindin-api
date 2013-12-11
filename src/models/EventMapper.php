@@ -337,9 +337,6 @@ class EventMapper extends ApiMapper
                     $list[$key]['attending'] = false;
                 }
 
-                if($verbose) {
-                    $list[$key]['talk_comments_count'] = $this->getTalkCommentCount($row['ID']);
-                }
                 $list[$key]['tags'] = $this->getTags($row['ID']);;
                 $list[$key]['uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'];
@@ -358,6 +355,7 @@ class EventMapper extends ApiMapper
                 }
 
                 if($verbose) {
+                    $list[$key]['talk_comments_count'] = $this->getTalkCommentCount($row['ID']);
                     $list[$key]['all_talk_comments_uri'] = $base . '/' . $version . '/events/' 
                         . $row['ID'] . '/talk_comments';
                     $list[$key]['hosts'] = $this->getHosts($row['ID']);
