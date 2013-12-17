@@ -120,9 +120,9 @@ class TalkCommentMapper extends ApiMapper {
 
     public function save($data) {
         $sql = 'insert into talk_comments (talk_id, rating, comment, user_id, '
-            . 'source, date_made, private, active, consumer_id) '
-            . 'values (:talk_id, :rating, :comment, :user_id, "api-v2", UNIX_TIMESTAMP(), '
-            . ':private, 1, :consumer_id)';
+            . 'source, date_made, private, active) '
+            . 'values (:talk_id, :rating, :comment, :user_id, :source, UNIX_TIMESTAMP(), '
+            . ':private, 1)';
 
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
@@ -131,7 +131,7 @@ class TalkCommentMapper extends ApiMapper {
             ':comment' => $data['comment'],
             ':user_id' => $data['user_id'],
             ':private' => $data['private'],
-            ':consumer_id' => $data['consumer_id'],
+            ':source' => $data['source'],
             ));
 
         $comment_id = $this->_db->lastInsertId();

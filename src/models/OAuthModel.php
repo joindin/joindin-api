@@ -169,19 +169,28 @@ class OAuthModel {
 
 
     /**
-     * getConsumerInfo
+     *  Get the name of the consumer that this user was authenticated with
      *
      * @param string $token The valid access token
      * @access public
-     * @return array An array of data describing the consumer
+     * @return string An identifier for the OAuth consumer
      */
-    public function getConsumerInfo($token) {
-        $sql = 'select c.* from oauth_consumers c'
-            . ' inner join oauth_access_tokens t USING (consumer_key)'
-            . ' where t.access_token=:access_token';
+    public function getConsumerName($token) {
+        $sql = 'select at.consumer_key, c.id, c.application '
+            . 'from oauth_access_tokens at '
+            . 'left join oauth_consumers c using (consumer_key) '
+            . 'where at.access_token=:access_token ';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("access_token" => $token));
         $result = $stmt->fetch();
+
+        // what did we get? Might have been an oauth app, a special one (like web2)
+        // or something else.
+        if($result['application']) {
+            return $result['application'];
+        } else {
+            return "api-v2";
+        }
 
         return $result;
     }

@@ -69,7 +69,7 @@ class TalksController extends ApiController {
 
                 // Get the API key reference to save against the comment
                 $oauth_model = $request->getOauthModel($db);
-                $consumer = $oauth_model->getConsumerInfo($request->access_token);
+                $consumer_name = $oauth_model->getConsumerName($request->access_token);
 
                 $comment_mapper = new TalkCommentMapper($db, $request);
                 $data['user_id'] = $request->user_id;
@@ -77,7 +77,7 @@ class TalksController extends ApiController {
                 $data['comment'] = $comment;
                 $data['rating'] = $rating;
                 $data['private'] = $private;
-                $data['consumer_id'] = $consumer['id'];
+                $data['source'] = $consumer_name;
 
                 $new_id = $comment_mapper->save($data);
                 $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
