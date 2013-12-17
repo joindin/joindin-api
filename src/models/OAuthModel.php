@@ -189,7 +189,7 @@ class OAuthModel {
         if($result['application']) {
             return $result['application'];
         } else {
-            return "api-v2";
+            return "joind.in";
         }
 
         return $result;
