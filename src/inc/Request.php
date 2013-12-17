@@ -20,6 +20,7 @@ class Request
     public $version;
 
     protected $oauthModel;
+    protected $config;
 
     /**
      * Builds the request object
@@ -27,8 +28,10 @@ class Request
      * @param bool $parseParams Set to false to skip parsing parameters on
      *                          construction
      */
-    public function __construct($parseParams = true)
+    public function __construct($config, $parseParams = true)
     {
+        $this->config = $config;
+
         if (isset($_SERVER['REQUEST_METHOD'])) {
             $this->setVerb($_SERVER['REQUEST_METHOD']);
         }
@@ -152,19 +155,24 @@ class Request
      */
     public function identifyUser($db, $auth_header)
     {
-        // identify the user
-        $oauth_pieces = explode(' ', $auth_header);
-        if (count($oauth_pieces) <> 2) {
-            throw new InvalidArgumentException('Invalid Authorization Header', '400');
-        }
-        if (strtolower($oauth_pieces[0]) != "oauth") {
-            throw new InvalidArgumentException('Unknown Authorization Header Received', '400');
-        }
-        $oauth_model   = $this->getOauthModel($db);
-        $user_id       = $oauth_model->verifyAccessToken($oauth_pieces[1]);
-        $this->user_id = $user_id;
+        if(($this->getScheme() == "https://") || 
+            (isset($this->config['mode']) && $this->config['mode'] == "development")) {
 
-        return true;
+            // identify the user
+            $oauth_pieces = explode(' ', $auth_header);
+            if (count($oauth_pieces) <> 2) {
+                throw new InvalidArgumentException('Invalid Authorization Header', '400');
+            }
+            if (strtolower($oauth_pieces[0]) != "oauth") {
+                throw new InvalidArgumentException('Unknown Authorization Header Received', '400');
+            }
+            $oauth_model   = $this->getOauthModel($db);
+            $user_id       = $oauth_model->verifyAccessToken($oauth_pieces[1]);
+            $this->user_id = $user_id;
+
+            return true;
+        }
+        return false;
     }
 
     /**
