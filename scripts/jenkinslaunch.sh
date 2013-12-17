@@ -40,6 +40,7 @@ mkdir -p $TARGET \
 && git fetch deployremote \
 && git archive $LAUNCHREF | tar xC $TARGET \
 && (echo $TARGET ; echo $LAUNCHREF) > $TARGET/src/release.txt \
+&& ln -s $TARGETBASE/config.php $TARGET/src/config.php \
 && ln -s $TARGETBASE/database.php $TARGET/src/database.php \
 && ln -s $TARGET $TARGETBASE/www.new \
 && $TARGET/scripts/patchdb.sh $DBNAME \

@@ -77,6 +77,18 @@ class EventsController extends ApiController {
                             throw new InvalidArgumentException('Unknown event filter', 404);
                             break;
                     }
+                } elseif(isset($request->parameters['title'])) {
+                    $title = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
+                    $list  = $mapper->getEventsByTitle($title, $resultsperpage, $start, $verbose);
+                    if ($list === false) {
+                        throw new Exception('Event not found', 404);
+                    }
+                } elseif(isset($request->parameters['stub'])) {
+                    $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
+                    $list = $mapper->getEventByStub($stub, $verbose);
+                    if ($list === false) {
+                        throw new Exception('Stub not found', 404);
+                    }
                 } else {
                     $list = $mapper->getEventList($resultsperpage, $start, $verbose);
                 }

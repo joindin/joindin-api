@@ -6,6 +6,7 @@ This is the API behind the joind.in website (the new version of it), the mobile 
 ## Quick Start
 
  * point a new virtual host at the public directory, one level below this file.
+ * copy `src/config.php.dist` to `src/config.php` in your joind.in installation.
  * copy `src/database.php.dist` to `src/database.php` in your joind.in installation; if you have the website project installed too, these files are the same and you may copy or symlink.
  * initialise, patch, and populate the database.
 
@@ -16,6 +17,11 @@ This is the API behind the joind.in website (the new version of it), the mobile 
 If you are using Windows And/Or Git bash you may see an error regarding "o being an invalid option" when running step 6.
 
 To fix this, you will need to visit http://gnuwin32.sourceforge.net/packages/grep.htm and download the binaries and dependencies zip files Extract the contents of the bin folder from the zip files to the bin folder of your Git install and restart Git Bash.
+
+Alternatively in Windows, you can use the php verison of the helper script, `scripts/patchdb.php`:
+```
+    php scripts/patchdb.php -t c:\pathto\joind.in\ -d joindin -u mysqluser -p mysqlpassword -i
+```
 
 This should also work for git via the commandline (cmd.exe)
  * generate some sample data - instructions are in /tools/dbgen/README.md

@@ -18,6 +18,7 @@ class Request
     public $view;
     public $user_id;
     public $access_token;
+    public $version;
 
     protected $oauthModel;
 
@@ -309,7 +310,7 @@ class Request
             if (is_null($db)) {
                 throw new \InvalidArgumentException('Db Must be provided to get Oauth Model');
             }
-            $this->oauthModel = new OAuthModel($db);
+            $this->oauthModel = new OAuthModel($db, $this);
         }
 
         return $this->oauthModel;

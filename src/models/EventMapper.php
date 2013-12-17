@@ -337,6 +337,9 @@ class EventMapper extends ApiMapper
                     $list[$key]['attending'] = false;
                 }
 
+                if($verbose) {
+                    $list[$key]['talk_comments_count'] = $this->getTalkCommentCount($row['ID']);
+                }
                 $list[$key]['tags'] = $this->getTags($row['ID']);;
                 $list[$key]['uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'];
@@ -485,4 +488,68 @@ class EventMapper extends ApiMapper
         } 
         return false;
     }
+
+    /**
+     * Fetch events matching or partially matching a given title
+     * 
+     * @param string  $title   the title we are looking for
+     * @param int $resultsperpage how many records to return
+     * @param int $start offset to start returning records from
+     * @param boolean $verbose used to determine how many fields are needed
+     * 
+     * @return array the matching events, if any
+     */
+    public function getEventsByTitle($title, $resultsperpage, $start, $verbose = false) 
+    {
+        $order = 'events.event_start desc';
+        $where = 'LOWER(events.event_name) like "%' . strtolower($title) . '%"';
+        $results = $this->getEvents($resultsperpage, $start, $where, $order);
+        if ($results) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+
+    /**
+     * Fetch the details for a an event by its stub
+     * 
+     * @param string  $stub    the string identifier for this event
+     * @param boolean $verbose used to determine how many fields are needed
+     * 
+     * @return array the event detail
+     */
+    public function getEventByStub($stub, $verbose = false) 
+    {
+        $order = 'events.event_start desc';
+        $where = 'events.event_stub="' . $stub . '"';
+        $results = $this->getEvents(1, 0, $where, $order);
+        if ($results) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+
+    }
+
+
+    /**
+     * Count the number of talk comments for an event
+     * 
+     * @param int $event_id The event to count talk comments for
+     * @return int Number of comments across all talks
+     */
+    protected function getTalkCommentCount($event_id)
+    {
+        $comment_sql = 'select count(*) as comment_count from talk_comments tc '
+            . 'inner join talks t on tc.talk_id = t.ID '
+            . 'inner join events e on t.event_id = e.ID '
+            . 'where e.ID = :event_id';
+        $comment_stmt = $this->_db->prepare($comment_sql);
+        $comment_stmt->execute(array("event_id" => $event_id));
+        $comments = $comment_stmt->fetch(PDO::FETCH_ASSOC);
+        return $comments['comment_count'];
+    }
+
 }
