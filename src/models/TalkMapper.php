@@ -8,6 +8,7 @@ class TalkMapper extends ApiMapper {
             'type' => 'category',
             'start_date' => 'date_given',
 			'duration' => 'duration',
+            'stub' => 'stub',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
             'comment_count' => 'comment_count'
@@ -24,6 +25,7 @@ class TalkMapper extends ApiMapper {
             'language' => 'lang_name',
             'start_date' => 'date_given',
 			'duration' => 'duration',
+            'stub' => 'stub',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
             'comment_count' => 'comment_count'
@@ -58,6 +60,11 @@ class TalkMapper extends ApiMapper {
         if(is_array($list) && count($list)) {
             foreach($results as $key => $row) {
                 $list[$key]['inflected_talk_title'] = $this->inflect($row['talk_title']);
+
+                // if the stub is empty, we need to generate one and store it
+                if(empty($row['stub'])) {
+                    $list[$key]['stub'] = $this->generateStub($row['ID']);
+                }
                 // add speakers
                 $list[$key]['speakers'] = $this->getSpeakers($row['ID']);
                 $list[$key]['tracks'] = $this->getTracks($row['ID']);
@@ -235,4 +242,23 @@ class TalkMapper extends ApiMapper {
         return $talk_id;
     }
 
+
+    /**
+     * This talk has no stub, so create, store and return one
+     *
+     * @param int $talk_id The talk that needs a new stub
+     */
+    protected function generateStub($talk_id) {
+        $stub = substr(md5(mt_rand()), 3, 5);
+
+        $sql = "update talks set stub = :stub 
+            where ID = :talk_id";
+
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("stub" => $stub, "talk_id" => $talk_id));
+
+        // TODO detect duplicates
+
+        return $stub;
+    }
 }
