@@ -57,6 +57,7 @@ class TalkMapper extends ApiMapper {
         // loop again and add links specific to this item
         if(is_array($list) && count($list)) {
             foreach($results as $key => $row) {
+                $list[$key]['inflected_talk_title'] = $this->inflect($row['talk_title']);
                 // add speakers
                 $list[$key]['speakers'] = $this->getSpeakers($row['ID']);
                 $list[$key]['tracks'] = $this->getTracks($row['ID']);
