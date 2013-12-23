@@ -330,6 +330,7 @@ class EventMapper extends ApiMapper
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
+                $list[$key]['inflected_name'] = $this->inflect($row['event_name']);
                 // if the user is logged in, get their attending data
                 if(isset($this->_request->user_id)) {
                     $list[$key]['attending'] = $this->isUserAttendingEvent($row['ID'], $this->_request->user_id);
