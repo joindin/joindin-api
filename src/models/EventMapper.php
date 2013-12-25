@@ -18,6 +18,7 @@ class EventMapper extends ApiMapper
     {
         $fields = array(
             'name' => 'event_name',
+            'url_friendly_name' => 'url_friendly_name',
             'start_date' => 'event_start',
             'end_date' => 'event_end',
             'description' => 'event_desc',
@@ -42,6 +43,7 @@ class EventMapper extends ApiMapper
     {
         $fields = array(
             'name' => 'event_name',
+            'url_friendly_name' => 'url_friendly_name',
             'start_date' => 'event_start',
             'end_date' => 'event_end',
             'description' => 'event_desc',
@@ -330,7 +332,12 @@ class EventMapper extends ApiMapper
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                $list[$key]['inflected_name'] = $this->inflect($row['event_name']);
+                // generate and store an inflected event name if there isn't one already
+                if(empty($row['url_friendly_name'])) {
+                    $list[$key]['url_friendly_name'] = 
+                        $this->generateInflectedName($row['event_name'], $row['ID']);
+                }
+
                 // if the user is logged in, get their attending data
                 if(isset($this->_request->user_id)) {
                     $list[$key]['attending'] = $this->isUserAttendingEvent($row['ID'], $this->_request->user_id);
@@ -551,6 +558,32 @@ class EventMapper extends ApiMapper
         $comment_stmt->execute(array("event_id" => $event_id));
         $comments = $comment_stmt->fetch(PDO::FETCH_ASSOC);
         return $comments['comment_count'];
+    }
+
+
+    /**
+     * This event doesn't have an inflected name yet, make and store one
+     *
+     * @param string $name     The event name to inflect
+     * @param int    $event_id The event to store it against
+     * @return string The value we stored
+     */
+    protected function generateInflectedName($name, $event_id)
+    {
+        $inflected_name = $this->inflect($name);
+
+        $sql = "update events set url_friendly_name = :inflected_name
+            where ID = :event_id";
+
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute(array(
+            "inflected_name" => $inflected_name, 
+            "event_id" => $event_id));
+
+        if($result) {
+            return $inflected_name;
+        }
+        return false;
     }
 
 }
