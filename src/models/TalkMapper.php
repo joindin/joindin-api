@@ -248,17 +248,30 @@ class TalkMapper extends ApiMapper {
      *
      * @param int $talk_id The talk that needs a new stub
      */
-    protected function generateStub($talk_id) {
-        $stub = substr(md5(mt_rand()), 3, 5);
+    protected function generateStub($talk_id) 
+    {
+        $i = 0;
+        while ($i < 5) {
+            $stub = substr(md5(mt_rand()), 3, 5);
+            $stored = $this->storeStub($stub, $talk_id);
+            if($stored) {
+                // only return a value if we actually stored one
+                $stored_stub = $stub;
+                break;
+            }
+            $i++;
+        }
 
+        return $stored_stub;
+    }
+
+    protected function storeStub($stub, $talk_id) 
+    {
         $sql = "update talks set stub = :stub 
             where ID = :talk_id";
 
         $stmt = $this->_db->prepare($sql);
         $result = $stmt->execute(array("stub" => $stub, "talk_id" => $talk_id));
-
-        // TODO detect duplicates
-
-        return $stub;
+        return $result;
     }
 }
