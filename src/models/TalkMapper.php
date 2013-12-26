@@ -63,7 +63,7 @@ class TalkMapper extends ApiMapper {
             foreach($results as $key => $row) {
                 // generate and store an inflected talk title if there isn't one
                 if(empty($row['url_friendly_talk_title'])) {
-                    $list[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle($row['talk_title'], $row['ID']);
+                    $list[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle($row['talk_title'], $row['ID'], $list[$key]['start_date']);
                 }
 
                 // if the stub is empty, we need to generate one and store it
@@ -290,27 +290,38 @@ class TalkMapper extends ApiMapper {
     }
 
     /**
-     * This talk doesn't have an inflected title, make and store one
+     * This talk doesn't have an inflected title, make and store one. Try to
+     * ensure uniqueness, by adding hour and then hour-minute to the inflected
+     * title.
      *
      * @param string $title   The talk title
      * @param int    $talk_id The talk to store the title against
      * @return string The value we stored
      */
-    protected function generateInflectedTitle($title, $talk_id)
+    protected function generateInflectedTitle($title, $talk_id, $start_date)
     {
+        $date = new DateTime($start_date);
         $inflected_title = $this->inflect($title);
+        $name_choices = array(
+            $inflected_title,
+            $inflected_title . $date->format('H'),
+            $inflected_title . $date->format('-H-i'),
+        );
 
-        $sql = "update talks set url_friendly_talk_title = :inflected_title
-            where ID = :talk_id";
+        foreach ($name_choices as $inflected_title) {
+            $sql = "update talks set url_friendly_talk_title = :inflected_title
+                where ID = :talk_id";
 
-        $stmt   = $this->_db->prepare($sql);
-        $result = $stmt->execute(array(
-            "inflected_title" => $inflected_title, 
-            "talk_id" => $talk_id));
+            $stmt   = $this->_db->prepare($sql);
+            $result = $stmt->execute(array(
+                "inflected_title" => $inflected_title,
+                "talk_id" => $talk_id));
 
-        if($result) {
-            return $inflected_title;
+            if ($result) {
+                return $inflected_title;
+            }
         }
+
         return false;
     }
 }
