@@ -304,7 +304,7 @@ class TalkMapper extends ApiMapper {
         $inflected_title = $this->inflect($title);
         $name_choices = array(
             $inflected_title,
-            $inflected_title . $date->format('H'),
+            $inflected_title . $date->format('-H'),
             $inflected_title . $date->format('-H-i'),
         );
 
