@@ -63,7 +63,7 @@ class TalkMapper extends ApiMapper {
             foreach($results as $key => $row) {
                 // generate and store an inflected talk title if there isn't one
                 if(empty($row['url_friendly_talk_title'])) {
-                    $list[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle($row['talk_title'], $row['ID'], $list[$key]['start_date']);
+                    $list[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle($row['talk_title'], $row['ID'], $row['event_id']);
                 }
 
                 // if the stub is empty, we need to generate one and store it
@@ -298,30 +298,39 @@ class TalkMapper extends ApiMapper {
      * @param int    $talk_id The talk to store the title against
      * @return string The value we stored
      */
-    protected function generateInflectedTitle($title, $talk_id, $start_date)
+    protected function generateInflectedTitle($title, $talk_id, $event_id)
     {
-        $date = new DateTime($start_date);
         $inflected_title = $this->inflect($title);
-        $name_choices = array(
-            $inflected_title,
-            $inflected_title . $date->format('-H'),
-            $inflected_title . $date->format('-H-i'),
-        );
-
-        foreach ($name_choices as $inflected_title) {
-            $sql = "update talks set url_friendly_talk_title = :inflected_title
-                where ID = :talk_id";
-
-            $stmt   = $this->_db->prepare($sql);
-            $result = $stmt->execute(array(
-                "inflected_title" => $inflected_title,
-                "talk_id" => $talk_id));
-
+        $result = $this->storeInflectedTitle($inflected_title, $talk_id, $event_id);
+        if ($result) {
+            return $inflected_title;
+        }
+        
+        // Add a number to the
+        $inflected_title .= '-1';
+        for ($i=2; $i <=5; $i++) {
+            $inflected_title = preg_replace('/-(\d)$/', "-$i", $inflected_title);
+            $result = $this->storeInflectedTitle($inflected_title, $talk_id, $event_id);
             if ($result) {
                 return $inflected_title;
             }
         }
 
         return false;
+    }
+
+    protected function storeInflectedTitle($inflected_title, $talk_id, $event_id)
+    {
+        $sql = "update talks set url_friendly_talk_title = :inflected_title
+            where ID = :talk_id and event_id = :event_id";
+
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute(array(
+            "inflected_title" => $inflected_title,
+            "talk_id" => $talk_id,
+            "event_id" => $event_id
+        ));
+
+        return $result;
     }
 }
