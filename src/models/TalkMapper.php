@@ -63,7 +63,7 @@ class TalkMapper extends ApiMapper {
             foreach($results as $key => $row) {
                 // generate and store an inflected talk title if there isn't one
                 if(empty($row['url_friendly_talk_title'])) {
-                    $list[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle($row['talk_title'], $row['ID'], $row['event_id']);
+                    $list[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle($row['talk_title'], $row['ID']);
                 }
 
                 // if the stub is empty, we need to generate one and store it
@@ -298,10 +298,10 @@ class TalkMapper extends ApiMapper {
      * @param int    $talk_id The talk to store the title against
      * @return string The value we stored
      */
-    protected function generateInflectedTitle($title, $talk_id, $event_id)
+    protected function generateInflectedTitle($title, $talk_id)
     {
         $inflected_title = $this->inflect($title);
-        $result = $this->storeInflectedTitle($inflected_title, $talk_id, $event_id);
+        $result = $this->storeInflectedTitle($inflected_title, $talk_id);
         if ($result) {
             return $inflected_title;
         }
@@ -310,7 +310,7 @@ class TalkMapper extends ApiMapper {
         $inflected_title .= '-1';
         for ($i=2; $i <=5; $i++) {
             $inflected_title = preg_replace('/-(\d)$/', "-$i", $inflected_title);
-            $result = $this->storeInflectedTitle($inflected_title, $talk_id, $event_id);
+            $result = $this->storeInflectedTitle($inflected_title, $talk_id);
             if ($result) {
                 return $inflected_title;
             }
@@ -319,16 +319,23 @@ class TalkMapper extends ApiMapper {
         return false;
     }
 
-    protected function storeInflectedTitle($inflected_title, $talk_id, $event_id)
+    /**
+     * Try to store the inflected title against this talk
+     *
+     * A database constraint ensures uniqueness for url_friendly_talk_title
+     * values per event, so you can have the same inflected talk title at two 
+     * different events, but try to have the same one at the same event and this
+     * update will fail.  The calling code catches this and picks a new title
+     */
+    protected function storeInflectedTitle($inflected_title, $talk_id)
     {
         $sql = "update talks set url_friendly_talk_title = :inflected_title
-            where ID = :talk_id and event_id = :event_id";
+            where ID = :talk_id";
 
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute(array(
             "inflected_title" => $inflected_title,
-            "talk_id" => $talk_id,
-            "event_id" => $event_id
+            "talk_id" => $talk_id
         ));
 
         return $result;
