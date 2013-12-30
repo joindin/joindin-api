@@ -101,14 +101,15 @@ class EventCommentMapper extends ApiMapper {
     public function save($data) {
         $sql = 'insert into event_comments (event_id, comment, user_id, cname, '
             . 'source, date_made, active) '
-            . 'values (:event_id, :comment, :user_id, :cname, "api-v2", UNIX_TIMESTAMP(), 1)';
+            . 'values (:event_id, :comment, :user_id, :cname, :source, UNIX_TIMESTAMP(), 1)';
 
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':event_id' => $data['event_id'],
             ':comment' => $data['comment'],
             ':cname' => $data['cname'],
-            ':user_id' => $data['user_id']
+            ':user_id' => $data['user_id'],
+            ':source' => $data['source'],
             ));
 
         $comment_id = $this->_db->lastInsertId();

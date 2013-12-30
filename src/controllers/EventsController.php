@@ -184,9 +184,14 @@ class EventsController extends ApiController {
                         throw new Exception('The field "comment" is required', 400);
                     }
 
+                    // Get the API key reference to save against the comment
+                    $oauth_model = $request->getOauthModel($db);
+                    $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
+
                     $comment['user_id'] = $request->user_id;
                     $comment['comment'] = $commentText;
                     $comment['cname'] = $thisUser['full_name'];
+                    $comment['source'] = $consumer_name;
 
                     $comment_mapper = new EventCommentMapper($db, $request);
                     $new_id = $comment_mapper->save($comment);
