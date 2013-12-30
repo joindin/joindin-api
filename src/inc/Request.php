@@ -169,7 +169,8 @@ class Request
             }
             $oauth_model   = $this->getOauthModel($db);
             $user_id       = $oauth_model->verifyAccessToken($oauth_pieces[1]);
-            $this->user_id = $user_id;
+            $this->setUserId($user_id);
+            $this->setAccessToken($oauth_pieces[1]);
 
             return true;
         }
@@ -423,4 +424,29 @@ class Request
     {
         return $this->base;
     }
+
+    /**
+     * Sets an access token
+     *
+     * @param string $token Access token to store
+     *
+     * @return Request
+     */
+    public function setAccessToken($token)
+    {
+        $this->access_token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Retrieves the access token for this request
+     *
+     * @return string|null
+     */
+    public function getAccessToken()
+    {
+        return $this->access_token;
+    }
+
 }

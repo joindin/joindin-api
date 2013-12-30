@@ -186,7 +186,7 @@ class EventsController extends ApiController {
 
                     // Get the API key reference to save against the comment
                     $oauth_model = $request->getOauthModel($db);
-                    $consumer_name = $oauth_model->getConsumerName($request->access_token);
+                    $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
                     $comment['user_id'] = $request->user_id;
                     $comment['comment'] = $commentText;
