@@ -4,10 +4,12 @@ class TalkMapper extends ApiMapper {
     public function getDefaultFields() {
         $fields = array(
             'talk_title' => 'talk_title',
+            'url_friendly_talk_title' => 'url_friendly_talk_title',
             'talk_description' => 'talk_desc',
             'type' => 'category',
             'start_date' => 'date_given',
 			'duration' => 'duration',
+            'stub' => 'stub',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
             'comment_count' => 'comment_count'
@@ -18,12 +20,14 @@ class TalkMapper extends ApiMapper {
     public function getVerboseFields() {
         $fields = array(
             'talk_title' => 'talk_title',
+            'url_friendly_talk_title' => 'url_friendly_talk_title',
             'talk_description' => 'talk_desc',
             'type' => 'category',
             'slides_link' => 'slides_link',
             'language' => 'lang_name',
             'start_date' => 'date_given',
 			'duration' => 'duration',
+            'stub' => 'stub',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
             'comment_count' => 'comment_count'
@@ -57,6 +61,15 @@ class TalkMapper extends ApiMapper {
         // loop again and add links specific to this item
         if(is_array($list) && count($list)) {
             foreach($results as $key => $row) {
+                // generate and store an inflected talk title if there isn't one
+                if(empty($row['url_friendly_talk_title'])) {
+                    $list[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle($row['talk_title'], $row['ID']);
+                }
+
+                // if the stub is empty, we need to generate one and store it
+                if(empty($row['stub'])) {
+                    $list[$key]['stub'] = $this->generateStub($row['ID']);
+                }
                 // add speakers
                 $list[$key]['speakers'] = $this->getSpeakers($row['ID']);
                 $list[$key]['tracks'] = $this->getTracks($row['ID']);
@@ -234,4 +247,97 @@ class TalkMapper extends ApiMapper {
         return $talk_id;
     }
 
+
+    /**
+     * This talk has no stub, so create, store and return one
+     *
+     * @param int $talk_id The talk that needs a new stub
+     */
+    protected function generateStub($talk_id) 
+    {
+        $i = 0;
+        while ($i < 5) {
+            $stub = substr(md5(mt_rand()), 3, 5);
+            $stored = $this->storeStub($stub, $talk_id);
+            if($stored) {
+                // only return a value if we actually stored one
+                $stored_stub = $stub;
+                break;
+            }
+            $i++;
+        }
+
+        return $stored_stub;
+    }
+
+    /**
+     * Store the stub and return whether that was successful.
+     * If not, we probably failed the unique check and the calling code can
+     * decide what to do next
+     *
+     * @param string $stub    The stub for this talk
+     * @param int    $talk_id The talk to store against
+     * @return boolean whether we stored it or not
+     */
+    protected function storeStub($stub, $talk_id) 
+    {
+        $sql = "update talks set stub = :stub 
+            where ID = :talk_id";
+
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("stub" => $stub, "talk_id" => $talk_id));
+        return $result;
+    }
+
+    /**
+     * This talk doesn't have an inflected title, make and store one. Try to
+     * ensure uniqueness, by adding hour and then hour-minute to the inflected
+     * title.
+     *
+     * @param string $title   The talk title
+     * @param int    $talk_id The talk to store the title against
+     * @return string The value we stored
+     */
+    protected function generateInflectedTitle($title, $talk_id)
+    {
+        $inflected_title = $this->inflect($title);
+        $result = $this->storeInflectedTitle($inflected_title, $talk_id);
+        if ($result) {
+            return $inflected_title;
+        }
+        
+        // Add a number to the
+        $inflected_title .= '-1';
+        for ($i=2; $i <=5; $i++) {
+            $inflected_title = preg_replace('/-(\d)$/', "-$i", $inflected_title);
+            $result = $this->storeInflectedTitle($inflected_title, $talk_id);
+            if ($result) {
+                return $inflected_title;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Try to store the inflected title against this talk
+     *
+     * A database constraint ensures uniqueness for url_friendly_talk_title
+     * values per event, so you can have the same inflected talk title at two 
+     * different events, but try to have the same one at the same event and this
+     * update will fail.  The calling code catches this and picks a new title
+     */
+    protected function storeInflectedTitle($inflected_title, $talk_id)
+    {
+        $sql = "update talks set url_friendly_talk_title = :inflected_title
+            where ID = :talk_id";
+
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute(array(
+            "inflected_title" => $inflected_title,
+            "talk_id" => $talk_id
+        ));
+
+        return $result;
+    }
 }

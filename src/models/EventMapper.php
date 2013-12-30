@@ -18,6 +18,7 @@ class EventMapper extends ApiMapper
     {
         $fields = array(
             'name' => 'event_name',
+            'url_friendly_name' => 'url_friendly_name',
             'start_date' => 'event_start',
             'end_date' => 'event_end',
             'description' => 'event_desc',
@@ -42,6 +43,7 @@ class EventMapper extends ApiMapper
     {
         $fields = array(
             'name' => 'event_name',
+            'url_friendly_name' => 'url_friendly_name',
             'start_date' => 'event_start',
             'end_date' => 'event_end',
             'description' => 'event_desc',
@@ -330,6 +332,12 @@ class EventMapper extends ApiMapper
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
+                // generate and store an inflected event name if there isn't one already
+                if(empty($row['url_friendly_name'])) {
+                    $list[$key]['url_friendly_name'] = 
+                        $this->generateInflectedName($row['event_name'], $row['ID'], $list[$key]['start_date']);
+                }
+
                 // if the user is logged in, get their attending data
                 if(isset($this->_request->user_id)) {
                     $list[$key]['attending'] = $this->isUserAttendingEvent($row['ID'], $this->_request->user_id);
@@ -552,4 +560,41 @@ class EventMapper extends ApiMapper
         return $comments['comment_count'];
     }
 
+
+    /**
+     * This event doesn't have an inflected name yet, make and store one. Try to
+     * ensure uniqueness, by adding year, then year-month and then finally
+     * year-month-day to the inflected title.
+     *
+     * @param string $name     The event name to inflect
+     * @param int    $event_id The event to store it against
+     * @return string The value we stored
+     */
+    protected function generateInflectedName($name, $event_id, $start_date)
+    {
+        $date = new DateTime($start_date);
+        $inflected_name = $this->inflect($name);
+        $name_choices = array(
+            $inflected_name,
+            $inflected_name . $date->format('-Y'),
+            $inflected_name . $date->format('-Y-m'),
+            $inflected_name . $date->format('-Y-m-d'),
+        );
+
+        foreach ($name_choices as $inflected_name) {
+            $sql = "update events set url_friendly_name = :inflected_name
+                where ID = :event_id";
+
+            $stmt   = $this->_db->prepare($sql);
+            $result = $stmt->execute(array(
+                "inflected_name" => $inflected_name,
+                "event_id" => $event_id));
+
+            if ($result) {
+                return $inflected_name;
+            }
+        }
+
+        return false;
+    }
 }
