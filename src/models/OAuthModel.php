@@ -191,7 +191,5 @@ class OAuthModel {
         } else {
             return "joind.in";
         }
-
-        return $result;
     }
 }
