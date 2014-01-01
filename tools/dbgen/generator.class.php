@@ -7,17 +7,19 @@ require_once "generator_data.interface.php";
  * The "caching" is pretty bad as well. When I'm running the "massive" parameters, the system uses 600M+ of memory.
  */
 
-class Generator {
-    protected $_data;       	// Configuration data
-    protected $_cache;      	// Caching of data
-    protected $_exiting_stubs; 	// Stubs that have already been generated, to stop duplicates.
+class DataGenerator {
+    protected $_data;            // Configuration data
+    protected $_cache;           // Caching of data
+    protected $_existing_stubs;  // Stubs that have already been generated, to stop duplicates.
+    protected $_users_attending; // Users already attending a particular event
 
     /**
      * @param Generator_Data_Interface $data
      */
     public function __construct(Generator_Data_Interface $data) {
-        $this->_data = $data;
-        $this->_existing_stubs = array();
+        $this->_data            = $data;
+        $this->_existing_stubs  = array();
+        $this->_users_attending = array();
     }
 
     /**
@@ -380,10 +382,16 @@ class Generator {
             for ($i=0; $i!=$attended_events; $i++) {
                 $event = $this->_cacheFetchRandom('events');
 
-                if (! $first) echo ",\n";
 
-                // @TODO: make sure we don't have the same UIDs at an EID
-                printf ("(%d, %d)", $user->id, $event->id);
+                // if the user is already attending this event, move on
+                if(!isset($this->_users_attending[$user->id]) 
+                    || !array_key_exists($event->id, $this->_users_attending[$user->id])) {
+
+                    if (! $first) echo ",\n";
+
+                    $this->_users_attending[$user->id][$event->id] = true;
+                    printf ("(%d, %d)", $user->id, $event->id);
+                }
 
                 $first = false;
             }
