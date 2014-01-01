@@ -42,7 +42,6 @@ class OAuthModel {
         return $result['user_id'];
     }
 
-
     /**
      * Create an access token for a username or password
      *
@@ -168,4 +167,29 @@ class OAuthModel {
         return $hash;
     }
 
+
+    /**
+     *  Get the name of the consumer that this user was authenticated with
+     *
+     * @param string $token The valid access token
+     * @access public
+     * @return string An identifier for the OAuth consumer
+     */
+    public function getConsumerName($token) {
+        $sql = 'select at.consumer_key, c.id, c.application '
+            . 'from oauth_access_tokens at '
+            . 'left join oauth_consumers c using (consumer_key) '
+            . 'where at.access_token=:access_token ';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("access_token" => $token));
+        $result = $stmt->fetch();
+
+        // what did we get? Might have been an oauth app, a special one (like web2)
+        // or something else.
+        if($result['application']) {
+            return $result['application'];
+        } else {
+            return "joind.in";
+        }
+    }
 }
