@@ -382,10 +382,13 @@ class DataGenerator {
             for ($i=0; $i!=$attended_events; $i++) {
                 $event = $this->_cacheFetchRandom('events');
 
-                if (! $first) echo ",\n";
 
                 // if the user is already attending this event, move on
-                if(!array_key_exists($event->id, $this->_users_attending[$user->id])) {
+                if(!isset($this->_users_attending[$user->id]) 
+                    || !array_key_exists($event->id, $this->_users_attending[$user->id])) {
+
+                    if (! $first) echo ",\n";
+
                     $this->_users_attending[$user->id][$event->id] = true;
                     printf ("(%d, %d)", $user->id, $event->id);
                 }
