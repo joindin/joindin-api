@@ -7,7 +7,7 @@ require_once "generator_data.interface.php";
  * The "caching" is pretty bad as well. When I'm running the "massive" parameters, the system uses 600M+ of memory.
  */
 
-class Generator {
+class DataGenerator {
     protected $_data;       	// Configuration data
     protected $_cache;      	// Caching of data
     protected $_exiting_stubs; 	// Stubs that have already been generated, to stop duplicates.
