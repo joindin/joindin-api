@@ -55,3 +55,7 @@ This API uses OAuth2. To authenticate you will need the following:
     Authorization: OAuth [access_code]
 
 [events]({{ site.baseurl }}/events.html)
+
+## Howtos
+
+[users attending howto]({{ site.baseurl }}/howto/event_attending.html)
