@@ -48,5 +48,6 @@ This API uses OAuth2. To authenticate you will need the following:
 *  When the user is sent to the redirect URL, it will contain one additional parameter: ``access_token``. Capture this and store it - this is a per-user token. If authorisation is denied, the access_token parameter will not be present on the callback.
 *  To make requests with access to that user's data, add the access token into an authorisation header. The format should be: 
 
-    Authorization: OAuth <access_code>
+    Authorization: OAuth [access_code]
 
+[events]({{ site.baseurl }}/events.html)
