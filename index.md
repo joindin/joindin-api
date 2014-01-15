@@ -27,7 +27,11 @@ The service currenty supports JSON and HTML, using your ``Accept`` header to est
 
 If you want to use the data provided by this API from JavaScript, we offer support for JSONP. To use this, request json format data and pass an additional ``callback`` parameter containing the name of the function to call; the results will be the usual JSON but surrounded with the function you named.
 
-Where there are links to other resources, and for pagination, you will find those hypermedia links included in the response. The pagination links look something like this:
+Where there are links to other resources, and for pagination, you will find those hypermedia links included as part of the data structure. 
+
+## Meta Data
+
+Results will include a ``meta`` element which contains pagination links, and a count of the number of results that were returned.  If this request was made by an authenticated user, their user details will also be contained in the meta block.
 
     meta:
     count: 20
