@@ -1,3 +1,3 @@
 baseurl:     /joindin-api
-apiurl:      http://api.joindin.local
+apiurl:      http://api.joind.in
 exclude: [src, build, tools]
