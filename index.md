@@ -7,6 +7,17 @@ title: Joind.in API Documentation
 
 API documentation, examples and other information about the API for http://joind.in, the event feedback site.
 
+## Sections (see also: Howtos at the end of this page)
+
+[Events]({{ site.baseurl }})/events.html
+
+[Talks]({{ site.baseurl }})/talks.html
+
+[Users]({{ site.baseurl }})/users.html
+
+[Talk comments]({{ site.baseurl }})/talk_comments.html
+
+[Event comments]({{ site.baseurl }})/event_comments.html
 
 ## Overview
 
@@ -40,21 +51,7 @@ Results will include a ``meta`` element which contains pagination links, and a c
 
 ## Authentication
 
-You only need to authenticate if you're adding or editing data (including comments) or want to access private data. For most operations, particularly just retrieving information, authentication is not required. If you do want to authenticate, you must make all requests over SSL (i.e. to https://api.joind.in)
-
-This API uses OAuth2. To authenticate you will need the following:
-
-*  Every app must first register for an API key and give the callback that they will use to send users to. To register an API key, sign in to joind.in and visit: https://joind.in/user/apikey. These are associated with your user account, you can have as many as you like and you can delete them at any time.
-*  When you want a user to grant you access to their data, send them to: https://joind.in/user/oauth_allow with the following query variables on the URL:
-    -  ``api_key`` The key you registered for in step 1 (the secret isn't currently used)
-    -  ``callback`` The callback URL to send the user to afterwards. This can be a device URL and it must match the URL you registered in step 1 (exactly match)
-    -  ``state`` *(optional)* Whatever you pass in here will be passed back with the user when we redirect them back to you. Use it however you like
-*  When the user is sent to the redirect URL, it will contain one additional parameter: ``access_token``. Capture this and store it - this is a per-user token. If authorisation is denied, the access_token parameter will not be present on the callback.
-*  To make requests with access to that user's data, add the access token into an authorisation header. The format should be: 
-
-    Authorization: OAuth [access_code]
-
-[events]({{ site.baseurl }}/events.html)
+Read the [authentication howto]({{ site.baseurl }}/howto/authenticate.html) for detailed information on authenticating.
 
 ## Howtos
 

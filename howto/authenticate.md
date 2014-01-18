@@ -5,6 +5,8 @@ title: Joind.in API Documentation
 
 # How to Authenticate Against the Joind.in API
 
+You only need to authenticate if you're adding or editing data (including comments) or want to access private data. For most operations, particularly just retrieving information, authentication is not required. If you do want to authenticate, you must make all requests over SSL (i.e. to https://api.joind.in)
+
 ## tl;dr
 
 It's OAuth2.
