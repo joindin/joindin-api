@@ -99,7 +99,7 @@
     require_once "generator_data.class.php";
     require_once "generator.class.php";
 
-    $gen = new Generator(new Generator_Data());
+    $gen = new DataGenerator(new Generator_Data());
     echo $gen->generate();
     exit;
 
