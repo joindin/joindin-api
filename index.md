@@ -9,15 +9,11 @@ API documentation, examples and other information about the API for http://joind
 
 ## Sections (see also: Howtos at the end of this page)
 
-[Events]({{ site.baseurl }})/events.html
-
-[Talks]({{ site.baseurl }})/talks.html
-
-[Users]({{ site.baseurl }})/users.html
-
-[Talk comments]({{ site.baseurl }})/talk_comments.html
-
-[Event comments]({{ site.baseurl }})/event_comments.html
+*  [Events]({{ site.baseurl }}/events.html)
+*  [Talks]({{ site.baseurl }}/talks.html)
+*  [Users]({{ site.baseurl }}/users.html)
+*  [Talk comments]({{ site.baseurl }}/talk_comments.html)
+*  [Event comments]({{ site.baseurl }}/event_comments.html)
 
 ## Overview
 
