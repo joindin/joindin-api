@@ -59,3 +59,5 @@ This API uses OAuth2. To authenticate you will need the following:
 ## Howtos
 
 [users attending howto]({{ site.baseurl }}/howto/event_attending.html)
+
+[authentication howto]({{ site.baseurl }}/howto/authenticate.html)
