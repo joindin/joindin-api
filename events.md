@@ -23,11 +23,13 @@ open-cfps: http://{{ site.apiurl }}/v2.1/events?filter=cfp
 ## Filtering the Events Collection
 
 We currently support the following parameters for filtering events:
+
 *  ``filter``: as shown in the landing page example, this can take the following values:
-  - ``hot``: the "hot" events; these are soon/recent events, with priority given to events with the most attendees.  Usually the default view.
-  - ``upcoming``: future events, sorted by date with the soonest first
-  - ``past``: past events, sorted by date with the most recent first
-  - ``cfps``: events that currently have open CfPs
+
+   - ``hot``: the "hot" events; these are soon/recent events, with priority given to events with the most attendees.  Usually the default view.
+   - ``upcoming``: future events, sorted by date with the soonest first
+   - ``past``: past events, sorted by date with the most recent first
+   - ``cfps``: events that currently have open CfPs
 
 *  ``title``: Search for an event by title (exact match, e.g "PHP Benelux Conference 2014")
 *  ``stub``: Search for an event by its short name (exact match, e.g. "phpbnl14")
