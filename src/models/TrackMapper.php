@@ -1,6 +1,7 @@
 <?php
 
-class TrackMapper extends ApiMapper {
+class TrackMapper extends ApiMapper
+{
     public function getDefaultFields() {
         $fields = array(
             'track_name' => 'track_name',
@@ -48,7 +49,7 @@ class TrackMapper extends ApiMapper {
 
         // loop again and add links specific to this item
         if (is_array($list) && count($list)) {
-            foreach($results as $key => $row) {
+            foreach ($results as $key => $row) {
                 $list[$key]['uri'] = $base . '/' . $version . '/tracks/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/tracks/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['event_uri'] = $base . '/' . $version . '/events/' . $row['event_id'];
@@ -66,8 +67,8 @@ class TrackMapper extends ApiMapper {
         $sql = $this->getBasicSQL();
         $sql .= ' where t.ID = :track_id';
         $stmt = $this->_db->prepare($sql);
-        $response = $stmt->execute(array("talk_id" => $track_id));
-        if($response) {
+        $response = $stmt->execute(array("track_id" => $track_id));
+        if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
                 $retval = $this->transformResults($results, $verbose);
