@@ -119,6 +119,39 @@ class TalkMapper extends ApiMapper {
         return $retval;
     }
 
+    /**
+     * Set a user as attending for a talk
+     *
+     * @param int $talk_id The talk ID to update for
+     * @param int $user_id The user's ID
+     * @return bool
+     */
+    public function setUserAttendance($talk_id, $user_id)
+    {
+        $sql = 'insert into user_talk_attend (uid,tid) values (:uid, :tid)';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('uid' => $user_id, 'tid' => $talk_id));
+
+        return true;
+    }
+
+    /**
+     * Set a user as not attending a talk
+     *
+     * @param int $talk_id The talk ID
+     * @param int $user_id The user's ID
+     * @return bool
+     */
+    public function setUserNonAttendance($talk_id, $user_id)
+    {
+        $sql = 'delete from user_talk_attend where uid = :uid and tid = :tid';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('uid' => $user_id, 'tid' => $talk_id));
+        // we don't mind if the delete failed; the record didn't exist and that's fine
+
+        return true;
+    }
+
     public function getBasicSQL() {
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '

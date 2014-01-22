@@ -6,6 +6,8 @@ class TalksController extends ApiController {
             return $this->getAction($request, $db);
         } elseif($request->getVerb() == 'POST') {
             return $this->postAction($request, $db);
+        } elseif ($request->getVerb() == 'DELETE') {
+            return $this->deleteAction($request, $db);
         } else {
             throw new Exception("method not supported");
         }
@@ -50,47 +52,74 @@ class TalksController extends ApiController {
 	}
 
     protected function postAction($request, $db) {
+        if(!isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 400);
+        }
         $talk_id = $this->getItemId($request);
 
         if(isset($request->url_elements[4])) {
-            // sub elements
-            if($request->url_elements[4] == "comments") {
-                // no anonymous comments over the API
-                if(!isset($request->user_id) || empty($request->user_id)) {
-                    throw new Exception('You must log in to comment');
-                }
+            switch($request->url_elements[4]) {
+                case "comments":
+                    $comment = $request->getParameter('comment');
+                    if(empty($comment)) {
+                        throw new Exception('The field "comment" is required', 400);
+                    }
 
-                $comment = $request->getParameter('comment');
-                if(empty($comment)) {
-                    throw new Exception('The field "comment" is required', 400);
-                }
+                    $rating = $request->getParameter('rating');
+                    if(empty($rating)) {
+                        throw new Exception('The field "rating" is required', 400);
+                    }
 
-                $rating = $request->getParameter('rating');
-                if(empty($rating)) {
-                    throw new Exception('The field "rating" is required', 400);
-                }
+                    $private = ($request->getParameter('private') ? 1 : 0);
 
-                $private = ($request->getParameter('private') ? 1 : 0);
+                    // Get the API key reference to save against the comment
+                    $oauth_model = $request->getOauthModel($db);
+                    $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
-                // Get the API key reference to save against the comment
-                $oauth_model = $request->getOauthModel($db);
-                $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
+                    $comment_mapper = new TalkCommentMapper($db, $request);
+                    $data['user_id'] = $request->user_id;
+                    $data['talk_id'] = $talk_id;
+                    $data['comment'] = $comment;
+                    $data['rating'] = $rating;
+                    $data['private'] = $private;
+                    $data['source'] = $consumer_name;
 
-                $comment_mapper = new TalkCommentMapper($db, $request);
-                $data['user_id'] = $request->user_id;
-                $data['talk_id'] = $talk_id;
-                $data['comment'] = $comment;
-                $data['rating'] = $rating;
-                $data['private'] = $private;
-                $data['source'] = $consumer_name;
-
-                $new_id = $comment_mapper->save($data);
-                $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
-                header("Location: " . $uri, true, 201);
-                exit;
+                    $new_id = $comment_mapper->save($data);
+                    $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
+                    header("Location: " . $uri, true, 201);
+                    exit;
+                case 'attending':
+                    // the body of this request is completely irrelevant
+                    // The logged in user *is* attending the talk.  Use DELETE to unattend
+                    $talk_mapper = new TalkMapper($db, $request);
+                    $talk_mapper->setUserAttendance($talk_id, $request->user_id);
+                    header("Location: " . $request->base . $request->path_info, NULL, 201);
+                    exit;
+                default:
+                    throw new Exception("Operation not supported, sorry", 404);
             }
         } else {
             throw new Exception("method not yet supported - sorry");
+        }
+    }
+
+    public function deleteAction($request, $db) {
+        if(!isset($request->user_id)) {
+            throw new Exception("You must be logged in to delete data", 400);
+        }
+        if(isset($request->url_elements[4])) {
+            switch($request->url_elements[4]) {
+                case 'attending':
+                    $talk_id = $this->getItemId($request);
+                    $talk_mapper = new TalkMapper($db, $request);
+                    $talk_mapper->setUserNonAttendance($talk_id, $request->user_id);
+                    header("Location: " . $request->base . $request->path_info, NULL, 200);
+                    exit;
+                default:
+                    throw new Exception("Operation not supported, sorry", 404);
+            }
+        } else {
+            throw new Exception("Operation not supported, sorry", 404);
         }
     }
 }
