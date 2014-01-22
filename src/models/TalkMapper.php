@@ -104,11 +104,26 @@ class TalkMapper extends ApiMapper {
         return false;
     }
 
+    /**
+     * User attending a talk?
+     *
+     * @param int $talk_id the talk to check
+     * @param int $user_id the user you're interested in
+     * @return array
+     */
+    public function getUserAttendance($talk_id, $user_id)
+    {
+        $retval = array();
+        $retval['is_attending'] = $this->isUserAttendingTalk($talk_id, $user_id);
+
+        return $retval;
+    }
+
     public function getBasicSQL() {
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
             . '(select get_talk_rating(t.ID)) as avg_rating, '
-            . 'CASE 
+            . 'CASE
                 WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                END as comments_enabled, '
@@ -247,6 +262,22 @@ class TalkMapper extends ApiMapper {
         return $talk_id;
     }
 
+    /**
+     * Is this user attending this talk?
+     *
+     * @param int $talk_id the talk of interest
+     * @param int $user_id which user (often the current one)
+     * @return bool
+     */
+    protected function isUserAttendingTalk($talk_id, $user_id)
+    {
+        $sql = "select * from user_talk_attend where tid = :talk_id and uid = :user_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("talk_id" => $talk_id, "user_id" => $user_id));
+        $result = $stmt->fetch();
+
+        return is_array($result);
+    }
 
     /**
      * This talk has no stub, so create, store and return one

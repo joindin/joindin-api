@@ -23,10 +23,15 @@ class TalksController extends ApiController {
         $resultsperpage = $this->getResultsPerPage($request);
 
         if(isset($request->url_elements[4])) {
-            // sub elements
-            if($request->url_elements[4] == "comments") {
-                $comment_mapper = new TalkCommentMapper($db, $request);
-                $list = $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
+            switch ($request->url_elements[4]) {
+                case 'comments':
+                    $comment_mapper = new TalkCommentMapper($db, $request);
+                    $list = $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
+                    break;
+                case 'attending':
+                    $mapper = new TalkMapper($db, $request);
+                    $list = $mapper->getUserAttendance($talk_id, $request->user_id);
+                    break;
             }
         } else {
             if($talk_id) {
