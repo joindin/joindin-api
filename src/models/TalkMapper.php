@@ -77,6 +77,7 @@ class TalkMapper extends ApiMapper {
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['website_uri'] = 'http://joind.in/talk/view/' . $row['ID'];
                 $list[$key]['comments_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '/comments';
+                $list[$key]['attending_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '/attending';
                 $list[$key]['verbose_comments_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '/comments?verbose=yes';
                 $list[$key]['event_uri'] = $base . '/' . $version . '/events/' . $row['event_id'];
             }
