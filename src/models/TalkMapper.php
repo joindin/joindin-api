@@ -237,7 +237,9 @@ class TalkMapper extends ApiMapper {
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
             . '(select get_talk_rating(t.ID)) as avg_rating, '
-            . 'CASE 
+            . '(select count(*) from user_talk_attend where user_talk_attend.tid = t.ID)
+                as attendee_count, '
+            . 'CASE
                 WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                END as comments_enabled '
@@ -245,6 +247,7 @@ class TalkMapper extends ApiMapper {
             . 'inner join events e on e.ID = t.event_id '
             . 'inner join lang l on l.ID = t.lang '
             . 'left join talk_speaker ts on t.id = ts.talk_id '
+            . 'left join user_talk_attend uta on (uta.tid = t.ID) '
             . 'where t.active = 1 and '
             . 'e.active = 1 and '
             . '(e.pending = 0 or e.pending is NULL) and '
