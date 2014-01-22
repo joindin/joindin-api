@@ -12,7 +12,9 @@ class TalkMapper extends ApiMapper {
             'stub' => 'stub',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
-            'comment_count' => 'comment_count'
+            'comment_count' => 'comment_count',
+            'attending' => 'attending',
+            'attendee_count' => 'attendee_count',
             );
         return $fields;
     }
@@ -30,7 +32,9 @@ class TalkMapper extends ApiMapper {
             'stub' => 'stub',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
-            'comment_count' => 'comment_count'
+            'comment_count' => 'comment_count',
+            'attending' => 'attending',
+            'attendee_count' => 'attendee_count',
             );
         return $fields;
     }
@@ -64,6 +68,12 @@ class TalkMapper extends ApiMapper {
                 // generate and store an inflected talk title if there isn't one
                 if(empty($row['url_friendly_talk_title'])) {
                     $list[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle($row['talk_title'], $row['ID']);
+                }
+
+                if(isset($this->_request->user_id)) {
+                    $list[$key]['attending'] = $this->isUserAttendingTalk($row['ID'], $this->_request->user_id);
+                } else {
+                    $list[$key]['attending'] = false;
                 }
 
                 // if the stub is empty, we need to generate one and store it
@@ -157,6 +167,8 @@ class TalkMapper extends ApiMapper {
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
             . '(select get_talk_rating(t.ID)) as avg_rating, '
+            . '(select count(*) from user_talk_attend where user_talk_attend.tid = t.ID)
+                as attendee_count, '
             . 'CASE
                 WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
@@ -167,6 +179,7 @@ class TalkMapper extends ApiMapper {
             . 'inner join lang l on l.ID = t.lang '
             . 'join talk_cat tc on tc.talk_id = t.ID '
             . 'join categories c on c.ID = tc.cat_id '
+            . 'left join user_talk_attend uta on (uta.tid = t.ID) '
             . 'where t.active = 1 and '
             . 'e.active = 1 and '
             . '(e.pending = 0 or e.pending is NULL) and '
