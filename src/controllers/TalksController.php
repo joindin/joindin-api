@@ -30,9 +30,9 @@ class TalksController extends ApiController {
                     $comment_mapper = new TalkCommentMapper($db, $request);
                     $list = $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
                     break;
-                case 'attending':
+                case 'starred':
                     $mapper = new TalkMapper($db, $request);
-                    $list = $mapper->getUserAttendance($talk_id, $request->user_id);
+                    $list = $mapper->getUserStarred($talk_id, $request->user_id);
                     break;
             }
         } else {
@@ -92,7 +92,7 @@ class TalksController extends ApiController {
                     // the body of this request is completely irrelevant
                     // The logged in user *is* attending the talk.  Use DELETE to unattend
                     $talk_mapper = new TalkMapper($db, $request);
-                    $talk_mapper->setUserAttendance($talk_id, $request->user_id);
+                    $talk_mapper->setUserStarred($talk_id, $request->user_id);
                     header("Location: " . $request->base . $request->path_info, NULL, 201);
                     exit;
                 default:
@@ -112,7 +112,7 @@ class TalksController extends ApiController {
                 case 'attending':
                     $talk_id = $this->getItemId($request);
                     $talk_mapper = new TalkMapper($db, $request);
-                    $talk_mapper->setUserNonAttendance($talk_id, $request->user_id);
+                    $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
                     header("Location: " . $request->base . $request->path_info, NULL, 200);
                     exit;
                 default:
