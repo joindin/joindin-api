@@ -323,9 +323,9 @@ function checkTalk(talk) {
   expect(typeof talk.comment_count).toBe('number');
   expect(talk.type).toBeDefined();
   expect(typeof talk.type).toBe('string');
-  expect(talk.attending).toBeDefined();
-  expect(talk.attendee_count).toBeDefined();
-  expect(typeof talk.attendee_count).toBe('number');
+  expect(talk.starred).toBeDefined();
+  expect(talk.starred_count).toBeDefined();
+  expect(typeof talk.starred_count).toBe('number');
 }
 
 function checkUser(user) {
