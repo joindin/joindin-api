@@ -46,6 +46,10 @@ class EventsController extends ApiController {
                             $mapper = new EventMapper($db, $request);
                             $list = $mapper->getUserAttendance($event_id, $request->user_id);
                             break;
+                case 'tracks':
+                            $mapper = new TrackMapper($db, $request);
+                            $list = $mapper->getTracksByEventId($event_id, $resultsperpage, $start, $request, $verbose);
+                            break;
                 default:
                             throw new InvalidArgumentException('Unknown Subrequest', 404);
                             break;
