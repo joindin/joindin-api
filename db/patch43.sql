@@ -1,6 +1,7 @@
--- Add an index to aid performance
+-- add a unique constraint on the event stub
 
-alter table talk_comments add index idx_userid (user_id);
+update events set event_stub = null where event_stub = '';
+alter table events add unique index idx_unique_stub (event_stub);
 
 INSERT INTO patch_history SET patch_number = 43;
 
