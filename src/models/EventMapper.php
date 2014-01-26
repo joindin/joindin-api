@@ -113,8 +113,7 @@ class EventMapper extends ApiMapper
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                END as comments_enabled '
-            . 'from events '
-            . 'left join user_attend ua on (ua.eid = events.ID) ';
+            . 'from events ';
 
         $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
@@ -124,9 +123,6 @@ class EventMapper extends ApiMapper
         if ($where) {
             $sql .= ' and ' . $where;
         }
-
-        // group by for the multiple attending recipes; only ever want to see each event once
-        $sql .= ' group by events.ID ';
 
         // order by
         if ($order) {
@@ -458,12 +454,43 @@ class EventMapper extends ApiMapper
      */
     public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false) 
     {
-        $where = ' ua.uid = ' . (int)$user_id;
-        $order = ' events.event_start desc ';
-        $results = $this->getEvents($resultsperpage, $start, $where, $order);
-        if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
+        $data = array("user_id" => (int)$user_id);
+        $sql = 'select events.*, '
+            . '(select count(*) from user_attend where user_attend.eid = events.ID) 
+                as attendee_count, '
+            . '(select count(*) from event_comments where 
+                event_comments.event_id = events.ID) 
+                as event_comments_count, '
+            . 'abs(datediff(from_unixtime(events.event_start), 
+                from_unixtime('.mktime(0, 0, 0).'))) as score, '
+            . 'CASE 
+                WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
+                ELSE 0
+               END as comments_enabled '
+            . 'from events '
+            . 'left join user_attend ua on (ua.eid = events.ID) ';
+
+        $sql .= 'where active = 1 and '
+            . '(pending = 0 or pending is NULL) and '
+            . 'private <> "y" and '
+            . ' ua.uid = :user_id';
+
+        // group by for the multiple attending recipes; only ever want to see each event once
+        $sql .= ' group by events.ID ';
+
+        $sql .= ' order by events.event_start desc ';
+
+        // limit clause
+        $sql .= $this->buildLimit($resultsperpage, $start);
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute($data);
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if(is_array($results)) {
+                $retval = $this->transformResults($results, $verbose);
+                return $retval;
+            }
         }
         return false;
     }
