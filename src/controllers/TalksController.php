@@ -88,7 +88,7 @@ class TalksController extends ApiController {
                     $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
                     header("Location: " . $uri, true, 201);
                     exit;
-                case 'attending':
+                case 'starred':
                     // the body of this request is completely irrelevant
                     // The logged in user *is* attending the talk.  Use DELETE to unattend
                     $talk_mapper = new TalkMapper($db, $request);
