@@ -1,19 +1,7 @@
---
--- Table structure for table `user_talk_star`
---
+-- add a unique constraint on the event stub
 
-DROP TABLE IF EXISTS `user_talk_star`;
-CREATE TABLE `user_talk_star` (
-  `uid` int(11) NOT NULL,
-  `tid` int(11) NOT NULL,
-  `ID` int(11) NOT NULL auto_increment,
-  PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-ALTER TABLE user_talk_star ADD INDEX idx_talk (tid);
-
--- Add a unique constraint so that each user can only star each talk once
-
-ALTER TABLE user_talk_star ADD UNIQUE INDEX idx_unique_user_talk (uid, tid);
+update events set event_stub = null where event_stub = '';
+alter table events add unique index idx_unique_stub (event_stub);
 
 INSERT INTO patch_history SET patch_number = 43;
+
