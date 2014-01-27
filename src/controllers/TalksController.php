@@ -109,7 +109,7 @@ class TalksController extends ApiController {
         }
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
-                case 'attending':
+                case 'starred':
                     $talk_id = $this->getItemId($request);
                     $talk_mapper = new TalkMapper($db, $request);
                     $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
