@@ -27,7 +27,8 @@ class EventMapper extends ApiMapper
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
             'event_comments_count' => 'event_comments_count',
-            'icon' => 'event_icon'
+            'icon' => 'event_icon',
+            'location' => 'event_loc'
             );
         return $fields;
     }
