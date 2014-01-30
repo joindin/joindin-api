@@ -95,6 +95,19 @@ frisby.create('Initial discovery')
                     }
 					      }).toss();
 
+                frisby.create('Tracks at ' + evt.name)
+                    .get(evt.tracks_uri + '?resultsperpage=3')
+                  .expectStatus(200)
+                  .expectHeader("content-type", "application/json; charset=utf8")
+                  .afterJSON(function(evTracks) {
+                    if(typeof evTracks.tracks == 'object') {
+                      for(var i in evTracks.tracks) {
+                        var track = evTracks.tracks[i];
+                        checkTrack(track);
+                      }
+                    }
+					      }).toss();
+
               }).toss();
           }
   		  }).toss();
@@ -323,6 +336,9 @@ function checkTalk(talk) {
   expect(typeof talk.comment_count).toBe('number');
   expect(talk.type).toBeDefined();
   expect(typeof talk.type).toBe('string');
+  expect(talk.starred).toBeDefined();
+  expect(talk.starred_count).toBeDefined();
+  expect(typeof talk.starred_count).toBe('number');
 }
 
 function checkUser(user) {
@@ -346,4 +362,19 @@ function checkUser(user) {
     expect(typeof user.talks_uri).toBe('string');
     expect(user.attended_events_uri).toBeDefined();
     expect(typeof user.attended_events_uri).toBe('string');
+}
+
+function checkTrack(track) {
+    expect(track.track_name).toBeDefined();
+    expect(typeof track.track_name).toBe('string');
+    expect(track.track_description).toBeDefined();
+    expect(typeof track.track_description).toBe('string');
+    expect(track.talks_count).toBeDefined();
+    expect(typeof track.talks_count).toBe('number');
+    expect(track.uri).toBeDefined();
+    expect(typeof track.uri).toBe('string');
+    expect(track.verbose_uri).toBeDefined();
+    expect(typeof track.verbose_uri).toBe('string');
+    expect(track.event_uri).toBeDefined();
+    expect(typeof track.event_uri).toBe('string');
 }

@@ -12,7 +12,9 @@ class TalkMapper extends ApiMapper {
             'stub' => 'stub',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
-            'comment_count' => 'comment_count'
+            'comment_count' => 'comment_count',
+            'starred' => 'starred',
+            'starred_count' => 'starred_count',
             );
         return $fields;
     }
@@ -30,7 +32,9 @@ class TalkMapper extends ApiMapper {
             'stub' => 'stub',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
-            'comment_count' => 'comment_count'
+            'comment_count' => 'comment_count',
+            'starred' => 'starred',
+            'starred_count' => 'starred_count',
             );
         return $fields;
     }
@@ -66,6 +70,12 @@ class TalkMapper extends ApiMapper {
                     $list[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle($row['talk_title'], $row['ID']);
                 }
 
+                if(isset($this->_request->user_id)) {
+                    $list[$key]['starred'] = $this->hasUserStarredTalk($row['ID'], $this->_request->user_id);
+                } else {
+                    $list[$key]['starred'] = false;
+                }
+
                 // if the stub is empty, we need to generate one and store it
                 if(empty($row['stub'])) {
                     $list[$key]['stub'] = $this->generateStub($row['ID']);
@@ -77,6 +87,7 @@ class TalkMapper extends ApiMapper {
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['website_uri'] = 'http://joind.in/talk/view/' . $row['ID'];
                 $list[$key]['comments_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '/comments';
+                $list[$key]['starred_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '/starred';
                 $list[$key]['verbose_comments_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '/comments?verbose=yes';
                 $list[$key]['event_uri'] = $base . '/' . $version . '/events/' . $row['event_id'];
             }
@@ -104,11 +115,61 @@ class TalkMapper extends ApiMapper {
         return false;
     }
 
+    /**
+     * User attending a talk?
+     *
+     * @param int $talk_id the talk to check
+     * @param int $user_id the user you're interested in
+     * @return array
+     */
+    public function getUserStarred($talk_id, $user_id)
+    {
+        $retval = array();
+        $retval['has_starred'] = $this->hasUserStarredTalk($talk_id, $user_id);
+
+        return $retval;
+    }
+
+    /**
+     * Set a user as starring a talk
+     *
+     * @param int $talk_id The talk ID to update
+     * @param int $user_id The user's ID
+     * @return bool
+     */
+    public function setUserStarred($talk_id, $user_id)
+    {
+        $sql = 'insert into user_talk_star (uid,tid) values (:uid, :tid)';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('uid' => $user_id, 'tid' => $talk_id));
+
+        return true;
+    }
+
+    /**
+     * Set a user as not starring a talk
+     *
+     * @param int $talk_id The talk ID
+     * @param int $user_id The user's ID
+     * @return bool
+     */
+    public function setUserNonStarred($talk_id, $user_id)
+    {
+        $sql = 'delete from user_talk_star where uid = :uid and tid = :tid';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('uid' => $user_id, 'tid' => $talk_id));
+        // we don't mind if the delete failed; the record didn't exist and that's fine
+
+        return true;
+    }
+
     public function getBasicSQL() {
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
             . '(select get_talk_rating(t.ID)) as avg_rating, '
-            . 'CASE 
+            . '(select count(*) from user_talk_star where user_talk_star.tid = t.ID)
+                as starred_count, '
+            . 'CASE
                 WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                END as comments_enabled, '
@@ -175,7 +236,9 @@ class TalkMapper extends ApiMapper {
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
             . '(select get_talk_rating(t.ID)) as avg_rating, '
-            . 'CASE 
+            . '(select count(*) from user_talk_star where user_talk_star.tid = t.ID)
+                as starred_count, '
+            . 'CASE
                 WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                END as comments_enabled '
@@ -247,6 +310,22 @@ class TalkMapper extends ApiMapper {
         return $talk_id;
     }
 
+    /**
+     * Is this user attending this talk?
+     *
+     * @param int $talk_id the talk of interest
+     * @param int $user_id which user (often the current one)
+     * @return bool
+     */
+    protected function hasUserStarredTalk($talk_id, $user_id)
+    {
+        $sql = "select * from user_talk_star where tid = :talk_id and uid = :user_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("talk_id" => $talk_id, "user_id" => $user_id));
+        $result = $stmt->fetch();
+
+        return is_array($result);
+    }
 
     /**
      * This talk has no stub, so create, store and return one
