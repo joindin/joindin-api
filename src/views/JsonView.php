@@ -13,7 +13,11 @@ class JsonView extends ApiView {
     public function buildOutput ($content) {
         $content = $this->addCount($content);
         // need to work out which fields should have been numbers
-        // Don't use JSON_NUMERIC_CHECK because it eats talk stubs
+        // Don't use JSON_NUMERIC_CHECK because it eats things (e.g. talk stubs)
+
+        // Specify a list of fields to NOT convert to numbers
+        $this->string_fields = array("stub", "track_name");
+
         $output = $this->numeric_check($content);
         $retval = json_encode($output);
         return $retval;
@@ -29,8 +33,7 @@ class JsonView extends ApiView {
                 $output[$key] = $this->numeric_check($value);
             } else {
 
-                // stubs are hex, but can look like scientific notation
-                if(is_numeric($value) && $key != "stub") {
+                if(is_numeric($value) && !in_array($key, $this->string_fields)) {
                     $output[$key] = (float)$value;
                 } else {
                     $output[$key] = $value;
