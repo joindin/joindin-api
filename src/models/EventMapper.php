@@ -119,7 +119,7 @@ class EventMapper extends ApiMapper
 
         $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
-            . 'private <> "y" ';
+            . '(private <> "y" OR private IS NULL) ';
 
         // where
         if ($where) {
