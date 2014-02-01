@@ -281,6 +281,11 @@ class EventsController extends ApiController {
                 // now set the current user as host and attending
                 $event_mapper->addUserAsHost($event_id, $request->user_id);
                 $event_mapper->setUserAttendance($event_id, $request->user_id);
+
+                // redirect to event listing; a pending event won't be visible
+                header("Location: " . $request->base . $request->path_info, NULL, 201);
+                exit;
+
             }
 
         }
