@@ -600,4 +600,59 @@ class EventMapper extends ApiMapper
 
         return false;
     }
+
+    /**
+     * Submit an event for approval via the API
+     *
+     * Accepts a subset of event fields
+     */
+    public function createEvent($event) {
+        $sql = "insert into events set event_name = :name,
+            event_desc = :description, event_start = :start_date,
+            event_end = :end_date, event_tz_cont = :tz_continent,
+            event_tz_place = :tz_place ";
+
+        // doesn't appear on the web1 pending list unless active = 0
+        $sql .= ", active=0 ";
+
+        // optional fields included if present
+        if(isset($event['href'])) {
+            $sql .= ", event_href = :href ";
+        }
+        if(isset($event['cfp_url'])) {
+            $sql .= ", event_cfp_url = :cfp_url ";
+        }
+
+        $sql .= ", pending = 1";
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute($event);
+        if($result) {
+            $event_id = $this->_db->lastInsertId();
+            return $event_id;
+        }
+        return false;
+
+    }
+
+    /**
+     * Add a user as an admin on an event
+     */
+    public function addUserAsHost($event_id, $user_id) {
+        $sql = "insert into user_admin set rtype = 'event', rid = :event_id,
+            uid = :user_id";
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
+        return $result;
+    }
+
+    /**
+     * Remove a user's admin rights to a specific event
+     */
+    public function removeUserAsHost($event_id, $user_id) {
+        $sql = "delete from user_admin where rtype = 'event' and rid = :event_id 
+            and uid = :user_id";
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
+        return $result;
+    }
 }
