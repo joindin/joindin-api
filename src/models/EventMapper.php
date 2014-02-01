@@ -602,11 +602,12 @@ class EventMapper extends ApiMapper
     }
 
     /**
-     * Submit an event for approval via the API
+     * Submit an event for approval via the API, optionally allowing 
+     * callers to mark the event as automatically approved
      *
      * Accepts a subset of event fields
      */
-    public function createEvent($event) {
+    public function createEvent($event, $auto_approve = false) {
         $sql = "insert into events set event_name = :name,
             event_desc = :description, event_start = :start_date,
             event_end = :end_date, event_tz_cont = :tz_continent,
@@ -623,7 +624,10 @@ class EventMapper extends ApiMapper
             $sql .= ", event_cfp_url = :cfp_url ";
         }
 
-        $sql .= ", pending = 1";
+        if(!$auto_approve) {
+            $sql .= ", pending = 1";
+        }
+
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute($event);
         if($result) {

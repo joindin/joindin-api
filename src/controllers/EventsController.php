@@ -268,8 +268,15 @@ class EventsController extends ApiController {
             if($errors) {
                 throw new Exception(implode(". ", $errors), 400);
             } else {
+                // site admins get their events auto approved
+                $user_mapper= new UserMapper($db, $request);
                 $event_mapper = new EventMapper($db, $request);
-                $event_id = $event_mapper->createEvent($event);
+
+                if($user_mapper->isSiteAdmin($request->user_id)) {
+                    $event_id = $event_mapper->createEvent($event, true);
+                } else {
+                    $event_id = $event_mapper->createEvent($event);
+                }
 
                 // now set the current user as host and attending
                 $event_mapper->addUserAsHost($event_id, $request->user_id);
