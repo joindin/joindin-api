@@ -24,6 +24,8 @@ talks:
         average_rating: 3
         comments_enabled: 1
         comment_count: 2
+        starred: false
+        starred_count: 3
         speakers:
             0:
                 speaker_name: Jeffrey Montgomery
@@ -34,6 +36,7 @@ talks:
         comments_uri: {{ site.apiurl }}/v2.1/talks/76/comments
         verbose_comments_uri: {{ site.apiurl }}/v2.1/talks/76/comments?verbose=yes
         event_uri: {{ site.apiurl }}/v2.1/events/3
+        starred_uri: {{ site.apiurl }}/v2.1/talks/76/starred
 meta:
     count: 1
     this_page: {{ site.apiurl }}/v2.1/talks/76?start=0&resultsperpage=20
@@ -58,6 +61,8 @@ talks:
         average_rating: 3
         comments_enabled: 1
         comment_count: 2
+        starred: false
+        starred_count: 3
         speakers:
             0:
                 speaker_name: Jeffrey Montgomery
@@ -68,6 +73,7 @@ talks:
         comments_uri: http://api.joindin.local/v2.1/talks/76/comments
         verbose_comments_uri: http://api.joindin.local/v2.1/talks/76/comments?verbose=yes
         event_uri: http://api.joindin.local/v2.1/events/3
+        starred_uri: {{ site.apiurl }}/v2.1/talks/76/starred
 meta:
     count: 1
     this_page: http://api.joindin.local/v2.1/talks/76?verbose=yes&start=0&resultsperpage=20
@@ -89,6 +95,8 @@ The following fields can be found in a talk record, they are described below:
 *  ``average_rating``: A calculcated field showing the average of ratings on this talk (excludes anonymous ratings)
 *  ``comments_enabled``: Whether comments are currently being accepted on this talk
 *  ``comment_count``: Calculated field showing how many comments were made on this talk
+*  ``starred``: If the user is authenticated, boolean value indicating whether the user has starred this talk or not.  For unauthenticated users, this field will always be false.
+*  ``starred_count``: Calculated field showing how many times this talk has been starred.
 *  ``speakers``: An array of the speakers giving the session.  If the speaker has claimed the talk, this includes a speaker_uri which points to their user record.  *See also* [users]({{ site.baseurl}}/users.html)
 *  ``tracks``: An array of the tracks that this talk is in, if any.  Just shows track labels
 *  ``website_uri``: The page for this talk on the main joind.in website
@@ -102,6 +110,7 @@ The following links are available in the talk data format:
 *  ``comments_uri``: A collection of all talk comments on this talk, sorted by date order with the oldest first.   *See also* [talk comments]({{ site.baseurl }}/talks_comments.html) 
 *  ``verbose_comments_uri``: A collection of talk comments on this talk, returned in verbose format and chronological order, oldest first.   *See also* [talk comments]({{ site.baseurl }}/talk_comments.html) 
 *  ``event_uri``:  Where to find the event that this talk was given at.
+*  ``starred_uri``: POST/DELETE to this URI as an authenticated user to update this talk's starred status.  You could use this field to indicate favourited talks, planned attendance or similar (current starred status is in the ``starred`` field).
 
 ## Creating New Talks
 
