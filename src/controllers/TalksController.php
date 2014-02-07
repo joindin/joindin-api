@@ -30,11 +30,7 @@ class TalksController extends ApiController {
             }
         } else {
             if($talk_id) {
-                $mapper = new TalkMapper($db, $request);
-                $list = $mapper->getTalkById($talk_id, $verbose);
-                if(false === $list) {
-                    throw new Exception('Talk not found', 404);
-                }
+                $this->getTalkById($db, $request, $talk_id, $verbose);
             } else {
                 // listing makes no sense
                 throw new Exception('Generic talks listing not supported', 405);
@@ -72,11 +68,27 @@ class TalksController extends ApiController {
                 $data['rating'] = $rating;
 
                 $comment_mapper->save($data);
+
+                $talk = $this->getTalkById($db, $request, $talk_id, false);
+                $emailService = new TalkCommentEmailService($talk, $comment);
+                $emailService->sendEmail();
+
                 header("Location: " . $request->base . $request->path_info, true, 201);
                 exit;
             }
         } else {
             throw new Exception("method not yet supported - sorry");
         }
+    }
+
+    protected function getTalkById($db, $request, $talk_id, $verbose)
+    {
+        $mapper = new TalkMapper($db, $request);
+        $list = $mapper->getTalkById($talk_id, $verbose);
+        if(false === $list) {
+            throw new Exception('Talk not found', 404);
+        }
+
+        return $list;
     }
 }
