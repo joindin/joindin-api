@@ -239,7 +239,6 @@ class EventsController extends ApiController {
                     $event['start_date'] = $start_date->format('U');
                     $event['end_date'] = $end_date->format('U');
                 } catch(Exception $e) {
-                    echo $e->getMessage();
                     // the time zone isn't right
                     $errors[] = "The fields 'tz_continent' and 'tz_place' must be supplied and valid (e.g. Europe and London)";
                 }
