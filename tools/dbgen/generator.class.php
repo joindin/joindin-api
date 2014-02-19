@@ -439,12 +439,12 @@ class DataGenerator {
     }
 
     protected function generateUniqueStub($eventName) {
-        $soundex = soundex($eventName);
-        $stub = $soundex;
+        $key = substr(md5($eventName.mt_rand()), 0, 5);
+        $stub = $key;
         $index = 0;
 
         while (in_array($stub, $this->_existing_stubs)) {
-            $stub = $soundex . '_' . $index;
+            $stub = $key . '_' . $index;
             $index++;
         }
         $this->_existing_stubs[] = $stub;
