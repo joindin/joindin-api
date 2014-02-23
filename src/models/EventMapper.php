@@ -613,9 +613,6 @@ class EventMapper extends ApiMapper
             event_end = :end_date, event_tz_cont = :tz_continent,
             event_tz_place = :tz_place ";
 
-        // doesn't appear on the web1 pending list unless active = 0
-        $sql .= ", active=0 ";
-
         // optional fields included if present
         if(isset($event['href'])) {
             $sql .= ", event_href = :href ";
@@ -624,8 +621,12 @@ class EventMapper extends ApiMapper
             $sql .= ", event_cfp_url = :cfp_url ";
         }
 
+        // the active opposite to pending to get it on the right web1 lists
+        $sql .= ", private=0 ";
         if(!$auto_approve) {
-            $sql .= ", pending = 1";
+            $sql .= ", pending = 1, active=0";
+        } else {
+            $sql .= ", active = 1";
         }
 
         $stmt   = $this->_db->prepare($sql);
