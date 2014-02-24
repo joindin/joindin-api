@@ -24,6 +24,7 @@ class TalksController extends ApiController {
         $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
+        $list = array();
         if(isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'comments':
@@ -37,8 +38,7 @@ class TalksController extends ApiController {
             }
         } else {
             if($talk_id) {
-                $mapper = new TalkMapper($db, $request);
-                $list = $mapper->getTalkById($talk_id, $verbose);
+                $list = $this->getTalkById($db, $request, $talk_id, $verbose);
                 if(false === $list) {
                     throw new Exception('Talk not found', 404);
                 }
@@ -85,6 +85,9 @@ class TalksController extends ApiController {
                     $data['source'] = $consumer_name;
 
                     $new_id = $comment_mapper->save($data);
+                    $talk = $this->getTalkById($db, $request, $talk_id);
+                    $emailService = new TalkCommentEmailService($talk, $comment);
+                    $emailService->sendEmail();
                     $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
                     header("Location: " . $uri, true, 201);
                     exit;
@@ -122,4 +125,16 @@ class TalksController extends ApiController {
             throw new Exception("Operation not supported, sorry", 404);
         }
     }
+
+    protected function getTalkById($db, $request, $talk_id, $verbose = false)
+    {
+        $mapper = new TalkMapper($db, $request);
+        $list = $mapper->getTalkById($talk_id, $verbose);
+        if(false === $list) {
+            throw new Exception('Talk not found', 404);
+        }
+
+        return $list;
+    }
+
 }
