@@ -119,7 +119,7 @@ class EventMapper extends ApiMapper
 
         $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
-            . 'private <> "y" ';
+            . '(private <> "y" OR private IS NULL) ';
 
         // where
         if ($where) {
@@ -599,5 +599,65 @@ class EventMapper extends ApiMapper
         }
 
         return false;
+    }
+
+    /**
+     * Submit an event for approval via the API, optionally allowing 
+     * callers to mark the event as automatically approved
+     *
+     * Accepts a subset of event fields
+     */
+    public function createEvent($event, $auto_approve = false) {
+        $sql = "insert into events set event_name = :name,
+            event_desc = :description, event_start = :start_date,
+            event_end = :end_date, event_tz_cont = :tz_continent,
+            event_tz_place = :tz_place ";
+
+        // optional fields included if present
+        if(isset($event['href'])) {
+            $sql .= ", event_href = :href ";
+        }
+        if(isset($event['cfp_url'])) {
+            $sql .= ", event_cfp_url = :cfp_url ";
+        }
+
+        // the active opposite to pending to get it on the right web1 lists
+        $sql .= ", private=0 ";
+        if(!$auto_approve) {
+            $sql .= ", pending = 1, active=0";
+        } else {
+            $sql .= ", active = 1";
+        }
+
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute($event);
+        if($result) {
+            $event_id = $this->_db->lastInsertId();
+            return $event_id;
+        }
+        return false;
+
+    }
+
+    /**
+     * Add a user as an admin on an event
+     */
+    public function addUserAsHost($event_id, $user_id) {
+        $sql = "insert into user_admin set rtype = 'event', rid = :event_id,
+            uid = :user_id";
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
+        return $result;
+    }
+
+    /**
+     * Remove a user's admin rights to a specific event
+     */
+    public function removeUserAsHost($event_id, $user_id) {
+        $sql = "delete from user_admin where rtype = 'event' and rid = :event_id 
+            and uid = :user_id";
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
+        return $result;
     }
 }
