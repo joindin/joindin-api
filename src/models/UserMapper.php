@@ -43,7 +43,7 @@ class UserMapper extends ApiMapper
 
     public function getUserById($user_id, $verbose = false) 
     {
-        $results = $this->getUsers(1, 0, 'ID=' . (int)$user_id, null);
+        $results = $this->getUsers(1, 0, 'user.ID=' . (int)$user_id, null);
         if ($results) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
@@ -56,12 +56,16 @@ class UserMapper extends ApiMapper
     {
         $sql = 'select user.* '
             . 'from user '
+            . 'left join user_attend ua on (ua.uid = user.ID) '
             . 'where active = 1 ';
         
         // where
         if ($where) {
             $sql .= ' and ' . $where;
         }
+
+        // group by because of adding the user_attend join
+        $sql .= ' group by user.ID ';
 
         // order by
         if ($order) {
@@ -85,6 +89,17 @@ class UserMapper extends ApiMapper
     {
         $order = 'user.ID';
         $results = $this->getUsers($resultsperpage, $start, null, $order);
+        if (is_array($results)) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+    public function getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose)
+    {
+        $where = "ua.eid = " . $event_id;
+        $results = $this->getUsers($resultsperpage, $start, $where);
         if (is_array($results)) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
@@ -121,7 +136,7 @@ class UserMapper extends ApiMapper
 
 
     public function isSiteAdmin($user_id) {
-        $results = $this->getUsers(1, 0, 'ID=' . (int)$user_id, null);
+        $results = $this->getUsers(1, 0, 'user.ID=' . (int)$user_id, null);
         if($results[0]['admin'] == 1) {
             return true;
         }

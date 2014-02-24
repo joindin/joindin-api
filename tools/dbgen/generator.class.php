@@ -7,17 +7,19 @@ require_once "generator_data.interface.php";
  * The "caching" is pretty bad as well. When I'm running the "massive" parameters, the system uses 600M+ of memory.
  */
 
-class Generator {
-    protected $_data;       	// Configuration data
-    protected $_cache;      	// Caching of data
-    protected $_exiting_stubs; 	// Stubs that have already been generated, to stop duplicates.
+class DataGenerator {
+    protected $_data;            // Configuration data
+    protected $_cache;           // Caching of data
+    protected $_existing_stubs;  // Stubs that have already been generated, to stop duplicates.
+    protected $_users_attending; // Users already attending a particular event
 
     /**
      * @param Generator_Data_Interface $data
      */
     public function __construct(Generator_Data_Interface $data) {
-        $this->_data = $data;
-        $this->_existing_stubs = array();
+        $this->_data            = $data;
+        $this->_existing_stubs  = array();
+        $this->_users_attending = array();
     }
 
     /**
@@ -139,7 +141,7 @@ class Generator {
     // Generate $count talks for random events
     protected function _generateTalks($count) {
         echo "TRUNCATE talks;\n";
-        echo "INSERT INTO talks (talk_title, speaker, slides_link, date_given, event_id, ID, talk_desc, active, owner_id, lang) VALUES \n";
+        echo "INSERT INTO talks (talk_title, speaker, slides_link, date_given, event_id, ID, talk_desc, active, owner_id, lang, duration) VALUES \n";
 
         $first = true;
         for ($id=1; $id!=$count+1; $id++) {
@@ -166,10 +168,14 @@ class Generator {
             $talk->description = $this->_genLorum(50);
             $talk->lang_id = array_rand($this->getData()->getLanguageData());
 
+            // all talks are 60 minutes for now
+            $talk->duration = 60;
+
             if (! $first) echo ",\n";
 
-            printf ("('%s', NULL, '%s', %d, %d, %d, '%s', 1, NULL, %d)",
-                                   $talk->title, $talk->slides_link, $talk->date_given, $talk->event_id, $id, $talk->description, $talk->lang_id);
+            printf ("('%s', NULL, '%s', %d, %d, %d, '%s', 1, NULL, %d, %d)",
+                                   $talk->title, $talk->slides_link, $talk->date_given, $talk->event_id,
+                                   $id, $talk->description, $talk->lang_id, $talk->duration);
 
             $first = false;
         }
@@ -376,10 +382,16 @@ class Generator {
             for ($i=0; $i!=$attended_events; $i++) {
                 $event = $this->_cacheFetchRandom('events');
 
-                if (! $first) echo ",\n";
 
-                // @TODO: make sure we don't have the same UIDs at an EID
-                printf ("(%d, %d)", $user->id, $event->id);
+                // if the user is already attending this event, move on
+                if(!isset($this->_users_attending[$user->id]) 
+                    || !array_key_exists($event->id, $this->_users_attending[$user->id])) {
+
+                    if (! $first) echo ",\n";
+
+                    $this->_users_attending[$user->id][$event->id] = true;
+                    printf ("(%d, %d)", $user->id, $event->id);
+                }
 
                 $first = false;
             }

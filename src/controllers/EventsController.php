@@ -7,6 +7,8 @@ class EventsController extends ApiController {
             return $this->getAction($request, $db);
         } elseif ($request->getVerb() == 'POST') {
             return $this->postAction($request, $db);
+        } elseif ($request->getVerb() == 'DELETE') {
+            return $this->deleteAction($request, $db);
         }
         return false;
     }
@@ -35,6 +37,18 @@ class EventsController extends ApiController {
                             $sort = $this->getSort($request);
                             $talk_comment_mapper = new TalkCommentMapper($db, $request);
                             $list = $talk_comment_mapper->getCommentsByEventId($event_id, $resultsperpage, $start, $verbose, $sort);
+                            break;
+                case 'attendees':
+                            $user_mapper= new UserMapper($db, $request);
+                            $list = $user_mapper->getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose);
+                            break;
+                case 'attending':
+                            $mapper = new EventMapper($db, $request);
+                            $list = $mapper->getUserAttendance($event_id, $request->user_id);
+                            break;
+                case 'tracks':
+                            $mapper = new TrackMapper($db, $request);
+                            $list = $mapper->getTracksByEventId($event_id, $resultsperpage, $start, $request, $verbose);
                             break;
                 default:
                             throw new InvalidArgumentException('Unknown Subrequest', 404);
@@ -67,6 +81,18 @@ class EventsController extends ApiController {
                             throw new InvalidArgumentException('Unknown event filter', 404);
                             break;
                     }
+                } elseif(isset($request->parameters['title'])) {
+                    $title = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
+                    $list  = $mapper->getEventsByTitle($title, $resultsperpage, $start, $verbose);
+                    if ($list === false) {
+                        throw new Exception('Event not found', 404);
+                    }
+                } elseif(isset($request->parameters['stub'])) {
+                    $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
+                    $list = $mapper->getEventByStub($stub, $verbose);
+                    if ($list === false) {
+                        throw new Exception('Stub not found', 404);
+                    }
                 } else {
                     $list = $mapper->getEventList($resultsperpage, $start, $verbose);
                 }
@@ -82,6 +108,14 @@ class EventsController extends ApiController {
         }
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
+                case 'attending':
+                    // the body of this request is completely irrelevant
+                    // The logged in user *is* attending the event.  Use DELETE to unattend
+                    $event_id = $this->getItemId($request);
+                    $event_mapper = new EventMapper($db, $request);
+                    $event_mapper->setUserAttendance($event_id, $request->user_id);
+                    header("Location: " . $request->base . $request->path_info, NULL, 201);
+                    return;
                 case 'talks':
                     $talk['event_id'] = $this->getItemId($request);
                     if(empty($talk['event_id'])) {
@@ -132,6 +166,42 @@ class EventsController extends ApiController {
                     header("Location: " . $request->base . $request->path_info .'/' . $new_id, NULL, 201);
                     $new_talk = $talk_mapper->getTalkById($new_id);
                     return $new_talk;
+                case 'comments':
+                    $comment = array();
+                    $comment['event_id'] = $this->getItemId($request);
+                    if(empty($comment['event_id'])) {
+                        throw new Exception(
+                            "POST expects a comment representation sent to a specific event URL",
+                            400
+                        );
+                    }
+                    // no anonymous comments over the API
+                    if(!isset($request->user_id) || empty($request->user_id)) {
+                        throw new Exception('You must log in to comment');
+                    }
+                    $user_mapper = new UserMapper($db, $request);
+                    $users = $user_mapper->getUserById($request->user_id);
+                    $thisUser = $users['users'][0];
+
+                    $commentText = filter_var($request->getParameter('comment'), FILTER_SANITIZE_STRING);
+                    if(empty($commentText)) {
+                        throw new Exception('The field "comment" is required', 400);
+                    }
+
+                    // Get the API key reference to save against the comment
+                    $oauth_model = $request->getOauthModel($db);
+                    $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
+
+                    $comment['user_id'] = $request->user_id;
+                    $comment['comment'] = $commentText;
+                    $comment['cname'] = $thisUser['full_name'];
+                    $comment['source'] = $consumer_name;
+
+                    $comment_mapper = new EventCommentMapper($db, $request);
+                    $new_id = $comment_mapper->save($comment);
+                    $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
+                    header("Location: " . $uri, NULL, 201);
+                    exit;
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
             }
@@ -139,5 +209,26 @@ class EventsController extends ApiController {
             throw new Exception("Operation not supported, sorry", 404);
         }
 
+    }
+
+    public function deleteAction($request, $db) {
+        if(!isset($request->user_id)) {
+            throw new Exception("You must be logged in to delete data", 400);
+        }
+        if(isset($request->url_elements[4])) {
+            switch($request->url_elements[4]) {
+                case 'attending':
+                    $event_id = $this->getItemId($request);
+                    $event_mapper = new EventMapper($db, $request);
+                    $event_mapper->setUserNonAttendance($event_id, $request->user_id);
+                    header("Location: " . $request->base . $request->path_info, NULL, 200);
+                    return;
+                    break;
+                default:
+                    throw new Exception("Operation not supported, sorry", 404);
+            }
+        } else {
+            throw new Exception("Operation not supported, sorry", 404);
+        }
     }
 }

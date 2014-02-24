@@ -6,6 +6,8 @@ class TalksController extends ApiController {
             return $this->getAction($request, $db);
         } elseif($request->getVerb() == 'POST') {
             return $this->postAction($request, $db);
+        } elseif ($request->getVerb() == 'DELETE') {
+            return $this->deleteAction($request, $db);
         } else {
             throw new Exception("method not supported");
         }
@@ -23,14 +25,23 @@ class TalksController extends ApiController {
         $resultsperpage = $this->getResultsPerPage($request);
 
         if(isset($request->url_elements[4])) {
-            // sub elements
-            if($request->url_elements[4] == "comments") {
-                $comment_mapper = new TalkCommentMapper($db, $request);
-                $list = $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
+            switch ($request->url_elements[4]) {
+                case 'comments':
+                    $comment_mapper = new TalkCommentMapper($db, $request);
+                    $list = $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
+                    break;
+                case 'starred':
+                    $mapper = new TalkMapper($db, $request);
+                    $list = $mapper->getUserStarred($talk_id, $request->user_id);
+                    break;
             }
         } else {
             if($talk_id) {
-                $this->getTalkById($db, $request, $talk_id, $verbose);
+                $mapper = new TalkMapper($db, $request);
+                $list = $mapper->getTalkById($talk_id, $verbose);
+                if(false === $list) {
+                    throw new Exception('Talk not found', 404);
+                }
             } else {
                 // listing makes no sense
                 throw new Exception('Generic talks listing not supported', 405);
@@ -41,54 +52,74 @@ class TalksController extends ApiController {
 	}
 
     protected function postAction($request, $db) {
+        if(!isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 400);
+        }
         $talk_id = $this->getItemId($request);
 
         if(isset($request->url_elements[4])) {
-            // sub elements
-            if($request->url_elements[4] == "comments") {
-                // no anonymous comments over the API
-                if(!isset($request->user_id) || empty($request->user_id)) {
-                    throw new Exception('You must log in to comment');
-                }
+            switch($request->url_elements[4]) {
+                case "comments":
+                    $comment = $request->getParameter('comment');
+                    if(empty($comment)) {
+                        throw new Exception('The field "comment" is required', 400);
+                    }
 
-                $comment = $request->getParameter('comment');
-                if(empty($comment)) {
-                    throw new Exception('The field "comment" is required', 400);
-                }
+                    $rating = $request->getParameter('rating');
+                    if(empty($rating)) {
+                        throw new Exception('The field "rating" is required', 400);
+                    }
 
-                $rating = $request->getParameter('rating');
-                if(empty($rating)) {
-                    throw new Exception('The field "rating" is required', 400);
-                }
+                    $private = ($request->getParameter('private') ? 1 : 0);
 
-                $comment_mapper = new TalkCommentMapper($db, $request);
-                $data['user_id'] = $request->user_id;
-                $data['talk_id'] = $talk_id;
-                $data['comment'] = $comment;
-                $data['rating'] = $rating;
+                    // Get the API key reference to save against the comment
+                    $oauth_model = $request->getOauthModel($db);
+                    $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
-                $comment_mapper->save($data);
+                    $comment_mapper = new TalkCommentMapper($db, $request);
+                    $data['user_id'] = $request->user_id;
+                    $data['talk_id'] = $talk_id;
+                    $data['comment'] = $comment;
+                    $data['rating'] = $rating;
+                    $data['private'] = $private;
+                    $data['source'] = $consumer_name;
 
-                $talk = $this->getTalkById($db, $request, $talk_id, false);
-                $emailService = new TalkCommentEmailService($talk, $comment);
-                $emailService->sendEmail();
-
-                header("Location: " . $request->base . $request->path_info, true, 201);
-                exit;
+                    $new_id = $comment_mapper->save($data);
+                    $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
+                    header("Location: " . $uri, true, 201);
+                    exit;
+                case 'starred':
+                    // the body of this request is completely irrelevant
+                    // The logged in user *is* attending the talk.  Use DELETE to unattend
+                    $talk_mapper = new TalkMapper($db, $request);
+                    $talk_mapper->setUserStarred($talk_id, $request->user_id);
+                    header("Location: " . $request->base . $request->path_info, NULL, 201);
+                    exit;
+                default:
+                    throw new Exception("Operation not supported, sorry", 404);
             }
         } else {
             throw new Exception("method not yet supported - sorry");
         }
     }
 
-    protected function getTalkById($db, $request, $talk_id, $verbose)
-    {
-        $mapper = new TalkMapper($db, $request);
-        $list = $mapper->getTalkById($talk_id, $verbose);
-        if(false === $list) {
-            throw new Exception('Talk not found', 404);
+    public function deleteAction($request, $db) {
+        if(!isset($request->user_id)) {
+            throw new Exception("You must be logged in to delete data", 400);
         }
-
-        return $list;
+        if(isset($request->url_elements[4])) {
+            switch($request->url_elements[4]) {
+                case 'starred':
+                    $talk_id = $this->getItemId($request);
+                    $talk_mapper = new TalkMapper($db, $request);
+                    $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
+                    header("Location: " . $request->base . $request->path_info, NULL, 200);
+                    exit;
+                default:
+                    throw new Exception("Operation not supported, sorry", 404);
+            }
+        } else {
+            throw new Exception("Operation not supported, sorry", 404);
+        }
     }
 }

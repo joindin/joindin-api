@@ -132,7 +132,7 @@ insert into event_comments (
 insert into talks (
 	talk_title,speaker,slides_link,
 	date_given,event_id,talk_desc,
-	active,owner_id,lang,
+	active,owner_id,lang,duration,
 	ID
 ) values (
 	'Sample Talk #1 from Seed Load',
@@ -144,6 +144,7 @@ insert into talks (
 	1,
 	NULL,
 	1,
+	45,
 	NULL
 );
 SET @ftalkid:=LAST_INSERT_ID();
@@ -175,7 +176,7 @@ insert into talk_cat (
 insert into talks (
 	talk_title,speaker,slides_link,
 	date_given,event_id,talk_desc,
-	active,owner_id,lang,
+	active,owner_id,lang,duration,
 	ID
 ) values (
 	'Sample Talk #2 from Seed Load',
@@ -187,6 +188,7 @@ insert into talks (
 	1,
 	NULL,
 	1,
+	45,
 	NULL
 );
 SET @stalkid:=LAST_INSERT_ID();

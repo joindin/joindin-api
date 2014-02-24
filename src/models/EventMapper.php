@@ -18,6 +18,7 @@ class EventMapper extends ApiMapper
     {
         $fields = array(
             'name' => 'event_name',
+            'url_friendly_name' => 'url_friendly_name',
             'start_date' => 'event_start',
             'end_date' => 'event_end',
             'description' => 'event_desc',
@@ -26,7 +27,8 @@ class EventMapper extends ApiMapper
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
             'event_comments_count' => 'event_comments_count',
-            'icon' => 'event_icon'
+            'icon' => 'event_icon',
+            'location' => 'event_loc'
             );
         return $fields;
     }
@@ -42,6 +44,7 @@ class EventMapper extends ApiMapper
     {
         $fields = array(
             'name' => 'event_name',
+            'url_friendly_name' => 'url_friendly_name',
             'start_date' => 'event_start',
             'end_date' => 'event_end',
             'description' => 'event_desc',
@@ -98,6 +101,7 @@ class EventMapper extends ApiMapper
     protected function getEvents($resultsperpage, $start, $where = null, $order = null) 
     {
         $data = array();
+
         $sql = 'select events.*, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
                 as attendee_count, '
@@ -109,14 +113,14 @@ class EventMapper extends ApiMapper
             . 'CASE 
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-               END as comments_enabled, '
-            . '0 as attending '
+               END as comments_enabled '
             . 'from events '
-            . 'left join user_attend current_ua on (current_ua.eid = events.ID)';
+            . 'left join user_attend ua on (ua.eid = events.ID) ';
+
         $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
             . 'private <> "y" ';
-        
+
         // where
         if ($where) {
             $sql .= ' and ' . $where;
@@ -249,6 +253,70 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Set a user as attending for an event
+     *
+     * @param int $event_id The event ID to update for
+     * @param int $user_id The user's ID
+     */
+    public function setUserAttendance($event_id, $user_id)
+    {
+        $sql = 'insert into user_attend (uid,eid) values (:uid, :eid)';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('uid' => $user_id, 'eid' => $event_id));
+        return true;
+    }
+
+    /**
+     * Set a user as not attending an event
+     *
+     * @param int $event_id The event ID 
+     * @param int $user_id The user's ID
+     */
+    public function setUserNonAttendance($event_id, $user_id)
+    {
+        $sql = 'delete from user_attend where uid = :uid and eid = :eid';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('uid' => $user_id, 'eid' => $event_id));
+        // we don't mind if the delete failed; the record didn't exist and that's fine
+        return true;
+    }
+
+    /**
+     * User attending an event?
+     * 
+     * @param int $event_id the event to check
+     * @param int $user_id the user you're interested in
+     */
+
+    public function getUserAttendance($event_id, $user_id)
+    {
+        $retval = array();
+        $retval['is_attending'] = $this->isUserAttendingEvent($event_id, $user_id);
+        return $retval;
+    }
+
+    /**
+     * Is this user attending this event?
+     *
+     * @param int $event_id the Event of interest
+     * @param int $user_id which user (often the current one)
+     */
+
+    protected function isUserAttendingEvent($event_id, $user_id)
+    {
+        $sql = "select * from user_attend where eid = :event_id and uid = :user_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
+        $result = $stmt->fetch();
+
+        if(is_array($result)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Turn results into arrays with correct fields, add hypermedia
      * 
      * @param array $results Results of the database query
@@ -265,13 +333,22 @@ class EventMapper extends ApiMapper
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                // flip the attending to be true/false rather than user id or null
-                if($row['attending']) {
-                    $list[$key]['attending'] = true;
+                // generate and store an inflected event name if there isn't one already
+                if(empty($row['url_friendly_name'])) {
+                    $list[$key]['url_friendly_name'] = 
+                        $this->generateInflectedName($row['event_name'], $row['ID'], $list[$key]['start_date']);
+                }
+
+                // if the user is logged in, get their attending data
+                if(isset($this->_request->user_id)) {
+                    $list[$key]['attending'] = $this->isUserAttendingEvent($row['ID'], $this->_request->user_id);
                 } else {
                     $list[$key]['attending'] = false;
                 }
 
+                if($verbose) {
+                    $list[$key]['talk_comments_count'] = $this->getTalkCommentCount($row['ID']);
+                }
                 $list[$key]['tags'] = $this->getTags($row['ID']);;
                 $list[$key]['uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'];
@@ -281,6 +358,10 @@ class EventMapper extends ApiMapper
                     . $row['ID'] . '/comments';
                 $list[$key]['talks_uri'] = $base . '/' . $version . '/events/' 
                 . $row['ID'] . '/talks';
+                $list[$key]['tracks_uri'] = $base . '/' . $version . '/events/'
+                    . $row['ID'] . '/tracks';
+                $list[$key]['attending_uri'] = $base . '/' . $version . '/events/'
+                    . $row['ID'] . '/attending';
                 $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
                 // handle the slug
                 if(!empty($row['event_stub'])) {
@@ -292,6 +373,8 @@ class EventMapper extends ApiMapper
                         . $row['ID'] . '/talk_comments';
                     $list[$key]['hosts'] = $this->getHosts($row['ID']);
                 }
+                $list[$key]['attendees_uri'] = $base . '/' . $version . '/events/' 
+                    . $row['ID'] . '/attendees';
             }
         }
         $retval = array();
@@ -366,7 +449,7 @@ class EventMapper extends ApiMapper
     }
 
     /**
-     * Events that the currently logged-in user is marked as attending
+     * Events that a particular user is marked as attending
      * 
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
@@ -376,7 +459,7 @@ class EventMapper extends ApiMapper
      */
     public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false) 
     {
-        $where = ' current_ua.uid = ' . (int)$user_id;
+        $where = ' ua.uid = ' . (int)$user_id;
         $order = ' events.event_start desc ';
         $results = $this->getEvents($resultsperpage, $start, $where, $order);
         if (is_array($results)) {
@@ -414,6 +497,107 @@ class EventMapper extends ApiMapper
                 return true;
             }
         } 
+        return false;
+    }
+
+    /**
+     * Fetch events matching or partially matching a given title
+     * 
+     * @param string  $title   the title we are looking for
+     * @param int $resultsperpage how many records to return
+     * @param int $start offset to start returning records from
+     * @param boolean $verbose used to determine how many fields are needed
+     * 
+     * @return array the matching events, if any
+     */
+    public function getEventsByTitle($title, $resultsperpage, $start, $verbose = false) 
+    {
+        $order = 'events.event_start desc';
+        $where = 'LOWER(events.event_name) like "%' . strtolower($title) . '%"';
+        $results = $this->getEvents($resultsperpage, $start, $where, $order);
+        if ($results) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+
+    /**
+     * Fetch the details for a an event by its stub
+     * 
+     * @param string  $stub    the string identifier for this event
+     * @param boolean $verbose used to determine how many fields are needed
+     * 
+     * @return array the event detail
+     */
+    public function getEventByStub($stub, $verbose = false) 
+    {
+        $order = 'events.event_start desc';
+        $where = 'events.event_stub="' . $stub . '"';
+        $results = $this->getEvents(1, 0, $where, $order);
+        if ($results) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+
+    }
+
+
+    /**
+     * Count the number of talk comments for an event
+     * 
+     * @param int $event_id The event to count talk comments for
+     * @return int Number of comments across all talks
+     */
+    protected function getTalkCommentCount($event_id)
+    {
+        $comment_sql = 'select count(*) as comment_count from talk_comments tc '
+            . 'inner join talks t on tc.talk_id = t.ID '
+            . 'inner join events e on t.event_id = e.ID '
+            . 'where e.ID = :event_id';
+        $comment_stmt = $this->_db->prepare($comment_sql);
+        $comment_stmt->execute(array("event_id" => $event_id));
+        $comments = $comment_stmt->fetch(PDO::FETCH_ASSOC);
+        return $comments['comment_count'];
+    }
+
+
+    /**
+     * This event doesn't have an inflected name yet, make and store one. Try to
+     * ensure uniqueness, by adding year, then year-month and then finally
+     * year-month-day to the inflected title.
+     *
+     * @param string $name     The event name to inflect
+     * @param int    $event_id The event to store it against
+     * @return string The value we stored
+     */
+    protected function generateInflectedName($name, $event_id, $start_date)
+    {
+        $date = new DateTime($start_date);
+        $inflected_name = $this->inflect($name);
+        $name_choices = array(
+            $inflected_name,
+            $inflected_name . $date->format('-Y'),
+            $inflected_name . $date->format('-Y-m'),
+            $inflected_name . $date->format('-Y-m-d'),
+        );
+
+        foreach ($name_choices as $inflected_name) {
+            $sql = "update events set url_friendly_name = :inflected_name
+                where ID = :event_id";
+
+            $stmt   = $this->_db->prepare($sql);
+            $result = $stmt->execute(array(
+                "inflected_name" => $inflected_name,
+                "event_id" => $event_id));
+
+            if ($result) {
+                return $inflected_name;
+            }
+        }
+
         return false;
     }
 }

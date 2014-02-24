@@ -4,6 +4,8 @@
 #
 # Parse command line options for:-
 #   -t = TARGET
+#   -h = DBHOST (Database hostname)
+#   -P = DBPORT (Database port number)
 #   -d = DBNAME (Database name)
 #   -u = DBUSER (Database username)
 #   -p = DBPASS (Database password)
@@ -13,13 +15,19 @@
 #
 ###
 #TARGET=
+#DBHOST=
+#DBPORT=
 #DBNAME=
 #DBUSER=
 #DBPASS=
-while getopts 't:d:u:p:i' OPTION
+while getopts 't:h:P:d:u:p:i' OPTION
 do
     case $OPTION in
         t)  TARGET="$OPTARG"
+            ;;
+        h)  DBHOST="$OPTARG"
+            ;;
+        P)  DBPORT="$OPTARG"
             ;;
         d)  DBNAME="$OPTARG"
             ;;
@@ -35,7 +43,7 @@ done
 
 ###
 #
-# Check we have TARGET and DBNAME ether from the command line or environment
+# Check we have TARGET and DBNAME either from the command line or environment
 #
 ###
 if [ -z $TARGET ]
@@ -53,8 +61,8 @@ fi
 
 ###
 #
-# Build the start of the database command allowing for optional username and
-# password options
+# Build the start of the database command allowing for optional username,
+# password, hostname and port options
 #
 ###
 DBCMD="mysql"
@@ -67,8 +75,17 @@ if [ "$DBPASS" != "" ]
 then
     DBCMD="$DBCMD -p$DBPASS"
 fi
-DBCMD="$DBCMD $DBNAME"
 
+if [ "$DBHOST" != "" ]
+then
+    DBCMD="$DBCMD -h$DBHOST"
+fi
+
+if [ "$DBPORT" != "" ]
+then
+    DBCMD="$DBCMD -P$DBPORT"
+fi
+DBCMD="$DBCMD $DBNAME"
 
 ###
 #

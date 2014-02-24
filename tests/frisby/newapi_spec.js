@@ -82,6 +82,32 @@ frisby.create('Initial discovery')
                     }
 					      }).toss();
 
+                frisby.create('Attendees to ' + evt.name)
+                    .get(evt.attendees_uri + '?resultsperpage=3')
+                  .expectStatus(200)
+                  .expectHeader("content-type", "application/json; charset=utf8")
+                  .afterJSON(function(evUsers) {
+                    if(typeof evUsers.users == 'object') {
+                      for(var i in evUsers.users) {
+                        var user = evUsers.users[i];
+                        checkUser(user);
+                      }
+                    }
+					      }).toss();
+
+                frisby.create('Tracks at ' + evt.name)
+                    .get(evt.tracks_uri + '?resultsperpage=3')
+                  .expectStatus(200)
+                  .expectHeader("content-type", "application/json; charset=utf8")
+                  .afterJSON(function(evTracks) {
+                    if(typeof evTracks.tracks == 'object') {
+                      for(var i in evTracks.tracks) {
+                        var track = evTracks.tracks[i];
+                        checkTrack(track);
+                      }
+                    }
+					      }).toss();
+
               }).toss();
           }
   		  }).toss();
@@ -121,6 +147,19 @@ frisby.create('Non-existent user')
   .expectJSON(["User not found"])
   .toss();
 
+frisby.create('Existing user')
+  .get(baseURL + "/v2.1/users/1")
+  .expectStatus(200)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .afterJSON(function(allUsers) {
+    if (typeof allUsers.users == "object") {
+      for (var u in allUsers.users) {
+        var user = allUsers.users[u];
+        checkUser(user);
+      }
+    }
+  })
+  .toss();
 
 function checkDate(fieldValue) {
   dateVal = new Date(fieldValue);
@@ -172,6 +211,7 @@ function checkEvent(ev) {
   expect(ev.comments_uri).toBeDefined();
   expect(ev.talks_uri).toBeDefined();
   expect(ev.website_uri).toBeDefined();
+  expect(ev.attending_uri).toBeDefined();
   expect(typeof ev.name).toBe('string');
   checkDate(ev.start_date);
   checkDate(ev.end_date);
@@ -296,5 +336,45 @@ function checkTalk(talk) {
   expect(typeof talk.comment_count).toBe('number');
   expect(talk.type).toBeDefined();
   expect(typeof talk.type).toBe('string');
+  expect(talk.starred).toBeDefined();
+  expect(talk.starred_count).toBeDefined();
+  expect(typeof talk.starred_count).toBe('number');
 }
 
+function checkUser(user) {
+    expect(user.username).toBeDefined();
+    expect(typeof user.username).toBe('string');
+    expect(user.full_name).toBeDefined();
+    if(typeof user.full_name != 'undefined' && user.full_name != null) {
+      expect(typeof user.full_name).toBe('string');
+    }
+    expect(user.twitter_username).toBeDefined();
+    if(typeof user.twitter_username != 'undefined' && user.twitter_username != null) {
+      expect(typeof user.twitter_username).toBe('string');
+    }
+    expect(user.uri).toBeDefined();
+    expect(typeof user.uri).toBe('string');
+    expect(user.verbose_uri).toBeDefined();
+    expect(typeof user.verbose_uri).toBe('string');
+    expect(user.website_uri).toBeDefined();
+    expect(typeof user.website_uri).toBe('string');
+    expect(user.talks_uri).toBeDefined();
+    expect(typeof user.talks_uri).toBe('string');
+    expect(user.attended_events_uri).toBeDefined();
+    expect(typeof user.attended_events_uri).toBe('string');
+}
+
+function checkTrack(track) {
+    expect(track.track_name).toBeDefined();
+    expect(typeof track.track_name).toBe('string');
+    expect(track.track_description).toBeDefined();
+    expect(typeof track.track_description).toBe('string');
+    expect(track.talks_count).toBeDefined();
+    expect(typeof track.talks_count).toBe('number');
+    expect(track.uri).toBeDefined();
+    expect(typeof track.uri).toBe('string');
+    expect(track.verbose_uri).toBeDefined();
+    expect(typeof track.verbose_uri).toBe('string');
+    expect(track.event_uri).toBeDefined();
+    expect(typeof track.event_uri).toBe('string');
+}

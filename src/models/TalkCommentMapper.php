@@ -46,9 +46,8 @@ class TalkCommentMapper extends ApiMapper {
         $sql = $this->getBasicSQL();
         $sql .= 'and event_id = :event_id ';
 
-        if($sort == 'newest') {
-            $sql .= ' order by tc.date_made desc';
-        }
+        // default to newest
+        $sql .= ' order by tc.date_made desc';
 
         $sql .= $this->buildLimit($resultsperpage, $start);
 
@@ -122,14 +121,21 @@ class TalkCommentMapper extends ApiMapper {
     public function save($data) {
         $sql = 'insert into talk_comments (talk_id, rating, comment, user_id, '
             . 'source, date_made, private, active) '
-            . 'values (:talk_id, :rating, :comment, :user_id, "api-v2", UNIX_TIMESTAMP(), 0, 1)';
+            . 'values (:talk_id, :rating, :comment, :user_id, :source, UNIX_TIMESTAMP(), '
+            . ':private, 1)';
 
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':talk_id' => $data['talk_id'],
             ':rating' => $data['rating'],
             ':comment' => $data['comment'],
-            ':user_id' => $data['user_id']
+            ':user_id' => $data['user_id'],
+            ':private' => $data['private'],
+            ':source' => $data['source'],
             ));
+
+        $comment_id = $this->_db->lastInsertId();
+
+        return $comment_id;
     }
 }

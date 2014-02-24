@@ -44,7 +44,7 @@ class ApiMapper
                     }
                     $entry[$key] = Timezone::formattedEventDatetimeFromUnixtime($row[$value], $tz, 'c');
                 } else {
-                    $entry[$key] = $row[$value];
+                    $entry[$key] = array_key_exists($value, $row) ? $row[$value] : null;
                 }
             }
             $retval[] = $entry;
@@ -84,4 +84,10 @@ class ApiMapper
         return $meta;
     }
 
+    protected function inflect($string) {
+        // code ported from web2 
+        $alpha = preg_replace("/[^0-9a-zA-Z- ]/", "", $string);
+        $inflection = strtolower(str_replace(' ', '-', $alpha));
+        return $inflection;
+    }
 }
