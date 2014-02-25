@@ -3,40 +3,35 @@
 
 class TalkCommentEmailService extends EmailBaseService {
 
-    /**
-     * @var
-     */
-    public $talk;
+    protected $talk;
+    protected $comment;
 
-    /**
-     * @var
-     */
-    public $comment;
-
-    /**
-     * @var Array $toRecipients
-     */
-    protected $toRecipients;
-
-    /**
-     * @var Array $bccRrecipients
-     */
-    protected $bccRecipients;
-
-
-    public function __construct($talk_id, $comment)
+    public function __construct($recipients, $talk, $comment)
     {
-        $this->talk = $talk_id;
-        $this->comment = $comment;
+        // set up the common stuff first
+        parent::__construct($recipients);
+
+        // this email needs talk and comment info
+        $this->talk = $talk['talks'][0];
+        $this->comment = $comment['comments'][0];
     }
 
     public function parseEmail()
     {
         $template = file_get_contents('../views/emails/commentTalk.md');
-
         $messageBody = Michelf\Markdown::defaultTransform($template);
 
-        var_dump($messageBody);die;
+        $replacements = array(
+            "title"   => $this->talk['talk_title'],
+            "rating"  => $this->comment['rating'],
+            "comment" => $this->comment['comment'],
+        );
+
+        // probably reuse this bit?  It could go in the parent
+        // also could do it before the markdown/html/plain text conversions
+        foreach($replacements as $field => $value) {
+            $messageBody = str_replace('['. $field . ']', $value, $messageBody);
+        }
 
         return $messageBody;
     }
@@ -44,8 +39,9 @@ class TalkCommentEmailService extends EmailBaseService {
     public function sendEmail()
     {
         $messageBody = $this->parseEmail();
+        $this->message->setBody($messageBody);
 
-        $this->dispatchEmail($messageBody);
+        $this->dispatchEmail();
     }
 
 

@@ -1,1 +1,1 @@
-##Comment on talk confirmation
+## Comment on talk [title]A comment was made on your talk [title]*Rating:* [rating]*Comment:* [comment]

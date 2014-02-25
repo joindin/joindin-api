@@ -85,12 +85,19 @@ class TalksController extends ApiController {
                     $data['source'] = $consumer_name;
 
                     $new_id = $comment_mapper->save($data);
-                    $talk = $this->getTalkById($db, $request, $talk_id);
-                    $emailService = new TalkCommentEmailService($talk, $comment);
-                    $emailService->sendEmail();
-                    $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
-                    header("Location: " . $uri, true, 201);
-                    exit;
+                    if($new_id) {
+                        $comment = $comment_mapper->getCommentById($new_id);
+                        $talk = $this->getTalkById($db, $request, $talk_id);
+                        // work out who needs this - all speakers?
+                        $recipients = array("jane@lornajane.net");
+                        $emailService = new TalkCommentEmailService($recipients, $talk, $comment);
+                        $emailService->sendEmail();
+                        $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
+                        header("Location: " . $uri, true, 201);
+                        exit;
+                    } else {
+                        throw new Exception("The comment could not be stored", 400);
+                    }
                 case 'starred':
                     // the body of this request is completely irrelevant
                     // The logged in user *is* attending the talk.  Use DELETE to unattend
