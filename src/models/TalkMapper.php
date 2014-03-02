@@ -214,8 +214,9 @@ class TalkMapper extends ApiMapper {
     }
 
     protected function getTracks($talk_id) {
-        $host = $this->_request->host;
-        $track_sql = 'select et.track_name '
+        $base = $this->_request->base;
+        $version = $this->_request->version;
+        $track_sql = 'select et.ID,et.track_name '
             . 'from talk_track tt '
             . 'inner join event_track et on et.ID = tt.track_id '
             . 'where tt.talk_id = :talk_id';
@@ -225,7 +226,12 @@ class TalkMapper extends ApiMapper {
         $retval = array();
         if(is_array($tracks)) {
            foreach($tracks as $track) {
-               $retval[] = $track;
+               // Make the track_uri
+               $track_uri = $base . '/' . $version . '/tracks/' . $track['ID'];
+               $retval[] = array(
+                   'track_name' => $track['track_name'],
+                   'track_uri' => $track_uri,
+               );
            }
         }
         return $retval;
