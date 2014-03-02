@@ -30,6 +30,9 @@ talks:
             0:
                 speaker_name: Jeffrey Montgomery
         tracks:
+            0:
+                track_name: Track 1
+                track_uri: {{ site.apiurl }}/v2.1/tracks/3
         uri: {{ site.apiurl }}/v2.1/talks/76
         verbose_uri: {{ site.apiurl }}/v2.1/talks/76?verbose=yes
         website_uri: http://joind.in/talk/view/76
@@ -67,6 +70,9 @@ talks:
             0:
                 speaker_name: Jeffrey Montgomery
         tracks:
+            0:
+                track_name: Track 1
+                track_uri: {{ site.apiurl }}/v2.1/tracks/3
         uri: http://api.joindin.local/v2.1/talks/76
         verbose_uri: http://api.joindin.local/v2.1/talks/76?verbose=yes
         website_uri: http://joind.in/talk/view/76
@@ -98,7 +104,7 @@ The following fields can be found in a talk record, they are described below:
 *  ``starred``: If the user is authenticated, boolean value indicating whether the user has starred this talk or not.  For unauthenticated users, this field will always be false.
 *  ``starred_count``: Calculated field showing how many times this talk has been starred.
 *  ``speakers``: An array of the speakers giving the session.  If the speaker has claimed the talk, this includes a speaker_uri which points to their user record.  *See also* [users]({{ site.baseurl}}/users.html)
-*  ``tracks``: An array of the tracks that this talk is in, if any.  Just shows track labels
+*  ``tracks``: An array of the tracks that this talk is in, if any.  Shows track labels and a URI for each track.
 *  ``website_uri``: The page for this talk on the main joind.in website
 
 ## Talk Hypermedia
