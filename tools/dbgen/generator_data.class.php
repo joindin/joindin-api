@@ -28,7 +28,7 @@ class Generator_Data implements Generator_Data_Interface {
     function getCategoryData() {
         $categories = array(
             1 => array ('title' => 'Talk', 'desc' => 'Talk'),
-            2 => array ('title' => 'Social', 'desc' => 'Social event'),
+            2 => array ('title' => 'Social event', 'desc' => 'Social event'),
             3 => array ('title' => 'Keynote', 'desc' => 'Keynote'),
             4 => array ('title' => 'Workshop', 'desc' => 'Workshop'),
             5 => array ('title' => 'Event related', 'desc' => 'Event related'),
