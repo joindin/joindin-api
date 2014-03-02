@@ -167,3 +167,54 @@ There are links to other useful places in the API.  These are:
 *  ``all_talkcomments_uri``: All the comments from all of the talks at this event, in order of date with the newest comments first. *See also* [talk comments]({{ site.baseurl }}).
 *  ``attendees_uri``: A list of all users marked as attending this event.  *See also* [users]({{ site.baseurl}}/users.html).
 
+
+## Submitting Events
+
+You can submit events for approval via the API (site admins events are auto-approved) by POSTing to the main events collection.
+
+Here's an example:
+
+```
+ curl -v -H "Content-Type: application/json" -H "Authorization: OAuth 2ffcd58992c73241" -X POST http://api.dev.joind.in:8080/v2.1/events/ -d '{"name": "New Event", "description": "this is going to be an awesome event, where great talks will take place and many people will gather", "start_date": "2014-09-08T12:15:00+01:00", "end_date": "2014-09-11T20:00:00+01:00", "tz_continent": "Europe", "tz_place": "Madrid"}'
+```
+
+These are the only required fields:
+
+ * ``name``
+ * ``description``
+ * ``start_date`` (PHP uses strtotime to parse this field, it's pretty tolerant)
+ * ``end_date`` (PHP uses strtotime to parse this field, it's pretty tolerant)
+ * ``tz_continent`` (e.g. "Europe", "America")
+ * ``tz_place`` (e.g. "Amsterdam", "Chicago")
+
+You may also add any or all of these additional fields:
+
+ * ``href`` must be a valid URL
+ * ``cfp_url`` must be a valid URL
+ * ``cfp_start_date`` (PHP uses strtotime to parse this field, it's pretty tolerant)
+ * ``cfp_end_date`` (PHP uses strtotime to parse this field, it's pretty tolerant)
+ 
+The response should include a 201 Created header.  Here is an example of a full request and response:
+
+```
+> POST /v2.1/events/ HTTP/1.1
+> User-Agent: curl/7.32.0
+> Host: api.dev.joind.in:8080
+> Accept: */*
+> Content-Type: application/json
+> Authorization: OAuth 2ffcd58992c73241
+> Content-Length: 271
+> 
+* upload completely sent off: 271 out of 271 bytes
+< HTTP/1.1 201 Created
+< Date: Sun, 02 Mar 2014 20:26:02 GMT
+* Server Apache/2.2.15 (CentOS) is not blacklisted
+< Server: Apache/2.2.15 (CentOS)
+< X-Powered-By: PHP/5.3.3
+< Location: http://api.dev.joind.in:8080/v2.1/events/
+< Content-Length: 0
+< Connection: close
+< Content-Type: text/html; charset=UTF-8
+< 
+```
+
