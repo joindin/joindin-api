@@ -1,1 +1,1 @@
-## Comment on talk [title]A comment was made on your talk [title]*Rating:* [rating]*Comment:* [comment]
+Someone commented on your talk [title]*Rating:* [rating]*Comment:* [comment]----Questions? Comments?  Get in touch: <feedback@joind.in> or [@joindin](http://twitter.com/joindin) on twitter.
