@@ -419,4 +419,15 @@ class TalkMapper extends ApiMapper {
 
         return $result;
     }
+
+    public function getSpeakerEmailsByTalkId($talk_id) {
+        $speaker_sql = 'select user.email from talk_speaker ts '
+            . 'left join user on user.ID = ts.speaker_id '
+            . 'where ts.talk_id = :talk_id and ts.status IS NULL '
+            . 'and email IS NOT null';
+        $speaker_stmt = $this->_db->prepare($speaker_sql);
+        $speaker_stmt->execute(array("talk_id" => $talk_id));
+        $speakers = $speaker_stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $speakers;
+    }
 }
