@@ -27,7 +27,7 @@ abstract class EmailBaseService
      * @param array $recipients An array of email addresses
      */
     public function __construct($recipients) {
-        $transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
+        $transport = \Swift_MailTransport::newInstance();
         $this->mailer  = \Swift_Mailer::newInstance($transport);
         $this->message = \Swift_Message::newInstance();
         // TODO allow override so on dev all emails go to one address

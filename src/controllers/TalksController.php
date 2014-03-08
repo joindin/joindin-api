@@ -87,9 +87,13 @@ class TalksController extends ApiController {
                     $new_id = $comment_mapper->save($data);
                     if($new_id) {
                         $comment = $comment_mapper->getCommentById($new_id);
-                        $talk = $this->getTalkById($db, $request, $talk_id);
-                        // work out who needs this - all speakers?
-                        $recipients = array("jane@lornajane.net");
+                        $talk_mapper = new TalkMapper($db, $request);
+                        $talk = $talk_mapper->getTalkById($talk_id);
+                        $speakers = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
+                        $recipients = array();
+                        foreach($speakers as $person) {
+                            $recipients[] = $person['email'];
+                        }
                         $emailService = new TalkCommentEmailService($recipients, $talk, $comment);
                         $emailService->sendEmail();
                         $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
