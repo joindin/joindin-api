@@ -19,6 +19,11 @@ abstract class EmailBaseService
      */
     protected $message;
 
+    /**
+     * Array of email addresses to send to
+     */
+    protected $recipients;
+
     abstract public function parseEmail();
 
     /**
@@ -30,8 +35,9 @@ abstract class EmailBaseService
         $transport = \Swift_MailTransport::newInstance();
         $this->mailer  = \Swift_Mailer::newInstance($transport);
         $this->message = \Swift_Message::newInstance();
+
         // TODO allow override so on dev all emails go to one address
-        $this->message->setTo($recipients);
+        $this->recipients = $recipients;
         $this->message->setFrom("info@joind.in");
     }
 
@@ -58,7 +64,10 @@ abstract class EmailBaseService
      */
     protected function dispatchEmail()
     {
-        $success = $this->mailer->send($this->message);
+        foreach($this->recipients as $to) {
+            $this->message->setTo($to);
+            $this->mailer->send($this->message);
+        }
     }
 
 }
