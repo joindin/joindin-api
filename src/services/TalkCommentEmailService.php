@@ -6,10 +6,10 @@ class TalkCommentEmailService extends EmailBaseService {
     protected $talk;
     protected $comment;
 
-    public function __construct($recipients, $talk, $comment)
+    public function __construct($config, $recipients, $talk, $comment)
     {
         // set up the common stuff first
-        parent::__construct($recipients);
+        parent::__construct($config, $recipients);
 
         // this email needs talk and comment info
         $this->talk = $talk['talks'][0];

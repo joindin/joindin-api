@@ -7,4 +7,8 @@ $config =  array(
             'web2',
         )
     ),
+    'email' => array(
+        'from' => 'info@joind.in',
+        'forward_all_to' => false
+    ),
 );

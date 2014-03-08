@@ -31,14 +31,19 @@ abstract class EmailBaseService
      *
      * @param array $recipients An array of email addresses
      */
-    public function __construct($recipients) {
+    public function __construct($config, $recipients) {
         $transport = \Swift_MailTransport::newInstance();
         $this->mailer  = \Swift_Mailer::newInstance($transport);
         $this->message = \Swift_Message::newInstance();
 
-        // TODO allow override so on dev all emails go to one address
-        $this->recipients = $recipients;
-        $this->message->setFrom("info@joind.in");
+        if(isset($config['email']['forward_all_to']) 
+            && !empty($config['email']['forward_all_to'])) {
+                $this->recipients = array($config['email']['forward_all_to']);
+        } else {
+            $this->recipients = $recipients;
+        }
+
+        $this->message->setFrom($config['email']['from']);
     }
 
     /**
