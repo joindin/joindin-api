@@ -19,7 +19,6 @@ class TalkCommentEmailService extends EmailBaseService {
     public function parseEmail()
     {
         $template = file_get_contents('../views/emails/commentTalk.md');
-        $messageBody = Michelf\Markdown::defaultTransform($template);
 
         $replacements = array(
             "title"   => $this->talk['talk_title'],
@@ -27,19 +26,21 @@ class TalkCommentEmailService extends EmailBaseService {
             "comment" => $this->comment['comment'],
         );
 
-        // probably reuse this bit?  It could go in the parent
-        // also could do it before the markdown/html/plain text conversions
+        $message = $template;
         foreach($replacements as $field => $value) {
-            $messageBody = str_replace('['. $field . ']', $value, $messageBody);
+            $message = str_replace('['. $field . ']', $value, $message);
         }
 
-        return $messageBody;
+        return $message;
     }
 
     public function sendEmail()
     {
         $messageBody = $this->parseEmail();
-        $this->message->setBody($messageBody);
+        $messageHTML = Michelf\Markdown::defaultTransform($messageBody);
+
+        $this->setBody(strip_tags($messageHTML));
+        $this->setHtmlBody($messageHTML);
 
         $this->dispatchEmail();
     }

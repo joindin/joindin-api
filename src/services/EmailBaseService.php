@@ -44,6 +44,16 @@ abstract class EmailBaseService
     }
 
     /**
+     * Set the HTML body of the message
+     *
+     * Call setBody first
+     */
+    public function setHtmlBody($body) {
+        $this->message->addPart($body, 'text/html');
+        return $this;
+    }
+
+    /**
      * Send the email that we created
      */
     protected function dispatchEmail()
