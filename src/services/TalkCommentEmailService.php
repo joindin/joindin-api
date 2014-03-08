@@ -16,7 +16,7 @@ class TalkCommentEmailService extends EmailBaseService {
         $this->comment = $comment['comments'][0];
     }
 
-    public function parseEmail()
+    protected function parseEmail()
     {
         $template = file_get_contents('../views/emails/commentTalk.md');
 
@@ -36,6 +36,7 @@ class TalkCommentEmailService extends EmailBaseService {
 
     public function sendEmail()
     {
+        $this->setSubject("New feedback on " . $this->talk['talk_title']);
         $messageBody = $this->parseEmail();
         $messageHTML = Michelf\Markdown::defaultTransform($messageBody);
 

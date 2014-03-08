@@ -24,7 +24,7 @@ abstract class EmailBaseService
      */
     protected $recipients;
 
-    abstract public function parseEmail();
+    abstract protected function parseEmail();
 
     /**
      * Make a message to be sent later
@@ -49,7 +49,7 @@ abstract class EmailBaseService
     /**
      * Set the body of the message
      */
-    public function setBody($body) {
+    protected function setBody($body) {
         $this->message->setBody($body);
         return $this;
     }
@@ -59,7 +59,7 @@ abstract class EmailBaseService
      *
      * Call setBody first
      */
-    public function setHtmlBody($body) {
+    protected function setHtmlBody($body) {
         $this->message->addPart($body, 'text/html');
         return $this;
     }
@@ -73,6 +73,13 @@ abstract class EmailBaseService
             $this->message->setTo($to);
             $this->mailer->send($this->message);
         }
+    }
+
+    /**
+     * Set the subject line of the email
+     */
+    protected function setSubject($subject) {
+        $this->message->setSubject($subject);
     }
 
 }
