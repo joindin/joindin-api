@@ -24,8 +24,6 @@ abstract class EmailBaseService
      */
     protected $recipients;
 
-    abstract protected function parseEmail();
-
     /**
      * Make a message to be sent later
      *
@@ -44,6 +42,23 @@ abstract class EmailBaseService
         }
 
         $this->message->setFrom($config['email']['from']);
+    }
+
+    /**
+     * Take the template and the replacements, return markdown
+     * with the correct values in it
+     */
+    protected function parseEmail($templateName, $replacements)
+    {
+        $template = file_get_contents('../views/emails/' . $templateName)
+            . file_get_contents('../views/emails/signature.md');
+
+        $message = $template;
+        foreach($replacements as $field => $value) {
+            $message = str_replace('['. $field . ']', $value, $message);
+        }
+
+        return $message;
     }
 
     /**

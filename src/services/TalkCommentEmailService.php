@@ -16,28 +16,16 @@ class TalkCommentEmailService extends EmailBaseService {
         $this->comment = $comment['comments'][0];
     }
 
-    protected function parseEmail()
+    public function sendEmail()
     {
-        $template = file_get_contents('../views/emails/commentTalk.md');
-
+        $this->setSubject("New feedback on " . $this->talk['talk_title']);
         $replacements = array(
             "title"   => $this->talk['talk_title'],
             "rating"  => $this->comment['rating'],
             "comment" => $this->comment['comment'],
         );
 
-        $message = $template;
-        foreach($replacements as $field => $value) {
-            $message = str_replace('['. $field . ']', $value, $message);
-        }
-
-        return $message;
-    }
-
-    public function sendEmail()
-    {
-        $this->setSubject("New feedback on " . $this->talk['talk_title']);
-        $messageBody = $this->parseEmail();
+        $messageBody = $this->parseEmail("commentTalk.md", $replacements);
         $messageHTML = Michelf\Markdown::defaultTransform($messageBody);
 
         $this->setBody(strip_tags($messageHTML));
