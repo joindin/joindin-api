@@ -1,0 +1,6 @@
+{
+    "require" : {
+        "swiftmailer/swiftmailer": "@stable",
+        "michelf/php-markdown": "1.4.*@dev"
+    }
+}
