@@ -1,6 +1,5 @@
 <?php
 
-
 class TalkCommentEmailService extends EmailBaseService {
 
     protected $talk;
@@ -26,9 +25,9 @@ class TalkCommentEmailService extends EmailBaseService {
         );
 
         $messageBody = $this->parseEmail("commentTalk.md", $replacements);
-        $messageHTML = Michelf\Markdown::defaultTransform($messageBody);
+        $messageHTML = $this->markdownToHtml($messageBody);
 
-        $this->setBody(strip_tags($messageHTML));
+        $this->setBody($this->htmlToPlainText($messageHTML));
         $this->setHtmlBody($messageHTML);
 
         $this->dispatchEmail();

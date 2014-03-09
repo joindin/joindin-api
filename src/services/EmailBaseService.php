@@ -25,8 +25,14 @@ abstract class EmailBaseService
     protected $recipients;
 
     /**
+     * Template path, can be changed when testing
+     */
+    public $templatePath = "../views/emails/";
+
+    /**
      * Make a message to be sent later
      *
+     * @param array $config     The system config
      * @param array $recipients An array of email addresses
      */
     public function __construct($config, $recipients) {
@@ -48,10 +54,10 @@ abstract class EmailBaseService
      * Take the template and the replacements, return markdown
      * with the correct values in it
      */
-    protected function parseEmail($templateName, $replacements)
+    public function parseEmail($templateName, $replacements)
     {
-        $template = file_get_contents('../views/emails/' . $templateName)
-            . file_get_contents('../views/emails/signature.md');
+        $template = file_get_contents($this->templatePath . $templateName)
+            . file_get_contents($this->templatePath . 'signature.md');
 
         $message = $template;
         foreach($replacements as $field => $value) {
@@ -95,6 +101,25 @@ abstract class EmailBaseService
      */
     protected function setSubject($subject) {
         $this->message->setSubject($subject);
+    }
+
+    /**
+     * Get recipients list to check it
+     */
+    public function getRecipients() {
+        return $this->recipients;
+    }
+
+    /**
+     * Markdown to HTML
+     */
+    public function markdownToHtml($markdown) {
+        $messageHTML = Michelf\Markdown::defaultTransform($markdown);
+        return $messageHTML;
+    }
+
+    public function htmlToPlainText($html) {
+        return strip_tags($html);
     }
 
 }
