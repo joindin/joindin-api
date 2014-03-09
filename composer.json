@@ -1,6 +1,7 @@
 {
+    "preferred-install": "dist",
     "require" : {
-        "swiftmailer/swiftmailer": "@stable",
-        "michelf/php-markdown": "1.4.*@dev"
+        "swiftmailer/swiftmailer": "v5.0.3",
+        "michelf/php-markdown": "1.4.0"
     }
 }
