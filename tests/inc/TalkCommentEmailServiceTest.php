@@ -48,7 +48,7 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase {
         $comment = array("comments" => array(array("comment" => "test comment", "rating" => 3)));
 
         $service = new \TalkCommentEmailService($config, $recipients, $talk, $comment);
-        $service->templatePath = '../src/views/emails/';
+        $service->templatePath = __DIR__ . '/../../src/views/emails/';
 
         $template = "testTemplate.md";
         $replacements = array("cat" => "Camel", "mat" => "magic carpet");
