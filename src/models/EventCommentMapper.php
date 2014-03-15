@@ -21,7 +21,7 @@ class EventCommentMapper extends ApiMapper {
 
     public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false) {
         $sql = $this->getBasicSQL();
-        $sql .= 'and event_id = :event_id ';
+        $sql .= 'and event_id = :event_id order by date_made ';
         $sql .= $this->buildLimit($resultsperpage, $start);
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
