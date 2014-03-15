@@ -78,14 +78,12 @@ class EventMapper extends ApiMapper
      */
     public function getEventById($event_id, $verbose = false) 
     {
-        $order = 'events.event_start desc';
-        $results = $this->getEvents(1, 0, 'events.ID=' . (int)$event_id, null);
+        $results = $this->getEvents(1, 0, 'events.ID=' . (int)$event_id);
         if ($results) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
         return false;
-
     }
 
     /**
