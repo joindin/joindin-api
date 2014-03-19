@@ -24,6 +24,7 @@ class TalksController extends ApiController {
         $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
+        $list = array();
         if(isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'comments':
@@ -37,8 +38,7 @@ class TalksController extends ApiController {
             }
         } else {
             if($talk_id) {
-                $mapper = new TalkMapper($db, $request);
-                $list = $mapper->getTalkById($talk_id, $verbose);
+                $list = $this->getTalkById($db, $request, $talk_id, $verbose);
                 if(false === $list) {
                     throw new Exception('Talk not found', 404);
                 }
@@ -85,9 +85,23 @@ class TalksController extends ApiController {
                     $data['source'] = $consumer_name;
 
                     $new_id = $comment_mapper->save($data);
-                    $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
-                    header("Location: " . $uri, true, 201);
-                    exit;
+                    if($new_id) {
+                        $comment = $comment_mapper->getCommentById($new_id);
+                        $talk_mapper = new TalkMapper($db, $request);
+                        $talk = $talk_mapper->getTalkById($talk_id);
+                        $speakers = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
+                        $recipients = array();
+                        foreach($speakers as $person) {
+                            $recipients[] = $person['email'];
+                        }
+                        $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+                        $emailService->sendEmail();
+                        $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
+                        header("Location: " . $uri, true, 201);
+                        exit;
+                    } else {
+                        throw new Exception("The comment could not be stored", 400);
+                    }
                 case 'starred':
                     // the body of this request is completely irrelevant
                     // The logged in user *is* attending the talk.  Use DELETE to unattend
@@ -122,4 +136,16 @@ class TalksController extends ApiController {
             throw new Exception("Operation not supported, sorry", 404);
         }
     }
+
+    protected function getTalkById($db, $request, $talk_id, $verbose = false)
+    {
+        $mapper = new TalkMapper($db, $request);
+        $list = $mapper->getTalkById($talk_id, $verbose);
+        if(false === $list) {
+            throw new Exception('Talk not found', 404);
+        }
+
+        return $list;
+    }
+
 }
