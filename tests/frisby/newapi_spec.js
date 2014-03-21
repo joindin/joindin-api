@@ -213,6 +213,9 @@ function checkEvent(ev) {
   expect(ev.website_uri).toBeDefined();
   expect(ev.attending_uri).toBeDefined();
   expect(typeof ev.name).toBe('string');
+  expect(ev.event_comments_count).toBeDefined();
+  expect(ev.talks_count).toBeDefined();
+  expect(ev.tracks_count).toBeDefined();
   checkDate(ev.start_date);
   checkDate(ev.end_date);
   expect(typeof ev.description).toBe('string');
@@ -239,6 +242,8 @@ function checkVerboseEvent(evt) {
   expect(evt.attendee_count).toBeDefined();
   expect(evt.comments_enabled).toBeDefined();
   expect(evt.event_comments_count).toBeDefined();
+  expect(evt.talks_count).toBeDefined();
+  expect(evt.tracks_count).toBeDefined();
   expect(evt.cfp_start_date).toBeDefined();
   expect(evt.cfp_end_date).toBeDefined();
   expect(evt.cfp_url).toBeDefined();
@@ -267,6 +272,8 @@ function checkVerboseEvent(evt) {
   expect(typeof evt.attendee_count).toBe('number');
   expect(typeof evt.comments_enabled).toBe('number');
   expect(typeof evt.event_comments_count).toBe('number');
+  expect(typeof evt.talks_count).toBe('number');
+  expect(typeof evt.tracks_count).toBe('number');
   if (evt.cfp_start_date != null) {
     checkDate(evt.cfp_start_date);
   }
