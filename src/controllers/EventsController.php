@@ -202,6 +202,11 @@ class EventsController extends ApiController {
 
                     $comment_mapper = new EventCommentMapper($db, $request);
                     $new_id = $comment_mapper->save($comment);
+
+                    // Update the cache count for the number of event comments on this event
+                    $event_mapper = new EventMapper($db, $request);
+                    $event_mapper->cacheCommentCount($comment['event_id']);
+
                     $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
                     header("Location: " . $uri, NULL, 201);
                     exit;

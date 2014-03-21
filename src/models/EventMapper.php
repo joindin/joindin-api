@@ -699,4 +699,18 @@ class EventMapper extends ApiMapper
 
         return $result;
     }
+
+    /**
+     * Update the cached count of comments for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    public function cacheCommentCount($event_id) {
+        $sql = "UPDATE events e SET comment_count = (SELECT COUNT(*) FROM event_comments ec WHERE ec.event_id = e.ID) WHERE e.ID = :event_id;";
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id));
+
+        return $result;
+    }
 }
