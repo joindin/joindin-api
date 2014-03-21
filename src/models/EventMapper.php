@@ -713,4 +713,18 @@ class EventMapper extends ApiMapper
 
         return $result;
     }
+
+    /**
+     * Update the cached count of tracks for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    public function cacheTrackCount($event_id) {
+        $sql = "UPDATE events e SET track_count = (SELECT COUNT(*) FROM event_track et WHERE et.event_id = e.ID) WHERE e.ID = :event_id;";
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id));
+
+        return $result;
+    }
 }
