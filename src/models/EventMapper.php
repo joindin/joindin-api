@@ -685,4 +685,18 @@ class EventMapper extends ApiMapper
         $result = $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
         return $result;
     }
+
+    /**
+     * Update the cached count of talks for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    public function cacheTalkCount($event_id) {
+        $sql = "UPDATE events e SET talk_count = (SELECT COUNT(*) FROM talks t WHERE t.event_id = e.ID) WHERE e.ID = :event_id;";
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id));
+
+        return $result;
+    }
 }
