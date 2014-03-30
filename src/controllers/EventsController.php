@@ -163,6 +163,9 @@ class EventsController extends ApiController {
                     $talk_mapper = new TalkMapper($db, $request);
                     $new_id = $talk_mapper->save($talk);
 
+                    // Update the cache count for the number of talks at this event
+                    $event_mapper->cacheTalkCount($talk['event_id']);
+
                     header("Location: " . $request->base . $request->path_info .'/' . $new_id, NULL, 201);
                     $new_talk = $talk_mapper->getTalkById($new_id);
                     return $new_talk;
@@ -199,6 +202,11 @@ class EventsController extends ApiController {
 
                     $comment_mapper = new EventCommentMapper($db, $request);
                     $new_id = $comment_mapper->save($comment);
+
+                    // Update the cache count for the number of event comments on this event
+                    $event_mapper = new EventMapper($db, $request);
+                    $event_mapper->cacheCommentCount($comment['event_id']);
+
                     $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
                     header("Location: " . $uri, NULL, 201);
                     exit;
