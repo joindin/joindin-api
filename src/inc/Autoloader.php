@@ -11,6 +11,8 @@
  * @link     http://github.com/joindin/joind.in
  */
 
+include __DIR__ . '/../../vendor/autoload.php';
+
 spl_autoload_register('apiv2Autoload');
 
 /**
@@ -38,6 +40,9 @@ function apiv2Autoload($classname)
         return true;
     } elseif (preg_match('/[a-zA-Z]+View$/', $classname)) {
         include __DIR__ . '/../views/' . $classname . '.php';
+        return true;
+    } elseif (preg_match('/[a-zA-Z]+Service$/', $classname)) {
+        include __DIR__ . '/../services/' . $classname . '.php';
         return true;
     }
 }
