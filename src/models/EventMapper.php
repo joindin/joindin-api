@@ -26,7 +26,9 @@ class EventMapper extends ApiMapper
             'href' => 'event_href',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
-            'event_comments_count' => 'event_comments_count',
+            'event_comments_count' => 'comment_count',
+            'tracks_count' => 'track_count',
+            'talks_count' => 'talk_count',
             'icon' => 'event_icon',
             'location' => 'event_loc'
             );
@@ -60,7 +62,9 @@ class EventMapper extends ApiMapper
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
             'comments_enabled' => 'comments_enabled',
-            'event_comments_count' => 'event_comments_count',
+            'event_comments_count' => 'comment_count',
+            'tracks_count' => 'track_count',
+            'talks_count' => 'talk_count',
             'cfp_start_date' => 'event_cfp_start',
             'cfp_end_date' => 'event_cfp_end',
             'cfp_url' => 'event_cfp_url'
@@ -103,9 +107,6 @@ class EventMapper extends ApiMapper
         $sql = 'select events.*, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
                 as attendee_count, '
-            . '(select count(*) from event_comments where 
-                event_comments.event_id = events.ID) 
-                as event_comments_count, '
             . 'abs(datediff(from_unixtime(events.event_start), 
                 from_unixtime('.mktime(0, 0, 0).'))) as score, '
             . 'CASE 
@@ -457,9 +458,6 @@ class EventMapper extends ApiMapper
         $sql = 'select events.*, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
                 as attendee_count, '
-            . '(select count(*) from event_comments where 
-                event_comments.event_id = events.ID) 
-                as event_comments_count, '
             . 'abs(datediff(from_unixtime(events.event_start), 
                 from_unixtime('.mktime(0, 0, 0).'))) as score, '
             . 'CASE 
@@ -683,6 +681,48 @@ class EventMapper extends ApiMapper
             and uid = :user_id";
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
+        return $result;
+    }
+
+    /**
+     * Update the cached count of talks for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    public function cacheTalkCount($event_id) {
+        $sql = "UPDATE events e SET talk_count = (SELECT COUNT(*) FROM talks t WHERE t.event_id = e.ID) WHERE e.ID = :event_id;";
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id));
+
+        return $result;
+    }
+
+    /**
+     * Update the cached count of comments for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    public function cacheCommentCount($event_id) {
+        $sql = "UPDATE events e SET comment_count = (SELECT COUNT(*) FROM event_comments ec WHERE ec.event_id = e.ID) WHERE e.ID = :event_id;";
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id));
+
+        return $result;
+    }
+
+    /**
+     * Update the cached count of tracks for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    public function cacheTrackCount($event_id) {
+        $sql = "UPDATE events e SET track_count = (SELECT COUNT(*) FROM event_track et WHERE et.event_id = e.ID) WHERE e.ID = :event_id;";
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id));
+
         return $result;
     }
 }
