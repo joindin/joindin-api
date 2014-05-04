@@ -151,7 +151,11 @@ class EventsController extends ApiController {
                         $talk['language'] = 'English - UK';
                     }
 
-                    $talk['date'] = new DateTime($request->getParameter('start_date'));
+                    $start_date = $request->getParameter('start_date');
+                    if(empty($start_date)) {
+                        throw new Exception("Please give the date and time of the talk", 400);
+                    }
+                    $talk['date'] = new DateTime($start_date);
 
                     $speakers = $request->getParameter('speakers');
                     if(is_array($speakers)) {
