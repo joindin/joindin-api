@@ -53,6 +53,8 @@ events:
         attendee_count: 5
         attending:
         event_comments_count: 2
+        tracks_count: 1
+        talks_count: 5
         icon:
         tags:
         uri: {{ site.apiurl }}/v2.1/events/3
@@ -93,6 +95,8 @@ events:
         attending:
         comments_enabled: 1
         event_comments_count: 2
+        tracks_count: 1
+        talks_count: 5
         cfp_start_date: 2014-01-01T01:00:00+01:00
         cfp_end_date: 2014-01-04T01:00:00+01:00
         cfp_url: http://devconf.example.org/cfp
@@ -145,6 +149,8 @@ meta:
 *  ``attending``: Whether the current user (if any) is attending this event
 *  ``comments_enabled``: Whether this event is currently open for comment
 *  ``event_comments_count``: Calculated field showing how many event comments have been made on this event
+*  ``tracks_count``: Number of tracks at this event
+*  ``talks_count``: Total number of talks at this event, across all tracks
 *  ``cfp_start_date``: When the call for papers will begin, in ISO format
 *  ``cfp_end_date``: When the call for papers will end, in ISO format
 *  ``cfp_url``: The URL for finding out more about the call for papers
