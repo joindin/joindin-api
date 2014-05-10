@@ -87,6 +87,12 @@ class EventsController extends ApiController {
                     if ($list === false) {
                         throw new Exception('Event not found', 404);
                     }
+                } elseif(isset($request->parameters['tags'])) {
+                    $tags = filter_var($request->parameters['tags'], FILTER_SANITIZE_STRING);
+                    $list  = $mapper->getEventsByTags($tags, $resultsperpage, $start, $verbose);
+                    if ($list === false) {
+                        throw new Exception('Event not found', 404);
+                    }
                 } elseif(isset($request->parameters['stub'])) {
                     $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
                     $list = $mapper->getEventByStub($stub, $verbose);
