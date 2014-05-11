@@ -545,6 +545,53 @@ class EventMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * Fetch events in a given timeframe
+     * This method selects all events between a given startdate and a given
+     * enddate. Both values have to be given as timestamp in UTC. Startdate
+     * defaults to the current time and endtime defaults to NULL meaning that
+     * there is no endtime set. So calling this method without start- and
+     * enddate will return all future events.
+     *
+     * @param int|string $startdate The time to start searching at (including)
+     * @param int|string $enddate   The time to stop searching at (excluding)
+     * @param int $resultsperpage How many records to return
+     * @param int $start          The offset to start returning records from
+     * @param boolean $verbose    Used to determine how many fields are needed
+     *
+     * @return array The matching events if any
+     */
+    public function getEventsByDate($startdate, $enddate, $resultsperpage, $start, $verbose = false)
+    {
+        $order = 'events.event_start desc';
+        $where = array();
+        if (! is_numeric($startdate)) {
+            // Could be refactored into a separate Helper
+            $date = new DateTime($startdate);
+            $date->setTimezone(new DateTimeZone('UTC'));
+            $startdate = $date->format('U');
+        }
+        if (! $startdate) {
+            $startdate = time();
+        }
+        $where[] = sprintf('events.event_start >= %1$d', $startdate);
+        if ($enddate) {
+            if (! is_numeric($enddate)) {
+                // Could be refactored into a separate Helper
+                $date = new DateTime($enddate);
+                $date->setTimezone(new DateTimeZone('UTC'));
+                $enddate = $date->format('U');
+            }
+            $where[] = sprintf('events.event_end < %1$d', $enddate);
+        }
+        $results = $this->getEvents($resultsperpage, $start, implode(' AND ', $where), $order);
+        if (! $results) {
+            return false;
+        }
+        $retval = $this->transformResults($results, $verbose);
+
+        return $retval;
+    }
 
     /**
      * Fetch the details for a an event by its stub
