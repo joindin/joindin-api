@@ -113,8 +113,20 @@ class EventMapper extends ApiMapper
             . 'CASE 
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-               END as comments_enabled '
-            . 'from events ';
+               END as comments_enabled ';
+
+        $select = array();
+        foreach($this->filter as $filter) {
+             $f = $filter->getSelect();
+            if ($f) {
+                $select[] = $f;
+            }
+        }
+        if ($select) {
+            $sql .= ', ' . implode(', ', $select);
+        }
+
+        $sql .= ' from events ';
 
         foreach ($this->filter as $filter) {
             $sql .= $filter->getJoin();
@@ -129,8 +141,22 @@ class EventMapper extends ApiMapper
             $sql .= ' and ' . $where;
         }
 
+        $myWhere = array();
         foreach ($this->filter as $filter) {
-            $sql .= ' AND ' . $filter->getWhere();
+            $f = $filter->getWhere();
+            if ($f) {
+                $myWhere[] = $f;
+            }
+        }
+        if ($myWhere) {
+            $sql .= ' AND ' . implode(' AND ', $myWhere);
+        }
+
+        foreach ($this->filter as $filter) {
+            $having[] = $filter->getHaving();
+        }
+        if ($having) {
+            $sql .= ' HAVING (' . implode(') OR (', $having) . ')';
         }
 
         // order by

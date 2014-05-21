@@ -33,4 +33,14 @@ abstract class AbstractFilter implements QueryFilterInterface
     {
         return '';
     }
+
+    public function getHaving()
+    {
+        return '';
+    }
+
+    public function getSelect()
+    {
+        return '';
+    }
 } 

@@ -18,4 +18,19 @@ interface QueryFilterInterface
      */
     public function getWhere();
 
+    /**
+     * Get a having-statement to be included in an SQL-Statement
+     *
+     * @return string
+     */
+    public function getHaving();
+
+    /**
+     * Get a select-statement to be included in an SQL-Statement
+     *
+     * @return string
+     */
+    public function getSelect();
+
+
 } 

@@ -75,6 +75,9 @@ class EventsController extends ApiController {
                 if (isset($request->parameters['enddate']) && $request->parameters['enddate']) {
                     $mapper->injectFilter(new \Joindin\Filter\EnddateFilter($request->parameters['enddate'], $this->getFilterType($request, 'enddate')));
                 }
+                if (isset($request->parameters['lat']) && $request->parameters['lat'] && isset($request->parameters['lng']) && $request->parameters['lng'] && isset($request->parameters['distance']) && $request->parameters['distance'] ) {
+                    $mapper->injectFilter(new \Joindin\Filter\LocationFilter($request->parameters['lat'], $request->parameters['lng'], $request->parameters['distance'], $this->getFilterType($request, 'lat')));
+                }
                 // check if we're filtering
                 if(isset($request->parameters['filter'])) {
                     switch($request->parameters['filter']) {
