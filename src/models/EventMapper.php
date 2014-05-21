@@ -8,6 +8,7 @@
  */
 class EventMapper extends ApiMapper 
 {
+    protected $filter = array();
 
     /**
      * Default mapping for column names to API field names
@@ -115,13 +116,21 @@ class EventMapper extends ApiMapper
                END as comments_enabled '
             . 'from events ';
 
-        $sql .= 'where active = 1 and '
+        foreach ($this->filter as $filter) {
+            $sql .= $filter->getJoin();
+        }
+
+        $sql .= ' where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
             . '(private <> "y" OR private IS NULL) ';
 
         // where
         if ($where) {
             $sql .= ' and ' . $where;
+        }
+
+        foreach ($this->filter as $filter) {
+            $sql .= ' AND ' . $filter->getWhere();
         }
 
         // order by
@@ -724,5 +733,19 @@ class EventMapper extends ApiMapper
         $result = $stmt->execute(array("event_id" => $event_id));
 
         return $result;
+    }
+
+    /**
+     * Inject a filter for querying for events
+     *
+     * @param QueryFilterInterface $filter
+     *
+     * @return self
+     */
+    public function injectFilter(\Joindin\Filter\QueryFilterInterface $filter)
+    {
+        $this->filter[] = $filter;
+
+        return $this;
     }
 }
