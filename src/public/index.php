@@ -1,7 +1,7 @@
 <?php
-include '../inc/Autoloader.php';
-include '../inc/Request.php';
-include '../inc/Timezone.php';
+include __DIR__ . '/../inc/Autoloader.php';
+include __DIR__ . '/../inc/Request.php';
+include __DIR__ . '/../inc/Timezone.php';
 
 // Add exception handler
 function handle_exception($e) {
