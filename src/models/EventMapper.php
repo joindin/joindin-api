@@ -129,6 +129,8 @@ class EventMapper extends ApiMapper
             $sql .= ' order by ' . $order;
         }
 
+        $countSql = sprintf('SELECT count(*) AS count FROM (%s) as counter', $sql);
+
         // limit clause
         $sql .= $this->buildLimit($resultsperpage, $start);
 
@@ -136,6 +138,11 @@ class EventMapper extends ApiMapper
         $response = $stmt->execute($data);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmtCount = $this->_db->prepare($countSql);
+            $response = $stmtCount->execute($data);
+            if ($response) {
+                $results['total'] = $stmtCount->fetchColumn(0);
+            }
             return $results;
         }
         return false;
@@ -321,6 +328,8 @@ class EventMapper extends ApiMapper
      */
     public function transformResults($results, $verbose) 
     {
+        $total = $results['total'];
+        unset($results['total']);
         $list = parent::transformResults($results, $verbose);
         $base = $this->_request->base;
         $version = $this->_request->version;
@@ -374,7 +383,7 @@ class EventMapper extends ApiMapper
         }
         $retval = array();
         $retval['events'] = $list;
-        $retval['meta'] = $this->getPaginationLinks($list);
+        $retval['meta'] = $this->getPaginationLinks($list, $total);
 
         return $retval;
     }

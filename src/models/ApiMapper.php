@@ -65,20 +65,24 @@ class ApiMapper
         return $limit;
     }
 
-    protected function getPaginationLinks($list) 
+    protected function getPaginationLinks($list, $total = 0)
     {
         $request = $this->_request;
         $count = count($list);
-        $meta['count'] = $count; 
+        $meta['count'] = $count;
+        $meta['total'] = $total;
         $meta['this_page'] = $request->base . $request->path_info .'?' . http_build_query($request->paginationParameters);
-        $next_params = $prev_params = $request->paginationParameters;
+        $next_params = $prev_params = $counter_params = $request->paginationParameters;
+        $firstOnNextPage = $counter_params['start'] + $counter_params['resultsperpage'];
+        $firstOnThisPage = $counter_params['start'];
 
-        if ($count > 1) {
+        if ($firstOnNextPage < $total) {
             $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
             $meta['next_page']    = $request->base . $request->path_info . '?' . http_build_query($next_params);
         }
-        if ($prev_params['start'] >= $prev_params['resultsperpage']) {
+        if (0 < $firstOnThisPage) {
             $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
+            if ($prev_params['start'] < 0) $prev_params['start'] = 0;
             $meta['prev_page'] = $request->base . $request->path_info . '?' . http_build_query($prev_params);
         }
         return $meta;
