@@ -75,11 +75,11 @@ class ApiMapper
 
         if ($count > 1) {
             $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
-            $meta['next_page'] = $request->base . $request->path_info . '?' . http_build_query($next_params);
-            if ($prev_params['start'] >= $prev_params['resultsperpage']) {
-                $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
-                $meta['prev_page'] = $request->base . $request->path_info . '?' . http_build_query($prev_params);
-            }
+            $meta['next_page']    = $request->base . $request->path_info . '?' . http_build_query($next_params);
+        }
+        if ($prev_params['start'] >= $prev_params['resultsperpage']) {
+            $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
+            $meta['prev_page'] = $request->base . $request->path_info . '?' . http_build_query($prev_params);
         }
         return $meta;
     }
