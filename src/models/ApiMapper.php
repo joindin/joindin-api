@@ -79,7 +79,6 @@ class ApiMapper
         if (false !== $limitPos) {
             $sqlQuery = substr($sqlQuery, 0, $limitPos);
         }
-        echo $sqlQuery;
         $countSql = sprintf('SELECT count(*) AS count FROM (%s) as counter', $sqlQuery);
         $stmtCount = $this->_db->prepare($countSql);
         if (! $stmtCount->execute($data)) {
@@ -95,6 +94,8 @@ class ApiMapper
         $count = count($list);
         $meta['count'] = $count;
         $meta['total'] = $total;
+        $meta['first_result'] = $request->paginationParameters['start'] + 1;
+        $meta['last_result'] = $request->paginationParameters['start'] + $count;
         $meta['this_page'] = $request->base . $request->path_info .'?' . http_build_query($request->paginationParameters);
         $next_params = $prev_params = $counter_params = $request->paginationParameters;
         $firstOnNextPage = $counter_params['start'] + $counter_params['resultsperpage'];
