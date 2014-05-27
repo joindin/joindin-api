@@ -129,8 +129,6 @@ class EventMapper extends ApiMapper
             $sql .= ' order by ' . $order;
         }
 
-        $countSql = sprintf('SELECT count(*) AS count FROM (%s) as counter', $sql);
-
         // limit clause
         $sql .= $this->buildLimit($resultsperpage, $start);
 
@@ -138,11 +136,7 @@ class EventMapper extends ApiMapper
         $response = $stmt->execute($data);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmtCount = $this->_db->prepare($countSql);
-            $response = $stmtCount->execute($data);
-            if ($response) {
-                $results['total'] = $stmtCount->fetchColumn(0);
-            }
+            $results['total'] = $this->getTotalCount($sql, $data);
             return $results;
         }
         return false;
@@ -494,6 +488,7 @@ class EventMapper extends ApiMapper
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if(is_array($results)) {
+                $results['total'] = $this->getTotalCount($sql, $data);
                 $retval = $this->transformResults($results, $verbose);
                 return $retval;
             }

@@ -65,6 +65,30 @@ class ApiMapper
         return $limit;
     }
 
+    /**
+     * get a total-results count
+     *
+     * @param string $sqlQuery
+     * @param array  $data
+     *
+     * @return int
+     */
+    public function getTotalCount($sqlQuery, array $data = array())
+    {
+        $limitPos = strrpos($sqlQuery, 'LIMIT');
+        if (false !== $limitPos) {
+            $sqlQuery = substr($sqlQuery, 0, $limitPos);
+        }
+        echo $sqlQuery;
+        $countSql = sprintf('SELECT count(*) AS count FROM (%s) as counter', $sqlQuery);
+        $stmtCount = $this->_db->prepare($countSql);
+        if (! $stmtCount->execute($data)) {
+            return 0;
+        }
+
+        return $stmtCount->fetchColumn(0);
+    }
+
     protected function getPaginationLinks($list, $total = 0)
     {
         $request = $this->_request;
