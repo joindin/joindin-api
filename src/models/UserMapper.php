@@ -80,6 +80,7 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute();
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results['total'] = $this->getTotalCount($sql);
             return $results;
         }
         return false;
@@ -109,6 +110,9 @@ class UserMapper extends ApiMapper
 
     public function transformResults($results, $verbose) 
     {
+        $total = $results['total'];
+        unset($results['total']);
+
         $list = parent::transformResults($results, $verbose);
         $base = $this->_request->base;
         $version = $this->_request->version;
@@ -129,7 +133,7 @@ class UserMapper extends ApiMapper
         }
         $retval = array();
         $retval['users'] = $list;
-        $retval['meta'] = $this->getPaginationLinks($list);
+        $retval['meta'] = $this->getPaginationLinks($list, $total);
 
         return $retval;
     }
