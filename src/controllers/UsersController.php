@@ -12,6 +12,16 @@ class UsersController extends ApiController {
 	public function getAction($request, $db) {
         $user_id = $this->getItemId($request);
 
+        // Are we checking the currently-logged-in user?
+        if (!$user_id && !empty($request->url_elements[3]) && $request->url_elements[3] == "me") {
+            if ($request->user_id) {
+                $user_id = $request->user_id;
+            } else {
+                // User isn't signed in
+                throw new Exception("You must be logged in to request your own user record", 400);
+            }
+        }
+
         // verbosity
         $verbose = $this->getVerbosity($request);
 
