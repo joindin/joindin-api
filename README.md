@@ -13,6 +13,8 @@ This is the API behind the joind.in website (the new version of it), the mobile 
 
 (use the correct username and password)
 
+Depending on the database setup you might run into an issue with Patch 1.  In that case try to add ``` ENGINE=MyISAM DEFAULT CHARSET=latin1``` to line 5 of ```db/patch1.sql```
+
 If you are using Windows And/Or Git bash you may see an error regarding "o being an invalid option" when running step 6.
 
 To fix this, you will need to visit http://gnuwin32.sourceforge.net/packages/grep.htm and download the binaries and dependencies zip files Extract the contents of the bin folder from the zip files to the bin folder of your Git install and restart Git Bash.
@@ -92,3 +94,8 @@ To see a summary of the codesniff errors and warnings across the entire project,
     phing phpcs-human-summary
 
 
+### Running the API on nginx
+
+You will have to make a few modifications to the code as it currently is optimized for running on an apache-httpd webserver.
+
+For detailed instructions have a look at [README.NGINX.md](README.NGINX.md)
