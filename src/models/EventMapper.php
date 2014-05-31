@@ -97,10 +97,11 @@ class EventMapper extends ApiMapper
      * @param int $start offset to start returning records from
      * @param string $where one final thing to add to the where after an "AND"
      * @param string $order what goes after "ORDER BY"
+     * @param string $join  inject JOIN-Statements
      *
      * @return array the raw database results
      */
-    protected function getEvents($resultsperpage, $start, $where = null, $order = null) 
+    protected function getEvents($resultsperpage, $start, $where = null, $order = null, $join = null)
     {
         $data = array();
 
@@ -114,6 +115,10 @@ class EventMapper extends ApiMapper
                 ELSE 0
                END as comments_enabled '
             . 'from events ';
+
+        if ($join) {
+            $sql .= $join . ' ';
+        }
 
         $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
@@ -545,6 +550,34 @@ class EventMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * Fetch events tagged with at least one of the given tags
+     *
+     * @param string $tags A comma-separated list of tags we are
+     *                     looking for
+     * @param int     $resultsperpage how many records to return
+     * @param int     $start          offset to start returning records from
+     * @param boolean $verbose        used to determine how many fields are needed
+     *
+     * @return array The matching events, if any
+     */
+    public function getEventsByTags($tags, $resultsperpage, $start, $verbose = false)
+    {
+        $order = 'events.event_start desc';
+        $tags = array_map(function($tag){
+            return trim($tag);
+        }, explode(',', $tags));
+        $where = 'tags.tag_value IN (\'' . implode('\',\'', $tags) . '\')';
+        $join  = 'LEFT JOIN tags_events ON tags_events.event_id = events.ID LEFT JOIN tags ON tags.ID = tags_events.tag_id';
+        $results = $this->getEvents($resultsperpage, $start, $where, $order, $join);
+        if (! $results) {
+            return false;
+        }
+        $retval = $this->transformResults($results, $verbose);
+
+        return $retval;
+
+    }
 
     /**
      * Fetch the details for a an event by its stub
