@@ -56,12 +56,28 @@ class EventsController extends ApiController {
             }
         } else {
             $mapper = new EventMapper($db, $request);
+
             if($event_id) {
                 $list = $mapper->getEventById($event_id, $verbose);
                 if(false === $list) {
                     throw new Exception('Event not found', 404);
                 }
             } else {
+                if (isset($request->parameters['title']) && $request->parameters['title']) {
+                    $mapper->injectFilter(new \Joindin\Filter\TitleFilter($request->parameters['title'], $this->getFilterType($request, 'title')));
+                }
+                if (isset($request->parameters['tag']) && $request->parameters['tag']) {
+                    $mapper->injectFilter(new \Joindin\Filter\TagFilter($request->parameters['tag'], $this->getFilterType($request, 'tag')));
+                }
+                if (isset($request->parameters['startdate']) && $request->parameters['startdate']) {
+                    $mapper->injectFilter(new \Joindin\Filter\StartdateFilter($request->parameters['startdate'], $this->getFilterType($request, 'startdate')));
+                }
+                if (isset($request->parameters['enddate']) && $request->parameters['enddate']) {
+                    $mapper->injectFilter(new \Joindin\Filter\EnddateFilter($request->parameters['enddate'], $this->getFilterType($request, 'enddate')));
+                }
+                if (isset($request->parameters['lat']) && $request->parameters['lat'] && isset($request->parameters['lng']) && $request->parameters['lng'] && isset($request->parameters['distance']) && $request->parameters['distance'] ) {
+                    $mapper->injectFilter(new \Joindin\Filter\LocationFilter($request->parameters['lat'], $request->parameters['lng'], $request->parameters['distance'], $this->getFilterType($request, 'lat')));
+                }
                 // check if we're filtering
                 if(isset($request->parameters['filter'])) {
                     switch($request->parameters['filter']) {
@@ -322,5 +338,32 @@ class EventsController extends ApiController {
         } else {
             throw new Exception("Operation not supported, sorry", 404);
         }
+    }
+
+    /**
+     * Get the filter type for a given filter-field
+     * Default is OR, but when the request-parameter 'type' is set to 'AND' it
+     * will return 'AND' instead
+     *
+     * @param mixed  $request
+     * @param string $field
+     *
+     * @return string
+     */
+    protected function getFilterType($request, $field)
+    {
+        if (! isset($request->parameters['type'])) {
+            return 'OR';
+        }
+
+        if (! is_array($request->parameters['type'])) {
+            return $request->parameters['type'] === 'AND'?'AND':'OR';
+        }
+
+        if (isset($request->parameters['type'][$field])) {
+            return $request->parameters['type'][$field] === 'AND'?'AND':'OR';
+        }
+
+        return 'OR';
     }
 }

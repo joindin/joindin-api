@@ -8,6 +8,7 @@
  */
 class EventMapper extends ApiMapper 
 {
+    protected $filter = array();
 
     /**
      * Default mapping for column names to API field names
@@ -112,16 +113,50 @@ class EventMapper extends ApiMapper
             . 'CASE 
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-               END as comments_enabled '
-            . 'from events ';
+               END as comments_enabled ';
 
-        $sql .= 'where active = 1 and '
+        $select = array();
+        foreach($this->filter as $filter) {
+             $f = $filter->getSelect();
+            if ($f) {
+                $select[] = $f;
+            }
+        }
+        if ($select) {
+            $sql .= ', ' . implode(', ', $select);
+        }
+
+        $sql .= ' from events ';
+
+        foreach ($this->filter as $filter) {
+            $sql .= $filter->getJoin();
+        }
+
+        $sql .= ' where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
             . '(private <> "y" OR private IS NULL) ';
 
         // where
         if ($where) {
             $sql .= ' and ' . $where;
+        }
+
+        $myWhere = array();
+        foreach ($this->filter as $filter) {
+            $f = $filter->getWhere();
+            if ($f) {
+                $myWhere[] = $f;
+            }
+        }
+        if ($myWhere) {
+            $sql .= ' AND ' . implode(' AND ', $myWhere);
+        }
+
+        foreach ($this->filter as $filter) {
+            $having[] = $filter->getHaving();
+        }
+        if ($having) {
+            $sql .= ' HAVING (' . implode(') OR (', $having) . ')';
         }
 
         // order by
@@ -724,5 +759,19 @@ class EventMapper extends ApiMapper
         $result = $stmt->execute(array("event_id" => $event_id));
 
         return $result;
+    }
+
+    /**
+     * Inject a filter for querying for events
+     *
+     * @param QueryFilterInterface $filter
+     *
+     * @return self
+     */
+    public function injectFilter(\Joindin\Filter\QueryFilterInterface $filter)
+    {
+        $this->filter[] = $filter;
+
+        return $this;
     }
 }
