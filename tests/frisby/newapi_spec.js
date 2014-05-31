@@ -147,6 +147,13 @@ frisby.create('Non-existent user')
   .expectJSON(["User not found"])
   .toss();
 
+frisby.create('User record without logging in')
+  .get(baseURL + "/v2.1/users/me")
+  .expectStatus(400)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .expectJSON(["You must be logged in to request your own user record"])
+  .toss();
+
 frisby.create('Existing user')
   .get(baseURL + "/v2.1/users/1")
   .expectStatus(200)
