@@ -87,6 +87,19 @@ class EventsController extends ApiController {
                     if ($list === false) {
                         throw new Exception('Event not found', 404);
                     }
+                } elseif(isset($request->parameters['startdate']) || isset($request->parameters['enddate'])) {
+                    $startdate = time();
+                    $enddate = null;
+                    if (isset($request->parameters['startdate'])) {
+                        $startdate = filter_var($request->parameters['startdate'], FILTER_SANITIZE_STRING);
+                    }
+                    if (isset($request->parameters['enddate'])) {
+                        $enddate = filter_var($request->parameters['enddate'], FILTER_SANITIZE_STRING);
+                    }
+                    $list  = $mapper->getEventsByDate($startdate, $enddate, $resultsperpage, $start, $verbose);
+                    if ($list === false) {
+                        throw new Exception('Event not found', 404);
+                    }
                 } elseif(isset($request->parameters['stub'])) {
                     $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
                     $list = $mapper->getEventByStub($stub, $verbose);
