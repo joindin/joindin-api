@@ -31,6 +31,8 @@ class TalkMapper extends ApiMapper {
 			'duration' => 'duration',
             'stub' => 'stub',
             'average_rating' => 'avg_rating',
+            'average_content_rating' => 'avg_content_rating',
+            'average_speaker_rating' => 'avg_speaker_rating',
             'comments_enabled' => 'comments_enabled',
             'comment_count' => 'comment_count',
             'starred' => 'starred',
@@ -167,6 +169,8 @@ class TalkMapper extends ApiMapper {
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
             . '(select get_talk_rating(t.ID)) as avg_rating, '
+            . '(select get_talk_content_rating(t.ID)) as avg_content_rating, '
+            . '(select get_talk_speaker_rating(t.ID)) as avg_speaker_rating, '
             . '(select count(*) from user_talk_star where user_talk_star.tid = t.ID)
                 as starred_count, '
             . 'CASE

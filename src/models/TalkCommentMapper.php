@@ -3,6 +3,8 @@
 class TalkCommentMapper extends ApiMapper {
     public function getDefaultFields() {
         $fields = array(
+            'content_rating' => 'content_rating',
+            'speaker_rating' => 'speaker_rating',
             'rating' => 'rating',
             'comment' => 'comment',
             'user_display_name' => 'full_name',
@@ -14,6 +16,8 @@ class TalkCommentMapper extends ApiMapper {
 
     public function getVerboseFields() {
         $fields = array(
+            'content_rating' => 'content_rating',
+            'speaker_rating' => 'speaker_rating',
             'rating' => 'rating',
             'comment' => 'comment',
             'user_display_name' => 'full_name',
@@ -108,7 +112,7 @@ class TalkCommentMapper extends ApiMapper {
     }
 
     protected function getBasicSQL() {
-        $sql = 'select tc.*, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
+        $sql = 'select tc.*, get_comment_rating(t.ID, tc.id) AS rating, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
             . 'from talk_comments tc '
             . 'inner join talks t on t.ID = tc.talk_id '
             . 'inner join events e on t.event_id = e.ID '
@@ -119,15 +123,16 @@ class TalkCommentMapper extends ApiMapper {
     }
 
     public function save($data) {
-        $sql = 'insert into talk_comments (talk_id, rating, comment, user_id, '
+        $sql = 'insert into talk_comments (talk_id, content_rating, speaker_rating, comment, user_id, '
             . 'source, date_made, private, active) '
-            . 'values (:talk_id, :rating, :comment, :user_id, :source, UNIX_TIMESTAMP(), '
+            . 'values (:talk_id, :content_rating, :speaker_rating, :comment, :user_id, :source, UNIX_TIMESTAMP(), '
             . ':private, 1)';
 
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':talk_id' => $data['talk_id'],
-            ':rating' => $data['rating'],
+            ':content_rating' => (isset($data['content_rating'])) ? $data['content_rating'] : $data['rating'],
+            ':speaker_rating' => (isset($data['speaker_rating'])) ? $data['speaker_rating'] : null,
             ':comment' => $data['comment'],
             ':user_id' => $data['user_id'],
             ':private' => $data['private'],
