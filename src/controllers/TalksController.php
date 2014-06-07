@@ -65,9 +65,16 @@ class TalksController extends ApiController {
                         throw new Exception('The field "comment" is required', 400);
                     }
 
-                    $rating = $request->getParameter('rating');
-                    if(empty($rating)) {
-                        throw new Exception('The field "rating" is required', 400);
+                    $content_rating = $request->getParameter('content_rating');
+                    $speaker_rating = $request->getParameter('speaker_rating');
+
+                    if (empty($content_rating)) {
+                        $rating = $request->getParameter('rating');
+                        if(empty($rating)) { // BC
+                            throw new Exception('The field "content_rating" (or "rating") is required.', 400);
+                        }
+                    } elseif (empty($speaker_rating)) {
+                        throw new Exception('The field "speaker_rating" is required.', 400);
                     }
 
                     $private = ($request->getParameter('private') ? 1 : 0);
@@ -80,7 +87,9 @@ class TalksController extends ApiController {
                     $data['user_id'] = $request->user_id;
                     $data['talk_id'] = $talk_id;
                     $data['comment'] = $comment;
-                    $data['rating'] = $rating;
+                    $data['content_rating'] = $content_rating;
+                    $data['speaker_rating'] = $speaker_rating;
+                    $data['rating'] = $rating; // BC
                     $data['private'] = $private;
                     $data['source'] = $consumer_name;
 
