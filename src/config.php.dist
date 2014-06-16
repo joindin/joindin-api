@@ -4,8 +4,15 @@ $config =  array(
     'mode' => 'development',
     'oauth' => array(
         'password_client_ids' => array(
+            // Trusted clients can use the OAuth 2 Resource Owner Password
+            // Credentials Grant (see RFC 6749 section 4.3).
             'web2',
-        )
+        ),
+        'expirable_client_ids' => array(
+            // some clients, (e.g. web2) do not hold onto their token after the
+            // user logs out of the client, so we can expire their old tokens.
+            'web2',
+        ),
     ),
     'email' => array(
         'from' => 'info@joind.in',

@@ -58,9 +58,6 @@ class OAuthModel {
             return false;
         }
 
-        // expire old tokens (Does this need to be in a different place?)
-        $this->expireOldTokens($clientId);
-
         // create new token
         $accessToken = $this->newAccessToken($clientId, $userId);
 
@@ -92,22 +89,23 @@ class OAuthModel {
     }
 
     /**
-     * Expire any tokens belonging to $clientId that are over a day old.
+     * Expire any tokens belonging to the list of $clientIds that are over a day old.
      *
-     * @param  string $clientId aka consumer_key
+     * @param  array $clientIds list of client ids to expire
      * @return void
      */
-    public function expireOldTokens($clientId)
+    public function expireOldTokens($clientIds)
     {
-        $sql = "DELETE FROM oauth_access_tokens WHERE
-                consumer_key=:consumer_key AND created_date < :expiry_date";
+        foreach ($clientIds as $clientId) {
+            $sql = "DELETE FROM oauth_access_tokens WHERE
+                    consumer_key=:consumer_key AND created_date < :expiry_date";
 
-        $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array(
-            'consumer_key' => $clientId,
-            'expiry_date'  => date('Y-m-d', strtotime('-1 day'))
-            ));
-
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute(array(
+                'consumer_key' => $clientId,
+                'expiry_date'  => date('Y-m-d', strtotime('-1 day'))
+                ));
+        }
     }
 
     /**
