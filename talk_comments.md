@@ -9,7 +9,7 @@ Users can comment on talks.  Currently, users need to be authenticated in order 
 
 ## Talk Comment Format
 
-```
+~~~~
 comments:
     0:
         rating: 3
@@ -25,11 +25,11 @@ comments:
 meta:
     count: 1
     this_page: http://api.joindin.local/v2.1/talks/28/comments?start=0&resultsperpage=20
-```
+~~~~
 
 ## Talk Comment Verbose Format
 
-```
+~~~~
 comments:
     0:
         rating: 3
@@ -46,7 +46,7 @@ comments:
 meta:
     count: 1
     this_page: http://api.joindin.local/v2.1/talk_comments/359?verbose=yes&start=0&resultsperpage=20
-```
+~~~~
 
 *(the only addition is the ``source`` field)*
 
@@ -74,13 +74,13 @@ To comment on a talk, the user must be authenticated and should then send a POST
 
 Curl example:
 
-```
+~~~~
 curl -v -H "Content-Type: application/json" -H "Authorization: OAuth f9b4f1a9b30bdc0d" /talks/139/comments --data '{"comment": "Great talk, thanks!", "rating": 4}'
-```
+~~~~
 
 Here's the example request/response (the -v switch ensures that you see the response headers)
 
-```
+~~~~
 > POST /v2.1/talks/139/comments HTTP/1.1
 > User-Agent: curl/7.32.0
 > Host: api.joindin.local
@@ -100,6 +100,6 @@ Here's the example request/response (the -v switch ensures that you see the resp
 < Content-Type: text/html
 < 
 
-```
+~~~~
 
 A 201 status code indicates that the comment was successfully created, and the ``Location`` header gives the location of the new record (or you can choose to just fetch the collection again, it's your choice).  In the case of failure, you will get a 4xx status code and some information about what exactly went wrong.

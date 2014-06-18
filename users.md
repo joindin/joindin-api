@@ -13,7 +13,7 @@ The user records offer some information about a user, and also allow access to l
 
 The user record looks something like this:
 
-```
+~~~~
 users:
     0:
         username: nbaker
@@ -27,7 +27,7 @@ users:
 meta:
     count: 1
     this_page: http://api.joindin.local/v2.1/users/4?start=0&resultsperpage=20
-```
+~~~~
 
 ## Verbose User Format
 

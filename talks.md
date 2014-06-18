@@ -11,7 +11,7 @@ Talks can represent more than just a talk, you may also find keynotes, tutorials
 
 When requesting a talk, you will receive a response like this (using sample data):
 
-```
+~~~~
 talks:
     0:
         talk_title: Refactoring fantastic systems instead of NoSQL
@@ -43,13 +43,13 @@ talks:
 meta:
     count: 1
     this_page: {{ site.apiurl }}/v2.1/talks/76?start=0&resultsperpage=20
-```
+~~~~
 
 ## Verbose Talk Format
 
 If you use the verbose URI to fetch a talk record, the following fields will be included:
 
-```
+~~~~
 talks:
     0:
         talk_title: Refactoring fantastic systems instead of NoSQL
@@ -83,7 +83,7 @@ talks:
 meta:
     count: 1
     this_page: http://api.joindin.local/v2.1/talks/76?verbose=yes&start=0&resultsperpage=20
-```
+~~~~
 
 ## Talk Data Fields
 

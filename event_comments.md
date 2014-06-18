@@ -11,7 +11,7 @@ Users can comment on events.  Currently the user must be signed in before they c
 
 Event comments are available from the location in the ``comments_uri`` of an event.  The format looks like this:
 
-```
+~~~~
 comments:
     0:
         comment: Proin feugiat mattis dui, ut cursus purus feugiat vel. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Proin feugiat mattis dui, ut cursus purus feugiat vel. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo.
@@ -22,7 +22,7 @@ comments:
         verbose_comment_uri: http://api.joindin.local/v2.1/event_comments/22?verbose=yes
         event_uri: http://api.joindin.local/v2.1/events/31
         event_comments_uri: http://api.joindin.local/v2.1/events/31/comments
-```
+~~~~
 
 ## Event Comments Verbose Format
 
@@ -51,13 +51,13 @@ You can add comments to events via the API; you must be authenticated to do so.
 
 To create a new comment, POST the comment body in an array element called ``comment`` to the event comments collection that you want to add it to.  The API will pick up your identity and add the timestamp.  E.g (using curl against my test system):
 
-```
+~~~~
 curl -v -H "Content-Type: application/json" -H "Authorization: OAuth f9b4f1a9b30bdc0d" -X POST http://api.joindin.local/v2.1/events/31/comments --data '{"comment": "Wonderful event, thanks!"}'
-```
+~~~~
 
 The ``-v`` switch is there so that you see the whole response, which looks something like this:
 
-```
+~~~~
 > POST /v2.1/events/31/comments HTTP/1.1
 > User-Agent: curl/7.32.0
 > Host: api.joindin.local
@@ -75,6 +75,6 @@ The ``-v`` switch is there so that you see the whole response, which looks somet
 < Location: http://api.joindin.local/v2.1/event_comments/204
 < Content-Length: 0
 < Content-Type: text/html
-```
+~~~~
 
 The ``Location`` header will point to the newly-created comment, and the status code of 201 indicates that all went well.  If anything does go wrong, you will get a 4xx status code response with a message indicating what the problem is.

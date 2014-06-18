@@ -12,13 +12,13 @@ This page deals with the various event pages and data structures of events.
 
 Output:
 
-```
+~~~~
 events: http://{{ site.apiurl }}/v2.1/events
 hot-events: http://{{ site.apiurl }}/v2.1/events?filter=hot
 upcoming-events: http://{{ site.apiurl }}/v2.1/events?filter=upcoming
 past-events: http://{{ site.apiurl }}/v2.1/events?filter=past
 open-cfps: http://{{ site.apiurl }}/v2.1/events?filter=cfp
-```
+~~~~
 
 ## Filtering the Events Collection
 
@@ -40,7 +40,7 @@ When requesting either one event or a collection of events, your data response w
 
 An example of a single event (using sample data):
 
-```
+~~~~
 events:
     0:
         name: DevConf
@@ -68,13 +68,13 @@ events:
 meta:
     count: 1
     this_page: {{ site.apiurl }}/v2.1/events/3?start=0&resultsperpage=20
-```
+~~~~
 
 ## Verbose Event Format
 
 Append ``verbose=yes`` to the URL to get more fields.  The data format will be:
 
-```
+~~~~
 events:
     0:
         name: DevConf
@@ -127,7 +127,7 @@ events:
 meta:
     count: 1
     this_page: http://api.joindin.local/v2.1/events/3?verbose=yes&start=0&resultsperpage=20
-```
+~~~~
 
 ## Event Data Fields
 
@@ -180,9 +180,9 @@ You can submit events for approval via the API (site admins events are auto-appr
 
 Here's an example:
 
-```
+~~~~
  curl -v -H "Content-Type: application/json" -H "Authorization: OAuth 2ffcd58992c73241" -X POST http://api.dev.joind.in:8080/v2.1/events/ -d '{"name": "New Event", "description": "this is going to be an awesome event, where great talks will take place and many people will gather", "start_date": "2014-09-08T12:15:00+01:00", "end_date": "2014-09-11T20:00:00+01:00", "tz_continent": "Europe", "tz_place": "Madrid"}'
-```
+~~~~
 
 These are the only required fields:
 
@@ -202,7 +202,7 @@ You may also add any or all of these additional fields:
  
 The response should include a 201 Created header.  Here is an example of a full request and response:
 
-```
+~~~~
 > POST /v2.1/events/ HTTP/1.1
 > User-Agent: curl/7.32.0
 > Host: api.dev.joind.in:8080
@@ -222,5 +222,5 @@ The response should include a 201 Created header.  Here is an example of a full 
 < Connection: close
 < Content-Type: text/html; charset=UTF-8
 < 
-```
+~~~~
 
