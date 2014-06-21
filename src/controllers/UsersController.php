@@ -41,7 +41,15 @@ class UsersController extends ApiController {
                     throw new Exception('User not found', 404);
                 }
             } else {
-                $list = $mapper->getUserList($resultsperpage, $start, $verbose);
+                if(isset($request->parameters['username'])) {
+                    $username = filter_var($request->parameters['username'], FILTER_SANITIZE_STRING);
+                    $list = $mapper->getUserByUsername($username, $verbose);
+                    if ($list === false) {
+                        throw new Exception('Username not found', 404);
+                    }
+                } else {
+                    $list = $mapper->getUserList($resultsperpage, $start, $verbose);
+                }
             }
         }
 

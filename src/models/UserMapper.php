@@ -52,7 +52,31 @@ class UserMapper extends ApiMapper
 
     }
 
-    protected function getUsers($resultsperpage, $start, $where = null, $order = null) 
+    public function getUserByUsername($username, $verbose = false)
+    {
+        $sql = 'select user.* '
+            . 'from user '
+            . 'left join user_attend ua on (ua.uid = user.ID) '
+            . 'where active = 1 '
+            . 'and user.username = ?'
+            . 'group by user.ID' ;
+
+        // limit clause
+        $sql .= $this->buildLimit(1, 0);
+
+        $stmt = $this->_db->prepare($sql);
+
+        $response = $stmt->execute(array($username));
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($results) {
+                return $this->transformResults($results, $verbose);
+            }
+        }
+        return false;
+    }
+
+    protected function getUsers($resultsperpage, $start, $where = null, $order = null)
     {
         $sql = 'select user.* '
             . 'from user '
