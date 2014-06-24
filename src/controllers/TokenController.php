@@ -43,7 +43,9 @@ class TokenController extends ApiController
             }
 
             // expire any old tokens
-            $this->oauthModel->expireOldTokens($this->config['oauth']['expirable_client_ids']);
+            if(isset($this->config['oauth']['expirable_client_ids'])) {
+                $this->oauthModel->expireOldTokens($this->config['oauth']['expirable_client_ids']);
+            }
 
             // generate a temporary access token and then redirect back to the callback
             $username = $request->getParameter('username');
