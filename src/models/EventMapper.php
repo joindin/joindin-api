@@ -121,7 +121,7 @@ class EventMapper extends ApiMapper
             . '(private <> "y" OR private IS NULL) ';
 
         if(array_key_exists("event_id", $params)) {
-            $where .= "and event_id = :event_id ";
+            $where .= "and events.ID = :event_id ";
             $data["event_id"] = $params["event_id"];
         }
 
@@ -135,15 +135,15 @@ class EventMapper extends ApiMapper
                     $order .= 'events.event_start';
                     break;
                 case "past": // past events, most recent first
-                    $where = ' and (events.event_start <' . (mktime(0, 0, 0)) . ')';
-                    $order = 'events.event_start desc';
+                    $where .= ' and (events.event_start <' . (mktime(0, 0, 0)) . ')';
+                    $order .= 'events.event_start desc';
                     break;
                 case "cfp": // events with open CfPs, soonest closing first
-                    $where = ' and events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
-                    $order = 'events.event_start';
+                    $where .= ' and events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
+                    $order .= 'events.event_start';
                     break;
                 default:
-                    $order = 'events.event_start desc';
+                    $order .= 'events.event_start desc';
                     break;
             }
         } else {
