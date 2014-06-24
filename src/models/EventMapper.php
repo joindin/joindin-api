@@ -630,9 +630,14 @@ class EventMapper extends ApiMapper
 
     /**
      * Submit an event for approval via the API, optionally allowing 
-     * callers to mark the event as automatically approved
+     * callers to mark the event as automatically approved.
      *
      * Accepts a subset of event fields
+     *
+     * @param string[] $event        Event data to insert into the database.
+     * @param boolean  $auto_approve if false an event is registered as 'pending' first and must be actively approved.
+     *
+     * @return integer|false
      */
     public function createEvent($event, $auto_approve = false) {
         $sql = "insert into events set event_name = :name,
@@ -641,11 +646,11 @@ class EventMapper extends ApiMapper
             event_tz_place = :tz_place ";
 
         // optional fields included if present
-        if(isset($event['href'])) {
-            $sql .= ", event_href = :href ";
-        }
-        if(isset($event['cfp_url'])) {
-            $sql .= ", event_cfp_url = :cfp_url ";
+        $optional_fields = array('href', 'cfp_url', 'cfp_start_date', 'cfp_end_date');
+        foreach ($optional_fields as $field) {
+            if (isset($event[$field])) {
+                $sql .= ", event_$field = :$field ";
+            }
         }
 
         // the active opposite to pending to get it on the right web1 lists
@@ -659,11 +664,10 @@ class EventMapper extends ApiMapper
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute($event);
         if($result) {
-            $event_id = $this->_db->lastInsertId();
-            return $event_id;
+            return $this->_db->lastInsertId();
         }
-        return false;
 
+        return false;
     }
 
     /**

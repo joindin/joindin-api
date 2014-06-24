@@ -265,14 +265,14 @@ class EventsController extends ApiController {
             if($cfp_url) {
                 $event['cfp_url'] = $cfp_url;
             }
-            
-            $cfp_start_date = strtotime($request->getParameter("cfp_start_date"));
+
+            $cfp_start_date = date_create($request->getParameter("cfp_start_date"));
             if($cfp_start_date) {
-                $event['cfp_start_date'] = new DateTime($request->getParameter("cfp_start_date"), $tz);
+                $event['cfp_start_date'] = $cfp_start_date->format('U');
             }
-            $cfp_end_date = strtotime($request->getParameter("cfp_end_date"));
+            $cfp_end_date = date_create($request->getParameter("cfp_end_date"));
             if($cfp_end_date) {
-                $event['cfp_end_date'] = new DateTime($request->getParameter("cfp_end_date"), $tz);
+                $event['cfp_end_date'] = $cfp_end_date->format('U');
             }
 
             // How does it look?  With no errors, we can proceed
