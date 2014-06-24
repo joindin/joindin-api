@@ -71,7 +71,6 @@ class EventsController extends ApiController {
                     $params["filter"] = $request->parameters['filter'];
                 }
 
-                // title
                 if(isset($request->parameters['title'])) {
                     $title = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
                     $params["title"] = $title;
@@ -79,7 +78,19 @@ class EventsController extends ApiController {
 
                 if(isset($request->parameters['stub'])) {
                     $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
-                    $params["stub"];
+                    $params["stub"] = $stub;
+                }
+
+                if(isset($request->parameters['tags'])) {
+                    // if it isn't an array, make it one
+                    if(is_array($request->parameters['tags'])) {
+                        foreach($request->parameters['tags'] as $t) {
+                            $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING);
+                        }
+                    } else {
+                        $tags = array(filter_var(trim($request->parameters['tags']), FILTER_SANITIZE_STRING));
+                    }
+                    $params["tags"] = $tags;
                 }
 
                 $list = $mapper->getEventList($resultsperpage, $start, $params, $verbose);
