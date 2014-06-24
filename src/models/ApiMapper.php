@@ -95,8 +95,6 @@ class ApiMapper
         $meta['count'] = $count;
 
         $meta['total'] = $total;
-        $meta['first_result'] = $count>0?$request->paginationParameters['start'] + 1:0;
-        $meta['last_result'] = $request->paginationParameters['start'] + $count;
         $meta['this_page'] = $request->base . $request->path_info .'?' . http_build_query($request->paginationParameters);
         $next_params = $prev_params = $counter_params = $request->paginationParameters;
         $firstOnNextPage = $counter_params['start'] + $counter_params['resultsperpage'];
