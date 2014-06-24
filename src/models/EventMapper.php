@@ -651,7 +651,11 @@ class EventMapper extends ApiMapper
 
         // the active opposite to pending to get it on the right web1 lists
         $sql .= ", private=0 ";
-        $sql .= (!$auto_approve) ? ", pending=1, active=0" : ", active=1";
+        if(!$auto_approve) {
+            $sql .= ", pending = 1, active=0";
+        } else {
+            $sql .= ", active = 1";
+        }
 
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute($event);
