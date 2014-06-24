@@ -186,6 +186,16 @@ class EventMapper extends ApiMapper
             $where .= ') ';
         }
 
+        if(array_key_exists("startdate", $params)) {
+            $where .= ' and events.event_start >= :startdate ';
+            $data["startdate"] = $params["startdate"];
+        }
+
+        if(array_key_exists("enddate", $params)) {
+            $where .= ' and events.event_start < :enddate ';
+            $data["enddate"] = $params["enddate"];
+        }
+
         // now add all that where clause
         $sql .= $where;
 

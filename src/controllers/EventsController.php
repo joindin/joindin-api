@@ -93,6 +93,20 @@ class EventsController extends ApiController {
                     $params["tags"] = $tags;
                 }
 
+                if(isset($request->parameters['startdate'])) {
+                    $start_datetime = new DateTime($request->parameters['startdate']);
+                    if($start_datetime) {
+                        $params["startdate"] = $start_datetime->format("U");
+                    }
+                }
+
+                if(isset($request->parameters['enddate'])) {
+                    $end_datetime = new DateTime($request->parameters['enddate']);
+                    if($end_datetime) {
+                        $params["enddate"] = $end_datetime->format("U");
+                    }
+                }
+
                 $list = $mapper->getEventList($resultsperpage, $start, $params, $verbose);
             }
         }
