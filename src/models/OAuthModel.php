@@ -98,7 +98,7 @@ class OAuthModel {
     {
         foreach ($clientIds as $clientId) {
             $sql = "DELETE FROM oauth_access_tokens WHERE
-                    consumer_key=:consumer_key AND created_date < :expiry_date";
+                    consumer_key=:consumer_key AND last_used_date < :expiry_date";
 
             $stmt = $this->_db->prepare($sql);
             $stmt->execute(array(
