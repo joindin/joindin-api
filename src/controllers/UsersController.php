@@ -37,7 +37,7 @@ class UsersController extends ApiController {
             $mapper = new UserMapper($db, $request);
             if($user_id) {
                 $list = $mapper->getUserById($user_id, $verbose);
-                if(false === $list) {
+                if(count($list['users']) == 0) {
                     throw new Exception('User not found', 404);
                 }
             } else {
