@@ -82,7 +82,7 @@ class EventMapper extends ApiMapper
      */
     public function getEventById($event_id, $verbose = false) 
     {
-        $results = $this->getEvents(1, 0, 'events.ID=' . (int)$event_id);
+        $results = $this->getEvents(1, 0, array("event_id" => $event_id));
         if ($results) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
@@ -100,7 +100,7 @@ class EventMapper extends ApiMapper
      *
      * @return array the raw database results
      */
-    protected function getEvents($resultsperpage, $start, $where = null, $order = null) 
+    protected function getEvents($resultsperpage, $start, $data = array()) 
     {
         $data = array();
 
@@ -119,14 +119,8 @@ class EventMapper extends ApiMapper
             . '(pending = 0 or pending is NULL) and '
             . '(private <> "y" OR private IS NULL) ';
 
-        // where
-        if ($where) {
-            $sql .= ' and ' . $where;
-        }
-
-        // order by
-        if ($order) {
-            $sql .= ' order by ' . $order;
+        if(array_key_exists("event_id", $data)) {
+            $sql .= "and event_id = :event_id ";
         }
 
         // limit clause

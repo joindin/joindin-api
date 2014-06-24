@@ -62,40 +62,27 @@ class EventsController extends ApiController {
                     throw new Exception('Event not found', 404);
                 }
             } else {
-                // check if we're filtering
-                if(isset($request->parameters['filter'])) {
-                    switch($request->parameters['filter']) {
-                        case "hot":
-                            $list = $mapper->getHotEventList($resultsperpage, $start, $verbose);
-                            break;
-                        case "upcoming":
-                            $list = $mapper->getUpcomingEventList($resultsperpage, $start, $verbose);
-                            break;
-                        case "past":
-                            $list = $mapper->getPastEventList($resultsperpage, $start, $verbose);
-                            break;
-                        case "cfp":
-                            $list = $mapper->getOpenCfPEventList($resultsperpage, $start, $verbose);
-                            break;
-                        default:
-                            throw new InvalidArgumentException('Unknown event filter', 404);
-                            break;
-                    }
-                } elseif(isset($request->parameters['title'])) {
-                    $title = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
-                    $list  = $mapper->getEventsByTitle($title, $resultsperpage, $start, $verbose);
-                    if ($list === false) {
-                        throw new Exception('Event not found', 404);
-                    }
-                } elseif(isset($request->parameters['stub'])) {
-                    $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
-                    $list = $mapper->getEventByStub($stub, $verbose);
-                    if ($list === false) {
-                        throw new Exception('Stub not found', 404);
-                    }
-                } else {
-                    $list = $mapper->getEventList($resultsperpage, $start, $verbose);
+                // handle the filter parameters
+                $params = array();
+
+                // collection type filter
+                $filters = array("hot", "upcoming", "past", "cfp");
+                if(isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters)) {
+                    $params["filter"] = $request->parameters['filter'];
                 }
+
+                // title
+                if(isset($request->parameters['title'])) {
+                    $title = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
+                    $params["title"] = $title;
+                }
+
+                if(isset($request->parameters['stub'])) {
+                    $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
+                    $params["stub"];
+                }
+
+                $list = $mapper->getEventList($resultsperpage, $start, $verbose);
             }
         }
 
