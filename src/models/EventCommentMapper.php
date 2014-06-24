@@ -29,6 +29,7 @@ class EventCommentMapper extends ApiMapper {
             ));
         if($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
@@ -45,6 +46,7 @@ class EventCommentMapper extends ApiMapper {
         if($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
+                $results['total'] = $this->getTotalCount($sql, array(':comment_id'=>$comment_id));
                 $retval = $this->transformResults($results, $verbose);
                 return $retval;
             }
@@ -53,6 +55,10 @@ class EventCommentMapper extends ApiMapper {
     }
 
     public function transformResults($results, $verbose) {
+
+        $total = $results['total'];
+        unset($results['total']);
+
         $list = parent::transformResults($results, $verbose);
         $base = $this->_request->base;
         $version = $this->_request->version;
@@ -83,7 +89,7 @@ class EventCommentMapper extends ApiMapper {
         }
         $retval = array();
         $retval['comments'] = $list;
-        $retval['meta'] = $this->getPaginationLinks($list);
+        $retval['meta'] = $this->getPaginationLinks($list, $total);
 
         return $retval;
     }

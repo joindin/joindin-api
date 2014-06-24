@@ -34,6 +34,7 @@ class TrackMapper extends ApiMapper
         ));
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
             $retval = $this->transformResults($results, $verbose);
 
             return $retval;
@@ -43,6 +44,9 @@ class TrackMapper extends ApiMapper
     }
 
     public function transformResults($results, $verbose) {
+
+        $total = $results['total'];
+        unset($results['total']);
         $list = parent::transformResults($results, $verbose);
         $base = $this->_request->base;
         $version = $this->_request->version;
@@ -71,6 +75,7 @@ class TrackMapper extends ApiMapper
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
+                $results['total'] = $this->getTotalCount($sql, array("track_id" => $track_id));
                 $retval = $this->transformResults($results, $verbose);
 
                 return $retval;

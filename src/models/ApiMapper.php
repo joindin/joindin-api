@@ -65,21 +65,49 @@ class ApiMapper
         return $limit;
     }
 
-    protected function getPaginationLinks($list) 
+    /**
+     * get a total-results count
+     *
+     * @param string $sqlQuery
+     * @param array  $data
+     *
+     * @return int
+     */
+    public function getTotalCount($sqlQuery, array $data = array())
+    {
+        $limitPos = strrpos($sqlQuery, 'LIMIT');
+        if (false !== $limitPos) {
+            $sqlQuery = substr($sqlQuery, 0, $limitPos);
+        }
+        $countSql = sprintf('SELECT count(*) AS count FROM (%s) as counter', $sqlQuery);
+        $stmtCount = $this->_db->prepare($countSql);
+        if (! $stmtCount->execute($data)) {
+            return 0;
+        }
+
+        return $stmtCount->fetchColumn(0);
+    }
+
+    protected function getPaginationLinks($list, $total = 0)
     {
         $request = $this->_request;
         $count = count($list);
-        $meta['count'] = $count; 
-        $meta['this_page'] = $request->base . $request->path_info .'?' . http_build_query($request->paginationParameters);
-        $next_params = $prev_params = $request->paginationParameters;
+        $meta['count'] = $count;
 
-        if ($count > 1) {
+        $meta['total'] = $total;
+        $meta['this_page'] = $request->base . $request->path_info .'?' . http_build_query($request->paginationParameters);
+        $next_params = $prev_params = $counter_params = $request->paginationParameters;
+        $firstOnNextPage = $counter_params['start'] + $counter_params['resultsperpage'];
+        $firstOnThisPage = $counter_params['start'];
+
+        if ($firstOnNextPage < $total) {
             $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
-            $meta['next_page'] = $request->base . $request->path_info . '?' . http_build_query($next_params);
-            if ($prev_params['start'] >= $prev_params['resultsperpage']) {
-                $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
-                $meta['prev_page'] = $request->base . $request->path_info . '?' . http_build_query($prev_params);
-            }
+            $meta['next_page']    = $request->base . $request->path_info . '?' . http_build_query($next_params);
+        }
+        if (0 < $firstOnThisPage) {
+            $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
+            if ($prev_params['start'] < 0) $prev_params['start'] = 0;
+            $meta['prev_page'] = $request->base . $request->path_info . '?' . http_build_query($prev_params);
         }
         return $meta;
     }

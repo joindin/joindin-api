@@ -136,6 +136,7 @@ class EventMapper extends ApiMapper
         $response = $stmt->execute($data);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results['total'] = $this->getTotalCount($sql, $data);
             return $results;
         }
         return false;
@@ -321,6 +322,8 @@ class EventMapper extends ApiMapper
      */
     public function transformResults($results, $verbose) 
     {
+        $total = $results['total'];
+        unset($results['total']);
         $list = parent::transformResults($results, $verbose);
         $base = $this->_request->base;
         $version = $this->_request->version;
@@ -374,7 +377,7 @@ class EventMapper extends ApiMapper
         }
         $retval = array();
         $retval['events'] = $list;
-        $retval['meta'] = $this->getPaginationLinks($list);
+        $retval['meta'] = $this->getPaginationLinks($list, $total);
 
         return $retval;
     }
@@ -485,6 +488,7 @@ class EventMapper extends ApiMapper
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if(is_array($results)) {
+                $results['total'] = $this->getTotalCount($sql, $data);
                 $retval = $this->transformResults($results, $verbose);
                 return $retval;
             }
