@@ -82,7 +82,7 @@ class EventsController extends ApiController {
                     $params["stub"];
                 }
 
-                $list = $mapper->getEventList($resultsperpage, $start, $verbose);
+                $list = $mapper->getEventList($resultsperpage, $start, $params, $verbose);
             }
         }
 

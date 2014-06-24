@@ -95,14 +95,15 @@ class EventMapper extends ApiMapper
      * 
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
-     * @param string $where one final thing to add to the where after an "AND"
-     * @param string $order what goes after "ORDER BY"
+     * @param array $params filters and other parameters to limit/order the collection
      *
      * @return array the raw database results
      */
-    protected function getEvents($resultsperpage, $start, $data = array()) 
+    protected function getEvents($resultsperpage, $start, $params = array()) 
     {
         $data = array();
+        $order = " order by ";
+        $where = "";
 
         $sql = 'select events.*, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
@@ -119,9 +120,38 @@ class EventMapper extends ApiMapper
             . '(pending = 0 or pending is NULL) and '
             . '(private <> "y" OR private IS NULL) ';
 
-        if(array_key_exists("event_id", $data)) {
-            $sql .= "and event_id = :event_id ";
+        if(array_key_exists("event_id", $params)) {
+            $where .= "and event_id = :event_id ";
+            $data["event_id"] = $params["event_id"];
         }
+
+        if(array_key_exists("filter", $params)) {
+            switch($params['filter']) {
+                case "hot": // current and popular events
+                    $order .= "score - ((comment_count + attendee_count + 1) / 5)";
+                    break;
+                case "upcoming": // future events, soonest first
+                    $where .= ' and (events.event_start >=' . (mktime(0, 0, 0) - (3 * 86400)) . ')';
+                    $order .= 'events.event_start';
+                    break;
+                case "past": // past events, most recent first
+                    $where = ' and (events.event_start <' . (mktime(0, 0, 0)) . ')';
+                    $order = 'events.event_start desc';
+                    break;
+                case "cfp": // events with open CfPs, soonest closing first
+                    $where = ' and events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
+                    $order = 'events.event_start';
+                    break;
+                default:
+                    $order = 'events.event_start desc';
+                    break;
+            }
+        } else {
+            // default ordering
+            $order .= 'events.event_start desc ';
+        }
+
+        $sql .= $where . " " . $order;
 
         // limit clause
         $sql .= $this->buildLimit($resultsperpage, $start);
@@ -141,100 +171,14 @@ class EventMapper extends ApiMapper
      * 
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
+     * @param array $params filters and other parameters to limit/order the collection
      * @param boolean $verbose used to determine how many fields are needed
      * 
      * @return array the data, or false if something went wrong
      */
-    public function getEventList($resultsperpage, $start, $verbose = false) 
+    public function getEventList($resultsperpage, $start, $params, $verbose = false) 
     {
-        $order = 'events.event_start desc';
-        $results = $this->getEvents($resultsperpage, $start, null, $order);
-        if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-    }
-
-    /**
-     * Events which are current and popular
-     *
-     * formula taken from original joindin codebase, uses number of people
-     * attending and how soon/recent something is to calculate it's "hotness"
-     * 
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * 
-     * @return array the data, or false if something went wrong
-     */
-    public function getHotEventList($resultsperpage, $start, $verbose = false) 
-    {
-        $order = "score - ((comment_count + attendee_count + 1) / 5)";
-        $results = $this->getEvents($resultsperpage, $start, null, $order);
-        if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-    }
-
-    /**
-     * Future events, soonest first
-     * 
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * 
-     * @return array the data, or false if something went wrong
-     */
-    public function getUpcomingEventList($resultsperpage, $start, $verbose = false) 
-    {
-        $where = '(events.event_start >=' . (mktime(0, 0, 0) - (3 * 86400)) . ')';
-        $order = 'events.event_start';
-        $results = $this->getEvents($resultsperpage, $start, $where, $order);
-        if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-    }
-
-    /**
-     * Past events, most recent first
-     * 
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * 
-     * @return array the data, or false if something went wrong
-     */
-    public function getPastEventList($resultsperpage, $start, $verbose = false) 
-    {
-        $where = '(events.event_start <' . (mktime(0, 0, 0)) . ')';
-        $order = 'events.event_start desc';
-        $results = $this->getEvents($resultsperpage, $start, $where, $order);
-        if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-    }
-
-    /**
-     * Events with CfPs that close in the future and a cfp_url
-     * 
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * 
-     * @return array the data, or false if something went wrong
-     */
-    public function getOpenCfPEventList($resultsperpage, $start, $verbose = false) 
-    {
-        $where = 'events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
-        $order = 'events.event_start';
-        $results = $this->getEvents($resultsperpage, $start, $where, $order);
+        $results = $this->getEvents($resultsperpage, $start, $params);
         if (is_array($results)) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
