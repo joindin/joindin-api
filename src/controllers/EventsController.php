@@ -285,22 +285,23 @@ class EventsController extends ApiController {
 
                 if($user_mapper->isSiteAdmin($request->user_id)) {
                     $event_id = $event_mapper->createEvent($event, true);
+
+                    // redirect to event listing
+                    header("Location: " . $request->base . $request->path_info . '/' . $event_id, NULL, 201);
                 } else {
                     $event_id = $event_mapper->createEvent($event);
+
+                    // set status to accepted; a pending event won't be visible
+                    header("Location: " . $request->base . $request->path_info, NULL, 202);
                 }
 
                 // now set the current user as host and attending
                 $event_mapper->addUserAsHost($event_id, $request->user_id);
                 $event_mapper->setUserAttendance($event_id, $request->user_id);
 
-                // redirect to event listing; a pending event won't be visible
-                header("Location: " . $request->base . $request->path_info, NULL, 201);
                 exit;
-
             }
-
         }
-
     }
 
     public function deleteAction($request, $db) {
