@@ -292,7 +292,7 @@ class EventsController extends ApiController {
                     $event_id = $event_mapper->createEvent($event);
 
                     // set status to accepted; a pending event won't be visible
-                    http_response_code(202);
+                    header("Location: " . $request->base . $request->path_info, NULL, 202);
                 }
 
                 // now set the current user as host and attending
