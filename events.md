@@ -31,8 +31,13 @@ We currently support the following parameters for filtering events:
    - ``past``: past events, sorted by date with the most recent first
    - ``cfps``: events that currently have open CfPs
 
-*  ``title``: Search for an event by title (exact match, e.g "PHP Benelux Conference 2014")
+*  ``title``: Search for an event by title (partial match, e.g."Benelux" will find "PHP Benelux Conference 2014")
 *  ``stub``: Search for an event by its short name (exact match, e.g. "phpbnl14")
+*  ``tags``: Events with a particular tag.  You can supply as many of these as you like by doing something like ``tags[]=php&tags[]=community``
+*  ``startdate``: Search for events on or after this date (should be fairly flexible about what date format you give it)
+*  ``enddate``: Search for events before this date (should be fairly flexible about what date format you give it)
+
+You can supply as many of these as you wish; the filters will combine for the most part.
 
 ## Event Format
 
