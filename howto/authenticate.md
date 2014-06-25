@@ -21,7 +21,7 @@ This page is in two parts - the first section shows you which applications you h
 
 For each user, you will need to send them over to joind.in to log in as themselves and confirm that they grant your application access to their data.  The URL you want is:
 
-    {{ site.apiurl }}/user/oauth_allow?api_key=[api-key]&callback=[callback_url]
+    http://joind.in/user/oauth_allow?api_key=[api-key]&callback=[callback_url]
 
 The ``[api-key]`` should be the key you registered in step 1.  The ``[callback_url]`` must **exactly** match the callback URL you registered when signing up for your API key.  There is an optional additional parameter called ``state``; whatever you set here will be sent back to you as a query parameter when we forward the user back your callback.
 
