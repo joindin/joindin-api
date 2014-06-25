@@ -161,6 +161,110 @@ frisby.create('Existing user')
   })
   .toss();
 
+frisby.create('Authentication: token success')
+  .post(baseURL + "/v2.1/token", {
+    username: "imaadmin",
+    password: "password",
+    grant_type: "password",
+    client_id: "web2"
+  }, { json: true })
+  .expectStatus(200)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .afterJSON(function(response) {
+    expect(typeof response).toBe('object');
+    expect(response.access_token).toBeDefined();
+    expect(typeof response.access_token).toBe('string');
+    expect(response.user_uri).toBeDefined();
+    expect(typeof response.user_uri).toBe('string');
+  })
+  .toss();
+
+frisby.create('Authentication: grant type missing, should fail')
+  .post(baseURL + "/v2.1/token", {
+    username: "imaadmin",
+    password: "password",
+    client_id: "web2"
+  }, { json: true })
+  .expectStatus(400)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .afterJSON(function(response) {
+    expect(typeof response).toBe('object');
+    expect(typeof response[0]).toBe('string'); // error message
+  })
+  .toss();
+
+frisby.create('Authentication: client ID missing, should fail')
+  .post(baseURL + "/v2.1/token", {
+    username: "imaadmin",
+    password: "password",
+    grant_type: "password"
+  }, { json: true })
+  .expectStatus(403)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .afterJSON(function(response) {
+    expect(typeof response).toBe('object');
+    expect(typeof response[0]).toBe('string'); // error message
+  })
+  .toss();
+
+frisby.create('Authentication: client ID invalid, should fail')
+  .post(baseURL + "/v2.1/token", {
+    username: "imaadmin",
+    password: "password",
+    grant_type: "password",
+    client_id: "a made up client ID"
+  }, { json: true })
+  .expectStatus(403)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .afterJSON(function(response) {
+    expect(typeof response).toBe('object');
+    expect(typeof response[0]).toBe('string'); // error message
+  })
+  .toss();
+
+frisby.create('Authentication: username missing, should fail')
+  .post(baseURL + "/v2.1/token", {
+    password: "password",
+    grant_type: "password",
+    client_id: "web2"
+  }, { json: true })
+  .expectStatus(400)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .afterJSON(function(response) {
+    expect(typeof response).toBe('object');
+    expect(typeof response[0]).toBe('string'); // error message
+  })
+  .toss();
+
+frisby.create('Authentication: password missing, should fail')
+  .post(baseURL + "/v2.1/token", {
+    username: "imaadmin",
+    grant_type: "password",
+    client_id: "web2"
+  }, { json: true })
+  .expectStatus(400)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .afterJSON(function(response) {
+    expect(typeof response).toBe('object');
+    expect(typeof response[0]).toBe('string'); // error message
+  })
+  .toss();
+
+frisby.create('Authentication: password incorrect, should fail')
+  .post(baseURL + "/v2.1/token", {
+    username: "imaadmin",
+    password: "this is the wrong password",
+    grant_type: "password",
+    client_id: "web2"
+  }, { json: true })
+  .expectStatus(403)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .afterJSON(function(response) {
+    expect(typeof response).toBe('object');
+    expect(typeof response[0]).toBe('string'); // error message
+  })
+  .toss();
+
 function checkDate(fieldValue) {
   dateVal = new Date(fieldValue);
   expect(getObjectClass(dateVal)).toBe('Date');

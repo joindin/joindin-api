@@ -57,8 +57,10 @@ class TokenController extends ApiController
                 return array('access_token' => $result['access_token'], 'user_uri' => $result['user_uri']);
             }
 
+            throw new Exception("Signin failed", 403);
         }
-        return false;
+
+        throw new Exception("Grant type not recognised", 400);
     }
 
 }
