@@ -62,40 +62,52 @@ class EventsController extends ApiController {
                     throw new Exception('Event not found', 404);
                 }
             } else {
-                // check if we're filtering
-                if(isset($request->parameters['filter'])) {
-                    switch($request->parameters['filter']) {
-                        case "hot":
-                            $list = $mapper->getHotEventList($resultsperpage, $start, $verbose);
-                            break;
-                        case "upcoming":
-                            $list = $mapper->getUpcomingEventList($resultsperpage, $start, $verbose);
-                            break;
-                        case "past":
-                            $list = $mapper->getPastEventList($resultsperpage, $start, $verbose);
-                            break;
-                        case "cfp":
-                            $list = $mapper->getOpenCfPEventList($resultsperpage, $start, $verbose);
-                            break;
-                        default:
-                            throw new InvalidArgumentException('Unknown event filter', 404);
-                            break;
-                    }
-                } elseif(isset($request->parameters['title'])) {
-                    $title = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
-                    $list  = $mapper->getEventsByTitle($title, $resultsperpage, $start, $verbose);
-                    if ($list === false) {
-                        throw new Exception('Event not found', 404);
-                    }
-                } elseif(isset($request->parameters['stub'])) {
-                    $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
-                    $list = $mapper->getEventByStub($stub, $verbose);
-                    if ($list === false) {
-                        throw new Exception('Stub not found', 404);
-                    }
-                } else {
-                    $list = $mapper->getEventList($resultsperpage, $start, $verbose);
+                // handle the filter parameters
+                $params = array();
+
+                // collection type filter
+                $filters = array("hot", "upcoming", "past", "cfp");
+                if(isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters)) {
+                    $params["filter"] = $request->parameters['filter'];
                 }
+
+                if(isset($request->parameters['title'])) {
+                    $title = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
+                    $params["title"] = $title;
+                }
+
+                if(isset($request->parameters['stub'])) {
+                    $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
+                    $params["stub"] = $stub;
+                }
+
+                if(isset($request->parameters['tags'])) {
+                    // if it isn't an array, make it one
+                    if(is_array($request->parameters['tags'])) {
+                        foreach($request->parameters['tags'] as $t) {
+                            $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING);
+                        }
+                    } else {
+                        $tags = array(filter_var(trim($request->parameters['tags']), FILTER_SANITIZE_STRING));
+                    }
+                    $params["tags"] = $tags;
+                }
+
+                if(isset($request->parameters['startdate'])) {
+                    $start_datetime = new DateTime($request->parameters['startdate']);
+                    if($start_datetime) {
+                        $params["startdate"] = $start_datetime->format("U");
+                    }
+                }
+
+                if(isset($request->parameters['enddate'])) {
+                    $end_datetime = new DateTime($request->parameters['enddate']);
+                    if($end_datetime) {
+                        $params["enddate"] = $end_datetime->format("U");
+                    }
+                }
+
+                $list = $mapper->getEventList($resultsperpage, $start, $params, $verbose);
             }
         }
 

@@ -82,7 +82,7 @@ class EventMapper extends ApiMapper
      */
     public function getEventById($event_id, $verbose = false) 
     {
-        $results = $this->getEvents(1, 0, 'events.ID=' . (int)$event_id);
+        $results = $this->getEvents(1, 0, array("event_id" => $event_id));
         if ($results) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
@@ -95,14 +95,15 @@ class EventMapper extends ApiMapper
      * 
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
-     * @param string $where one final thing to add to the where after an "AND"
-     * @param string $order what goes after "ORDER BY"
+     * @param array $params filters and other parameters to limit/order the collection
      *
      * @return array the raw database results
      */
-    protected function getEvents($resultsperpage, $start, $where = null, $order = null) 
+    protected function getEvents($resultsperpage, $start, $params = array()) 
     {
         $data = array();
+        $order = " order by ";
+        $where = "";
 
         $sql = 'select events.*, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
@@ -115,19 +116,96 @@ class EventMapper extends ApiMapper
                END as comments_enabled '
             . 'from events ';
 
+        if(array_key_exists("tags", $params)) {
+            $sql .= "left join tags_events on tags_events.event_id = events.ID 
+                left join tags on tags.ID = tags_events.tag_id ";
+        }
+
         $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
             . '(private <> "y" OR private IS NULL) ';
 
-        // where
-        if ($where) {
-            $sql .= ' and ' . $where;
+        if(array_key_exists("event_id", $params)) {
+            $where .= "and events.ID = :event_id ";
+            $data["event_id"] = $params["event_id"];
         }
 
-        // order by
-        if ($order) {
-            $sql .= ' order by ' . $order;
+        if(array_key_exists("filter", $params)) {
+            switch($params['filter']) {
+                case "hot": // current and popular events
+                    $order .= "score - ((comment_count + attendee_count + 1) / 5)";
+                    break;
+                case "upcoming": // future events, soonest first
+                    $where .= ' and (events.event_start >=' . (mktime(0, 0, 0) - (3 * 86400)) . ')';
+                    $order .= 'events.event_start';
+                    break;
+                case "past": // past events, most recent first
+                    $where .= ' and (events.event_start <' . (mktime(0, 0, 0)) . ')';
+                    $order .= 'events.event_start desc';
+                    break;
+                case "cfp": // events with open CfPs, soonest closing first
+                    $where .= ' and events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
+                    $order .= 'events.event_start';
+                    break;
+                default:
+                    $order .= 'events.event_start desc';
+                    break;
+            }
+        } else {
+            // default ordering
+            $order .= 'events.event_start desc ';
         }
+
+        if(array_key_exists("stub", $params)) {
+            $where .= ' and events.event_stub = :stub';
+            $data['stub'] = $params['stub'];
+        }
+
+        // fuzzy/partial match for title
+        if(array_key_exists("title", $params)) {
+            $order .= ', events.event_start desc';
+            $where .= ' and LOWER(events.event_name) like :title';
+            $data['title'] = "%" . strtolower($params['title']) . "%";
+        }
+
+        // messy OR statements because we can't escape when using IN()
+        if(array_key_exists("tags", $params)) {
+            $where .= ' and (';
+
+            $i = 0;
+            foreach($params['tags'] as $tag) {
+                if($i > 0) {
+                    $where .= " OR ";
+                }
+
+                $where .= "tags.tag_value = :tag" . $i;
+                $data["tag" . $i] = $tag;
+                $i++;
+            }
+
+            $where .= ') ';
+        }
+
+        if(array_key_exists("startdate", $params)) {
+            $where .= ' and events.event_start >= :startdate ';
+            $data["startdate"] = $params["startdate"];
+        }
+
+        if(array_key_exists("enddate", $params)) {
+            $where .= ' and events.event_start < :enddate ';
+            $data["enddate"] = $params["enddate"];
+        }
+
+        // now add all that where clause
+        $sql .= $where;
+
+        // group by if we joined additional tables
+        if(array_key_exists("tags", $params)) {
+            $sql .= " group by events.ID ";
+        }
+
+        // add the ordering instruction
+        $sql .= $order;
 
         // limit clause
         $sql .= $this->buildLimit($resultsperpage, $start);
@@ -147,100 +225,14 @@ class EventMapper extends ApiMapper
      * 
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
+     * @param array $params filters and other parameters to limit/order the collection
      * @param boolean $verbose used to determine how many fields are needed
      * 
      * @return array the data, or false if something went wrong
      */
-    public function getEventList($resultsperpage, $start, $verbose = false) 
+    public function getEventList($resultsperpage, $start, $params, $verbose = false) 
     {
-        $order = 'events.event_start desc';
-        $results = $this->getEvents($resultsperpage, $start, null, $order);
-        if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-    }
-
-    /**
-     * Events which are current and popular
-     *
-     * formula taken from original joindin codebase, uses number of people
-     * attending and how soon/recent something is to calculate it's "hotness"
-     * 
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * 
-     * @return array the data, or false if something went wrong
-     */
-    public function getHotEventList($resultsperpage, $start, $verbose = false) 
-    {
-        $order = "score - ((comment_count + attendee_count + 1) / 5)";
-        $results = $this->getEvents($resultsperpage, $start, null, $order);
-        if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-    }
-
-    /**
-     * Future events, soonest first
-     * 
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * 
-     * @return array the data, or false if something went wrong
-     */
-    public function getUpcomingEventList($resultsperpage, $start, $verbose = false) 
-    {
-        $where = '(events.event_start >=' . (mktime(0, 0, 0) - (3 * 86400)) . ')';
-        $order = 'events.event_start';
-        $results = $this->getEvents($resultsperpage, $start, $where, $order);
-        if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-    }
-
-    /**
-     * Past events, most recent first
-     * 
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * 
-     * @return array the data, or false if something went wrong
-     */
-    public function getPastEventList($resultsperpage, $start, $verbose = false) 
-    {
-        $where = '(events.event_start <' . (mktime(0, 0, 0)) . ')';
-        $order = 'events.event_start desc';
-        $results = $this->getEvents($resultsperpage, $start, $where, $order);
-        if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-    }
-
-    /**
-     * Events with CfPs that close in the future and a cfp_url
-     * 
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * 
-     * @return array the data, or false if something went wrong
-     */
-    public function getOpenCfPEventList($resultsperpage, $start, $verbose = false) 
-    {
-        $where = 'events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
-        $order = 'events.event_start';
-        $results = $this->getEvents($resultsperpage, $start, $where, $order);
+        $results = $this->getEvents($resultsperpage, $start, $params);
         if (is_array($results)) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
@@ -526,51 +518,6 @@ class EventMapper extends ApiMapper
         } 
         return false;
     }
-
-    /**
-     * Fetch events matching or partially matching a given title
-     * 
-     * @param string  $title   the title we are looking for
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * 
-     * @return array the matching events, if any
-     */
-    public function getEventsByTitle($title, $resultsperpage, $start, $verbose = false) 
-    {
-        $order = 'events.event_start desc';
-        $where = 'LOWER(events.event_name) like "%' . strtolower($title) . '%"';
-        $results = $this->getEvents($resultsperpage, $start, $where, $order);
-        if ($results) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-    }
-
-
-    /**
-     * Fetch the details for a an event by its stub
-     * 
-     * @param string  $stub    the string identifier for this event
-     * @param boolean $verbose used to determine how many fields are needed
-     * 
-     * @return array the event detail
-     */
-    public function getEventByStub($stub, $verbose = false) 
-    {
-        $order = 'events.event_start desc';
-        $where = 'events.event_stub="' . $stub . '"';
-        $results = $this->getEvents(1, 0, $where, $order);
-        if ($results) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-
-    }
-
 
     /**
      * Count the number of talk comments for an event
