@@ -32,7 +32,7 @@ This should also work for git via the commandline (cmd.exe)
 
 Go to http://api.joind.in and click around!
 
-There's more documentation here: http://joind.in/api/v2docs
+There's more documentation here: http://joindin.github.io/joindin-api/
 
 ## Tools and Tests
 
