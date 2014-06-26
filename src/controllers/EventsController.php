@@ -136,11 +136,19 @@ class EventsController extends ApiController {
                             400
                         );
                     }
+
                     $event_mapper = new EventMapper($db, $request);
                     $is_admin = $event_mapper->thisUserHasAdminOn($talk['event_id']);
                     if(!$is_admin) {
                         throw new Exception("You do not have permission to add talks to this event", 400);
                     }
+
+                    // get the event so we can get the timezone info
+                    $list = $event_mapper->getEventById($talk['event_id'], true);
+                    if(count($list['events']) == 0) {
+                        throw new Exception('Event not found', 404);
+                    }
+                    $event = $list['events'][0];
 
                     $talk['title'] = filter_var(
                         $request->getParameter('talk_title'), 
@@ -149,12 +157,20 @@ class EventsController extends ApiController {
                     if(empty($talk['title'])) {
                         throw new Exception("The talk title field is required", 400);
                     }
+
                     $talk['description'] = filter_var(
                         $request->getParameter('talk_description'), 
                         FILTER_SANITIZE_STRING
                     );
                     if(empty($talk['description'])) {
                         throw new Exception("The talk description field is required", 400);
+                    }
+
+                    $talk_types = array("Talk", "Social event", "Keynote", "Workshop", "Event related");
+                    if($request->getParameter("talk_type") && in_array($request->getParameter("talk_type"), $talk_types)) {
+                        $talk['talk_type'] = $request->getParameter("talk_type");
+                    } else {
+                        $talk['talk_type'] = "Talk";
                     }
 
                     $talk['language'] = filter_var($request->getParameter('language'), FILTER_SANITIZE_STRING);
@@ -167,7 +183,9 @@ class EventsController extends ApiController {
                     if(empty($start_date)) {
                         throw new Exception("Please give the date and time of the talk", 400);
                     }
-                    $talk['date'] = new DateTime($start_date);
+                    $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+                    $start_date = new DateTime($request->getParameter("start_date"), $tz);
+                    $talk['date'] = $start_date->format('U');
 
                     $speakers = $request->getParameter('speakers');
                     if(is_array($speakers)) {
