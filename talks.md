@@ -136,8 +136,47 @@ The following fields are understood:
      - Polish              
      - Finnish             
      - Brazilian Portuguese
+*  ``talk_type``: One of the following:
+     - Talk *(default)*
+     - Social event
+     - Workshop
+     - Keynote
+     - Event related
 *  ``start_date``: The start date and time of the session in ISO format
 *  ``speakers``: An array of names of speakers (still an array if there is only one speaker)
+
+Example request/response:
+
+~~~~
+
+curl -H "Content-Type: application/json" -X POST -v -H "Authorization: OAuth 978d93d6ec4ab2e1" http://api.dev.joind.in:8080/v2.1/events/14/talks -d '{"talk_title":"Middling Talk", "talk_description": "This talk is about things and aims to inform the audience", "start_date": "9am Friday"}'
+
+~~~~
+
+~~~~
+> POST /v2.1/events/14/talks HTTP/1.1
+> User-Agent: curl/7.32.0
+> Host: api.dev.joind.in:8080
+> Accept: */*
+> Content-Type: application/json
+> Authorization: OAuth 978d93d6ec4ab2e1
+> Content-Length: 139
+> 
+* upload completely sent off: 139 out of 139 bytes
+< HTTP/1.1 201 Created
+< Date: Thu, 26 Jun 2014 17:58:42 GMT
+* Server Apache/2.2.15 (CentOS) is not blacklisted
+< Server: Apache/2.2.15 (CentOS)
+< X-Powered-By: PHP/5.3.3
+< Location: http://api.dev.joind.in:8080/v2.1/events/14/talks/207
+< Content-Length: 1045
+< Connection: close
+< Content-Type: application/json; charset=utf8
+< 
+{"talks":[{"talk_title":"Middling Talk","url_friendly_talk_title":"middling-talk-2","talk_description":"This talk is about things and aims to inform the audience","type":"Talk","start_date":"2014-06-27T00:00:00+02:00","duration":0,"stub":"72560","average_rating":0,"comments_enabled":1,"comment_count":0,"starred":false,"starred_count":0,"speakers":[],"tracks":[],"uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207","verbose_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207?verbose=yes","website_uri":"http:\/\/joind.in\/talk\/view\/207","comments_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207\/comments","starred_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207\/starred","verbose_comments_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207\/comments?verbose=yes","event_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/events\/14"}],"meta":{"count":1,"total":1,"this_page":"http:\/\/api.dev.joind.in:8080\/v2.1\/events\/14\/talks?start=0&resultsperpage=20","user_uri":"http:\/\/api.dev.joind.in:80* Closing connection 0
+80\/v2.1\/users\/2"}}
+~~~~
+
 
 Other fields are not yet supported.  Editing of events via the API is not yet supported.
 
