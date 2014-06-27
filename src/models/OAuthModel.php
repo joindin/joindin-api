@@ -196,14 +196,16 @@ class OAuthModel {
      * the "password" grant type during the OAuth process
      *
      * @param string $key An OAuth consumer key to check
+     * @param string $secret The corresponding consumer secret
      * @return bool Whether the consumer is permitted
      */
-    public function isClientPermittedPasswordGrant($key) {
+    public function isClientPermittedPasswordGrant($key, $secret) {
         $sql = 'select c.enable_password_grant from '
             . 'oauth_consumers c '
-            . 'where c.consumer_key=:consumer_key';
+            . 'where c.consumer_key=:key '
+            . 'and c.consumer_secret=:secret';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("consumer_key" => $key));
+        $stmt->execute(array("key" => $key, "secret" => $secret));
         $result = $stmt->fetch();
         if ($result) {
             return $result['enable_password_grant'] == 1;
