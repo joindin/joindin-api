@@ -19,7 +19,8 @@ class TalkCommentMapper extends ApiMapper {
             'user_display_name' => 'full_name',
             'talk_title' => 'talk_title',
             'source' => 'source',
-            'created_date' => 'date_made'
+            'created_date' => 'date_made',
+            'email_hash' => 'email'
             );
         return $fields;
     }
@@ -94,6 +95,9 @@ class TalkCommentMapper extends ApiMapper {
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
+                if(true === $verbose) {
+                    $list[$key]['email_hash'] = md5(strtolower($list[$key]['email_hash']));
+                }
                 $list[$key]['uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['talk_uri'] = $base . '/' . $version . '/talks/' 
@@ -114,7 +118,7 @@ class TalkCommentMapper extends ApiMapper {
     }
 
     protected function getBasicSQL() {
-        $sql = 'select tc.*, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
+        $sql = 'select tc.*, user.email, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
             . 'from talk_comments tc '
             . 'inner join talks t on t.ID = tc.talk_id '
             . 'inner join events e on t.event_id = e.ID '
