@@ -119,7 +119,7 @@ class UserMapper extends ApiMapper
         $version = $this->_request->version;
 
         // add per-item links 
-        if (is_array($list) && count($list)) {
+        if(is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
                 if (true === $verbose) {
                     $list[$key]['email_hash'] = md5(strtolower($list[$key]['email_hash']));
