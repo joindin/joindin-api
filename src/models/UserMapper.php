@@ -36,7 +36,8 @@ class UserMapper extends ApiMapper
         $fields = array(
             "username" => "username",
             "full_name" => "full_name",
-            "twitter_username" => "twitter_username"
+            "twitter_username" => "twitter_username",
+            "email_hash" => "email"
             );
         return $fields;
     }
@@ -120,6 +121,9 @@ class UserMapper extends ApiMapper
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
+                if (true === $verbose) {
+                    $list[$key]['email_hash'] = md5(strtolower($list[$key]['email_hash']));
+                }
                 $list[$key]['uri'] = $base . '/' . $version . '/users/' 
                     . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/users/' 
