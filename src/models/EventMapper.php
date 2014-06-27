@@ -6,9 +6,7 @@
  * @uses ApiModel
  * @package API
  */
-class EventMapper extends ApiMapper 
-{
-
+class EventMapper extends ApiMapper {
     /**
      * Default mapping for column names to API field names
      * 
