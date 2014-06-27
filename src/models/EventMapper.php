@@ -143,7 +143,7 @@ class EventMapper extends ApiMapper {
                     break;
                 case "cfp": // events with open CfPs, soonest closing first
                     $where .= ' and events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
-                    $where .= ' and events.event_cfp_end < 6 weeks in the future here';
+                    $where .= ' and events.event_cfp_end <= DATE_ADD(NOW(), INTERVAL +42 DAY)';
                     $order .= 'events.event_start';
                     break;
                 default:
