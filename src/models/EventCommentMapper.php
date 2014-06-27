@@ -14,7 +14,8 @@ class EventCommentMapper extends ApiMapper {
         $fields = array(
             'comment' => 'comment',
             'source' => 'source',
-            'created_date' => 'date_made'
+            'created_date' => 'date_made',
+            'email_hash' => 'email'
             );
         return $fields;
     }
@@ -66,6 +67,9 @@ class EventCommentMapper extends ApiMapper {
         if (is_array($list) && count($list)) {
 
             foreach ($results as $key => $row) {
+                if(true === $verbose) {
+                    $list[$key]['email_hash'] = md5(strtolower($list[$key]['email_hash']));
+                }
                 // figure out user
                 if($row['user_id']) {
                     $list[$key]['user_display_name'] = $row['full_name'];
@@ -95,7 +99,7 @@ class EventCommentMapper extends ApiMapper {
     }
 
     protected function getBasicSQL() {
-        $sql = 'select ec.*, user.full_name, e.event_tz_cont, e.event_tz_place '
+        $sql = 'select ec.*, user.email, user.full_name, e.event_tz_cont, e.event_tz_place '
             . 'from event_comments ec '
             . 'left join user on user.ID = ec.user_id '
             . 'inner join events e on ec.event_id = e.ID '
