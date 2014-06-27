@@ -190,4 +190,25 @@ class OAuthModel {
             return "joind.in";
         }
     }
+
+    /**
+     * Check whether a supplied consumer is permitted to use
+     * the "password" grant type during the OAuth process
+     *
+     * @param string $key An OAuth consumer key to check
+     * @return bool Whether the consumer is permitted
+     */
+    public function isClientPermittedPasswordGrant($key) {
+        $sql = 'select c.enable_password_grant from '
+            . 'oauth_consumers c '
+            . 'where c.consumer_key=:consumer_key';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("consumer_key" => $key));
+        $result = $stmt->fetch();
+        if ($result) {
+            return $result['enable_password_grant'] == 1;
+        }
+
+        return false;
+    }
 }
