@@ -49,7 +49,7 @@ The verbose flag is valid here, but the fields returned are identical to the sta
 
 ## Filtering the Users Collection
 
-You can filter by ``username``, e.g. ``http://{{ site.apiurl }}/v2.1/users?username=lornajane``
+You can filter by ``username``, e.g. ``{{ site.apiurl }}/v2.1/users?username=lornajane``
 
 
 
