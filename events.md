@@ -13,11 +13,11 @@ This page deals with the various event pages and data structures of events.
 Output:
 
 ~~~~
-events: http://{{ site.apiurl }}/v2.1/events
-hot-events: http://{{ site.apiurl }}/v2.1/events?filter=hot
-upcoming-events: http://{{ site.apiurl }}/v2.1/events?filter=upcoming
-past-events: http://{{ site.apiurl }}/v2.1/events?filter=past
-open-cfps: http://{{ site.apiurl }}/v2.1/events?filter=cfp
+events: {{ site.apiurl }}/v2.1/events
+hot-events: {{ site.apiurl }}/v2.1/events?filter=hot
+upcoming-events: {{ site.apiurl }}/v2.1/events?filter=upcoming
+past-events: {{ site.apiurl }}/v2.1/events?filter=past
+open-cfps: {{ site.apiurl }}/v2.1/events?filter=cfp
 ~~~~
 
 ## Filtering the Events Collection
