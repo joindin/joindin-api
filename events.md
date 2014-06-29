@@ -185,9 +185,11 @@ You can submit events for approval via the API (site admins events are auto-appr
 
 Here's an example:
 
-~~~~
- curl -v -H "Content-Type: application/json" -H "Authorization: OAuth 2ffcd58992c73241" -X POST http://api.dev.joind.in:8080/v2.1/events/ -d '{"name": "New Event", "description": "this is going to be an awesome event, where great talks will take place and many people will gather", "start_date": "2014-09-08T12:15:00+01:00", "end_date": "2014-09-11T20:00:00+01:00", "tz_continent": "Europe", "tz_place": "Madrid"}'
-~~~~
+<pre class="embedcurl"> curl -v -H "Content-Type: application/json" -H "Authorization: OAuth 2ffcd58992c73241" -X POST http://api.dev.joind.in:8080/v2.1/events/ -d '{"name": "New Event", "description": "this is going to be an awesome event, where great talks will take place and many people will gather", "start_date": "2014-09-08T12:15:00+01:00", "end_date": "2014-09-11T20:00:00+01:00", "tz_continent": "Europe", "tz_place": "Madrid"}'
+</pre>
+
+<!-- You only need to reference this script once per page. -->
+<script src="https://www.embedcurl.com/embedcurl.min.js" async></script>
 
 These are the only required fields:
 

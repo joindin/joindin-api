@@ -147,11 +147,12 @@ The following fields are understood:
 
 Example request/response:
 
-~~~~
+<pre class="embedcurl">curl -H "Content-Type: application/json" -X POST -v -H "Authorization: OAuth 978d93d6ec4ab2e1" http://api.dev.joind.in:8080/v2.1/events/14/talks -d '{"talk_title":"Middling Talk", "talk_description": "This talk is about things and aims to inform the audience", "start_date": "9am Friday"}'
 
-curl -H "Content-Type: application/json" -X POST -v -H "Authorization: OAuth 978d93d6ec4ab2e1" http://api.dev.joind.in:8080/v2.1/events/14/talks -d '{"talk_title":"Middling Talk", "talk_description": "This talk is about things and aims to inform the audience", "start_date": "9am Friday"}'
+</pre>
 
-~~~~
+<!-- You only need to reference this script once per page. -->
+<script src="https://www.embedcurl.com/embedcurl.min.js" async></script>
 
 ~~~~
 > POST /v2.1/events/14/talks HTTP/1.1

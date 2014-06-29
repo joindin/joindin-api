@@ -74,9 +74,11 @@ To comment on a talk, the user must be authenticated and should then send a POST
 
 Curl example:
 
-~~~~
-curl -v -H "Content-Type: application/json" -H "Authorization: OAuth f9b4f1a9b30bdc0d" /talks/139/comments --data '{"comment": "Great talk, thanks!", "rating": 4}'
-~~~~
+<pre class="embedcurl">curl -v -H "Content-Type: application/json" -H "Authorization: OAuth f9b4f1a9b30bdc0d" /talks/139/comments --data '{"comment": "Great talk, thanks!", "rating": 4}'
+</pre>
+
+<!-- You only need to reference this script once per page. -->
+<script src="https://www.embedcurl.com/embedcurl.min.js" async></script>
 
 Here's the example request/response (the -v switch ensures that you see the response headers)
 
