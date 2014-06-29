@@ -47,4 +47,10 @@ The verbose flag is valid here, but the fields returned are identical to the sta
 *  ``talks_uri``: Talks given by this user. *See also* [talks]({{ site.baseurl}})/talks.html
 *  ``attended_events_uri``: The events that this user was/will be at
 
+## Filtering the Users Collection
+
+You can filter by ``username``, e.g. ``http://{{ site.apiurl }}/v2.1/users?username=lornajane``
+
+
+
 
