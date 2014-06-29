@@ -56,19 +56,19 @@ class UserMapper extends ApiMapper
     {
         $sql = 'select user.* '
             . 'from user '
-            . 'left join user_attend ua on (ua.uid = user.ID) '
             . 'where active = 1 '
-            . 'and user.username = ?'
-            . 'group by user.ID' ;
+            . 'and user.username = :username';
 
         // limit clause
         $sql .= $this->buildLimit(1, 0);
 
         $stmt = $this->_db->prepare($sql);
+        $data = array("username" => $username);
 
-        $response = $stmt->execute(array($username));
+        $response = $stmt->execute($data);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results['total'] = $this->getTotalCount($sql, $data);
             if ($results) {
                 return $this->transformResults($results, $verbose);
             }
