@@ -104,6 +104,9 @@ class TalkCommentMapper extends ApiMapper {
                     $list[$key]['user_uri'] = $base . '/' . $version . '/users/' 
                         . $row['user_id'];
                 }
+                if ($row['email']) {
+                    $list[$key]['email_hash'] = md5(strtolower($row['email']));
+                }
             }
         }
         $retval = array();
@@ -114,7 +117,7 @@ class TalkCommentMapper extends ApiMapper {
     }
 
     protected function getBasicSQL() {
-        $sql = 'select tc.*, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
+        $sql = 'select tc.*, user.full_name, user.email, t.talk_title, e.event_tz_cont, e.event_tz_place '
             . 'from talk_comments tc '
             . 'inner join talks t on t.ID = tc.talk_id '
             . 'inner join events e on t.event_id = e.ID '

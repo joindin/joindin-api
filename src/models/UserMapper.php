@@ -153,6 +153,7 @@ class UserMapper extends ApiMapper
                     . $row['ID'] . '/talks/';
                 $list[$key]['attended_events_uri'] = $base . '/' . $version . '/users/' 
                     . $row['ID'] . '/attended/';
+                $list[$key]['email_hash'] = md5(strtolower($row['email']));
             }
         }
         $retval = array();
