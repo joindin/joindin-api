@@ -18,6 +18,7 @@ class TalkCommentMapper extends ApiMapper {
             'comment' => 'comment',
             'user_display_name' => 'full_name',
             'talk_title' => 'talk_title',
+            'url_friendly_talk_title' => 'url_friendly_talk_title',
             'source' => 'source',
             'created_date' => 'date_made'
             );
@@ -114,7 +115,7 @@ class TalkCommentMapper extends ApiMapper {
     }
 
     protected function getBasicSQL() {
-        $sql = 'select tc.*, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
+        $sql = 'select tc.*, user.full_name, t.talk_title, t.url_friendly_talk_title, e.event_tz_cont, e.event_tz_place '
             . 'from talk_comments tc '
             . 'inner join talks t on t.ID = tc.talk_id '
             . 'inner join events e on t.event_id = e.ID '
