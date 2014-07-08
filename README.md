@@ -32,7 +32,7 @@ This should also work for git via the commandline (cmd.exe)
 
 Go to http://api.joind.in and click around!
 
-There's more documentation here: http://joindin.github.io/joindin-api/
+There's more documentation here: http://joindin.github.io/joindin-api/ - it's powered by the content of the ``gh-pages`` branch on this repo, patches very welcome there also!
 
 ## Tools and Tests
 
@@ -93,6 +93,13 @@ To see a summary of the codesniff errors and warnings across the entire project,
 
     phing phpcs-human-summary
 
+### Generating the API Docs
+
+The API docs are written in markdown and rendered by [Jekyll](http://jekyllrb.com/), a ruby gem.  You can test this locally by doing the following
+
+* Get set up - the best instructions are GitHub's own and they keep these up to date: [https://help.github.com/articles/using-jekyll-with-pages](https://help.github.com/articles/using-jekyll-with-pages).
+
+* Generate the site: ``jekyll serve``.  This will output the URL of where you can access your local copy of the docs.  For me that's [http://localhost:4000/joindin-api/](http://localhost:4000/joindin-api/) (and the trailing slash does matter!)
 
 ### Running the API on nginx
 
