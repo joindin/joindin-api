@@ -57,7 +57,7 @@ frisby.create('Initial discovery')
                 checkVerboseEvent(evt);
 
                 frisby.create('Event comments for ' + evt.name)
-                  .get(evt.comments_uri)
+                  .get(evt.comments_uri + '?resultsperpage=3')
                   .expectStatus(200)
                   .expectHeader("content-type", "application/json; charset=utf8")
                   .afterJSON(function(evComments) {
@@ -65,6 +65,19 @@ frisby.create('Initial discovery')
                       for(var i in evComments.comments) {
                         var comment = evComments.comments[i];
                         checkEventComment(comment);
+                      }
+                    }
+					      }).toss();
+
+                frisby.create('Event comments for ' + evt.name + ' (verbose mode)')
+                  .get(evt.comments_uri + '?resultsperpage=3&verbose=yes')
+                  .expectStatus(200)
+                  .expectHeader("content-type", "application/json; charset=utf8")
+                  .afterJSON(function(evComments) {
+                    if(typeof evComments.comments == 'object') {
+                      for(var i in evComments.comments) {
+                        var comment = evComments.comments[i];
+                        checkVerboseEventComment(comment);
                       }
                     }
 					      }).toss();
@@ -352,6 +365,14 @@ function checkEventComment(comment) {
   expect(typeof comment.event_uri).toBe('string');
   expect(comment.event_comments_uri).toBeDefined();
   expect(typeof comment.event_comments_uri).toBe('string');
+}
+
+function checkVerboseEventComment(comment) {
+  checkEventComment(comment);
+  expect(comment.source).toBeDefined();
+  expect(typeof comment.source).toBe('string');
+  expect(comment.gravatar_hash).toBeDefined();
+  expect(typeof comment.gravatar_hash).toBe('string');
 }
 
 function checkTalk(talk) {
