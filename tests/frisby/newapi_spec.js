@@ -95,6 +95,19 @@ frisby.create('Initial discovery')
                     }
 					      }).toss();
 
+                frisby.create('Attendees to ' + evt.name + ' (verbose format)')
+                    .get(evt.attendees_uri + '?resultsperpage=3&verbose=yes')
+                  .expectStatus(200)
+                  .expectHeader("content-type", "application/json; charset=utf8")
+                  .afterJSON(function(evUsers) {
+                    if(typeof evUsers.users == 'object') {
+                      for(var i in evUsers.users) {
+                        var user = evUsers.users[i];
+                        checkVerboseUser(user);
+                      }
+                    }
+					      }).toss();
+
                 frisby.create('Tracks at ' + evt.name)
                     .get(evt.tracks_uri + '?resultsperpage=3')
                   .expectStatus(200)
@@ -359,6 +372,31 @@ function checkUser(user) {
     if(typeof user.twitter_username != 'undefined' && user.twitter_username != null) {
       expect(typeof user.twitter_username).toBe('string');
     }
+    expect(user.uri).toBeDefined();
+    expect(typeof user.uri).toBe('string');
+    expect(user.verbose_uri).toBeDefined();
+    expect(typeof user.verbose_uri).toBe('string');
+    expect(user.website_uri).toBeDefined();
+    expect(typeof user.website_uri).toBe('string');
+    expect(user.talks_uri).toBeDefined();
+    expect(typeof user.talks_uri).toBe('string');
+    expect(user.attended_events_uri).toBeDefined();
+    expect(typeof user.attended_events_uri).toBe('string');
+}
+
+function checkVerboseUser(user) {
+    expect(user.username).toBeDefined();
+    expect(typeof user.username).toBe('string');
+    expect(user.full_name).toBeDefined();
+    if(typeof user.full_name != 'undefined' && user.full_name != null) {
+      expect(typeof user.full_name).toBe('string');
+    }
+    expect(user.twitter_username).toBeDefined();
+    if(typeof user.twitter_username != 'undefined' && user.twitter_username != null) {
+      expect(typeof user.twitter_username).toBe('string');
+    }
+    expect(user.gravatar_hash).toBeDefined();
+    expect(typeof user.gravatar_hash).toBe('string');
     expect(user.uri).toBeDefined();
     expect(typeof user.uri).toBe('string');
     expect(user.verbose_uri).toBeDefined();
