@@ -370,7 +370,7 @@ function checkEventComment(comment) {
 function checkVerboseEventComment(comment) {
   checkEventComment(comment);
   if(typeof comment.source != 'undefined') {
-    expect(typeof comment.source).toBe('string');
+    expect(typeof comment.source).toBeTypeOrNull('string');
   }
   expect(comment.gravatar_hash).toBeDefined();
   expect(typeof comment.gravatar_hash).toBe('string');
@@ -503,7 +503,7 @@ function checkTalkComment(comment) {
 function checkVerboseTalkComment(comment) {
   checkTalkComment(comment);
   if(typeof comment.source != 'undefined') {
-    expect(typeof comment.source).toBe('string');
+    expect(typeof comment.source).toBeTypeOrNull('string');
   }
   expect(comment.gravatar_hash).toBeDefined();
   expect(typeof comment.gravatar_hash).toBe('string');
