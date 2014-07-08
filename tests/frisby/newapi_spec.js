@@ -264,8 +264,8 @@ function checkVerboseEvent(evt) {
   if (evt.icon != null) {
     expect(typeof evt.icon).toBe('string');
   }
-  expect(typeof evt.latitude).toBe('number');
-  expect(typeof evt.longitude).toBe('number');
+  expect(typeof evt.latitude).toBeTypeOrNull('number');
+  expect(typeof evt.longitude).toBeTypeOrNull('number');
   expect(typeof evt.tz_continent).toBe('string');
   expect(typeof evt.tz_place).toBe('string');
   expect(typeof evt.location).toBe('string');
