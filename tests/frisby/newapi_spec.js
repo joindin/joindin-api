@@ -74,10 +74,41 @@ frisby.create('Initial discovery')
                   .expectStatus(200)
                   .expectHeader("content-type", "application/json; charset=utf8")
                   .afterJSON(function(evTalks) {
+                    var talk;
                     if(typeof evTalks.talks == 'object') {
                       for(var i in evTalks.talks) {
-                        var talk = evTalks.talks[i];
+                        talk = evTalks.talks[i];
                         checkTalk(talk);
+                      }
+
+                      if(typeof talk == 'object') {
+                        // check some comments on the last talk
+                        frisby.create('Comments on talk ' + talk.talk_title)
+                          .get(talk.comments_uri + '?resultsperpage=3')
+                          .expectStatus(200)
+                          .expectHeader("content-type", "application/json; charset=utf8")
+                          .afterJSON(function(evTalkComments) {
+                            if(typeof evTalkComments.comments == 'object') {
+                              for(var i in evTalkComments.comments) {
+                                var talkComment = evTalkComments.comments[i];
+                                checkTalkComment(talkComment);
+                              }
+                            }
+                          }).toss();
+
+                        // and in verbose mode
+                        frisby.create('Comments on talk ' + talk.talk_title + ' (verbose mode)')
+                          .get(talk.comments_uri + '?resultsperpage=3&verbose=yes')
+                          .expectStatus(200)
+                          .expectHeader("content-type", "application/json; charset=utf8")
+                          .afterJSON(function(evTalkComments) {
+                            if(typeof evTalkComments.comments == 'object') {
+                              for(var i in evTalkComments.comments) {
+                                var talkComment = evTalkComments.comments[i];
+                                checkVerboseTalkComment(talkComment);
+                              }
+                            }
+                          }).toss();
                       }
                     }
 					      }).toss();
@@ -423,3 +454,36 @@ function checkTrack(track) {
     expect(track.event_uri).toBeDefined();
     expect(typeof track.event_uri).toBe('string');
 }
+
+function checkTalkComment(comment) {
+  expect(comment.rating).toBeDefined();
+  expect(typeof comment.rating).toBe('number');
+  expect(comment.comment).toBeDefined();
+  expect(typeof comment.comment).toBe('string');
+  expect(comment.created_date).toBeDefined();
+  checkDate(comment.created_date);
+  expect(comment.user_display_name).toBeDefined();
+  if(typeof comment.user_uri != 'undefined') {
+      expect(typeof comment.user_uri).toBe('string');
+  }
+  expect(comment.talk_title).toBeDefined();
+  expect(typeof comment.talk_title).toBe('string');
+  expect(comment.uri).toBeDefined();
+  expect(typeof comment.uri).toBe('string');
+  expect(comment.verbose_uri).toBeDefined();
+  expect(typeof comment.verbose_uri).toBe('string');
+  expect(comment.talk_uri).toBeDefined();
+  expect(typeof comment.talk_uri).toBe('string');
+  expect(comment.talk_comments_uri).toBeDefined();
+  expect(typeof comment.talk_comments_uri).toBe('string');
+}
+
+function checkVerboseTalkComment(comment) {
+  checkTalkComment(comment);
+  expect(comment.source).toBeDefined();
+  expect(typeof comment.source).toBe('string');
+  expect(comment.gravatar_hash).toBeDefined();
+  expect(typeof comment.gravatar_hash).toBe('string');
+}
+
+
