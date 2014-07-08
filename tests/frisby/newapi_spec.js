@@ -369,8 +369,9 @@ function checkEventComment(comment) {
 
 function checkVerboseEventComment(comment) {
   checkEventComment(comment);
-  expect(comment.source).toBeDefined();
-  expect(typeof comment.source).toBe('string');
+  if(typeof comment.source != 'undefined') {
+    expect(typeof comment.source).toBe('string');
+  }
   expect(comment.gravatar_hash).toBeDefined();
   expect(typeof comment.gravatar_hash).toBe('string');
 }
@@ -501,8 +502,9 @@ function checkTalkComment(comment) {
 
 function checkVerboseTalkComment(comment) {
   checkTalkComment(comment);
-  expect(comment.source).toBeDefined();
-  expect(typeof comment.source).toBe('string');
+  if(typeof comment.source != 'undefined') {
+    expect(typeof comment.source).toBe('string');
+  }
   expect(comment.gravatar_hash).toBeDefined();
   expect(typeof comment.gravatar_hash).toBe('string');
 }
