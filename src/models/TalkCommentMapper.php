@@ -20,7 +20,6 @@ class TalkCommentMapper extends ApiMapper {
             'talk_title' => 'talk_title',
             'source' => 'source',
             'created_date' => 'date_made',
-            'email_hash' => 'email'
             );
         return $fields;
     }
@@ -96,7 +95,7 @@ class TalkCommentMapper extends ApiMapper {
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
                 if(true === $verbose) {
-                    $list[$key]['email_hash'] = md5(strtolower($list[$key]['email_hash']));
+                    $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
                 }
                 $list[$key]['uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';

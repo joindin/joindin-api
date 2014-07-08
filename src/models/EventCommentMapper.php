@@ -15,7 +15,6 @@ class EventCommentMapper extends ApiMapper {
             'comment' => 'comment',
             'source' => 'source',
             'created_date' => 'date_made',
-            'email_hash' => 'email'
             );
         return $fields;
     }
@@ -68,7 +67,7 @@ class EventCommentMapper extends ApiMapper {
 
             foreach ($results as $key => $row) {
                 if(true === $verbose) {
-                    $list[$key]['email_hash'] = md5(strtolower($list[$key]['email_hash']));
+                    $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
                 }
                 // figure out user
                 if($row['user_id']) {
