@@ -12,19 +12,20 @@ Users can comment on talks.  Currently, users need to be authenticated in order 
 ~~~~
 comments:
     0:
-        rating: 3
-        comment: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent rutrum orci eget ipsum ornare et consequat neque egestas. Duis eu massa justo, vel mollis velit. Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Aliquam vulputate vulputate lobortis. Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Quisque at est libero.
-        user_display_name: James Barnes
-        talk_title: Producing newtech clouds under Ruby
-        created_date: 2013-11-08T02:17:48+01:00
-        uri: http://api.joindin.local/v2.1/talk_comments/359
-        verbose_uri: http://api.joindin.local/v2.1/talk_comments/359?verbose=yes
-        talk_uri: http://api.joindin.local/v2.1/talks/28
-        talk_comments_uri: http://api.joindin.local/v2.1/talks/28/comments
-        user_uri: http://api.joindin.local/v2.1/users/11
+        rating: 4
+        comment: Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Aliquam vulputate vulputate lobortis. Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Proin feugiat mattis dui, ut cursus purus feugiat vel. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque elementum placerat lectus, sit amet dictum urna euismod quis. Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Proin feugiat mattis dui, ut cursus purus feugiat vel. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque elementum placerat lectus, sit amet dictum urna euismod quis.
+        user_display_name: Raymond Armstrong
+        talk_title: Producing public systems together with Apache
+        created_date: 2014-01-21T23:34:27+01:00
+        uri: http://api.dev.joind.in:8080/v2.1/talk_comments/320
+        verbose_uri: http://api.dev.joind.in:8080/v2.1/talk_comments/320?verbose=yes
+        talk_uri: http://api.dev.joind.in:8080/v2.1/talks/159
+        talk_comments_uri: http://api.dev.joind.in:8080/v2.1/talks/159/comments
+        user_uri: http://api.dev.joind.in:8080/v2.1/users/5
 meta:
     count: 1
-    this_page: http://api.joindin.local/v2.1/talks/28/comments?start=0&resultsperpage=20
+    total: 1
+    this_page: http://api.dev.joind.in:8080/v2.1/talks/159/comments?start=0&resultsperpage=20
 ~~~~
 
 ## Talk Comment Verbose Format
@@ -32,23 +33,25 @@ meta:
 ~~~~
 comments:
     0:
-        rating: 3
-        comment: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent rutrum orci eget ipsum ornare et consequat neque egestas. Duis eu massa justo, vel mollis velit. Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Aliquam vulputate vulputate lobortis. Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Quisque at est libero.
-        user_display_name: James Barnes
-        talk_title: Producing newtech clouds under Ruby
-        source: web
-        created_date: 2013-11-08T02:17:48+01:00
-        uri: http://api.joindin.local/v2.1/talk_comments/359
-        verbose_uri: http://api.joindin.local/v2.1/talk_comments/359?verbose=yes
-        talk_uri: http://api.joindin.local/v2.1/talks/28
-        talk_comments_uri: http://api.joindin.local/v2.1/talks/28/comments
-        user_uri: http://api.joindin.local/v2.1/users/11
+        rating: 4
+        comment: Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Aliquam vulputate vulputate lobortis. Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Proin feugiat mattis dui, ut cursus purus feugiat vel. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque elementum placerat lectus, sit amet dictum urna euismod quis. Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Proin feugiat mattis dui, ut cursus purus feugiat vel. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque elementum placerat lectus, sit amet dictum urna euismod quis.
+        user_display_name: Raymond Armstrong
+        talk_title: Producing public systems together with Apache
+        source: api
+        created_date: 2014-01-21T23:34:27+01:00
+        gravatar_hash: 846d440ca4afd8553214234c9f883853
+        uri: http://api.dev.joind.in:8080/v2.1/talk_comments/320
+        verbose_uri: http://api.dev.joind.in:8080/v2.1/talk_comments/320?verbose=yes
+        talk_uri: http://api.dev.joind.in:8080/v2.1/talks/159
+        talk_comments_uri: http://api.dev.joind.in:8080/v2.1/talks/159/comments
+        user_uri: http://api.dev.joind.in:8080/v2.1/users/5
 meta:
     count: 1
-    this_page: http://api.joindin.local/v2.1/talk_comments/359?verbose=yes&start=0&resultsperpage=20
+    total: 1
+    this_page: http://api.dev.joind.in:8080/v2.1/talks/159/comments?verbose=yes&start=0&resultsperpage=20
 ~~~~
 
-*(the only addition is the ``source`` field)*
+Verbose mode adds the ``source`` and ``gravatar_hash`` fields
 
 ## Talk Comment Data Fields
 
@@ -56,9 +59,10 @@ The fields available for talk comments:
 
 *  ``rating``:  A rating from 1-5 where 5 is the best and 1 is rubbish.  Can sometimes be zero when the commenter has previously commented or is the speaker at the session.  Anonymous and zero-rated comments are excluded when calculating averages
 *  ``comment``: The user's feedback on the session
+*  ``source``: Which tool the user made to create this comment (can be empty if we don't have the info)
 *  ``user_display_name``: Convenience field showing the display name of the user that made this comment. Empty if anonymous
 *  ``created_date``: When the comment was made, in ISO format
-
+*  ``gravatar_hash``: Unique identifier for showing their gravatar image; append this to ``http://www.gravatar.com/avatar/`` to make the image URL
 
 ## Talk Comment Hypermedia
 

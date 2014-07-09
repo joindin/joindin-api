@@ -26,15 +26,17 @@ comments:
 
 ## Event Comments Verbose Format
 
-Exactly the same as event comments format.
+Verbose adds the ``source`` and ``gravatar_hash`` fields to the representation.
 
 ## Event Comments Data Fields
 
 The fields in an event comment are as follows:
 
 *  ``comment``: The comment made by the user
+*  ``source``: Which tool the user made to create this comment (can be empty if we don't have the info)
 *  ``created_date``:  The date that this comment was made, in ISO format
 *  ``user_display_name``: This is a convenience field (and it's optional, the original website supports anonymous event comments) so you can show a user name with the comment, it relies on the user_uri
+*  ``gravatar_hash``: Unique identifier for showing their gravatar image; append this to ``http://www.gravatar.com/avatar/`` to make the image URL
 
 ## Event Comments Hypermedia
 

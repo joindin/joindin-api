@@ -16,28 +16,30 @@ The user record looks something like this:
 ~~~~
 users:
     0:
-        username: nbaker
-        full_name: Nancy Baker
+        username: sperez
+        full_name: Sharon Perez
         twitter_username:
-        uri: http://api.joindin.local/v2.1/users/4
-        verbose_uri: http://api.joindin.local/v2.1/users/4?verbose=yes
-        website_uri: http://joind.in/user/view/4
-        talks_uri: http://api.joindin.local/v2.1/users/4/talks/
-        attended_events_uri: http://api.joindin.local/v2.1/users/4/attended/
+        uri: http://api.dev.joind.in:8080/v2.1/users/2
+        verbose_uri: http://api.dev.joind.in:8080/v2.1/users/2?verbose=yes
+        website_uri: http://joind.in/user/view/2
+        talks_uri: http://api.dev.joind.in:8080/v2.1/users/2/talks/
+        attended_events_uri: http://api.dev.joind.in:8080/v2.1/users/2/attended/
 meta:
     count: 1
-    this_page: http://api.joindin.local/v2.1/users/4?start=0&resultsperpage=20
+    total: 1
+    this_page: http://api.dev.joind.in:8080/v2.1/users/2?start=0&resultsperpage=20
 ~~~~
 
 ## Verbose User Format
 
-The verbose flag is valid here, but the fields returned are identical to the standard representation.
+The verbose user format simply include the ``gravatar_hash`` field.
 
 ## User Fields
 
 *  ``username``: The user's username that they use to log in with; this will be unique
 *  ``full_name``: The user's name - this is used as their display name in most cases
 *  ``twitter_username``: If the user supplied their twitter username, it is here
+*  ``gravatar_hash``: Unique identifier for showing their gravatar image; append this to ``http://www.gravatar.com/avatar/`` to make the image URL
 *  ``website_uri``: Where to find this user's joind.in page on the web
 
 ## User Hypermedia
