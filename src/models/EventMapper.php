@@ -24,6 +24,8 @@ class EventMapper extends ApiMapper
             'description' => 'event_desc',
             'stub' => 'event_stub',
             'href' => 'event_href',
+            'tz_continent' => 'event_tz_cont',
+            'tz_place' => 'event_tz_place',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
             'event_comments_count' => 'comment_count',
