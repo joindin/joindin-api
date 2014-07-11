@@ -259,6 +259,8 @@ function checkEvent(ev) {
   expect(ev.name).toBeDefined();
   expect(ev.start_date).toBeDefined();
   expect(ev.end_date).toBeDefined();
+  expect(ev.tz_continent).toBeDefined();
+  expect(ev.tz_place).toBeDefined();
   expect(ev.description).toBeDefined();
   expect(ev.href).toBeDefined();
   expect(ev.icon).toBeDefined();
@@ -275,6 +277,8 @@ function checkEvent(ev) {
   expect(ev.tracks_count).toBeDefined();
   checkDate(ev.start_date);
   checkDate(ev.end_date);
+  expect(typeof ev.tz_continent).toBe('string');
+  expect(typeof ev.tz_place).toBe('string');
   expect(typeof ev.description).toBe('string');
   expect(typeof ev.attendee_count).toBe('number');
   expect(typeof ev.uri).toBe('string');
