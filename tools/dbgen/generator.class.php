@@ -12,6 +12,7 @@ class DataGenerator {
     protected $_cache;           // Caching of data
     protected $_existing_stubs;  // Stubs that have already been generated, to stop duplicates.
     protected $_users_attending; // Users already attending a particular event
+    protected $_talk_comment_max_timestamp; // Biggest comment timestamp of each talk
     protected $_event_comment_max_timestamp; // Biggest comment timestamp of each event
 
     /**
@@ -21,6 +22,7 @@ class DataGenerator {
         $this->_data            = $data;
         $this->_existing_stubs  = array();
         $this->_users_attending = array();
+        $this->_talk_comment_max_timestamp = array();
         $this->_event_comment_max_timestamp = array();
     }
 
@@ -287,9 +289,16 @@ class DataGenerator {
             // Don't comment on future talks
             if ($talk->date_given > time()) continue;
 
-            // Comment date within one week after talk date
-            $week_in_seconds = 60 * 60 * 24 * 7;
-            $date_given = rand($talk->date_given, ($talk->date_given + $week_in_seconds));
+            // Comment date within two days after biggest comment date (or talk date if no comments yet)
+            // This is to make sure comments are inserted into the db in correct order
+            if (array_key_exists($talk->id, $this->_talk_comment_max_timestamp)) {
+                $current_max_timestamp = $this->_talk_comment_max_timestamp[$talk->id];
+            } else {
+                $current_max_timestamp = $talk->date_given;
+            }
+            $two_days_in_seconds = 60 * 60 * 24 * 2;
+            $date_made = rand($current_max_timestamp, ($current_max_timestamp + $two_days_in_seconds));
+            $this->_talk_comment_max_timestamp[$talk->id] = $date_made;
 
             $comment = $this->_genLorum();
 
@@ -313,7 +322,7 @@ class DataGenerator {
             if (! $first) echo ",\n";
 
             printf ("(%d, %d, '%s', %d, %d, %d, %d, %d, NULL, '%s')",
-                                   $talk->id, $rating, $comment, $date_given, $id, $private, 1, $user_id, $source);
+                                   $talk->id, $rating, $comment, $date_made, $id, $private, 1, $user_id, $source);
 
 
             $first = false;
