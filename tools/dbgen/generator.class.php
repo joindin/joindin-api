@@ -333,6 +333,10 @@ class DataGenerator {
             // Don't comment on future events
             if ($event->start > time()) continue;
 
+            // Comment date within one week after event start date
+            $week_in_seconds = 60 * 60 * 24 * 7;
+            $date_made = rand($event->start, ($event->start + $week_in_seconds));
+
 
             if ($this->_chance(EVENT_COMMENT_IS_ANONYMOUS)) {
                 $user_id = "NULL";
@@ -359,7 +363,7 @@ class DataGenerator {
             }
 
             printf ("(%d, '%s', %d, %s, %d, %d, %s, NULL, '%s')",
-                                   $event->id, $comment, (time()-rand(0,10000000)), $user_id, 1, $id, $comment_name, $source);
+                                   $event->id, $comment, $date_made, $user_id, 1, $id, $comment_name, $source);
 
             $first = false;
         }
