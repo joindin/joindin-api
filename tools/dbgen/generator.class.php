@@ -285,6 +285,10 @@ class DataGenerator {
             // Don't comment on future talks
             if ($talk->date_given > time()) continue;
 
+            // Comment date within one week after talk date
+            $week_in_seconds = 60 * 60 * 24 * 7;
+            $date_given = rand($talk->date_given, ($talk->date_given + $week_in_seconds));
+
             $comment = $this->_genLorum();
 
             // Exponential randomness, 0 will be the least given, 5 the most. Will take the dampening
@@ -307,7 +311,7 @@ class DataGenerator {
             if (! $first) echo ",\n";
 
             printf ("(%d, %d, '%s', %d, %d, %d, %d, %d, NULL, '%s')",
-                                   $talk->id, $rating, $comment, (time()-rand(0,10000000)), $id, $private, 1, $user_id, $source);
+                                   $talk->id, $rating, $comment, $date_given, $id, $private, 1, $user_id, $source);
 
 
             $first = false;
