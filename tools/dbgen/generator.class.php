@@ -149,7 +149,6 @@ class DataGenerator {
             
             $talk = new StdClass();
             $talk->id = $id;
-            $talk->date_given = time() - rand(1000000, 10000000);
 
             // Add a dampening for this talk. This is a 0-5 value (0 being the most used) that will give an overall
             // view of the presentation. When a presentation wasn't good, it should reflect on the comments as well
@@ -161,6 +160,9 @@ class DataGenerator {
 
             // Fetch event to connect to this task
             $event = $this->_cacheFetchRandom('events');
+
+            // Talk dates between event start and end times
+            $talk->date_given = rand($event->start, $event->end);
 
             $talk->title = $this->_genTalkTitle();
             $talk->slides_link = $this->_chance(TALK_HAS_SLIDES) ? "http://slideshare.net/slidefromuser" : "";
