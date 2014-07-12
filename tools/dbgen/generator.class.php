@@ -12,6 +12,7 @@ class DataGenerator {
     protected $_cache;           // Caching of data
     protected $_existing_stubs;  // Stubs that have already been generated, to stop duplicates.
     protected $_users_attending; // Users already attending a particular event
+    protected $_event_comment_max_timestamp; // Biggest comment timestamp of each event
 
     /**
      * @param Generator_Data_Interface $data
@@ -20,6 +21,7 @@ class DataGenerator {
         $this->_data            = $data;
         $this->_existing_stubs  = array();
         $this->_users_attending = array();
+        $this->_event_comment_max_timestamp = array();
     }
 
     /**
@@ -333,10 +335,16 @@ class DataGenerator {
             // Don't comment on future events
             if ($event->start > time()) continue;
 
-            // Comment date within one week after event start date
-            $week_in_seconds = 60 * 60 * 24 * 7;
-            $date_made = rand($event->start, ($event->start + $week_in_seconds));
-
+            // Comment date within two days after biggest comment date (or event start date if no comments yet)
+            // This is to make sure comments are inserted into the db in correct order
+            if (array_key_exists($event->id, $this->_event_comment_max_timestamp)) {
+                $current_max_timestamp = $this->_event_comment_max_timestamp[$event->id];
+            } else {
+                $current_max_timestamp = $event->start;
+            }
+            $two_days_in_seconds = 60 * 60 * 24 * 2;
+            $date_made = rand($current_max_timestamp, ($current_max_timestamp + $two_days_in_seconds));
+            $this->_event_comment_max_timestamp[$event->id] = $date_made;
 
             if ($this->_chance(EVENT_COMMENT_IS_ANONYMOUS)) {
                 $user_id = "NULL";
