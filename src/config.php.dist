@@ -19,3 +19,6 @@ $config =  array(
         'forward_all_to' => false
     ),
 );
+
+// uncomment and add your akismet key here if you want to do spam checking
+// $config['akismet']['apiKey'];

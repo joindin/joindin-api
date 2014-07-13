@@ -234,6 +234,15 @@ class EventsController extends ApiController {
                     $comment['cname'] = $thisUser['full_name'];
                     $comment['source'] = $consumer_name;
 
+                    // run it by akismet if we have it
+                    if(isset($this->config['akismet']['apiKey'])) {
+                        $spamCheckService = new SpamCheckService($this->config['akismet']['apiKey']);
+                        $isValid = $spamCheckService->isCommentAcceptable($comment);
+                        if(!$isValid) {
+                            throw new Exception("Comment failed spam check", 400);
+                        }
+                    }
+
                     $comment_mapper = new EventCommentMapper($db, $request);
                     $new_id = $comment_mapper->save($comment);
 
