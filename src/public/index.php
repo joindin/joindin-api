@@ -7,7 +7,8 @@ include '../inc/Timezone.php';
 function handle_exception($e) {
     // pull the correct format before we bail
     global $request;
-    header("Status: " . $e->getCode(), false, $e->getCode());
+    $status_code = $e->getCode() ?: 400;
+    header("Status: " . $status_code, false, $status_code);
 	$request->view->render(array($e->getMessage()));
 }
 set_exception_handler('handle_exception');
