@@ -17,9 +17,9 @@ class OAuthModel
      */
     public function __construct(PDO $db, Request $request)
     {
-        $this->_db = $db;
-        $this->base = $request->base;
-        $this->version = $request->version;
+        $this->setDb($db);
+        $this->setBase($request->base);
+        $this->setVersion($request->version);
     }
 
     /**
