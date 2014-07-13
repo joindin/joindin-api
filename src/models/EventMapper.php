@@ -6,9 +6,7 @@
  * @uses ApiModel
  * @package API
  */
-class EventMapper extends ApiMapper 
-{
-
+class EventMapper extends ApiMapper {
     /**
      * Default mapping for column names to API field names
      * 
@@ -147,6 +145,7 @@ class EventMapper extends ApiMapper
                     break;
                 case "cfp": // events with open CfPs, soonest closing first
                     $where .= ' and events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
+                    $where .= ' and events.event_cfp_end <= DATE_ADD(NOW(), INTERVAL +42 DAY)';
                     $order .= 'events.event_start';
                     break;
                 default:
@@ -247,6 +246,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id The event ID to update for
      * @param int $user_id The user's ID
+     * @return bool
      */
     public function setUserAttendance($event_id, $user_id)
     {
@@ -259,8 +259,9 @@ class EventMapper extends ApiMapper
     /**
      * Set a user as not attending an event
      *
-     * @param int $event_id The event ID 
+     * @param int $event_id The event ID
      * @param int $user_id The user's ID
+     * @return bool
      */
     public function setUserNonAttendance($event_id, $user_id)
     {
@@ -273,9 +274,10 @@ class EventMapper extends ApiMapper
 
     /**
      * User attending an event?
-     * 
+     *
      * @param int $event_id the event to check
      * @param int $user_id the user you're interested in
+     * @return array
      */
 
     public function getUserAttendance($event_id, $user_id)
@@ -290,6 +292,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id the Event of interest
      * @param int $user_id which user (often the current one)
+     * @return bool
      */
 
     protected function isUserAttendingEvent($event_id, $user_id)
