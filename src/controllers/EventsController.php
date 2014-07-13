@@ -235,7 +235,12 @@ class EventsController extends ApiController {
                     $comment['source'] = $consumer_name;
 
                     $comment_mapper = new EventCommentMapper($db, $request);
-                    $new_id = $comment_mapper->save($comment);
+                    try {
+                        $new_id = $comment_mapper->save($comment);
+                    } catch (Exception $e) {
+                        // just throw this again but with a 400 status code
+                        throw new Exception($e->getMessage(), 400);
+                    }
 
                     // Update the cache count for the number of event comments on this event
                     $event_mapper = new EventMapper($db, $request);
