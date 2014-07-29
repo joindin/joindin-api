@@ -27,7 +27,7 @@ class EventsController extends ApiController {
             switch($request->url_elements[4]) {
                 case 'talks':
                             $talk_mapper = new TalkMapper($db, $request);
-                            $list = $talk_mapper->getTalksByEventId($event_id, $resultsperpage, $start, $request, $verbose);
+                            $list = $talk_mapper->getTalksByEventId($event_id, $resultsperpage, $start, $verbose);
                             break;
                 case 'comments':
                             $event_comment_mapper = new EventCommentMapper($db, $request);
@@ -48,7 +48,7 @@ class EventsController extends ApiController {
                             break;
                 case 'tracks':
                             $mapper = new TrackMapper($db, $request);
-                            $list = $mapper->getTracksByEventId($event_id, $resultsperpage, $start, $request, $verbose);
+                            $list = $mapper->getTracksByEventId($event_id, $resultsperpage, $start, $verbose);
                             break;
                 default:
                             throw new InvalidArgumentException('Unknown Subrequest', 404);

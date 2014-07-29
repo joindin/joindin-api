@@ -27,7 +27,7 @@ class UsersController extends ApiController {
                             break;
                 case 'attended':
                             $event_mapper = new EventMapper($db, $request);
-                            $list = $event_mapper->getEventsAttendedByUser($user_id, $resultsperpage, $start, $request, $verbose);
+                            $list = $event_mapper->getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose);
                             break;
                 default:
                             throw new InvalidArgumentException('Unknown Subrequest', 404);
