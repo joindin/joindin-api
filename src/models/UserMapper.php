@@ -79,7 +79,7 @@ class UserMapper extends ApiMapper
     protected function getUsers($resultsperpage, $start, $where = null, $order = null)
     {
         $sql = 'select user.username, user.ID, user.email, '
-            . 'user.full_name, user.twitter_username '
+            . 'user.full_name, user.twitter_username, user.admin '
             . 'from user '
             . 'left join user_attend ua on (ua.uid = user.ID) '
             . 'where active = 1 ';
