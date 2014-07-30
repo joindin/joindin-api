@@ -400,8 +400,6 @@ function checkTalk(talk) {
   if(typeof talk.slides_link != 'undefined' && talk.slides_link != null) {
     expect(typeof talk.slides_link).toBe('string');
   }
-  expect(talk.language).toBeDefined();
-  expect(typeof talk.language).toBe('string');
   expect(talk.start_date).toBeDefined();
   checkDate(talk.start_date);
   if(typeof talk.average_rating != 'undefined') {
