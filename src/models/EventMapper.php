@@ -589,26 +589,42 @@ class EventMapper extends ApiMapper
      * @return integer|false
      */
     public function createEvent($event, $auto_approve = false) {
-        $sql = "insert into events set event_name = :name,
-            event_desc = :description, event_start = :start_date,
-            event_end = :end_date, event_tz_cont = :tz_continent,
-            event_tz_place = :tz_place ";
 
-        // optional fields included if present
-        $optional_fields = array('href', 'cfp_url', 'cfp_start_date', 'cfp_end_date');
-        foreach ($optional_fields as $field) {
-            if (isset($event[$field])) {
-                $sql .= ", event_$field = :$field ";
+        // Sanity check: ensure all mandatory fields are present.
+        $mandatory_fields = array(
+            'name',
+            'description',
+            'start_date',
+            'end_date',
+            'tz_continent',
+            'tz_place',
+        );
+        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($event));
+        if (!$contains_mandatory_fields) {
+            throw new Exception("Missing mandatory fields");
+        }
+
+        $sql = "insert into events set ";
+
+        // create list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+        foreach ($fields as $api_name => $column_name) {
+            if (isset($event[$api_name])) {
+                $pairs[] = "$column_name = :$api_name";
             }
         }
 
         // the active opposite to pending to get it on the right web1 lists
-        $sql .= ", private=0 ";
-        if(!$auto_approve) {
-            $sql .= ", pending = 1, active=0";
+        $pairs[] = 'private = 0';
+        if (!$auto_approve) {
+            $pairs[] = 'pending = 1';
+            $pairs[] = 'active = 0';
         } else {
-            $sql .= ", active = 1";
+            $pairs[] = 'active = 1';
         }
+
+        // comma separate all pairs and add to SQL string
+        $sql .= implode(', ', $pairs);
 
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute($event);
