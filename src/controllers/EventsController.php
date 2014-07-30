@@ -297,17 +297,27 @@ class EventsController extends ApiController {
                 if($cfp_url) {
                     $event['cfp_url'] = $cfp_url;
                 }
-
                 $cfp_start_date = strtotime($request->getParameter("cfp_start_date"));
                 if ($cfp_start_date) {
                     $cfp_start_date = new DateTime($request->getParameter("cfp_start_date"), $tz);
                     $event['cfp_start_date'] = $cfp_start_date->format('U');
                 }
-
                 $cfp_end_date = strtotime($request->getParameter("cfp_end_date"));
                 if ($cfp_end_date) {
                     $cfp_end_date = new DateTime($request->getParameter("cfp_end_date"), $tz);
                     $event['cfp_end_date'] = $cfp_end_date->format('U');
+                }
+                $location  = filter_var($request->getParameter("location"), FILTER_SANITIZE_STRING);
+                if ($location) {
+                    $event['location'] = $location;
+                }
+                $latitude  = filter_var($request->getParameter("latitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                if ($latitude) {
+                    $event['latitude'] = $latitude;
+                }
+                $longitude  = filter_var($request->getParameter("longitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                if ($longitude) {
+                    $event['longitude'] = $longitude;
                 }
             }
 
