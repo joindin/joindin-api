@@ -7,3 +7,4 @@ build/
 .vagrant
 src/database.php
 vendor/.git
+.idea
