@@ -12,6 +12,8 @@ class DataGenerator {
     protected $_cache;           // Caching of data
     protected $_existing_stubs;  // Stubs that have already been generated, to stop duplicates.
     protected $_users_attending; // Users already attending a particular event
+    protected $_talk_comment_max_timestamp; // Biggest comment timestamp of each talk
+    protected $_event_comment_max_timestamp; // Biggest comment timestamp of each event
 
     /**
      * @param Generator_Data_Interface $data
@@ -20,6 +22,8 @@ class DataGenerator {
         $this->_data            = $data;
         $this->_existing_stubs  = array();
         $this->_users_attending = array();
+        $this->_talk_comment_max_timestamp = array();
+        $this->_event_comment_max_timestamp = array();
     }
 
     /**
@@ -149,7 +153,6 @@ class DataGenerator {
             
             $talk = new StdClass();
             $talk->id = $id;
-            $talk->date_given = time() - rand(1000000, 10000000);
 
             // Add a dampening for this talk. This is a 0-5 value (0 being the most used) that will give an overall
             // view of the presentation. When a presentation wasn't good, it should reflect on the comments as well
@@ -161,6 +164,9 @@ class DataGenerator {
 
             // Fetch event to connect to this task
             $event = $this->_cacheFetchRandom('events');
+
+            // Talk dates between event start and end times
+            $talk->date_given = rand($event->start, $event->end);
 
             $talk->title = $this->_genTalkTitle();
             $talk->slides_link = $this->_chance(TALK_HAS_SLIDES) ? "http://slideshare.net/slidefromuser" : "";
@@ -283,6 +289,17 @@ class DataGenerator {
             // Don't comment on future talks
             if ($talk->date_given > time()) continue;
 
+            // Comment date within two days after biggest comment date (or talk date if no comments yet)
+            // This is to make sure comments are inserted into the db in correct order
+            if (array_key_exists($talk->id, $this->_talk_comment_max_timestamp)) {
+                $current_max_timestamp = $this->_talk_comment_max_timestamp[$talk->id];
+            } else {
+                $current_max_timestamp = $talk->date_given;
+            }
+            $two_days_in_seconds = 60 * 60 * 24 * 2;
+            $date_made = rand($current_max_timestamp, ($current_max_timestamp + $two_days_in_seconds));
+            $this->_talk_comment_max_timestamp[$talk->id] = $date_made;
+
             $comment = $this->_genLorum();
 
             // Exponential randomness, 0 will be the least given, 5 the most. Will take the dampening
@@ -305,7 +322,7 @@ class DataGenerator {
             if (! $first) echo ",\n";
 
             printf ("(%d, %d, '%s', %d, %d, %d, %d, %d, NULL, '%s')",
-                                   $talk->id, $rating, $comment, (time()-rand(0,10000000)), $id, $private, 1, $user_id, $source);
+                                   $talk->id, $rating, $comment, $date_made, $id, $private, 1, $user_id, $source);
 
 
             $first = false;
@@ -327,6 +344,16 @@ class DataGenerator {
             // Don't comment on future events
             if ($event->start > time()) continue;
 
+            // Comment date within two days after biggest comment date (or event start date if no comments yet)
+            // This is to make sure comments are inserted into the db in correct order
+            if (array_key_exists($event->id, $this->_event_comment_max_timestamp)) {
+                $current_max_timestamp = $this->_event_comment_max_timestamp[$event->id];
+            } else {
+                $current_max_timestamp = $event->start;
+            }
+            $two_days_in_seconds = 60 * 60 * 24 * 2;
+            $date_made = rand($current_max_timestamp, ($current_max_timestamp + $two_days_in_seconds));
+            $this->_event_comment_max_timestamp[$event->id] = $date_made;
 
             if ($this->_chance(EVENT_COMMENT_IS_ANONYMOUS)) {
                 $user_id = "NULL";
@@ -353,7 +380,7 @@ class DataGenerator {
             }
 
             printf ("(%d, '%s', %d, %s, %d, %d, %s, NULL, '%s')",
-                                   $event->id, $comment, (time()-rand(0,10000000)), $user_id, 1, $id, $comment_name, $source);
+                                   $event->id, $comment, $date_made, $user_id, 1, $id, $comment_name, $source);
 
             $first = false;
         }
