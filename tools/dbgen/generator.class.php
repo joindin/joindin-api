@@ -237,6 +237,10 @@ class DataGenerator {
         }
         echo ";";
         echo "\n\n";
+
+        // update talk count
+        echo "UPDATE events e SET talk_count = (SELECT COUNT(*) FROM talks t WHERE t.event_id = e.ID);\n";
+        echo "\n\n";
     }
 
     // Generate $count tracks for random events
@@ -272,6 +276,10 @@ class DataGenerator {
         }
 
         echo ";";
+        echo "\n\n";
+
+        // update track count
+        echo "UPDATE events e SET track_count = (SELECT COUNT(*) FROM event_track et WHERE et.event_id = e.ID);\n";
         echo "\n\n";
     }
 
@@ -389,6 +397,10 @@ class DataGenerator {
             echo ";";
             echo "\n\n";
         }
+
+        // update comment counts
+        echo "UPDATE events e SET comment_count = (SELECT COUNT(*) FROM event_comments ec WHERE ec.event_id = e.ID);\n";
+        echo "\n\n";
     }
 
     // Let randomly attend users to events
