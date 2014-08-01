@@ -10,6 +10,7 @@ class DefaultController extends ApiController {
         $retval['upcoming-events'] = $request->base . '/' . $request->version . '/events?filter=upcoming';
         $retval['past-events'] = $request->base . '/' . $request->version . '/events?filter=past';
         $retval['open-cfps'] = $request->base . '/' . $request->version . '/events?filter=cfp';
+        $retval['docs'] = 'http://joindin.github.io/joindin-api/';
 
         return $retval;
 	}
