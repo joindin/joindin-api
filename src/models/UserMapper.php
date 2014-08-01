@@ -76,6 +76,19 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    public function getSiteAdminEmails()
+    {
+        $sql = 'select email from user where admin = 1';
+        $stmt = $this->_db->prepare($sql);
+
+        $response = $stmt->execute();
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            return $results;
+        }
+        return false;
+    }
+
     protected function getUsers($resultsperpage, $start, $where = null, $order = null)
     {
         $sql = 'select user.username, user.ID, user.email, '
