@@ -108,6 +108,22 @@ class EventCommentMapper extends ApiMapper {
     }
 
     public function save($data) {
+        // check for a duplicate first
+        $dupe_sql = 'select ec.ID from event_comments ec '
+            . 'where event_id = :event_id and user_id = :user_id and comment = :comment';
+
+        $dupe_stmt = $this->_db->prepare($dupe_sql);
+        $dupe_stmt->execute(array(
+            ':event_id' => $data['event_id'],
+            ':comment' => $data['comment'],
+            ':user_id' => $data['user_id'],
+        ));
+
+        // only proceed if we didn't already find a row like this
+        if($dupe_stmt->fetch()) {
+            throw new Exception("Duplicate comment");
+        }
+
         $sql = 'insert into event_comments (event_id, comment, user_id, cname, '
             . 'source, date_made, active) '
             . 'values (:event_id, :comment, :user_id, :cname, :source, UNIX_TIMESTAMP(), 1)';
