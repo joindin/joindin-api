@@ -128,6 +128,22 @@ class TalkCommentMapper extends ApiMapper {
     }
 
     public function save($data) {
+        // check for a duplicate first
+        $dupe_sql = 'select tc.ID from talk_comments tc '
+            . 'where talk_id = :talk_id and user_id = :user_id and comment = :comment';
+
+        $dupe_stmt = $this->_db->prepare($dupe_sql);
+        $dupe_stmt->execute(array(
+            ':talk_id' => $data['talk_id'],
+            ':comment' => $data['comment'],
+            ':user_id' => $data['user_id'],
+        ));
+
+        // only proceed if we didn't already find a row like this
+        if($dupe_stmt->fetch()) {
+            throw new Exception("Duplicate comment");
+        }
+
         $sql = 'insert into talk_comments (talk_id, rating, comment, user_id, '
             . 'source, date_made, private, active) '
             . 'values (:talk_id, :rating, :comment, :user_id, :source, UNIX_TIMESTAMP(), '
