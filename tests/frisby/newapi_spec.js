@@ -2,7 +2,7 @@
 // ./node_modules/.bin/jasmine-node . 
 var frisby   = require('frisby');
 var util     = require('util');
-var async    = require('async');
+//var async    = require('async');
 var datatest = require('./data');
 
 var baseURL;
