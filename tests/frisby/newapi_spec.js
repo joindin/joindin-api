@@ -25,13 +25,17 @@ frisby.create('Initial discovery')
     'hot-events'      : baseURL + '/v2.1/events?filter=hot',
     'upcoming-events' : baseURL + '/v2.1/events?filter=upcoming',
     'past-events'     : baseURL + '/v2.1/events?filter=past',
-    'open-cfps'       : baseURL + '/v2.1/events?filter=cfp'
+    'open-cfps'       : baseURL + '/v2.1/events?filter=cfp',
+    'docs'            : 'http://joindin.github.io/joindin-api/'
   })
 
   .afterJSON(function(apis) {
 
     // Loop over all of the event types
     for (var evType in apis) {
+
+      // Ignore the "docs" link
+      if (evType == 'docs') continue;
 
       frisby.create('Event list for ' + evType)
         .get(apis[evType])
