@@ -264,6 +264,11 @@ class EventsController extends ApiController {
                 $errors[] = "'description' is a required field";
             }
 
+            $event['location']  = filter_var($request->getParameter("location"), FILTER_SANITIZE_STRING);
+            if (empty($event['location'])) {
+                $errors[] = "'location' is a required field (for virtual events, 'online' works)";
+            }
+
             $start_date = strtotime($request->getParameter("start_date"));
             $end_date = strtotime($request->getParameter("end_date"));
             if(!$start_date || !$end_date) {
@@ -306,10 +311,6 @@ class EventsController extends ApiController {
                 if ($cfp_end_date) {
                     $cfp_end_date = new DateTime($request->getParameter("cfp_end_date"), $tz);
                     $event['cfp_end_date'] = $cfp_end_date->format('U');
-                }
-                $location  = filter_var($request->getParameter("location"), FILTER_SANITIZE_STRING);
-                if ($location) {
-                    $event['location'] = $location;
                 }
                 $latitude  = filter_var($request->getParameter("latitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 if ($latitude) {
