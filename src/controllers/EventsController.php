@@ -269,6 +269,11 @@ class EventsController extends ApiController {
                 $errors[] = "'description' is a required field";
             }
 
+            $event['location']  = filter_var($request->getParameter("location"), FILTER_SANITIZE_STRING);
+            if (empty($event['location'])) {
+                $errors[] = "'location' is a required field (for virtual events, 'online' works)";
+            }
+
             $start_date = strtotime($request->getParameter("start_date"));
             $end_date = strtotime($request->getParameter("end_date"));
             if(!$start_date || !$end_date) {
@@ -291,23 +296,35 @@ class EventsController extends ApiController {
                 }
             }
 
-            // optional fields
-            $href  = filter_var($request->getParameter("href"), FILTER_VALIDATE_URL);
-            if($href) {
-                $event['href'] = $href;
-            }
-            $cfp_url = filter_var($request->getParameter("cfp_url"), FILTER_VALIDATE_URL);
-            if($cfp_url) {
-                $event['cfp_url'] = $cfp_url;
-            }
-
-            $cfp_start_date = date_create($request->getParameter("cfp_start_date"));
-            if($cfp_start_date) {
-                $event['cfp_start_date'] = $cfp_start_date->format('U');
-            }
-            $cfp_end_date = date_create($request->getParameter("cfp_end_date"));
-            if($cfp_end_date) {
-                $event['cfp_end_date'] = $cfp_end_date->format('U');
+            // optional fields - only check if we have no errors as we may need
+            // access to $tz.
+            if (!$errors) {
+                $href  = filter_var($request->getParameter("href"), FILTER_VALIDATE_URL);
+                if($href) {
+                    $event['href'] = $href;
+                }
+                $cfp_url = filter_var($request->getParameter("cfp_url"), FILTER_VALIDATE_URL);
+                if($cfp_url) {
+                    $event['cfp_url'] = $cfp_url;
+                }
+                $cfp_start_date = strtotime($request->getParameter("cfp_start_date"));
+                if ($cfp_start_date) {
+                    $cfp_start_date = new DateTime($request->getParameter("cfp_start_date"), $tz);
+                    $event['cfp_start_date'] = $cfp_start_date->format('U');
+                }
+                $cfp_end_date = strtotime($request->getParameter("cfp_end_date"));
+                if ($cfp_end_date) {
+                    $cfp_end_date = new DateTime($request->getParameter("cfp_end_date"), $tz);
+                    $event['cfp_end_date'] = $cfp_end_date->format('U');
+                }
+                $latitude  = filter_var($request->getParameter("latitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                if ($latitude) {
+                    $event['latitude'] = $latitude;
+                }
+                $longitude  = filter_var($request->getParameter("longitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                if ($longitude) {
+                    $event['longitude'] = $longitude;
+                }
             }
 
             // How does it look?  With no errors, we can proceed
