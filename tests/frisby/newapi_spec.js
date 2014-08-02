@@ -34,8 +34,8 @@ frisby.create('Initial discovery')
     // Loop over all of the event types
     for (var evType in apis) {
 
-			// Ignore the "docs" link
-    	if (evType == 'docs') continue;
+      // Ignore the "docs" link
+      if (evType == 'docs') continue;
 
       frisby.create('Event list for ' + evType)
         .get(apis[evType])
