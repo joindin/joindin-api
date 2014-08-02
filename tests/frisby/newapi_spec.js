@@ -2,6 +2,7 @@
 // ./node_modules/.bin/jasmine-node . 
 var frisby = require('frisby');
 var util   = require('util');
+var async  = require('async');
 
 var baseURL;
 if (typeof process.env.JOINDIN_API_BASE_URL != 'undefined') {
@@ -16,211 +17,257 @@ frisby.globalSetup({ // globalSetup is for ALL requests
   }
 });
 
-frisby.create('Initial discovery')
-  .get(baseURL)
-  .expectStatus(200)
-  .expectHeader("content-type", "application/json; charset=utf8")
-  .expectJSON({
-    'events'          : baseURL + '/v2.1/events',
-    'hot-events'      : baseURL + '/v2.1/events?filter=hot',
-    'upcoming-events' : baseURL + '/v2.1/events?filter=upcoming',
-    'past-events'     : baseURL + '/v2.1/events?filter=past',
-    'open-cfps'       : baseURL + '/v2.1/events?filter=cfp',
-    'docs'            : 'http://joindin.github.io/joindin-api/'
-  })
+testIndex();
+testNonexistentEvent();
+testNonexistentTalk();
+testNonexistentEventComment();
+testNonexistentTalkComment();
+testNonexistentUser();
+testExistingUser();
 
-  .afterJSON(function(apis) {
+function testIndex() {
+	frisby.create('Initial discovery')
+		.get(baseURL)
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.expectJSON({
+			'events'          : baseURL + '/v2.1/events',
+			'hot-events'      : baseURL + '/v2.1/events?filter=hot',
+			'upcoming-events' : baseURL + '/v2.1/events?filter=upcoming',
+			'past-events'     : baseURL + '/v2.1/events?filter=past',
+			'open-cfps'       : baseURL + '/v2.1/events?filter=cfp',
+			'docs'            : 'http://joindin.github.io/joindin-api/'
+		})
 
-    // Loop over all of the event types
-    for (var evType in apis) {
+		.afterJSON(function(apis) {
 
-      // Ignore the "docs" link
-      if (evType == 'docs') continue;
+			// Loop over all of the event types
+			for (var evType in apis) {
 
-      frisby.create('Event list for ' + evType)
-        .get(apis[evType])
-        .expectStatus(200)
-        .expectHeader("content-type", "application/json; charset=utf8")
-        .afterJSON(function(ev) {
-          // Check meta-data
-          expect(ev.meta).toContainJsonTypes({"count":Number});
-          expect(ev).toContainJsonTypes({"events":Array});
+				// Ignore the "docs" link
+				if (evType == 'docs') continue;
 
-          for(var i in ev.events) {
-            checkEvent(ev.events[i]);
-  		
-          // Check for more detail in the events
-            frisby.create('Event detail for ' + ev.events[i].name)
-              .get(ev.events[i].verbose_uri)
-              .expectStatus(200)
-              .expectHeader("content-type", "application/json; charset=utf8")
-              .afterJSON(function(detailedEv) {
-                expect(detailedEv.events[0]).toBeDefined();
-                expect(typeof detailedEv.events[0]).toBe('object');
-                var evt = detailedEv.events[0];
-                checkVerboseEvent(evt);
+				frisby.create('Event list for ' + evType)
+					.get(apis[evType])
+					.expectStatus(200)
+					.expectHeader("content-type", "application/json; charset=utf8")
+					.afterJSON(function(ev) {
+						// Check meta-data
+						expect(ev.meta).toContainJsonTypes({"count":Number});
+						expect(ev).toContainJsonTypes({"events":Array});
 
-                frisby.create('Event comments for ' + evt.name)
-                  .get(evt.comments_uri + '?resultsperpage=3')
-                  .expectStatus(200)
-                  .expectHeader("content-type", "application/json; charset=utf8")
-                  .afterJSON(function(evComments) {
-                    if(typeof evComments.comments == 'object') {
-                      for(var i in evComments.comments) {
-                        var comment = evComments.comments[i];
-                        checkEventComment(comment);
-                      }
-                    }
-					      }).toss();
+						for(var i in ev.events) {
+							checkEventData(ev.events[i]);
+							testEvent(ev.events[i]);
+						}
 
-                frisby.create('Event comments for ' + evt.name + ' (verbose mode)')
-                  .get(evt.comments_uri + '?resultsperpage=3&verbose=yes')
-                  .expectStatus(200)
-                  .expectHeader("content-type", "application/json; charset=utf8")
-                  .afterJSON(function(evComments) {
-                    if(typeof evComments.comments == 'object') {
-                      for(var i in evComments.comments) {
-                        var comment = evComments.comments[i];
-                        checkVerboseEventComment(comment);
-                      }
-                    }
-					      }).toss();
+					}).toss();
+			}
+		})
+	.toss();
+}
 
-                frisby.create('Talks at ' + evt.name)
-                  .get(evt.talks_uri + '?resultsperpage=3')
-                  .expectStatus(200)
-                  .expectHeader("content-type", "application/json; charset=utf8")
-                  .afterJSON(function(evTalks) {
-                    var talk;
-                    if(typeof evTalks.talks == 'object') {
-                      for(var i in evTalks.talks) {
-                        talk = evTalks.talks[i];
-                        checkTalk(talk);
-                      }
+function testEvent(e) {
+	// Check for more detail in the events
+		frisby.create('Event detail for ' + e.name)
+			.get(e.verbose_uri)
+			.expectStatus(200)
+			.expectHeader("content-type", "application/json; charset=utf8")
+			.afterJSON(function(detailedEv) {
+				expect(detailedEv.events[0]).toBeDefined();
+				expect(typeof detailedEv.events[0]).toBe('object');
+				var evt = detailedEv.events[0];
+				checkVerboseEventData(evt);
 
-                      if(typeof talk == 'object') {
-                        // check some comments on the last talk
-                        frisby.create('Comments on talk ' + talk.talk_title)
-                          .get(talk.comments_uri + '?resultsperpage=3')
-                          .expectStatus(200)
-                          .expectHeader("content-type", "application/json; charset=utf8")
-                          .afterJSON(function(evTalkComments) {
-                            if(typeof evTalkComments.comments == 'object') {
-                              for(var i in evTalkComments.comments) {
-                                var talkComment = evTalkComments.comments[i];
-                                checkTalkComment(talkComment);
-                              }
-                            }
-                          }).toss();
+				testEventComments(evt);
+				testEventCommentsVerbose(evt);
+				testTalksForEvent(evt);
+				testAttendeesForEvent(evt);
+				testAttendeesForEventVerbose(evt);
+				testTracksForEvent(evt);
 
-                        // and in verbose mode
-                        frisby.create('Comments on talk ' + talk.talk_title + ' (verbose mode)')
-                          .get(talk.comments_uri + '?resultsperpage=3&verbose=yes')
-                          .expectStatus(200)
-                          .expectHeader("content-type", "application/json; charset=utf8")
-                          .afterJSON(function(evTalkComments) {
-                            if(typeof evTalkComments.comments == 'object') {
-                              for(var i in evTalkComments.comments) {
-                                var talkComment = evTalkComments.comments[i];
-                                checkVerboseTalkComment(talkComment);
-                              }
-                            }
-                          }).toss();
-                      }
-                    }
-					      }).toss();
+			}).toss();
 
-                frisby.create('Attendees to ' + evt.name)
-                    .get(evt.attendees_uri + '?resultsperpage=3')
-                  .expectStatus(200)
-                  .expectHeader("content-type", "application/json; charset=utf8")
-                  .afterJSON(function(evUsers) {
-                    if(typeof evUsers.users == 'object') {
-                      for(var i in evUsers.users) {
-                        var user = evUsers.users[i];
-                        checkUser(user);
-                      }
-                    }
-					      }).toss();
+}
 
-                frisby.create('Attendees to ' + evt.name + ' (verbose format)')
-                    .get(evt.attendees_uri + '?resultsperpage=3&verbose=yes')
-                  .expectStatus(200)
-                  .expectHeader("content-type", "application/json; charset=utf8")
-                  .afterJSON(function(evUsers) {
-                    if(typeof evUsers.users == 'object') {
-                      for(var i in evUsers.users) {
-                        var user = evUsers.users[i];
-                        checkVerboseUser(user);
-                      }
-                    }
-					      }).toss();
+function testEventComments(evt) {
+	frisby.create('Event comments for ' + evt.name)
+		.get(evt.comments_uri + '?resultsperpage=3')
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(evComments) {
+			if(typeof evComments.comments == 'object') {
+				for(var i in evComments.comments) {
+					var comment = evComments.comments[i];
+					checkEventCommentData(comment);
+				}
+			}
+	}).toss();
+}
 
-                frisby.create('Tracks at ' + evt.name)
-                    .get(evt.tracks_uri + '?resultsperpage=3')
-                  .expectStatus(200)
-                  .expectHeader("content-type", "application/json; charset=utf8")
-                  .afterJSON(function(evTracks) {
-                    if(typeof evTracks.tracks == 'object') {
-                      for(var i in evTracks.tracks) {
-                        var track = evTracks.tracks[i];
-                        checkTrack(track);
-                      }
-                    }
-					      }).toss();
+function testEventCommentsVerbose(evt) {
+	frisby.create('Event comments for ' + evt.name + ' (verbose mode)')
+		.get(evt.comments_uri + '?resultsperpage=3&verbose=yes')
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(evComments) {
+			if(typeof evComments.comments == 'object') {
+				for(var i in evComments.comments) {
+					var comment = evComments.comments[i];
+					checkVerboseEventComment(comment);
+				}
+			}
+	}).toss();
+}
 
-              }).toss();
-          }
-  		  }).toss();
-    }
-  })
-.toss();
+function testTalksForEvent(evt) {
+	frisby.create('Talks at ' + evt.name)
+		.get(evt.talks_uri + '?resultsperpage=3')
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(evTalks) {
+			var talk;
+			if(typeof evTalks.talks == 'object') {
+				for(var i in evTalks.talks) {
+					talk = evTalks.talks[i];
+					checkTalkData(talk);
+				}
 
-frisby.create('Non-existent event')
-  .get(baseURL + '/v2.1/events/100100')
-  .expectStatus(404)
-  .expectHeader("content-type", "application/json; charset=utf8")
-.toss();
+				if(typeof talk == 'object') {
+					// check some comments on the last talk
+					frisby.create('Comments on talk ' + talk.talk_title)
+						.get(talk.comments_uri + '?resultsperpage=3')
+						.expectStatus(200)
+						.expectHeader("content-type", "application/json; charset=utf8")
+						.afterJSON(function(evTalkComments) {
+							if(typeof evTalkComments.comments == 'object') {
+								for(var i in evTalkComments.comments) {
+									var talkComment = evTalkComments.comments[i];
+									checkTalkCommentData(talkComment);
+								}
+							}
+						}).toss();
 
-frisby.create('Non-existent talk')
-  .get(baseURL + '/v2.1/talks/100100100')
-  .expectStatus(404)
-  .expectHeader("content-type", "application/json; charset=utf8")
-.toss();
+					// and in verbose mode
+					frisby.create('Comments on talk ' + talk.talk_title + ' (verbose mode)')
+						.get(talk.comments_uri + '?resultsperpage=3&verbose=yes')
+						.expectStatus(200)
+						.expectHeader("content-type", "application/json; charset=utf8")
+						.afterJSON(function(evTalkComments) {
+							if(typeof evTalkComments.comments == 'object') {
+								for(var i in evTalkComments.comments) {
+									var talkComment = evTalkComments.comments[i];
+									checkVerboseTalkCommentData(talkComment);
+								}
+							}
+						}).toss();
+				}
+			}
+	}).toss();
+}
 
-frisby.create('Non-existent event comment')
-  .get(baseURL + '/v2.1/event_comments/100100')
-  .expectStatus(404)
-  .expectHeader("content-type", "application/json; charset=utf8")
-.toss();
+function testAttendeesForEvent(evt) {
+	frisby.create('Attendees to ' + evt.name)
+			.get(evt.attendees_uri + '?resultsperpage=3')
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(evUsers) {
+			if(typeof evUsers.users == 'object') {
+				for(var i in evUsers.users) {
+					var user = evUsers.users[i];
+					checkUserData(user);
+				}
+			}
+	}).toss();
+}
 
-frisby.create('Non-existent talk comment')
-  .get(baseURL + "/v2.1/talk_comments/100100100")
-  .expectStatus(404)
-  .expectHeader("content-type", "application/json; charset=utf8")
-  .expectJSON(["Comment not found"])
-  .toss();
+function testAttendeesForEventVerbose(evt) {
+	frisby.create('Attendees to ' + evt.name + ' (verbose format)')
+			.get(evt.attendees_uri + '?resultsperpage=3&verbose=yes')
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(evUsers) {
+			if(typeof evUsers.users == 'object') {
+				for(var i in evUsers.users) {
+					var user = evUsers.users[i];
+					checkVerboseUserData(user);
+				}
+			}
+	}).toss();
+}
 
-frisby.create('Non-existent user')
-  .get(baseURL + "/v2.1/users/100100100")
-  .expectStatus(404)
-  .expectHeader("content-type", "application/json; charset=utf8")
-  .expectJSON(["User not found"])
-  .toss();
+function testTracksForEvent(evt) {
+	frisby.create('Tracks at ' + evt.name)
+			.get(evt.tracks_uri + '?resultsperpage=3')
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(evTracks) {
+			if(typeof evTracks.tracks == 'object') {
+				for(var i in evTracks.tracks) {
+					var track = evTracks.tracks[i];
+					checkTrackData(track);
+				}
+			}
+	}).toss();
+}
 
-frisby.create('Existing user')
-  .get(baseURL + "/v2.1/users/1")
-  .expectStatus(200)
-  .expectHeader("content-type", "application/json; charset=utf8")
-  .afterJSON(function(allUsers) {
-    if (typeof allUsers.users == "object") {
-      for (var u in allUsers.users) {
-        var user = allUsers.users[u];
-        checkUser(user);
-      }
-    }
-  })
-  .toss();
+function testNonexistentEvent() {
+	frisby.create('Non-existent event')
+		.get(baseURL + '/v2.1/events/100100')
+		.expectStatus(404)
+		.expectHeader("content-type", "application/json; charset=utf8")
+	.toss();
+}
+
+function testNonexistentTalk() {
+	frisby.create('Non-existent talk')
+		.get(baseURL + '/v2.1/talks/100100100')
+		.expectStatus(404)
+		.expectHeader("content-type", "application/json; charset=utf8")
+	.toss();
+}
+
+function testNonexistentEventComment() {
+	frisby.create('Non-existent event comment')
+		.get(baseURL + '/v2.1/event_comments/100100')
+		.expectStatus(404)
+		.expectHeader("content-type", "application/json; charset=utf8")
+	.toss();
+}
+
+function testNonexistentTalkComment() {
+	frisby.create('Non-existent talk comment')
+		.get(baseURL + "/v2.1/talk_comments/100100100")
+		.expectStatus(404)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.expectJSON(["Comment not found"])
+		.toss();
+}
+
+function testNonexistentUser() {
+	frisby.create('Non-existent user')
+		.get(baseURL + "/v2.1/users/100100100")
+		.expectStatus(404)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.expectJSON(["User not found"])
+		.toss();
+}
+
+function testExistingUser() {
+	frisby.create('Existing user')
+		.get(baseURL + "/v2.1/users/1")
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(allUsers) {
+			if (typeof allUsers.users == "object") {
+				for (var u in allUsers.users) {
+					var user = allUsers.users[u];
+					checkUserData(user);
+				}
+			}
+		})
+		.toss();
+}
 
 function checkDate(fieldValue) {
   dateVal = new Date(fieldValue);
@@ -246,7 +293,7 @@ function getObjectClass(obj) {
   return undefined;
 }
 
-function checkEvent(ev) {
+function checkEventData(ev) {
   if (ev.href != null) {
     expect(ev.href).toBeDefined();
     expect(typeof ev.href).toBe('string');
@@ -292,7 +339,7 @@ function checkEvent(ev) {
   expect(typeof ev.website_uri).toBe('string');
 }
 
-function checkVerboseEvent(evt) {
+function checkVerboseEventData(evt) {
   expect(evt.name).toBeDefined();
   expect(evt.start_date).toBeDefined();
   expect(evt.end_date).toBeDefined();
@@ -356,7 +403,7 @@ function checkVerboseEvent(evt) {
   expect(typeof evt.all_talk_comments_uri).toBe('string');
 }
 
-function checkEventComment(comment) {
+function checkEventCommentData(comment) {
   expect(comment.comment).toBeDefined();
   expect(typeof comment.comment).toBe('string');
   expect(comment.created_date).toBeDefined();
@@ -376,7 +423,7 @@ function checkEventComment(comment) {
 }
 
 function checkVerboseEventComment(comment) {
-  checkEventComment(comment);
+  checkEventCommentData(comment);
   if(typeof comment.source != 'undefined') {
     expect(typeof comment.source).toBeTypeOrNull('string');
   }
@@ -384,7 +431,7 @@ function checkVerboseEventComment(comment) {
   expect(typeof comment.gravatar_hash).toBe('string');
 }
 
-function checkTalk(talk) {
+function checkTalkData(talk) {
   expect(talk.talk_title).toBeDefined();
   expect(typeof talk.talk_title).toBe('string');
   expect(talk.talk_description).toBeDefined();
@@ -420,7 +467,7 @@ function checkTalk(talk) {
   expect(typeof talk.starred_count).toBe('number');
 }
 
-function checkUser(user) {
+function checkUserData(user) {
     expect(user.username).toBeDefined();
     expect(typeof user.username).toBe('string');
     expect(user.full_name).toBeDefined();
@@ -443,7 +490,7 @@ function checkUser(user) {
     expect(typeof user.attended_events_uri).toBe('string');
 }
 
-function checkVerboseUser(user) {
+function checkVerboseUserData(user) {
     expect(user.username).toBeDefined();
     expect(typeof user.username).toBe('string');
     expect(user.full_name).toBeDefined();
@@ -468,7 +515,7 @@ function checkVerboseUser(user) {
     expect(typeof user.attended_events_uri).toBe('string');
 }
 
-function checkTrack(track) {
+function checkTrackData(track) {
     expect(track.track_name).toBeDefined();
     expect(typeof track.track_name).toBe('string');
     expect(track.track_description).toBeDefined();
@@ -483,7 +530,7 @@ function checkTrack(track) {
     expect(typeof track.event_uri).toBe('string');
 }
 
-function checkTalkComment(comment) {
+function checkTalkCommentData(comment) {
   expect(comment.rating).toBeDefined();
   expect(typeof comment.rating).toBe('number');
   expect(comment.comment).toBeDefined();
@@ -506,8 +553,8 @@ function checkTalkComment(comment) {
   expect(typeof comment.talk_comments_uri).toBe('string');
 }
 
-function checkVerboseTalkComment(comment) {
-  checkTalkComment(comment);
+function checkVerboseTalkCommentData(comment) {
+  checkTalkCommentData(comment);
   if(typeof comment.source != 'undefined') {
     expect(typeof comment.source).toBeTypeOrNull('string');
   }
