@@ -25,7 +25,7 @@ class SpamCheckService
 
         // TODO what are better values to use for these required fields?
         $comment['user_ip']    = $_SERVER['REMOTE_ADDR'];
-        $comment['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+        $comment['user_agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown';
 
         // now use the incoming data
         $comment['comment_content'] = $this->getField("comment", $data);
