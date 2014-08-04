@@ -85,11 +85,21 @@ class TalksController extends ApiController {
                     $data['source'] = $consumer_name;
 
                     try {
+                        // run it by akismet if we have it
+                        if (isset($this->config['akismet']['apiKey'])) {
+                            $spamCheckService = new SpamCheckService($this->config['akismet']['apiKey']);
+                            $isValid = $spamCheckService->isCommentAcceptable($data);
+                            if (!$isValid) {
+                                throw new Exception("Comment failed spam check", 400);
+                            }
+                        }
+
                         $new_id = $comment_mapper->save($data);
                     } catch (Exception $e) {
                         // just throw this again but with a 400 status code
                         throw new Exception($e->getMessage(), 400);
                     }
+
                     if($new_id) {
                         $comment = $comment_mapper->getCommentById($new_id);
                         $talk_mapper = new TalkMapper($db, $request);
