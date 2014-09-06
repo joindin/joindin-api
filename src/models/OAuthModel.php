@@ -203,12 +203,13 @@ class OAuthModel {
         $sql = 'select c.enable_password_grant from '
             . 'oauth_consumers c '
             . 'where c.consumer_key=:key '
-            . 'and c.consumer_secret=:secret';
+            . 'and c.consumer_secret=:secret '
+            . 'and c.enable_password_grant = 1';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("key" => $key, "secret" => $secret));
         $result = $stmt->fetch();
         if ($result) {
-            return $result['enable_password_grant'] == 1;
+            return true;
         }
 
         return false;
