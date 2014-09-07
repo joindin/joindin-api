@@ -597,7 +597,7 @@ class DataGenerator {
             $this->_cacheStore('users', $id, $user);
 
             // Generate additional information
-            $user->password = md5($user->username."pass");
+            $user->password = password_hash(md5($user->username."pass"), PASSWORD_DEFAULT);
             $user->last_login = time() - rand(0, 1000000);
             $user->admin = ($this->_chance(USER_IS_ADMIN)) ? 1 : 0;
             $user->active = 1;
