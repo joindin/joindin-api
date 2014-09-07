@@ -19,6 +19,8 @@ class Request
     public $user_id;
     public $access_token;
     public $version;
+    public $clientIP;
+    public $clientUserAgent;
 
     protected $oauthModel;
     protected $config;
@@ -60,6 +62,23 @@ class Request
         if ($parseParams) {
             $this->parseParameters();
         }
+        $this->clientUserAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown';
+        $this->setClientIP();
+    }
+
+    /**
+     * Sets the IP address of the requesting client. It checks for the presence of
+     * a Forwarded-For header and, if present, it uses the left most address listed.
+     * If the header is not present, it defaults to the REMOTE_ADDR value
+     */
+    public function setClientIP()
+    {
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
+        if(array_key_exists('HTTP_X_FORWARDED_FOR',$_SERVER)){
+            $clientIps = array_map('trim',explode(',',$_SERVER['HTTP_X_FORWARDED_FOR']));
+            $ipAddress = $clientIps[0];
+        }
+        $this->clientIP = $ipAddress;
     }
 
     /**
