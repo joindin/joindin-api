@@ -130,16 +130,19 @@ class OAuthModel
      */
     protected function getUserId($username, $password)
     {
-        $sql = 'SELECT ID, email FROM user
-                WHERE username=:username AND password=:password';
+        $sql = 'SELECT ID, password, email FROM user
+                WHERE username=:username';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("username" => $username, "password" => md5($password)));
+        $stmt->execute(array("username" => $username)); 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($result) {
-            return $result['ID'];
+            if(password_verify(md5($password), $result['password'])) {
+                return $result['ID'];
+            }
         }
 
-        return $result;
+        return false;
+
     }
 
     /**
