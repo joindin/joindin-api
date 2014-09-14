@@ -235,3 +235,10 @@ insert into user_admin (
 	@fuserid,@evtid,
 	'event','',NULL
 );
+
+/* Add a record to allow web2 to talk to the API */
+insert into oauth_consumers set 
+	consumer_key = "web2", 
+	consumer_secret = "web2secret", 
+	user_id=1, enable_password_grant=1;
+
