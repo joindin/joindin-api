@@ -81,8 +81,8 @@ class Request
             $header->setGlue(',');
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
-            $ipAddress = $elementArray['for'][0];
-            $userAgent = $elementArray['user-agent'][0];
+            $ipAddress = $elementArray['For'][0];
+            $userAgent = $elementArray['User-agent'][0];
         }elseif(array_key_exists('HTTP_X_FORWARDED_FOR',$_SERVER)){
             $header = new Header('X-Forwarded-For',$_SERVER['HTTP_X_FORWARDED_FOR'],',');
             $header->parseParams();
