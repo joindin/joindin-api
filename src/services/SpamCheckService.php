@@ -15,6 +15,10 @@ class SpamCheckService
     /**
      * Check your comment against the spam check service
      *
+     * @param $data
+     * @param $userIp
+     * @param $userAgent
+     *
      * @return Boolean true if the comment is okay, false if it got rated as spam
      */
     public function isCommentAcceptable($data,$userIp,$userAgent) {

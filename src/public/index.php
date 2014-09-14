@@ -2,6 +2,7 @@
 include '../inc/Autoloader.php';
 include '../inc/Request.php';
 include '../inc/Timezone.php';
+include '../inc/Header.php';
 
 // Add exception handler
 function handle_exception($e) {
