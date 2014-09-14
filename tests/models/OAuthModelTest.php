@@ -188,10 +188,10 @@ class OAuthModelTest extends \PHPUnit_Framework_TestCase
 
     private function addGetUserId($username, $password, $userId, $badResult = false)
     {
-        $sql = 'SELECT ID, email FROM user
-                WHERE username=:username AND password=:password';
+        $sql = 'SELECT ID, password, email FROM user
+                WHERE username=:username';
 
-        $result = ['ID' => $userId];
+        $result = ['ID' => $userId, 'password' => $password];
 
         if ($badResult) {
             $result = false;
@@ -206,7 +206,7 @@ class OAuthModelTest extends \PHPUnit_Framework_TestCase
         $statementMock
             ->expects($this->once())
             ->method('execute')
-            ->with(["username" => $username, "password" => md5($password)]);
+            ->with(["username" => $username]);
 
         $statementMock
             ->expects($this->once())
