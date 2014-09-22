@@ -117,6 +117,8 @@ MAX_PATCH_LEVEL=$(ls $PATCH_DIR/patch*.sql | egrep -o 'patch[0-9]*.sql' | egrep 
 # Init
 if [ "$INITDB" ]
 then
+    echo -n "Dropping and recreating DB before initialising it..."
+	$($DBCMD -e "drop database $DBNAME; create database $DBNAME;")
     echo -n "Initialising DB..."
     $($DBCMD < $PATCH_DIR/init_db.sql)
     $($DBCMD < $PATCH_DIR/init_data.sql)
