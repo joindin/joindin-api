@@ -320,24 +320,25 @@ class EventsController extends ApiController {
                     // Make sure our resultset contains a host or more
                     if (count($hosts) == 0) {
                         throw new Exception("No hosts for this event", 400);
-                    } else {
-                        // Store our recipients in an array
-                        $recipients = array();
-
-                        foreach($hosts as $person) {
-                            // This is trusting that the email address stored in the database is
-                            // clean and valid, we'll assume so but could easily wrap this in a filter_var
-                            // to be double sure
-                            $recipients[] = $person['email'];
-                        }
-
-                        // Send out the email to these event hosts
-                        $emailService = new EventFeedbackEmailService($this->config, $recipients, $event, $feedback);
-                        $emailService->sendEmail();
-
-                        header("Location: " . $request->base . $request->path_info, NULL, 201);
-                        exit;
                     }
+                    
+                    // Store our recipients in an array
+                    $recipients = array();
+
+                    foreach($hosts as $person) {
+                        // This is trusting that the email address stored in the database is
+                        // clean and valid, we'll assume so but could easily wrap this in a filter_var
+                        // to be double sure
+                        $recipients[] = $person['email'];
+                    }
+
+                    // Send out the email to these event hosts
+                    $emailService = new EventFeedbackEmailService($this->config, $recipients, $event, $feedback);
+                    $emailService->sendEmail();
+
+                    header("Location: " . $request->base . $request->path_info, NULL, 201);
+                    exit;
+
 
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
