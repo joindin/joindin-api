@@ -321,7 +321,7 @@ class EventsController extends ApiController {
                     if (count($hosts) == 0) {
                         throw new Exception("No hosts for this event", 400);
                     }
-                    
+
                     // Store our recipients in an array
                     $recipients = array();
 
