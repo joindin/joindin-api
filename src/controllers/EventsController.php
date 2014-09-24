@@ -306,22 +306,24 @@ class EventsController extends ApiController {
                     FROM
                       user_admin
 
-                    LEFT JOIN
-                      joindin.user ON (user_admin.uid = user.id)
+                    INNER JOIN
+                      user ON (uid = user.id)
 
                     WHERE
-                      user_admin.rid = :event_id AND
-                      user_admin.rtype = "event" AND
-                      (user_admin.rcode != "pending" OR rcode IS NULL)';
+                      rid = :event_id AND rtype = "event" AND (rcode != "pending" OR rcode IS NULL)';
 
+                    // Now run our database query
                     $host_stmt = $db->prepare($host_sql);
                     $host_stmt->execute(array("event_id" => $this->getItemId($request)));
                     $hosts = $host_stmt->fetchAll(PDO::FETCH_ASSOC);
 
+                    // Make sure our resultset contains a host or more
+                    if (count($hosts) == 0) {
+                        throw new Exception("No hosts for this event", 400);
+                    } else {
+                        // Store our recipients in an array
+                        $recipients = array();
 
-                    $recipients = array();
-
-                    if(is_array($hosts)) {
                         foreach($hosts as $person) {
                             // This is trusting that the email address stored in the database is
                             // clean and valid, we'll assume so but could easily wrap this in a filter_var
@@ -329,19 +331,12 @@ class EventsController extends ApiController {
                             $recipients[] = $person['email'];
                         }
 
-                        if (count($recipients)) {
-                            // Send out the email to these event hosts
-                            $emailService = new EventFeedbackEmailService($this->config, $recipients, $event, $feedback);
-                            $emailService->sendEmail();
+                        // Send out the email to these event hosts
+                        $emailService = new EventFeedbackEmailService($this->config, $recipients, $event, $feedback);
+                        $emailService->sendEmail();
 
-                            header("Location: " . $request->base . $request->path_info, NULL, 201);
-                            exit;
-                        } else {
-                            // We don't have any email addresses to send to
-                            throw new Exception("No hosts for this event", 400);
-                        }
-                    } else {
-                        throw new Exception("No hosts for this event", 400);
+                        header("Location: " . $request->base . $request->path_info, NULL, 201);
+                        exit;
                     }
 
                 default:
