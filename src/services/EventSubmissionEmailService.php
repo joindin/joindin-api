@@ -17,11 +17,14 @@ class EventSubmissionEmailService extends EmailBaseService
     public function sendEmail()
     {
         $this->setSubject('New event submitted to joind.in');
+
+        $date = new DateTime($this->event['start_date']);
+
         $replacements = array(
             "title"       => $this->event['name'],
             "description" => $this->event['description'],
-            "date"        => $this->event['start_date'],
-            "host_name"   => $this->event['hosts'][0]['host_name'],
+            "date"        => $date->format('jS M, Y'),
+            "contact_name"   => $this->event['contact_name'],
         );
 
         $messageBody = $this->parseEmail("eventSubmission.md", $replacements);

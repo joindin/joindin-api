@@ -329,6 +329,9 @@ class EventsController extends ApiController {
                 $user_mapper= new UserMapper($db, $request);
                 $event_mapper = new EventMapper($db, $request);
 
+                $event_owner = $user_mapper->getUserById($request->user_id);
+                $event['contact_name'] = $event_owner['users'][0]['full_name'];
+
                 try {
                     if($user_mapper->isSiteAdmin($request->user_id)) {
                         $event_id = $event_mapper->createEvent($event, true);

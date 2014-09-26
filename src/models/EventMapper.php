@@ -60,6 +60,7 @@ class EventMapper extends ApiMapper
             'tz_continent' => 'event_tz_cont',
             'tz_place' => 'event_tz_place',
             'location' => 'event_loc',
+            'contact_name' => 'event_contact_name',
             'hashtag' => 'event_hashtag',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
@@ -598,6 +599,7 @@ class EventMapper extends ApiMapper
             'end_date',
             'tz_continent',
             'tz_place',
+            'contact_name',
         );
         $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($event));
         if (!$contains_mandatory_fields) {
@@ -708,7 +710,7 @@ class EventMapper extends ApiMapper
      */
     public function getPendingEventById($event_id) {
         $sql = 'select events.* '
-            . 'from events ';
+            . 'from events '
             . 'where events.ID = :event_id ';
 
         $stmt = $this->_db->prepare($sql);
