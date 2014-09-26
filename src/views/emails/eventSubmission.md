@@ -1,1 +1,1 @@
-A new event has been submitted to joind.in.*Event Title:* [title]*Event Contact Name:* [host_name]*Event Date:* [date]*Event Description:* [description]View Pending Submissions: https://joind.in/event/pending
+Please review a new event submission to joind.in:*Title:* [title]*Contact:* [contact_name]*Date:* [date]*Description:* [description]View all pending submissions here: [https://joind.in/event/pending](https://joind.in/event/pending)
