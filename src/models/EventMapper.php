@@ -698,4 +698,26 @@ class EventMapper extends ApiMapper
 
         return $result;
     }
+
+    /**
+     * Get an event by ID, but just the event table fields
+     * and including pending events
+     *
+     * @param int $event_id The event you want
+     * @return array The event details, or false if it wasn't found
+     */
+    public function getPendingEventById($event_id) {
+        $sql = 'select events.* '
+            . 'from events ';
+            . 'where events.ID = :event_id ';
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array("event_id" => $event_id));
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $retval = parent::transformResults($results, true);
+            return $retval[0];
+        }
+        return false;
+    }
 }
