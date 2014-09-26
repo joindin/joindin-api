@@ -352,8 +352,9 @@ class EventsController extends ApiController {
                     // Send an email if we didn't auto-approve
                     if (!$user_mapper->isSiteAdmin($request->user_id)) {
                         $event = $event_mapper->getPendingEventById($event_id, true);
+                        $count = $event_mapper->getPendingEventsCount();
                         $recipients = $user_mapper->getSiteAdminEmails();
-                        $emailService = new EventSubmissionEmailService($this->config, $recipients, $event);
+                        $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
                         $emailService->sendEmail();
                     }
                 } catch (Exception $e) {

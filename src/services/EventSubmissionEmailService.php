@@ -5,13 +5,15 @@ class EventSubmissionEmailService extends EmailBaseService
     protected $event;
     protected $comment;
 
-    public function __construct($config, $recipients, $event)
+    public function __construct($config, $recipients, $event, $count = NULL)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
 
         // this email needs event info
         $this->event = $event;
+
+        $this->count = $count;
     }
 
     public function sendEmail()
@@ -26,6 +28,12 @@ class EventSubmissionEmailService extends EmailBaseService
             "date"        => $date->format('jS M, Y'),
             "contact_name"   => $this->event['contact_name'],
         );
+
+        if($this->count) {
+            $replacements["count"] = "(" . $this->count . " events are pending)";
+        } else {
+            $replacements["count"] = "";
+        }
 
         $messageBody = $this->parseEmail("eventSubmission.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);

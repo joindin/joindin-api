@@ -722,4 +722,20 @@ class EventMapper extends ApiMapper
         }
         return false;
     }
+
+    /*
+     * How many events currently pending?
+     *
+     * @return int The number of pending events
+     */
+    public function getPendingEventsCount() {
+        $sql = 'select count(*) as count '
+            . 'from events '
+            . 'where pending = 1';
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute();
+        $result = $stmt->fetch();
+        return $result['count'];
+    }
 }
