@@ -350,7 +350,6 @@ class EventsController extends ApiController {
             if($errors) {
                 throw new Exception(implode(". ", $errors), 400);
             } else {
-                // site admins get their events auto approved
                 $user_mapper= new UserMapper($db, $request);
                 $event_mapper = new EventMapper($db, $request);
 

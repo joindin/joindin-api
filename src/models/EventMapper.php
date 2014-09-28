@@ -94,6 +94,46 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Fetch the details for a single event
+     *
+     * @param string  $url_friendly_name events.friendly_name value
+     * @param boolean $verbose             used to determine how many fields are needed
+     *
+     * @return array the event detail
+     */
+    public function getEventByUrlFriendlyName($url_friendly_name, $verbose = false)
+    {
+        $results = $this->getEvents(1, 0, array("url_friendly_name" => $url_friendly_name));
+        if ($results) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+    /**
+     * Fetch the ID for a given URL friendly name
+     *
+     * @param string $url_friendly_name
+     *
+     * @return int
+     */
+    public function getEventIdForUrlFriendlyName($url_friendly_name)
+    {
+        $sql = "SELECT ID FROM events WHERE url_friendly_name = :url_friendly_name;";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("url_friendly_name" => $url_friendly_name));
+        $result = $stmt->fetch();
+
+        error_log(print_r($result, true));
+        if(is_array($result)) {
+            return $result['ID'];
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Internal function called by other event-fetching code, with changeable SQL
      * 
      * @param int $resultsperpage how many records to return
@@ -635,6 +675,53 @@ class EventMapper extends ApiMapper
         }
 
         return false;
+    }
+
+    /**
+     * Edit an event.
+     *
+     * Accepts a subset of event fields
+     *
+     * @param string[] $event    Event data to insert into the database.
+     * @param int      $event_id The ID of the event to be edited
+     *
+     * @return integer|false
+     */
+    public function editEvent($event, $event_id)
+    {
+        // Sanity check: ensure all mandatory fields are present.
+        $mandatory_fields = array(
+            'name',
+            'description',
+            'start_date',
+            'end_date',
+            'tz_continent',
+            'tz_place',
+        );
+        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($event));
+        if (!$contains_mandatory_fields) {
+            throw new Exception("Missing mandatory fields");
+        }
+
+        $sql = "UPDATE events SET %s WHERE ID = :event_id";
+
+        // create list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+        foreach ($fields as $api_name => $column_name) {
+            // We don't change any activation stuff here!!
+            if (in_array($column_name, ['pending', 'active'])) {
+                continue;
+            }
+            if (isset($event[$api_name])) {
+                $pairs[] = "$column_name = :$api_name";
+            }
+        }
+
+        $event['event_id'] = $event_id;
+
+        $stmt   = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
+
+        return $stmt->execute($event);
     }
 
     /**
