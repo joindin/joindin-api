@@ -347,36 +347,30 @@ class EventsController extends ApiController {
                 $event_owner = $user_mapper->getUserById($request->user_id);
                 $event['contact_name'] = $event_owner['users'][0]['full_name'];
 
-                try {
-                    if($user_mapper->isSiteAdmin($request->user_id)) {
-                        $event_id = $event_mapper->createEvent($event, true);
+                if($user_mapper->isSiteAdmin($request->user_id)) {
+                    $event_id = $event_mapper->createEvent($event, true);
 
-                        // redirect to event listing
-                        header("Location: " . $request->base . $request->path_info . '/' . $event_id, NULL, 201);
-                    } else {
-                        $event_id = $event_mapper->createEvent($event);
+                    // redirect to event listing
+                    header("Location: " . $request->base . $request->path_info . '/' . $event_id, NULL, 201);
+                } else {
+                    $event_id = $event_mapper->createEvent($event);
 
-                        // set status to accepted; a pending event won't be visible
-                        header("Location: " . $request->base . $request->path_info, NULL, 202);
-                    }
-
-                    // now set the current user as host and attending
-                    $event_mapper->addUserAsHost($event_id, $request->user_id);
-                    $event_mapper->setUserAttendance($event_id, $request->user_id);
-
-                    // Send an email if we didn't auto-approve
-                    if (!$user_mapper->isSiteAdmin($request->user_id)) {
-                        $event = $event_mapper->getPendingEventById($event_id, true);
-                        $count = $event_mapper->getPendingEventsCount();
-                        $recipients = $user_mapper->getSiteAdminEmails();
-                        $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
-                        $emailService->sendEmail();
-                    }
-                } catch (Exception $e) {
-                    throw $e;
+                    // set status to accepted; a pending event won't be visible
+                    header("Location: " . $request->base . $request->path_info, NULL, 202);
                 }
 
+                // now set the current user as host and attending
+                $event_mapper->addUserAsHost($event_id, $request->user_id);
+                $event_mapper->setUserAttendance($event_id, $request->user_id);
 
+                // Send an email if we didn't auto-approve
+                if (!$user_mapper->isSiteAdmin($request->user_id)) {
+                    $event = $event_mapper->getPendingEventById($event_id, true);
+                    $count = $event_mapper->getPendingEventsCount();
+                    $recipients = $user_mapper->getSiteAdminEmails();
+                    $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
+                    $emailService->sendEmail();
+                }
                 exit;
             }
         }
