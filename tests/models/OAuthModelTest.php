@@ -191,7 +191,7 @@ class OAuthModelTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT ID, password, email FROM user
                 WHERE username=:username';
 
-        $result = ['ID' => $userId, 'password' => $password];
+        $result = ['ID' => $userId, 'password' => password_hash(md5($password), PASSWORD_DEFAULT)];
 
         if ($badResult) {
             $result = false;
