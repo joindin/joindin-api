@@ -33,12 +33,13 @@ class TokenController extends ApiController
         if(empty($username) || empty($password)) {
             throw new Exception('The fields "username" and "password" are both required', 400);
         }
-        
+
         if ($grantType == 'password') {
             // authenticate the user for web2
-            
+
             $clientId = $request->getParameter('client_id');
-            if (!in_array($clientId, $this->config['oauth']['password_client_ids'])) {
+            $clientSecret = $request->getParameter('client_secret');
+            if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
                 throw new Exception("This client cannot authenticate using the password grant type", 403);
             }
 
