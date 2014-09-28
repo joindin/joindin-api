@@ -60,6 +60,7 @@ class EventMapper extends ApiMapper
             'tz_continent' => 'event_tz_cont',
             'tz_place' => 'event_tz_place',
             'location' => 'event_loc',
+            'contact_name' => 'event_contact_name',
             'hashtag' => 'event_hashtag',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
@@ -598,6 +599,7 @@ class EventMapper extends ApiMapper
             'end_date',
             'tz_continent',
             'tz_place',
+            'contact_name',
         );
         $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($event));
         if (!$contains_mandatory_fields) {
@@ -697,5 +699,43 @@ class EventMapper extends ApiMapper
         $result = $stmt->execute(array("event_id" => $event_id));
 
         return $result;
+    }
+
+    /**
+     * Get an event by ID, but just the event table fields
+     * and including pending events
+     *
+     * @param int $event_id The event you want
+     * @return array The event details, or false if it wasn't found
+     */
+    public function getPendingEventById($event_id) {
+        $sql = 'select events.* '
+            . 'from events '
+            . 'where events.ID = :event_id ';
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array("event_id" => $event_id));
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $retval = parent::transformResults($results, true);
+            return $retval[0];
+        }
+        return false;
+    }
+
+    /*
+     * How many events currently pending?
+     *
+     * @return int The number of pending events
+     */
+    public function getPendingEventsCount() {
+        $sql = 'select count(*) as count '
+            . 'from events '
+            . 'where pending = 1';
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute();
+        $result = $stmt->fetch();
+        return $result['count'];
     }
 }
