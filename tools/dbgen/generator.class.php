@@ -585,8 +585,11 @@ class DataGenerator {
     // Generate $count users
     protected function _generateUsers($count) {
         echo "TRUNCATE user;\n";
+
+        // Ima admin
+        $password = '$2y$10$StMpCySaSLHuvh3KLFNiZ.vSEykBF8kVWEG6ZtuXzQd4F9WWlfBFi';
         echo "INSERT INTO `user` (`username`, `password`, `email`, `last_login`, `ID`, `admin`, `full_name`, `active`, `twitter_username`, `request_code`) VALUES\n";
-        echo "('imaadmin', '5f4dcc3b5aa765d61d8327deb882cf99', 'ima@sampledomain.com', unix_timestamp(), 1, 1, 'Ima Admin', 1, '', NULL)";
+        echo "('imaadmin', '$password', 'ima@sampledomain.com', unix_timestamp(), 1, 1, 'Ima Admin', 1, '', NULL)";
 
         for ($id=2; $id <= $count+2; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "USER ID: $id    (".(memory_get_usage(true)/1024)." Kb)        \r");
