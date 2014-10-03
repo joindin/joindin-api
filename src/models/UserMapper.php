@@ -9,6 +9,10 @@
 class UserMapper extends ApiMapper 
 {
 
+    const ERROR_USERNAME_MISSING = 400;
+    const ERROR_PASSWORD_MISSING = 400;
+    const ERROR_EMAIL_MISSING = 400;
+
     /**
      * Default mapping for column names to API field names
      * 
@@ -186,5 +190,51 @@ class UserMapper extends ApiMapper
             return true;
         }
         return false;
+    }
+
+    public function save(array $data)
+    {
+        if (!$data['username']) {
+            throw new Exception('Username is missing.', self::ERROR_USERNAME_MISSING);
+        }
+
+        if (!$data['password']) {
+            throw new Exception('Password is missing.', self::ERROR_PASSWORD_MISSING);
+        }
+
+        if (!$data['email']) {
+            throw new Exception('Email is missing.', self::ERROR_EMAIL_MISSING);
+        }
+
+        // check for a duplicate first
+        $duplicateQuery = 'SELECT u.ID FROM `user` u WHERE `email` = :email';
+
+        $duplicateStatement = $this->_db->prepare($duplicateQuery);
+        $duplicateStatement->execute(array(
+            ':email' => $data['email'],
+        ));
+
+        // only proceed if we didn't already find a row like this
+        if ($duplicateStatement->fetch()) {
+            throw new Exception("This email address already exists, please login.");
+        }
+
+        $sql = 'INSERT INTO user (`username`, `password`, `email`, `full_name`, `twitter_username`, `active`, `admin`) '
+            . 'values (:username, :password, :email, :full_name, :twitter_username, :active, :admin)';
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array(
+            ':username'         => $data['username'],
+            ':password'         => password_hash(md5($data['password']), PASSWORD_DEFAULT),
+            ':email'            => $data['email'],
+            ':full_name'        => $data['full_name'],
+            ':twitter_username' => $data['twitter_username'],
+            ':active'           => 1,
+            ':admin'            => 0,
+        ));
+
+        $userId = $this->_db->lastInsertId();
+
+        return $userId;
     }
 }

@@ -1,10 +1,15 @@
 <?php
 
 class UsersController extends ApiController {
+
+    const ERROR_BE_NOT_LOGGED_IN_TO_CREATE_USER = 400;
+    
     public function handle(Request $request, $db) {
         // only GET is implemented so far
         if($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
+        } elseif ($request->getVerb() == 'POST') {
+            $this->postAction($request, $db);
         }
         return false;
     }
@@ -55,4 +60,43 @@ class UsersController extends ApiController {
 
         return $list;
 	}
+
+    private function postAction(Request $request, $db)
+    {
+
+        // make sure user is not logged in
+        if (isset($request->user_id)) {
+            throw new Exception("You have to be not logged in to create a user account",
+                self::ERROR_BE_NOT_LOGGED_IN_TO_CREATE_USER);
+        }
+        //
+        // make sure all data exists
+        //
+        // username
+        $user = $request->getParameter('user');
+        // password
+        $password = $request->getParameter('pass');
+        // TODO password2 == password?
+        // email
+        $email = $request->getParameter('email');
+        // full name
+        $full_name = $request->getParameter('full_name');
+        // twitter handle
+        $twitter_username = $request->getParameter('twitter_username');
+
+        // TODO spam bot check?
+
+        // create user and save to database
+
+
+        $userData = array(
+            'username'         => $user,
+            'password'         => $password,
+            'email'            => $email,
+            'full_name'        => $full_name,
+            'twitter_username' => $twitter_username,
+        );
+        $userMapper = new UserMapper($db);
+        $userMapper->save($userData);
+    }
 }
