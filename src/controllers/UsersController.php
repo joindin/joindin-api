@@ -19,15 +19,21 @@ class UsersController extends ApiController {
         $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
+        $filter = $this->getFilter($request);
+
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
                 case 'talks':
                             $talk_mapper = new TalkMapper($db, $request);
-                            $list = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose);
+                            $list = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose, $filter);
                             break;
                 case 'attended':
                             $event_mapper = new EventMapper($db, $request);
-                            $list = $event_mapper->getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose);
+                            $list = $event_mapper->getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose, $filter);
+                            break;
+                case 'comments':
+                            $comment_mapper = new TalkCommentMapper($db, $request);
+                            $list = $comment_mapper->getCommentsByUserId($user_id, $resultsperpage, $start, $request, $verbose, $filter);
                             break;
                 default:
                             throw new InvalidArgumentException('Unknown Subrequest', 404);
@@ -55,4 +61,9 @@ class UsersController extends ApiController {
 
         return $list;
 	}
+
+    public function getFilter($request)
+    {
+        return $request->paginationParameters['filter'];
+    }
 }
