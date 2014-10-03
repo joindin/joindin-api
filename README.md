@@ -106,3 +106,36 @@ The API docs are written in markdown and rendered by [Jekyll](http://jekyllrb.co
 You will have to make a few modifications to the code as it currently is optimized for running on an apache-httpd webserver.
 
 For detailed instructions have a look at [README.NGINX.md](README.NGINX.md)
+
+## Global .gitignore
+
+git has the capability to define a global gitignore, which means you can set a local file to ignore everything you don't 
+want to be commited by accident. This is not only recommended for this project, but for all your projects.
+
+You can define this gitignore file with the following command. The gitignore is expected to be in `~/.gitignore_global`.
+Of course you can use every filename you want.  
+
+    $ git config --global core.excludesfile ~/.gitignore_global
+
+Octocat gives [a good starting point](https://gist.github.com/octocat/9257657) to what to put in.
+
+Beside this, we recommend to add meta data to all the IDEs:
+
+    # Eclipse
+    .classpath
+    .project
+    .settings/
+    
+    # Intellij
+    .idea/
+    *.iml
+    *.iws
+        
+    # Maven
+    log/
+    target/
+
+    # Netbeans
+    nbproject/private/
+
+More on ignoring files, [can be find on github](https://help.github.com/articles/ignoring-files/).
