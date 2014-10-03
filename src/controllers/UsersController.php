@@ -29,7 +29,7 @@ class UsersController extends ApiController {
                             $event_mapper = new EventMapper($db, $request);
                             $list = $event_mapper->getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose);
                             break;
-                case 'talkcomments':
+                case 'talk_comments':
                             $talkComment_mapper = new TalkCommentMapper($db, $request);
                             $list = $talkComment_mapper->getCommentsByUserId($user_id, $resultsperpage, $start, $verbose);
                             break;
