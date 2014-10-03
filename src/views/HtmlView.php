@@ -24,11 +24,11 @@ class HtmlView extends ApiView
 
         header('Content-Type: text/html; charset=utf8');
         $this->layoutStart();
-		if (is_array($content)) {
-			$this->printArray($content);
-		} else {
-			$this->printUrlOrString($content);
-		}
+        if (is_array($content)) {
+            $this->printArray($content);
+        } else {
+            $this->printUrlOrString($content);
+        }
         $this->layoutStop();
         return true;
     }
@@ -52,30 +52,30 @@ class HtmlView extends ApiView
                 $this->printArray($value);
             } else {
                 // value, with hyperlinked hyperlinks
-				$this->printUrlOrString($value);
+                $this->printUrlOrString($value);
             }
             echo "</li>\n";
         }
         echo "</ul>\n";
     }
 
-	/**
-	 * Renders the passed value, either raw or as a link (if prepended by http
-	 * or https)
-	 *  
-	 * @param string $value
-	 * 
-	 * @return void
-	 */
-	protected function printUrlOrString($value)
-	{
-		$value = htmlentities($value, ENT_COMPAT, 'UTF-8');
-		if ((strpos($value, 'http://') === 0) || (strpos($value, 'https://') === 0)) {
-			echo "<a href=\"" . $value . "\">" . $value . "</a>";
-		} else {
-			echo $value;
-		}
-	}
+    /**
+     * Renders the passed value, either raw or as a link (if prepended by http
+     * or https)
+     *
+     * @param string $value
+     *
+     * @return void
+     */
+    protected function printUrlOrString($value)
+    {
+        $value = htmlentities($value, ENT_COMPAT, 'UTF-8');
+        if ((strpos($value, 'http://') === 0) || (strpos($value, 'https://') === 0)) {
+            echo "<a href=\"" . $value . "\">" . $value . "</a>";
+        } else {
+            echo $value;
+        }
+    }
 
     /**
      * Render start of HTML page
