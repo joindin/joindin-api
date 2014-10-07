@@ -470,9 +470,6 @@ class EventMapper extends ApiMapper
             . '(pending = 0 or pending is NULL) and '
             . ' ua.uid = :user_id';
 
-        // group by for the multiple attending recipes; only ever want to see each event once
-        $sql .= ' group by events.ID ';
-
         $sql .= ' order by events.event_start desc ';
 
         // limit clause
