@@ -29,20 +29,22 @@ function apiv2Autoload($classname)
         exit;
     }
 
+	$filename = false;
+
     if (preg_match('/[a-zA-Z]+Controller$/', $classname)) {
-        include __DIR__ . '/../controllers/' . $classname . '.php';
-        return true;
+        $filename = __DIR__ . '/../controllers/' . $classname . '.php';
     } elseif (preg_match('/[a-zA-Z]+Mapper$/', $classname)) {
-        include __DIR__ . '/../models/' . $classname . '.php';
-        return true;
+        $filename = __DIR__ . '/../models/' . $classname . '.php';
     } elseif (preg_match('/[a-zA-Z]+Model$/', $classname)) {
-        include __DIR__ . '/../models/' . $classname . '.php';
-        return true;
+        $filename = __DIR__ . '/../models/' . $classname . '.php';
     } elseif (preg_match('/[a-zA-Z]+View$/', $classname)) {
-        include __DIR__ . '/../views/' . $classname . '.php';
-        return true;
+        $filename = __DIR__ . '/../views/' . $classname . '.php';
     } elseif (preg_match('/[a-zA-Z]+Service$/', $classname)) {
-        include __DIR__ . '/../services/' . $classname . '.php';
-        return true;
+        $filename = __DIR__ . '/../services/' . $classname . '.php';
     }
+
+	if (file_exists($filename)) {
+		include $filename;
+		return true;
+	}
 }
