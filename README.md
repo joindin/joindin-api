@@ -95,7 +95,9 @@ To see a summary of the codesniff errors and warnings across the entire project,
 
 ### Generating the API Docs
 
-The API docs are written in markdown and rendered by [Jekyll](http://jekyllrb.com/), a ruby gem.  You can test this locally by doing the following
+The API docs can be found here: [http://joindin.github.io/joindin-api/](http://joindin.github.io/joindin-api/).  Their source code lives on the ``gh-pages`` branch, and changes should be submitted in pull requests against that branch.
+
+Docs are written in markdown and rendered by [Jekyll](http://jekyllrb.com/), a ruby gem.  You can test this locally by doing the following
 
 * Get set up - the best instructions are GitHub's own and they keep these up to date: [https://help.github.com/articles/using-jekyll-with-pages](https://help.github.com/articles/using-jekyll-with-pages).
 
