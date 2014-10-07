@@ -442,6 +442,56 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Events that a particular user has admin privileges on
+     *
+     * @param int $resultsperpage how many records to return
+     * @param int $start offset to start returning records from
+     * @param boolean $verbose used to determine how many fields are needed
+     *
+     * @return array the data, or false if something went wrong
+     */
+    public function getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose = false)
+    {
+        $data = array("user_id" => (int)$user_id);
+
+        $sql = 'select events.*, '
+            . '(select count(*) from user_attend where user_attend.eid = events.ID)
+                as attendee_count, '
+            . 'abs(datediff(from_unixtime(events.event_start),
+                from_unixtime('.mktime(0, 0, 0).'))) as score, '
+            . 'CASE
+                WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
+                ELSE 0
+               END as comments_enabled '
+            . 'from events '
+            . 'left join user_admin ua on (ua.rid = events.ID) AND rtype="event" AND (rcode!="pending" OR rcode is null)';
+
+        $sql .= 'where active = 1 and '
+            . '(pending = 0 or pending is NULL) and '
+            . ' ua.uid = :user_id';
+
+        // group by for the multiple attending recipes; only ever want to see each event once
+        $sql .= ' group by events.ID ';
+
+        $sql .= ' order by events.event_start desc ';
+
+        // limit clause
+        $sql .= $this->buildLimit($resultsperpage, $start);
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute($data);
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if(is_array($results)) {
+                $results['total'] = $this->getTotalCount($sql, $data);
+                $retval = $this->transformResults($results, $verbose);
+                return $retval;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Events that a particular user is marked as attending
      * 
      * @param int $resultsperpage how many records to return
