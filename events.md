@@ -206,6 +206,7 @@ You may also add any or all of these additional fields:
  * ``cfp_url`` must be a valid URL
  * ``cfp_start_date`` (PHP uses strtotime to parse this field, it's pretty tolerant)
  * ``cfp_end_date`` (PHP uses strtotime to parse this field, it's pretty tolerant)
+ * ``tags[]`` You can add multiple tags by using this field more than once.
  
 The response should include a 201 Created header.  Here is an example of a full request and response:
 
