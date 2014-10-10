@@ -464,7 +464,7 @@ class EventMapper extends ApiMapper
                 ELSE 0
                END as comments_enabled '
             . 'from events '
-            . 'left join user_admin ua on (ua.rid = events.ID) AND rtype="event" AND (rcode!="pending" OR rcode is null)';
+            . 'join user_admin ua on (ua.rid = events.ID) AND rtype="event" AND (rcode!="pending" OR rcode is null)';
 
         $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
