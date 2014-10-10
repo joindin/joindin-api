@@ -82,3 +82,5 @@ The ``-v`` switch is there so that you see the whole response, which looks somet
 ~~~~
 
 The ``Location`` header will point to the newly-created comment, and the status code of 201 indicates that all went well.  If anything does go wrong, you will get a 4xx status code response with a message indicating what the problem is.
+
+Duplicate comments produce a 400 with "Duplicate comment" in the body.  Spam comments return a 400 with the message "comment failed spam check".
