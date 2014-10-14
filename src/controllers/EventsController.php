@@ -9,6 +9,8 @@ class EventsController extends ApiController {
             return $this->postAction($request, $db);
         } elseif ($request->getVerb() == 'DELETE') {
             return $this->deleteAction($request, $db);
+        } elseif ($request->getVerb() == 'PUT') {
+            return $this->putAction($request, $db);
         }
         return false;
     }
@@ -406,6 +408,110 @@ class EventsController extends ApiController {
             }
         } else {
             throw new Exception("Operation not supported, sorry", 404);
+        }
+    }
+
+    public function putAction($request, $db)
+    {
+        if (! isset($request->user_id)) {
+            throw new Exception('You must be logged in to edit data', 400);
+        }
+
+        if (! isset($request->url_elements[4])) {
+
+            // Edit an Event
+            $event_mapper      = new EventMapper($db, $request);
+            $url_friendly_name = filter_var(
+                $request->getParameter('url_friendly_name'),
+                FILTER_SANITIZE_STRING
+            );
+
+            $event = $event_mapper->getEventByUrlFriendlyName($url_friendly_name, true);
+            if (! $event) {
+                throw new Exception(sprintf(
+                    'There is no event with name "%s"',
+                    $url_friendly_name
+                ));
+            }
+
+            $errors = array();
+
+            $event['name'] = filter_var($request->getParameter("name"), FILTER_SANITIZE_STRING);
+            if(empty($event['name'])) {
+                $errors[] = "'name' is a required field";
+            }
+
+            $event['description'] = filter_var($request->getParameter("description"), FILTER_SANITIZE_STRING);
+            if(empty($event['description'])) {
+                $errors[] = "'description' is a required field";
+            }
+
+            $event['location']  = filter_var($request->getParameter("location"), FILTER_SANITIZE_STRING);
+            if (empty($event['location'])) {
+                $errors[] = "'location' is a required field (for virtual events, 'online' works)";
+            }
+
+            $start_date = strtotime($request->getParameter("start_date"));
+            $end_date = strtotime($request->getParameter("end_date"));
+            if(!$start_date || !$end_date) {
+                $errors[] = "Both 'start_date' and 'end_date' must be supplied in a recognised format";
+            } else {
+                // if the dates are okay, sort out timezones
+                $event['tz_continent'] = filter_var($request->getParameter("tz_continent"), FILTER_SANITIZE_STRING);
+                $event['tz_place'] = filter_var($request->getParameter("tz_place"), FILTER_SANITIZE_STRING);
+                try {
+                    // make the timezone, and read in times with respect to that
+                    $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+                    $start_date = new DateTime($request->getParameter("start_date"), $tz);
+                    $end_date = new DateTime($request->getParameter("end_date"), $tz);
+                    $event['start_date'] = $start_date->format('U');
+                    $event['end_date'] = $end_date->format('U');
+                } catch(Exception $e) {
+                    // the time zone isn't right
+                    $errors[] = "The fields 'tz_continent' and 'tz_place' must be supplied and valid (e.g. Europe and London)";
+                }
+            }
+            // How does it look?  With no errors, we can proceed
+            if ($errors) {
+                throw new Exception(implode(". ", $errors), 400);
+            }
+
+            // optional fields - only check if we have no errors as we may need
+            // access to $tz.
+            $event['href']      = filter_var($request->getParameter("href"), FILTER_VALIDATE_URL);
+            $event['cfp_url']   = filter_var($request->getParameter("cfp_url"), FILTER_VALIDATE_URL);
+            $event['latitude']  = filter_var($request->getParameter("latitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            $event['longitude'] = filter_var($request->getParameter("longitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+            $event['cfp_start_date'] = '';
+            $cfp_start_date = strtotime($request->getParameter("cfp_start_date"));
+            if ($cfp_start_date) {
+                $cfp_start_date          = new DateTime($request->getParameter("cfp_start_date"), $tz);
+                $event['cfp_start_date'] = $cfp_start_date->format('U');
+            }
+
+            $event['cfp_end_date'] = '';
+            $cfp_end_date = strtotime($request->getParameter("cfp_end_date"));
+            if ($cfp_end_date) {
+                $cfp_end_date          = new DateTime($request->getParameter("cfp_end_date"), $tz);
+                $event['cfp_end_date'] = $cfp_end_date->format('U');
+            }
+
+            $tags = $request->parameters['tags'];
+            if (! is_array($tags)) {
+                $tags = (array) $tags;
+            }
+
+            foreach($request->parameters['tags'] as $t) {
+                $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING);
+            }
+
+            $event_mapper->editEvent($event, $event['ID']);
+            $event_mapper->setTags($event['ID'], $tags);
+
+            header("Location: " . $request->base . $request->path_info . '/' . $event['ID'], NULL, 201);
+
+            return;
         }
     }
 }
