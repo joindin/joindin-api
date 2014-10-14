@@ -719,7 +719,7 @@ class EventMapper extends ApiMapper
 
         $event['event_id'] = $event_id;
 
-        $stmt   = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
+        $stmt = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
 
         return $stmt->execute($event);
     }
