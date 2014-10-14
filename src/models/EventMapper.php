@@ -125,7 +125,6 @@ class EventMapper extends ApiMapper
         $stmt->execute(array("url_friendly_name" => $url_friendly_name));
         $result = $stmt->fetch();
 
-        error_log(print_r($result, true));
         if(is_array($result)) {
             return $result['ID'];
         } else {
@@ -445,6 +444,34 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Chewck whether the given user is host of the given event
+     *
+     * @param int $userId
+     * @param int $eventId
+     *
+     * @return boolean
+     */
+    public function isUserHost($userId, $eventId)
+    {
+        $stmt = $this->_db->prepare(
+            'SELECT * FROM user_admin ' .
+            'WHERE uid = :userId ' .
+            'AND rid = :eventId ' .
+            'AND rtype = :resourceType;'
+        );
+
+        $stmt->execute(array(
+            'userId' => $userId,
+            'eventId' => $eventId,
+            'resourceType' => 'event',
+        ));
+
+
+        return (bool)$stmt->rowCount();
+
+    }
+
+    /**
      * SQL for fetching event hosts, so it can be used in multiple places
      *
      * @return SQL to fetch hosts, containing an :event_id named parameter
@@ -707,21 +734,50 @@ class EventMapper extends ApiMapper
 
         // create list of column to API field name for all valid fields
         $fields = $this->getVerboseFields();
-        foreach ($fields as $api_name => $column_name) {
+        $items  = array();
+
+        $whitelist = array(
+            'event_name' =>'name',
+            'event_start' =>'start_date',
+            'event_end' =>'end_date',
+            'event_lat' =>'latitude',
+            'event_long' =>'longitude',
+            'event_loc' =>'location',
+            'event_desc' =>'description',
+            'event_hashtag' =>'hashtag',
+            'event_href' =>'href',
+            'event_cfp_start' =>'cfp_start_date',
+            'event_cfp_end' =>'cfp_end_date',
+            'event_tz_cont' =>'tz_continent',
+            'event_tz_place' =>'tz_place',
+            'event_cfp_url' =>'cfp_url',
+        );
+
+        foreach ($whitelist as $column_name => $api_name) {
             // We don't change any activation stuff here!!
             if (in_array($column_name, ['pending', 'active'])) {
                 continue;
             }
             if (isset($event[$api_name])) {
                 $pairs[] = "$column_name = :$api_name";
+                $items[$api_name] = $event[$api_name];
             }
         }
 
-        $event['event_id'] = $event_id;
+        $items['event_id'] = $event_id;
 
         $stmt = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
 
-        return $stmt->execute($event);
+        if (! $stmt->execute($items)) {
+            throw new Exception(sprintf(
+                'executing "%s" resulted in an error: %s',
+                $stmt->queryString,
+                implode(' :: ', $stmt->errorInfo())
+            ));
+            return false;
+        }
+
+        return $event_id;
     }
 
     /**

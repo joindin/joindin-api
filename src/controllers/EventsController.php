@@ -420,19 +420,25 @@ class EventsController extends ApiController {
         if (! isset($request->url_elements[4])) {
 
             // Edit an Event
-            $event_mapper      = new EventMapper($db, $request);
-            $url_friendly_name = filter_var(
-                $request->getParameter('url_friendly_name'),
+            $event_mapper = new EventMapper($db, $request);
+            $eventID      = filter_var(
+                $request->url_elements[3],
                 FILTER_SANITIZE_STRING
             );
 
-            $event = $event_mapper->getEventByUrlFriendlyName($url_friendly_name, true);
+            $event = $event_mapper->getEventById($eventID, true);
             if (! $event) {
                 throw new Exception(sprintf(
-                    'There is no event with name "%s"',
-                    $url_friendly_name
+                    'There is no event with ID "%s"',
+                    $eventID
                 ));
             }
+
+            if (! $event_mapper->isUserHost($request->user_id, $eventID)    ) {
+                throw new Exception('You are not an host for this event', 403);
+            }
+
+            $event = $event['events'][0];
 
             $errors = array();
 
@@ -506,10 +512,10 @@ class EventsController extends ApiController {
                 $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING);
             }
 
-            $event_mapper->editEvent($event, $event['ID']);
-            $event_mapper->setTags($event['ID'], $tags);
+            $event_mapper->editEvent($event, $eventID);
+            $event_mapper->setTags($eventID, $tags);
 
-            header("Location: " . $request->base . $request->path_info . '/' . $event['ID'], NULL, 201);
+            header("Location: " . $request->base . $request->path_info . '/' . $eventID, NULL, 201);
 
             return;
         }

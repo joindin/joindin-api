@@ -20,4 +20,6 @@ apitest.testNonexistentEventComment();
 apitest.testNonexistentTalkComment();
 apitest.testNonexistentUser();
 apitest.testExistingUser();
+apitest.testCreatingEventWithoutLogin();
+apitest.testEventLifecycle();
 
