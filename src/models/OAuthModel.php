@@ -106,7 +106,7 @@ class OAuthModel
         $accessToken = $this->newAccessToken($clientId, $userId);
 
         // we also want to send back the logged in user's uri
-        $userUri = $this->getBase() . '/' . $this->getVersion() . '/users/' . $userId;
+        $userUri = $this->getUserUri($userId);
 
         return array('access_token' => $accessToken, 'user_uri' => $userUri);
     }
@@ -134,6 +134,45 @@ class OAuthModel
 
         return false;
 
+    }
+
+    /**
+     * Set's the password for a specified user id.
+     *
+     * @param  int     $userId   user's id
+     * @param  string  $password the new password
+     * @return boolean           true on success
+     */
+    public function setPasswordForUserId($userId, $password)
+    {
+         $hash =  password_hash(md5($password), PASSWORD_DEFAULT);
+         $sql  = 'UPDATE user SET password=:password
+                  WHERE ID=:user_id';
+         $stmt = $this->_db->prepare($sql);
+         $result = $stmt->execute(
+             array(
+                 "user_id"  => $userId, 
+                 "password" => $hash 
+             )
+         );
+
+         if ($result) {
+             return true;
+         }
+
+         return false;
+    }
+
+    /**
+     * Retrieve the user's uri based on the user id.
+     *
+     * @param  int    $userId user's id.
+     * @return string         user's uri.
+     */
+    public function getUserUri($userId) {
+        $userUri = $this->base . '/' . $this->version . '/users/' . $userId;
+
+        return $userUri;
     }
 
     /**
