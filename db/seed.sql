@@ -13,7 +13,7 @@ insert into user (
 	active,ID
 ) value (
 	'johndoe',
-	'5f4dcc3b5aa765d61d8327deb882cf99',
+	'$2y$10$OaClfzmGnjcz79RsKLe./uYVEvzen.86HZCZ9ayrvP5vFk1z7qCJy',
 	'johndoe@sampledomain.com',
 	unix_timestamp(),
 	0,
@@ -29,7 +29,7 @@ insert into user (
 	active,ID
 ) value (
 	'imaadmin',
-	'5f4dcc3b5aa765d61d8327deb882cf99',
+	'$2y$10$StMpCySaSLHuvh3KLFNiZ.vSEykBF8kVWEG6ZtuXzQd4F9WWlfBFi',
 	'ima@sampledomain.com',
 	unix_timestamp(),
 	1,
@@ -235,3 +235,10 @@ insert into user_admin (
 	@fuserid,@evtid,
 	'event','',NULL
 );
+
+/* Add a record to allow web2 to talk to the API */
+insert into oauth_consumers set 
+	consumer_key = "web2", 
+	consumer_secret = "web2secret", 
+	user_id=1, enable_password_grant=1;
+

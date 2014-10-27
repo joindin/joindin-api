@@ -60,6 +60,7 @@ class EventMapper extends ApiMapper
             'tz_continent' => 'event_tz_cont',
             'tz_place' => 'event_tz_place',
             'location' => 'event_loc',
+            'contact_name' => 'event_contact_name',
             'hashtag' => 'event_hashtag',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
@@ -598,6 +599,7 @@ class EventMapper extends ApiMapper
             'end_date',
             'tz_continent',
             'tz_place',
+            'contact_name',
         );
         $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($event));
         if (!$contains_mandatory_fields) {
@@ -697,5 +699,93 @@ class EventMapper extends ApiMapper
         $result = $stmt->execute(array("event_id" => $event_id));
 
         return $result;
+    }
+
+    /**
+     * Get an event by ID, but just the event table fields
+     * and including pending events
+     *
+     * @param int $event_id The event you want
+     * @return array The event details, or false if it wasn't found
+     */
+    public function getPendingEventById($event_id) {
+        $sql = 'select events.* '
+            . 'from events '
+            . 'where events.ID = :event_id ';
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array("event_id" => $event_id));
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $retval = parent::transformResults($results, true);
+            return $retval[0];
+        }
+        return false;
+    }
+
+    /*
+     * How many events currently pending?
+     *
+     * @return int The number of pending events
+     */
+    public function getPendingEventsCount()
+    {
+        $sql = 'select count(*) as count '
+            . 'from events '
+            . 'where pending = 1';
+
+        $stmt     = $this->_db->prepare($sql);
+        $response = $stmt->execute();
+        $result   = $stmt->fetch();
+
+        return $result['count'];
+    }
+
+    /**
+     * Add the tags to the given event
+     *
+     * For that we first remove all entries from the tags_events-Table that
+     * connect the given event with any tag from the tags-table. Then we check
+     * for each tag whether it exists in the tags-table nad if not add it to
+     * that table. Finally we add an entry to the tags_events-table for each
+     * given tag to connect the new tags with the given event.
+     *
+     * @param int   $event_id
+     * @param array $tags
+     *
+     * @return bool
+     */
+    public function setTags($event_id, array $tags)
+    {
+        $deleteAllEventTagsSql = 'DELETE FROM tags_events WHERE event_id = :event_id;';
+        $deleteAllEventTagsStmt = $this->_db->prepare($deleteAllEventTagsSql);
+
+        $checkForTagSql = 'SELECT ID FROM tags WHERE tag_value = :tag;';
+        $checkForTagStmt = $this->_db->prepare($checkForTagSql);
+
+        $addTagToDbSql = 'INSERT INTO tags SET tag_value = :tag;';
+        $addTagToDbStmt = $this->_db->prepare($addTagToDbSql);
+
+        $addTagToEventSql = 'INSERT INTO tags_events SET tag_id = :tag_id, event_id = :event_id;';
+        $addTagToEventStmt = $this->_db->prepare($addTagToEventSql);
+
+        // remove all existing tags for the event
+        $deleteAllEventTagsStmt->execute(array('event_id' => $event_id));
+
+        // for each tag
+        foreach ($tags as $tag) {
+            // Check whether the tag already exists in the tag-list
+            $result = $checkForTagStmt->execute(array('tag' => $tag));
+            $tagId = $checkForTagStmt->fetchColumn(0);
+            if (! $tagId) {
+                // If not, add the event to the tag list
+                $addTagToDbStmt->execute(array('tag' => $tag));
+                $checkForTagStmt->execute(array('tag' => $tag));
+                $tagId = $checkForTagStmt->fetchColumn(0);
+            }
+
+            // Add an association with the event
+            $addTagToEventStmt->execute(array('tag_id' => $tagId, 'event_id' => $event_id));
+        }
     }
 }

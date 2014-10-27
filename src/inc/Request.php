@@ -41,6 +41,8 @@ class Request
 
         if (isset($_SERVER['PATH_INFO'])) {
             $this->setPathInfo($_SERVER['PATH_INFO']);
+        }else if (isset($_SERVER['REQUEST_URI'])) {
+            $this->setPathInfo(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         }
 
         if (isset($_SERVER['HTTP_ACCEPT'])) {

@@ -2,7 +2,9 @@
 include '../inc/Autoloader.php';
 include '../inc/Request.php';
 include '../inc/Timezone.php';
-include '../inc/Header.php';
+if (!function_exists('apache_request_headers')) {
+    include '../inc/nginx-helper.php';
+}
 
 // Add exception handler
 function handle_exception($e) {
@@ -12,6 +14,7 @@ function handle_exception($e) {
     header("Status: " . $status_code, false, $status_code);
 	$request->view->render(array($e->getMessage()));
 }
+
 set_exception_handler('handle_exception');
 
 // config setup
