@@ -497,7 +497,7 @@ class EventMapper extends ApiMapper
      * 
      * @return array the data, or false if something went wrong
      */
-    public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false) 
+    public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false, $filter = false)
     {
         $data = array("user_id" => (int)$user_id);
         $sql = 'select events.*, '
@@ -517,10 +517,18 @@ class EventMapper extends ApiMapper
             . 'private <> "y" and '
             . ' ua.uid = :user_id';
 
+        if ($filter == "upcoming") {
+            $sql .= " and events.event_start >= CURDATE() ";
+        }
+
         // group by for the multiple attending recipes; only ever want to see each event once
         $sql .= ' group by events.ID ';
 
-        $sql .= ' order by events.event_start desc ';
+        if ($filter == "upcoming") {
+            $sql .= ' order by events.event_start asc ';
+        } else {
+            $sql .= ' order by events.event_start desc ';
+        }
 
         // limit clause
         $sql .= $this->buildLimit($resultsperpage, $start);

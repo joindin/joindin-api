@@ -242,7 +242,7 @@ class TalkMapper extends ApiMapper {
         return $retval;
     }
 
-    public function getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose = false) {
+    public function getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose = false, $filter = false) {
         // based on getBasicSQL() but needs the speaker table joins
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
@@ -261,8 +261,15 @@ class TalkMapper extends ApiMapper {
             . 'e.active = 1 and '
             . '(e.pending = 0 or e.pending is NULL) and '
             . '(e.private <> "y" or e.private is NULL) and '
-            . 'ts.speaker_id = :user_id '
-            . 'order by t.date_given desc';
+            . 'ts.speaker_id = :user_id ';
+
+        if ($filter != 'upcoming') {
+            $sql .= 'order by t.date_given desc';
+        } else {
+            $sql .= ' and t.date_given >= CURDATE() '
+                . 'order by t.date_given ASC';
+        }
+
         $sql .= $this->buildLimit($resultsperpage, $start);
 
         $stmt = $this->_db->prepare($sql);
