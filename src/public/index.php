@@ -12,6 +12,9 @@ function handle_exception($e) {
     global $request;
     $status_code = $e->getCode() ?: 400;
     header("Status: " . $status_code, false, $status_code);
+    if (!$request->view) {
+        setView();
+    }
 	$request->view->render(array($e->getMessage()));
 }
 
@@ -49,14 +52,29 @@ if(isset($headers['Authorization'])) {
 // with final fall back to json 
 $format_choices = array('application/json', 'text/html');
 $header_format = $request->preferredContentTypeOutOf($format_choices);
-$format = $request->getParameter('format', $header_format);
 
-switch ($format) {
+/**
+ * Determines the view to be used by the request
+ * - separated out due to JOINDIN-465
+ *
+ * @TODO Move this logic to the Request object?
+ *
+ * @global Request $request
+ * @global string $header_format
+ *
+ * @return null
+ */
+function setView() {
+    global $request;
+    global $header_format;
+    $format = $request->getParameter('format', $header_format);
+
+    switch ($format) {
         case 'text/html':
         case 'html':
             $request->view = new HtmlView();
             break;
-        
+
         case 'application/json':
         case 'json':
         default:
@@ -68,7 +86,10 @@ switch ($format) {
                 $request->view = new JsonView();
             }
             break;
+    }
 }
+
+setView();
 
 $version = $request->getUrlElement(1);
 switch ($version) {
