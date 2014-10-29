@@ -209,6 +209,8 @@ function checkUserData(user) {
     expect(typeof user.talks_uri).toBe('string');
     expect(user.attended_events_uri).toBeDefined();
     expect(typeof user.attended_events_uri).toBe('string');
+    expect(user.hosted_events_uri).toBeDefined();
+    expect(typeof user.hosted_events_uri).toBe('string');
 }
 
 function checkVerboseUserData(user) {
@@ -234,6 +236,8 @@ function checkVerboseUserData(user) {
     expect(typeof user.talks_uri).toBe('string');
     expect(user.attended_events_uri).toBeDefined();
     expect(typeof user.attended_events_uri).toBe('string');
+    expect(user.hosted_events_uri).toBeDefined();
+    expect(typeof user.hosted_events_uri).toBe('string');
 }
 
 function checkTrackData(track) {

@@ -25,6 +25,10 @@ class UsersController extends ApiController {
                             $talk_mapper = new TalkMapper($db, $request);
                             $list = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose);
                             break;
+                case 'hosted':
+                            $event_mapper = new EventMapper($db, $request);
+                            $list = $event_mapper->getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose);
+                            break;
                 case 'attended':
                             $event_mapper = new EventMapper($db, $request);
                             $list = $event_mapper->getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose);
