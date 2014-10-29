@@ -109,3 +109,7 @@ Here's the example request/response (the -v switch ensures that you see the resp
 ~~~~
 
 A 201 status code indicates that the comment was successfully created, and the ``Location`` header gives the location of the new record (or you can choose to just fetch the collection again, it's your choice).  In the case of failure, you will get a 4xx status code and some information about what exactly went wrong.
+
+## Comments by a specific user
+
+The comments that a given user has created are a [subresource of the user]({{ site.baseurl }}/users.html#sub-resources).

@@ -53,6 +53,31 @@ The verbose user format simply include the ``gravatar_hash`` field.
 
 You can filter by ``username``, e.g. ``{{ site.apiurl }}/v2.1/users?username=lornajane``
 
+## Sub resources
 
+The user resource has the `talk_comments` subresource which contains all the
+comments created by this user ordered by reverse date created.
+
+The collection looks something like this:
+
+~~~~
+comments:
+    0:
+        rating: 4
+        comment: Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque elementum placerat lectus, sit amet dictum urna euismod quis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque elementum placerat lectus, sit amet dictum urna euismod quis. Duis eu massa justo, vel mollis velit. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Aliquam vulputate vulputate lobortis. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Proin feugiat mattis dui, ut cursus purus feugiat vel. Nulla faucibus mollis ipsum sit amet vehicula. Proin feugiat mattis dui, ut cursus purus feugiat vel. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Duis eu massa justo, vel mollis velit. Aliquam vulputate vulputate lobortis.
+        user_display_name: Sandra Warren
+        talk_title: Controlling flexible systems with Perl
+        created_date: 2014-09-11T19:59:06+02:00
+        uri: http://api.dev.joind.in:8080/v2.1/talk_comments/338
+        verbose_uri: http://api.dev.joind.in:8080/v2.1/talk_comments/338?verbose=yes
+        talk_uri: http://api.dev.joind.in:8080/v2.1/talks/163
+        talk_comments_uri: http://api.dev.joind.in:8080/v2.1/talks/163/comments
+        user_uri: http://api.dev.joind.in:8080/v2.1/users/2
+
+meta:
+    count: 1
+    total: 1
+    this_page: http://api.dev.joind.in:8080/v2.1/users/2/talk_comments?start=0&resultsperpage=20
+~~~~
 
 
