@@ -43,7 +43,7 @@ class TalkCommentMapper extends ApiMapper {
         return false;
     }
 
-    public function getCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false, $sort = NULL) {
+    public function getCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false) {
         $sql = $this->getBasicSQL();
         $sql .= 'and event_id = :event_id ';
 
@@ -65,7 +65,7 @@ class TalkCommentMapper extends ApiMapper {
         return false;
     }
 
-    public function getCommentsByUserId($user_id, $resultsperpage, $start, $verbose = false, $sort = NULL) {
+    public function getCommentsByUserId($user_id, $resultsperpage, $start, $verbose = false) {
         $sql = $this->getBasicSQL();
         $sql .= 'and tc.user_id = :user_id ';
 
