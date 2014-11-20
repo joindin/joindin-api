@@ -201,6 +201,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals('application/json', $result);
+
+        $result = $request->preferredContentTypeOutOf();
+
+        $this->assertEquals('application/json', $result);
     }
 
     /**
@@ -436,6 +440,21 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Ensures that identifyUser returns false if the request is HTTP
+     *
+     * @return void
+     *
+     * @test
+     */
+    public function ifRequestIsntHTTPSReturnsFalse()
+    {
+        $config = array_merge($this->config, array('mode' => 'production'));
+        $request = new \Request($config);
+        $request->setScheme('http://');
+        $this->assertFalse($request->identifyUser(null, 'This is a bad header'));
+    }
+
+    /**
      * Ensures that if getOAuthModel is called, an instance of OAuthModel
      * is returned
      *
@@ -657,6 +676,175 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $request = new \Request($this->config);
         $this->assertSame($request, $request->setBase(uniqid()));
+    }
+
+    /**
+     * DataProvider for testGetView
+     *
+     * NB: The array keys are for readability; order still matters
+     *
+     * @return array
+     */
+    public function getViewProvider()
+    {
+        return array(
+            array( // #0
+                'parameters' => array(),
+                'expectedClass' => '\JsonView'
+            ),
+            array( // #1
+                'parameters' => array('format' => 'html'),
+                'expectedClass' => 'HtmlView'
+            ),
+            array( // #2
+                'parameters' => array('callback' => 'dave'),
+                'expectedClass' => 'JsonPView'
+            ),
+            array( // #3
+                'parameters' => array('format' => 'html'),
+                'expectedClass' => 'HtmlView'
+            ),
+            array( // #4
+                'parameters' => array('format' => 'html'),
+                'expectedClass' => 'HtmlView',
+                'accepts' => 'text/html'
+            ),
+            array( // #5
+                'parameters' => array(),
+                'expectedClass' => 'JsonView',
+                'accepts' => 'application/json'
+            ),
+            array( // #6
+                'parameters' => array(),
+                'expectedClass' => 'JsonView',
+                'accepts' => 'application/json,text/html'
+            ),
+            array( // #7
+                'parameters' => array(),
+                'expectedClass' => 'HtmlView',
+                'accepts' => 'text/html,applicaton/json',
+                'view' => null,
+                'skip' => true // Currently we're not applying Accept correctly
+            ),
+            array( // #8
+                'parameters' => array('format' => 'html'),
+                'expectedClass' => 'HtmlView',
+                'accepts' => 'applicaton/json,text/html'
+            ),
+            array( // #9
+                'parameters' => array(),
+                'expectedClass' => false,
+                'accepts' => '',
+                'view' => new \ApiView()
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider getViewProvider
+     * @covers Request::getView
+     * @covers Request::setView
+     *
+     * @param array $parameters     Request query parameters
+     * @param string $expectedClass The name of the expected class to be returned
+     * @param string $accept        An HTTP Accept header
+     * @param \ApiView|null $view   A plan getter/setter test
+     * @param boolean $skip         Set to true to skip the test
+     *
+     * @test
+     */
+    public function testGetView(array $parameters = array(), $expectedClass = '',
+                                $accept = '', \ApiView $view = null, $skip = false)
+    {
+        if ($skip) {
+            $this->markTestSkipped();
+        }
+
+        $_SERVER['QUERY_STRING'] = http_build_query($parameters);
+        $_SERVER['HTTP_ACCEPT'] = $accept;
+
+        $request = new \Request($this->config);
+        if ($view) {
+            $request->setView($view);
+            $this->assertEquals($view, $request->getView());
+        } else {
+            $view = $request->getView();
+            $this->assertInstanceOf($expectedClass, $view);
+        }
+    }
+
+    /**
+     * DataProvider for testGetSetFormatChoices
+     *
+     * NB: The array keys are for readability; order still matters
+     *
+     * @return array
+     */
+    public function getSetFormatChoicesProvider()
+    {
+        return array(
+            array( // #0
+                'expected' => array(\Request::CONTENT_TYPE_JSON,
+                                    \Request::CONTENT_TYPE_HTML),
+            ),
+            array( // #1
+                'expected' => array(\Request::CONTENT_TYPE_HTML,
+                                    \Request::CONTENT_TYPE_JSON),
+                'choices' => array(\Request::CONTENT_TYPE_HTML,
+                                    \Request::CONTENT_TYPE_JSON),
+            ),
+            array( // #2
+                'expected' => array('a', 'b'),
+                'choices' => array('a', 'b'),
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider getSetFormatChoicesProvider
+     * @covers \Request::getFormatChoices
+     * @covers \Request::setFormatChoices
+     *
+     * @param array $expected
+     * @param array|null $choices
+     *
+     * @test
+     */
+    public function testGetSetFormatChoices(array $expected,
+                                            array $choices = null)
+    {
+        $request = new \Request($this->config);
+        if ($choices) {
+            $request->setFormatChoices($choices);
+        }
+
+        $this->assertEquals($expected, $request->getFormatChoices());
+    }
+
+    /**
+     * @covers \Request::getAccessToken
+     * @covers \Request::setAccessToken
+     */
+    public function testGetSetAccessToken()
+    {
+        $request = new \Request($this->config);
+        $token = 'token';
+        $request->setAccessToken($token);
+        $this->assertEquals($token, $request->getAccessToken());
+    }
+
+    /**
+     * Adding coverage for the case where PATH_INFO doesn't exist in $_SERVER but
+     * REQUEST_URI does.
+     *
+     * @test
+     */
+    public function constructorParsesRequestUri()
+    {
+        unset($_SERVER['PATH_INFO']);
+        $_SERVER['REQUEST_URI'] = '/v2/one/two?three=four';
+        $request = new \Request($this->config);
+        $this->assertEquals('/v2/one/two', $request->getPathInfo());
     }
 }
 
