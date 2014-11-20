@@ -43,7 +43,7 @@ class TalkCommentMapper extends ApiMapper {
         return false;
     }
 
-    public function getCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false, $sort = NULL) {
+    public function getCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false) {
         $sql = $this->getBasicSQL();
         $sql .= 'and event_id = :event_id ';
 
@@ -59,6 +59,28 @@ class TalkCommentMapper extends ApiMapper {
         if($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+    public function getCommentsByUserId($user_id, $resultsperpage, $start, $verbose = false) {
+        $sql = $this->getBasicSQL();
+        $sql .= 'and tc.user_id = :user_id ';
+
+        // default to newest
+        $sql .= ' order by tc.date_made desc';
+
+        $sql .= $this->buildLimit($resultsperpage, $start);
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array(
+            ':user_id' => $user_id
+        ));
+        if($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results['total'] = $this->getTotalCount($sql, array(':user_id' => $user_id));
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }

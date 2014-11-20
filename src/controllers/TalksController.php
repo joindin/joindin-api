@@ -148,7 +148,24 @@ class TalksController extends ApiController {
                     throw new Exception("Operation not supported, sorry", 404);
             }
         } else {
-            throw new Exception("Operation not supported, sorry", 404);
+            // delete the talk
+            $talk_id = $this->getItemId($request);
+            $talk_mapper = new TalkMapper($db, $request);
+            $list = $talk_mapper->getTalkById($talk_id);
+            if(false === $list) {
+                // talk isn't there so it's as good as deleted
+                header("Content-Length: 0", NULL, 204);
+                exit; // no more content
+            }
+
+            $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
+            if(!$is_admin) {
+                throw new Exception("You do not have permission to do that", 400);
+            }
+
+            $talk_mapper->delete($talk_id);
+            header("Content-Length: 0", NULL, 204);
+            exit; // no more content
         }
     }
 

@@ -441,4 +441,48 @@ class TalkMapper extends ApiMapper {
         $speakers = $speaker_stmt->fetchAll(PDO::FETCH_ASSOC);
         return $speakers;
     }
+
+    /**
+     * Does the currently-authenticated user have rights on a particular talk?
+     *
+     * @param int $talk_id The identifier for the talk to check
+     * @return bool True if the user has privileges, false otherwise
+     */
+    public function thisUserHasAdminOn($talk_id) {
+        // do we even have an authenticated user?
+        if(isset($this->_request->user_id)) {
+            $user_mapper = new UserMapper($this->_db, $this->_request);
+
+            // is user site admin?
+            $is_site_admin = $user_mapper->isSiteAdmin($this->_request->user_id);
+            if($is_site_admin) { 
+                return true;
+            }
+
+            // is user an event admin?
+            $sql = 'select a.uid as user_id, u.full_name'
+                . ' from user_admin a '
+                . ' inner join user u on u.ID = a.uid '
+                . ' inner join talks t on t.event_id = rid '
+                . ' where rtype="event" and rcode!="pending"'
+                . ' AND u.ID = :user_id'
+                . ' AND t.ID = :talk_id';
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute(array("talk_id" => $talk_id, 
+                "user_id" => $this->_request->user_id));
+            $results = $stmt->fetchAll();
+            if($results) {
+                return true;
+            }
+        } 
+        return false;
+    }
+
+    public function delete($talk_id) {
+        $sql = "delete from talks where ID = :talk_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("talk_id" => $talk_id));
+        return true;
+    }
 }
+

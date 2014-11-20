@@ -334,6 +334,16 @@ class EventsController extends ApiController {
                 if ($longitude) {
                     $event['longitude'] = $longitude;
                 }
+                $incoming_tag_list = $request->getParameter('tags');
+                if(is_array($incoming_tag_list)) {
+                    $tags = array_map(function($tag){
+                        $tag = filter_var($tag, FILTER_SANITIZE_STRING);
+                        $tag = trim($tag);
+                        $tag = strtolower($tag);
+                        return $tag;
+                    }, $incoming_tag_list);
+                }
+
             }
 
             // How does it look?  With no errors, we can proceed
@@ -362,6 +372,9 @@ class EventsController extends ApiController {
                 // now set the current user as host and attending
                 $event_mapper->addUserAsHost($event_id, $request->user_id);
                 $event_mapper->setUserAttendance($event_id, $request->user_id);
+                if (isset($tags)) {
+                    $event_mapper->setTags($event_id, $tags);
+                }
 
                 // Send an email if we didn't auto-approve
                 if (!$user_mapper->isSiteAdmin($request->user_id)) {
