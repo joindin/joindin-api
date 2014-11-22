@@ -13,6 +13,18 @@
 
 include __DIR__ . '/../../vendor/autoload.php';
 
+$relativePaths = array(
+    __DIR__ . '/../inc',
+    __DIR__ . '/../controllers',
+    __DIR__ . '/../models',
+    __DIR__ . '/../views',
+    __DIR__ . '/../services',
+    __DIR__ . '/../routers',
+);
+
+$includePath = implode(PATH_SEPARATOR, $relativePaths);
+set_include_path(get_include_path() . PATH_SEPARATOR . $includePath);
+
 spl_autoload_register('apiv2Autoload');
 
 /**
@@ -29,22 +41,12 @@ function apiv2Autoload($classname)
         exit;
     }
 
-	$filename = false;
+    $path = str_replace(array('_', '\\'), DIRECTORY_SEPARATOR, $classname) . '.php';
 
-    if (preg_match('/[a-zA-Z]+Controller$/', $classname)) {
-        $filename = __DIR__ . '/../controllers/' . $classname . '.php';
-    } elseif (preg_match('/[a-zA-Z]+Mapper$/', $classname)) {
-        $filename = __DIR__ . '/../models/' . $classname . '.php';
-    } elseif (preg_match('/[a-zA-Z]+Model$/', $classname)) {
-        $filename = __DIR__ . '/../models/' . $classname . '.php';
-    } elseif (preg_match('/[a-zA-Z]+View$/', $classname)) {
-        $filename = __DIR__ . '/../views/' . $classname . '.php';
-    } elseif (preg_match('/[a-zA-Z]+Service$/', $classname)) {
-        $filename = __DIR__ . '/../services/' . $classname . '.php';
+    if ($filePath = stream_resolve_include_path($path)) {
+        include_once($filePath);
+        return true;
     }
 
-	if (file_exists($filename)) {
-		include $filename;
-		return true;
-	}
+    return false;
 }
