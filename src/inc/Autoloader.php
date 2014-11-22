@@ -48,5 +48,11 @@ function apiv2Autoload($classname)
         return true;
     }
 
+    // Fallback for legacy support (Event_commentsController etc)
+    if ($filePath = stream_resolve_include_path($classname . '.php')) {
+        include_once($filePath);
+        return true;
+    }
+
     return false;
 }
