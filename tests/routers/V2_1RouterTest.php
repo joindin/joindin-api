@@ -3,7 +3,6 @@
 /**
  * A class to test V2_1Router
  *
- * @author Christopher Hoult <chris@choult.com>
  * @covers V2_1Router
  */
 class V2_1RouterTest extends PHPUnit_Framework_TestCase

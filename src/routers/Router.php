@@ -2,8 +2,6 @@
 
 /**
  * The base Router class; contains configuration
- *
- * @author Christopher Hoult <chris@choult.com>
  */
 abstract class Router
 {

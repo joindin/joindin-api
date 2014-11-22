@@ -3,7 +3,6 @@
 /**
  * A class to test DefaultRouter
  *
- * @author Christopher Hoult <chris@choult.com>
  * @covers Router
  */
 class RouterTest extends PHPUnit_Framework_TestCase

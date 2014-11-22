@@ -2,8 +2,6 @@
 
 /**
  * The main API Router; acts as the version selector
- *
- * @author Christopher Hoult <chris@choult.com>
  */
 class ApiRouter extends Router
 {

@@ -3,7 +3,6 @@
 /**
  * A class to test ApiRouter
  *
- * @author Christopher Hoult <chris@choult.com>
  * @covers ApiRouter
  */
 class ApiRouterTest extends PHPUnit_Framework_TestCase
