@@ -588,8 +588,8 @@ class DataGenerator {
 
         // Ima admin
         $password = '$2y$10$StMpCySaSLHuvh3KLFNiZ.vSEykBF8kVWEG6ZtuXzQd4F9WWlfBFi';
-        echo "INSERT INTO `user` (`username`, `password`, `email`, `last_login`, `ID`, `admin`, `full_name`, `active`, `twitter_username`, `request_code`) VALUES\n";
-        echo "('imaadmin', '$password', 'ima@sampledomain.com', unix_timestamp(), 1, 1, 'Ima Admin', 1, '', NULL)";
+        echo "INSERT INTO `user` (`username`, `password`, `email`, `last_login`, `ID`, `verified`, `admin`, `full_name`, `active`, `twitter_username`, `request_code`) VALUES\n";
+        echo "('imaadmin', '$password', 'ima@sampledomain.com', unix_timestamp(), 1, 1, 1, 'Ima Admin', 1, '', NULL)";
 
         for ($id=2; $id <= $count+2; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "USER ID: $id    (".(memory_get_usage(true)/1024)." Kb)        \r");
@@ -604,11 +604,12 @@ class DataGenerator {
             $user->last_login = time() - rand(0, 1000000);
             $user->admin = ($this->_chance(USER_IS_ADMIN)) ? 1 : 0;
             $user->active = 1;
+            $user->verified = 1;
             $user->twitter = $this->_chance(USER_HAS_TWITTER) ? "@".$user->username : "";
 
             echo ",\n";
-            printf ("('%s', '%s', '%s', %d, %d, %d, '%s', %d, '%s', NULL)",
-                                   $user->username, $user->password, $user->email, $user->last_login, $user->id, $user->admin, $user->fullname, $user->active, $user->twitter);
+            printf ("('%s', '%s', '%s', %d, %d, %d, %d, '%s', %d, '%s', NULL)",
+                                   $user->username, $user->password, $user->email, $user->last_login, $user->id, $user->verified, $user->admin, $user->fullname, $user->active, $user->twitter);
         }
 
         echo ";";
