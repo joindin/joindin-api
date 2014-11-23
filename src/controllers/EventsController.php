@@ -117,9 +117,13 @@ class EventsController extends ApiController {
 	}
 
     public function postAction($request, $db) {
+
         if(!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            if ( (!isset($request->url_elements[4])) || ((isset($request->url_elements[4])) && ($request->url_elements[4] != "messages")) ) {
+                throw new Exception("You must be logged in to create data", 400);
+            }
         }
+
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
                 case 'attending':
@@ -233,8 +237,8 @@ class EventsController extends ApiController {
 
                     $comment['user_id'] = $request->user_id;
                     $comment['comment'] = $commentText;
-                    $comment['cname'] = $thisUser['full_name'];
-                    $comment['source'] = $consumer_name;
+                    $comment['cname']   = $thisUser['full_name'];
+                    $comment['source']  = $consumer_name;
 
                     // run it by akismet if we have it
                     if(isset($this->config['akismet']['apiKey'])) {
@@ -260,6 +264,84 @@ class EventsController extends ApiController {
                     $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
                     header("Location: " . $uri, NULL, 201);
                     exit;
+
+                case 'messages':
+                    // Check that we've actually been given a feedback message to send
+                    if (!isset($request->parameters['feedback'])) {
+                        throw new Exception("No feedback message provided to send", 400);
+                    }
+
+                    // Make sure this event exists before we do anything
+                    $event_mapper = new EventMapper($db, $request);
+                    $list = $event_mapper->getEventById($this->getItemId($request), true);
+                    if(count($list['events']) == 0) {
+                        throw new Exception('Event not found', 404);
+                    }
+                    $event = $list['events'][0];
+
+                    // Let's build our array to pass to EventMessageEmailService
+                    $feedback = array();
+
+                    // Add the feedback to the array
+                    $feedback['feedback'] = $request->parameters['feedback'];
+
+                    // If we're logged in, then add a little information about the user sending
+                    // the message to the actual message.
+                    if (isset($request->user_id)) {
+                        $mapper = new UserMapper($db, $request);
+                        $user = $mapper->getUserById($request->user_id, $this->getVerbosity($request));
+                        $feedback['feedback'] .= "\n\n";
+                        $feedback['feedback'] .= 'Sent by: '.$user[0]->full_name;
+                        if (isset($user[0]->website_uri))
+                        {
+                            $feedback['feedback'] .= ' ('.$user[0]->website_uri.')';
+                        }
+                    }
+
+                    // Could add another public method to replicate the below, easier to do SQL
+                    // at this point. getHosts() on the event_mapper does exactly what we need
+                    // so we'll use the query from there
+                    $host_sql = '
+                    SELECT
+                      email
+
+                    FROM
+                      user_admin
+
+                    INNER JOIN
+                      user ON (uid = user.id)
+
+                    WHERE
+                      rid = :event_id AND rtype = "event" AND (rcode != "pending" OR rcode IS NULL)';
+
+                    // Now run our database query
+                    $host_stmt = $db->prepare($host_sql);
+                    $host_stmt->execute(array("event_id" => $this->getItemId($request)));
+                    $hosts = $host_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    // Make sure our resultset contains a host or more
+                    if (count($hosts) == 0) {
+                        throw new Exception("No hosts for this event", 400);
+                    }
+
+                    // Store our recipients in an array
+                    $recipients = array();
+
+                    foreach($hosts as $person) {
+                        // This is trusting that the email address stored in the database is
+                        // clean and valid, we'll assume so but could easily wrap this in a filter_var
+                        // to be double sure
+                        $recipients[] = $person['email'];
+                    }
+
+                    // Send out the email to these event hosts
+                    $emailService = new EventFeedbackEmailService($this->config, $recipients, $event, $feedback);
+                    $emailService->sendEmail();
+
+                    header("Location: " . $request->base . $request->path_info, NULL, 201);
+                    exit;
+
+
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
             }
