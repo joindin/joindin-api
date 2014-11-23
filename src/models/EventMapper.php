@@ -94,45 +94,6 @@ class EventMapper extends ApiMapper
     }
 
     /**
-     * Fetch the details for a single event
-     *
-     * @param string  $url_friendly_name events.friendly_name value
-     * @param boolean $verbose             used to determine how many fields are needed
-     *
-     * @return array the event detail
-     */
-    public function getEventByUrlFriendlyName($url_friendly_name, $verbose = false)
-    {
-        $results = $this->getEvents(1, 0, array("url_friendly_name" => $url_friendly_name));
-        if ($results) {
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
-        }
-        return false;
-    }
-
-    /**
-     * Fetch the ID for a given URL friendly name
-     *
-     * @param string $url_friendly_name
-     *
-     * @return int
-     */
-    public function getEventIdForUrlFriendlyName($url_friendly_name)
-    {
-        $sql = "SELECT ID FROM events WHERE url_friendly_name = :url_friendly_name;";
-        $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("url_friendly_name" => $url_friendly_name));
-        $result = $stmt->fetch();
-
-        if(is_array($result)) {
-            return $result['ID'];
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Internal function called by other event-fetching code, with changeable SQL
      * 
      * @param int $resultsperpage how many records to return
