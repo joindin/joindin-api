@@ -417,29 +417,25 @@ class EventsController extends ApiController {
             throw new Exception('You must be logged in to edit data', 400);
         }
 
+        $event_id = $this->getItemId($request);
         if (! isset($request->url_elements[4])) {
 
             // Edit an Event
             $event_mapper = new EventMapper($db, $request);
-            $eventID      = filter_var(
-                $request->url_elements[3],
-                FILTER_SANITIZE_STRING
-            );
-
-            $event = $event_mapper->getEventById($eventID, true);
-            if (! $event) {
+            $existing_event = $event_mapper->getEventById($event_id, true);
+            if (! $existing_event) {
                 throw new Exception(sprintf(
                     'There is no event with ID "%s"',
-                    $eventID
+                    $event_id
                 ));
             }
 
-            if (! $event_mapper->thisUserHasAdminOn($eventID)) {
+            if (! $event_mapper->thisUserHasAdminOn($event_id)) {
                 throw new Exception('You are not an host for this event', 403);
             }
 
-            $event = $event['events'][0];
-
+            // initialise a new set of fields to save 
+            $event = array("event_id" => $event_id);
             $errors = array();
 
             $event['name'] = filter_var($request->getParameter("name"), FILTER_SANITIZE_STRING);
@@ -482,42 +478,50 @@ class EventsController extends ApiController {
                 throw new Exception(implode(". ", $errors), 400);
             }
 
-            // optional fields - only check if we have no errors as we may need
-            // access to $tz.
-            $event['href']      = filter_var($request->getParameter("href"), FILTER_VALIDATE_URL);
-            $event['cfp_url']   = filter_var($request->getParameter("cfp_url"), FILTER_VALIDATE_URL);
-            $event['latitude']  = filter_var($request->getParameter("latitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            $event['longitude'] = filter_var($request->getParameter("longitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-
-            $event['cfp_start_date'] = '';
+            // optional fields - only check if we have no errors as we may need $tz
+            $href  = filter_var($request->getParameter("href"), FILTER_VALIDATE_URL);
+            if($href) {
+                $event['href'] = $href;
+            }
+            $cfp_url = filter_var($request->getParameter("cfp_url"), FILTER_VALIDATE_URL);
+            if($cfp_url) {
+                $event['cfp_url'] = $cfp_url;
+            }
             $cfp_start_date = strtotime($request->getParameter("cfp_start_date"));
             if ($cfp_start_date) {
-                $cfp_start_date          = new DateTime($request->getParameter("cfp_start_date"), $tz);
+                $cfp_start_date = new DateTime($request->getParameter("cfp_start_date"), $tz);
                 $event['cfp_start_date'] = $cfp_start_date->format('U');
             }
-
-            $event['cfp_end_date'] = '';
             $cfp_end_date = strtotime($request->getParameter("cfp_end_date"));
             if ($cfp_end_date) {
-                $cfp_end_date          = new DateTime($request->getParameter("cfp_end_date"), $tz);
+                $cfp_end_date = new DateTime($request->getParameter("cfp_end_date"), $tz);
                 $event['cfp_end_date'] = $cfp_end_date->format('U');
             }
-
-            $tags = $request->parameters['tags'];
-            if (! is_array($tags)) {
-                $tags = (array) $tags;
+            $latitude  = filter_var($request->getParameter("latitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            if ($latitude) {
+                $event['latitude'] = $latitude;
+            }
+            $longitude  = filter_var($request->getParameter("longitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            if ($longitude) {
+                $event['longitude'] = $longitude;
+            }
+            $incoming_tag_list = $request->getParameter('tags');
+            if(is_array($incoming_tag_list)) {
+                $tags = array_map(function($tag){
+                    $tag = filter_var($tag, FILTER_SANITIZE_STRING);
+                    $tag = trim($tag);
+                    $tag = strtolower($tag);
+                    return $tag;
+                }, $incoming_tag_list);
             }
 
-            foreach($request->parameters['tags'] as $t) {
-                $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING);
+            $event_mapper->editEvent($event, $event_id);
+            if (isset($tags)) {
+                $event_mapper->setTags($event_id, $tags);
             }
 
-            $event_mapper->editEvent($event, $eventID);
-            $event_mapper->setTags($eventID, $tags);
-
-            header("Location: " . $request->base . $request->path_info . '/' . $eventID, NULL, 201);
-
-            return;
+            header("Location: " . $request->base . $request->path_info . '/' . $event_id, NULL, 204);
+            exit;
         }
     }
 }

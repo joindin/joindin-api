@@ -665,28 +665,11 @@ class EventMapper extends ApiMapper
 
         $sql = "UPDATE events SET %s WHERE ID = :event_id";
 
-        // create list of column to API field name for all valid fields
+        // get the list of column to API field name for all valid fields
         $fields = $this->getVerboseFields();
         $items  = array();
 
-        $whitelist = array(
-            'event_name' =>'name',
-            'event_start' =>'start_date',
-            'event_end' =>'end_date',
-            'event_lat' =>'latitude',
-            'event_long' =>'longitude',
-            'event_loc' =>'location',
-            'event_desc' =>'description',
-            'event_hashtag' =>'hashtag',
-            'event_href' =>'href',
-            'event_cfp_start' =>'cfp_start_date',
-            'event_cfp_end' =>'cfp_end_date',
-            'event_tz_cont' =>'tz_continent',
-            'event_tz_place' =>'tz_place',
-            'event_cfp_url' =>'cfp_url',
-        );
-
-        foreach ($whitelist as $column_name => $api_name) {
+        foreach ($fields as $api_name => $column_name) {
             // We don't change any activation stuff here!!
             if (in_array($column_name, ['pending', 'active'])) {
                 continue;
