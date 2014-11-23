@@ -405,34 +405,6 @@ class EventMapper extends ApiMapper
     }
 
     /**
-     * Chewck whether the given user is host of the given event
-     *
-     * @param int $userId
-     * @param int $eventId
-     *
-     * @return boolean
-     */
-    public function isUserHost($userId, $eventId)
-    {
-        $stmt = $this->_db->prepare(
-            'SELECT * FROM user_admin ' .
-            'WHERE uid = :userId ' .
-            'AND rid = :eventId ' .
-            'AND rtype = :resourceType;'
-        );
-
-        $stmt->execute(array(
-            'userId' => $userId,
-            'eventId' => $eventId,
-            'resourceType' => 'event',
-        ));
-
-
-        return (bool)$stmt->rowCount();
-
-    }
-
-    /**
      * SQL for fetching event hosts, so it can be used in multiple places
      *
      * @return SQL to fetch hosts, containing an :event_id named parameter

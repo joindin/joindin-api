@@ -434,7 +434,7 @@ class EventsController extends ApiController {
                 ));
             }
 
-            if (! $event_mapper->isUserHost($request->user_id, $eventID)    ) {
+            if (! $event_mapper->thisUserHasAdminOn($eventID)) {
                 throw new Exception('You are not an host for this event', 403);
             }
 
