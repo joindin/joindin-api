@@ -479,30 +479,37 @@ class EventsController extends ApiController {
             }
 
             // optional fields - only check if we have no errors as we may need $tz
-            $href  = filter_var($request->getParameter("href"), FILTER_VALIDATE_URL);
-            if($href) {
-                $event['href'] = $href;
+            // also only update supplied fields - but DO allow saving empty ones
+            $href = $request->getParameter("href", false); // returns false if the value was not supplied
+            if(false !== $href) {
+                // we got a value, filter and save it
+                $event['href'] = filter_var($href, FILTER_VALIDATE_URL);
             }
-            $cfp_url = filter_var($request->getParameter("cfp_url"), FILTER_VALIDATE_URL);
-            if($cfp_url) {
-                $event['cfp_url'] = $cfp_url;
+            $cfp_url = $request->getParameter("cfp_url", false); 
+            if(false !== $cfp_url) {
+                // we got a value, filter and save it
+                $event['cfp_url'] = filter_var($cfp_url, FILTER_VALIDATE_URL);
             }
-            $cfp_start_date = strtotime($request->getParameter("cfp_start_date"));
-            if ($cfp_start_date) {
-                $cfp_start_date = new DateTime($request->getParameter("cfp_start_date"), $tz);
+            $cfp_start_date = $request->getParameter("cfp_start_date", false);
+            if (false !== $cfp_start_date && strtotime($cfp_start_date)) {
+                $cfp_start_date = new DateTime(strtotime($cfp_start_date), $tz);
                 $event['cfp_start_date'] = $cfp_start_date->format('U');
             }
-            $cfp_end_date = strtotime($request->getParameter("cfp_end_date"));
-            if ($cfp_end_date) {
-                $cfp_end_date = new DateTime($request->getParameter("cfp_end_date"), $tz);
+            $cfp_end_date = $request->getParameter("cfp_end_date", false);
+            if (false !== $cfp_end_date && strtotime($cfp_end_date)) {
+                $cfp_end_date = new DateTime(strtotime($cfp_end_date), $tz);
                 $event['cfp_end_date'] = $cfp_end_date->format('U');
             }
-            $latitude  = filter_var($request->getParameter("latitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            if ($latitude) {
-                $event['latitude'] = $latitude;
+            $latitude = $request->getParameter("latitude", false); 
+            if (false !== $latitude) {
+                $latitude  = filter_var($latitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                if($latitude) {
+                    $event['latitude'] = $latitude;
+                }
             }
-            $longitude  = filter_var($request->getParameter("longitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-            if ($longitude) {
+            $longitude = $request->getParameter("longitude", false); 
+            if (false !== $longitude) {
+                $longitude  = filter_var($longitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 $event['longitude'] = $longitude;
             }
             $incoming_tag_list = $request->getParameter('tags');
@@ -520,7 +527,7 @@ class EventsController extends ApiController {
                 $event_mapper->setTags($event_id, $tags);
             }
 
-            header("Location: " . $request->base . $request->path_info . '/' . $event_id, NULL, 204);
+            header("Location: " . $request->base . $request->path_info, NULL, 204);
             exit;
         }
     }
