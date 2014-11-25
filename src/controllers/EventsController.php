@@ -9,6 +9,8 @@ class EventsController extends ApiController {
             return $this->postAction($request, $db);
         } elseif ($request->getVerb() == 'DELETE') {
             return $this->deleteAction($request, $db);
+        } elseif ($request->getVerb() == 'PUT') {
+            return $this->putAction($request, $db);
         }
         return false;
     }
@@ -350,7 +352,6 @@ class EventsController extends ApiController {
             if($errors) {
                 throw new Exception(implode(". ", $errors), 400);
             } else {
-                // site admins get their events auto approved
                 $user_mapper= new UserMapper($db, $request);
                 $event_mapper = new EventMapper($db, $request);
 
@@ -407,6 +408,127 @@ class EventsController extends ApiController {
             }
         } else {
             throw new Exception("Operation not supported, sorry", 404);
+        }
+    }
+
+    public function putAction($request, $db)
+    {
+        if (! isset($request->user_id)) {
+            throw new Exception('You must be logged in to edit data', 400);
+        }
+
+        $event_id = $this->getItemId($request);
+        if (! isset($request->url_elements[4])) {
+
+            // Edit an Event
+            $event_mapper = new EventMapper($db, $request);
+            $existing_event = $event_mapper->getEventById($event_id, true);
+            if (! $existing_event) {
+                throw new Exception(sprintf(
+                    'There is no event with ID "%s"',
+                    $event_id
+                ));
+            }
+
+            if (! $event_mapper->thisUserHasAdminOn($event_id)) {
+                throw new Exception('You are not an host for this event', 403);
+            }
+
+            // initialise a new set of fields to save 
+            $event = array("event_id" => $event_id);
+            $errors = array();
+
+            $event['name'] = filter_var($request->getParameter("name"), FILTER_SANITIZE_STRING);
+            if(empty($event['name'])) {
+                $errors[] = "'name' is a required field";
+            }
+
+            $event['description'] = filter_var($request->getParameter("description"), FILTER_SANITIZE_STRING);
+            if(empty($event['description'])) {
+                $errors[] = "'description' is a required field";
+            }
+
+            $event['location']  = filter_var($request->getParameter("location"), FILTER_SANITIZE_STRING);
+            if (empty($event['location'])) {
+                $errors[] = "'location' is a required field (for virtual events, 'online' works)";
+            }
+
+            $start_date = strtotime($request->getParameter("start_date"));
+            $end_date = strtotime($request->getParameter("end_date"));
+            if(!$start_date || !$end_date) {
+                $errors[] = "Both 'start_date' and 'end_date' must be supplied in a recognised format";
+            } else {
+                // if the dates are okay, sort out timezones
+                $event['tz_continent'] = filter_var($request->getParameter("tz_continent"), FILTER_SANITIZE_STRING);
+                $event['tz_place'] = filter_var($request->getParameter("tz_place"), FILTER_SANITIZE_STRING);
+                try {
+                    // make the timezone, and read in times with respect to that
+                    $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+                    $start_date = new DateTime($request->getParameter("start_date"), $tz);
+                    $end_date = new DateTime($request->getParameter("end_date"), $tz);
+                    $event['start_date'] = $start_date->format('U');
+                    $event['end_date'] = $end_date->format('U');
+                } catch(Exception $e) {
+                    // the time zone isn't right
+                    $errors[] = "The fields 'tz_continent' and 'tz_place' must be supplied and valid (e.g. Europe and London)";
+                }
+            }
+            // How does it look?  With no errors, we can proceed
+            if ($errors) {
+                throw new Exception(implode(". ", $errors), 400);
+            }
+
+            // optional fields - only check if we have no errors as we may need $tz
+            // also only update supplied fields - but DO allow saving empty ones
+            $href = $request->getParameter("href", false); // returns false if the value was not supplied
+            if(false !== $href) {
+                // we got a value, filter and save it
+                $event['href'] = filter_var($href, FILTER_VALIDATE_URL);
+            }
+            $cfp_url = $request->getParameter("cfp_url", false); 
+            if(false !== $cfp_url) {
+                // we got a value, filter and save it
+                $event['cfp_url'] = filter_var($cfp_url, FILTER_VALIDATE_URL);
+            }
+            $cfp_start_date = $request->getParameter("cfp_start_date", false);
+            if (false !== $cfp_start_date && strtotime($cfp_start_date)) {
+                $cfp_start_date = new DateTime(strtotime($cfp_start_date), $tz);
+                $event['cfp_start_date'] = $cfp_start_date->format('U');
+            }
+            $cfp_end_date = $request->getParameter("cfp_end_date", false);
+            if (false !== $cfp_end_date && strtotime($cfp_end_date)) {
+                $cfp_end_date = new DateTime(strtotime($cfp_end_date), $tz);
+                $event['cfp_end_date'] = $cfp_end_date->format('U');
+            }
+            $latitude = $request->getParameter("latitude", false); 
+            if (false !== $latitude) {
+                $latitude  = filter_var($latitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                if($latitude) {
+                    $event['latitude'] = $latitude;
+                }
+            }
+            $longitude = $request->getParameter("longitude", false); 
+            if (false !== $longitude) {
+                $longitude  = filter_var($longitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $event['longitude'] = $longitude;
+            }
+            $incoming_tag_list = $request->getParameter('tags');
+            if(is_array($incoming_tag_list)) {
+                $tags = array_map(function($tag){
+                    $tag = filter_var($tag, FILTER_SANITIZE_STRING);
+                    $tag = trim($tag);
+                    $tag = strtolower($tag);
+                    return $tag;
+                }, $incoming_tag_list);
+            }
+
+            $event_mapper->editEvent($event, $event_id);
+            if (isset($tags)) {
+                $event_mapper->setTags($event_id, $tags);
+            }
+
+            header("Location: " . $request->base . $request->path_info, NULL, 204);
+            exit;
         }
     }
 }
