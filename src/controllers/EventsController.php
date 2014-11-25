@@ -82,7 +82,7 @@ class EventsController extends ApiController {
                     $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
                     $params["stub"] = $stub;
                 }
-
+                    
                 if(isset($request->parameters['tags'])) {
                     // if it isn't an array, make it one
                     if(is_array($request->parameters['tags'])) {
@@ -237,8 +237,8 @@ class EventsController extends ApiController {
                     $comment['source'] = $consumer_name;
 
                     // run it by akismet if we have it
-                    if(isset($this->config['akismet']['apiKey'])) {
-                        $spamCheckService = new SpamCheckService($this->config['akismet']['apiKey']);
+                    if(isset($this->config['akismet']['apiKey'], $this->config['akismet']['blog'])) {
+                        $spamCheckService = new SpamCheckService($this->config['akismet']['apiKey'], $this->config['akismet']['blog']);
                         $isValid = $spamCheckService->isCommentAcceptable(
                             $comment,
                             $request->getClientIP(),
