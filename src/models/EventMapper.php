@@ -685,6 +685,65 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Edit an event.
+     *
+     * Accepts a subset of event fields
+     *
+     * @param string[] $event    Event data to insert into the database.
+     * @param int      $event_id The ID of the event to be edited
+     *
+     * @return integer|false
+     */
+    public function editEvent($event, $event_id)
+    {
+        // Sanity check: ensure all mandatory fields are present.
+        $mandatory_fields = array(
+            'name',
+            'description',
+            'start_date',
+            'end_date',
+            'tz_continent',
+            'tz_place',
+        );
+        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($event));
+        if (!$contains_mandatory_fields) {
+            throw new Exception("Missing mandatory fields");
+        }
+
+        $sql = "UPDATE events SET %s WHERE ID = :event_id";
+
+        // get the list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+        $items  = array();
+
+        foreach ($fields as $api_name => $column_name) {
+            // We don't change any activation stuff here!!
+            if (in_array($column_name, ['pending', 'active'])) {
+                continue;
+            }
+            if (isset($event[$api_name])) {
+                $pairs[] = "$column_name = :$api_name";
+                $items[$api_name] = $event[$api_name];
+            }
+        }
+
+        $items['event_id'] = $event_id;
+
+        $stmt = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
+
+        if (! $stmt->execute($items)) {
+            throw new Exception(sprintf(
+                'executing "%s" resulted in an error: %s',
+                $stmt->queryString,
+                implode(' :: ', $stmt->errorInfo())
+            ));
+            return false;
+        }
+
+        return $event_id;
+    }
+
+    /**
      * Add a user as an admin on an event
      */
     public function addUserAsHost($event_id, $user_id) {
