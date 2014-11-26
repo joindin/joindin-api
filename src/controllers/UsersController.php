@@ -125,7 +125,12 @@ class UsersController extends ApiController {
             $user_id = $user_mapper->createUser($user);
             header("Location: " . $request->base . $request->path_info . '/' . $user_id, NULL, 201);
 
-            // TODO send them a verification code by email
+            // Generate a verification token and email it to the user
+            $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
+
+            $recipients = array($user['email']);
+            $emailService = new UserRegistrationEmailService($this->config, $recipients, $token);
+            $emailService->sendEmail();
             exit;
         }
     }

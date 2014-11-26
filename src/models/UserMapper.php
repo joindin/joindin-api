@@ -280,4 +280,29 @@ class UserMapper extends ApiMapper
         return true;
 
     }
+
+
+    /**
+     * Generate and store a token in the email_verification_tokens table for this 
+     * user, when they use the token to verify, we'll set their status to verified
+     */
+    public function generateEmailVerificationTokenForUserId($user_id) {
+        $token = bin2hex(openssl_random_pseudo_bytes(8));
+
+        $sql = "insert into email_verification_tokens set "
+            . "user_id = :user_id, token = :token";
+
+        $stmt = $this->_db->prepare($sql);
+        $data = array(
+            "user_id" => $user_id, 
+            "token" => $token);
+
+        $response = $stmt->execute($data);
+        if ($response) {
+            return $token;
+        }
+
+        return false;
+
+    }
 }
