@@ -191,4 +191,93 @@ class UserMapper extends ApiMapper
         }
         return false;
     }
+
+    public function createUser($user) {
+        // Sanity check: ensure all mandatory fields are present.
+        $mandatory_fields = array(
+            'username',
+            'full_name',
+            'email',
+            'password',
+        );
+        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($user));
+        if (!$contains_mandatory_fields) {
+            throw new Exception("Missing mandatory fields");
+        }
+
+        // encode the password
+        $user['password'] = password_hash($user['password'], PASSWORD_DEFAULT);
+
+        $sql = "insert into user set active=1, admin=0, ";
+
+        // create list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+        // add the fields that we don't expose for users
+        $fields["email"] = "email";
+        $fields["password"] = "password";
+
+        foreach ($fields as $api_name => $column_name) {
+            if (isset($user[$api_name])) {
+                $pairs[] = "$column_name = :$api_name";
+            }
+        }
+
+        // comma separate all pairs and add to SQL string
+        $sql .= implode(', ', $pairs);
+
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute($user);
+        if($result) {
+            return $this->_db->lastInsertId();
+        }
+
+        return false;
+    }
+
+    public function getUserByEmail($email, $verbose = false)
+    {
+        $sql = 'select user.* '
+            . 'from user '
+            . 'where active = 1 '
+            . 'and user.email= :email';
+
+        // limit clause
+        $sql .= $this->buildLimit(1, 0);
+
+        $stmt = $this->_db->prepare($sql);
+        $data = array("email" => $email);
+
+        $response = $stmt->execute($data);
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results['total'] = $this->getTotalCount($sql, $data);
+            if ($results) {
+                return $this->transformResults($results, $verbose);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Use this method to check password against our rules.
+     *
+     * Beware that it returns true or an array, so you need === true
+     *
+     * @param string $password The password to check (plain text)
+     * @return bool|array Either true if it's fine, or an array of remarks about why it isn't
+     */
+    public function checkPasswordValidity($password) {
+        $errors = array();
+        if(strlen($password) < 6) {
+            $errors[] = "Passwords must be at least 6 characters long";
+        }
+
+        if($errors) {
+            return $errors;
+        }
+
+        // it's good!
+        return true;
+
+    }
 }
