@@ -96,7 +96,7 @@ To see a summary of the codesniff errors and warnings across the entire project,
 #### Inline Documentation
 
 For inline documentation we recommend the use of PHPDoc-compatible documentation
-blocks - [PHP FIG PSR-5 PHPDoc Standard](https://github.com/phpDocumentor/fig-standards/blob/master/proposed/phpdoc.md)
+blocks - for more information, see the draft [PHP FIG PSR-5 PHPDoc Standard](https://github.com/phpDocumentor/fig-standards/blob/master/proposed/phpdoc.md)
 - although we request that you refrain from employing the ```@author``` tag.
 
 ### Generating the API Docs
