@@ -101,11 +101,8 @@ class UsersController extends ApiController {
         }
 
         $password = $request->getParameter("password");
-        $password2 = $request->getParameter("password2");
-        if(empty($password) || empty($password2)) {
-            $errors[] = "You must supply both 'password' and 'password2' fields";
-        } elseif ($password != $password2) {
-            $errors[] = "The password and password confirmation fields did not match";
+        if(empty($password)) {
+            $errors[] = "'password' is a required field";
         } else {
             // check it's sane
             $validity = $user_mapper->checkPasswordValidity($password);
