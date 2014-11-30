@@ -305,4 +305,49 @@ class UserMapper extends ApiMapper
         return false;
 
     }
+
+    /**
+     * Given a token, if it exists, delete it and return true
+     *
+     * @param string $token     The email verification token
+     * @return bool             True if the token was found
+     */
+    public function verifyUser($token) {
+        // does the token exist, and whose is it?
+        $select_sql = "select user_id from email_verification_tokens "
+            . "where token = :token";
+
+        $select_stmt = $this->_db->prepare($select_sql);
+        $data = array(
+            "token" => $token);
+
+        $response = $select_stmt->execute($data);
+        if($response) {
+            $row = $select_stmt->fetch(\PDO::FETCH_ASSOC);
+            if($row && is_array($row)) {
+                $user_id = $row['user_id'];
+
+                // mark the user as verified
+                $verify_sql = "update user set verified = 1 "
+                    . "where ID = :user_id";
+
+                $verify_stmt = $this->_db->prepare($verify_sql);
+                $verify_data = array("user_id" => $user_id);
+
+                $verify_stmt->execute($verify_data);
+
+                // now delete the token so it can't be reused
+                $delete_sql = "delete from email_verification_tokens "
+                    . "where token = :token";
+
+                $stmt = $this->_db->prepare($delete_sql);
+                $stmt->execute($data);
+
+                // verified
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

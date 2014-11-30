@@ -66,72 +66,96 @@ class UsersController extends ApiController {
         return $list;
 	}
 
-    public function postAction($request, $db) {
-        $user = array();
-        $errors = array();
-
-        $user_mapper= new UserMapper($db, $request);
-
-        // Required Fields
-        $user['username'] = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);
-        if(empty($user['username'])) {
-            $errors[] = "'username' is a required field";
-        } else {
-            // does anyone else have this username?
-            $existing_user = $user_mapper->getUserByUsername($user['username']);
-            if($existing_user['users']) {
-                $errors[] = "That username is already in use. Choose another";
+    public function postAction($request, $db){
+        // check element 3, there's no user associated with the not-logged-in collections
+        if(isset($request->url_elements[3])) {
+            switch($request->url_elements[3]) {
+                case 'verifications':
+                            $user_mapper= new UserMapper($db, $request);
+                            $token = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
+                            if(empty($token)) {
+                                throw new Exception("Verification token must be supplied", 400);
+                            } else {
+                                $success = $user_mapper->verifyUser($token);
+                                if($success) {
+                                    header("Content-Length: 0", NULL, 204);
+                                    exit; // no more content
+                                } else {
+                                    throw new Exception("Verification failed", 400);
+                                }
+                            }
+                            break;
+                default:
+                            throw new InvalidArgumentException('Unknown Subrequest', 404);
+                            break;
             }
-        }
-
-        $user['full_name'] = filter_var($request->getParameter("full_name"), FILTER_SANITIZE_STRING);
-        if(empty($user['full_name'])) {
-            $errors[] = "'full_name' is a required field";
-        }
-
-        $user['email'] = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
-        if(empty($user['email'])) {
-            $errors[] = "A valid entry for 'email' is required";
         } else {
-            // does anyone else have this email?
-            $existing_user = $user_mapper->getUserByEmail($user['email']);
-            if($existing_user['users']) {
-                $errors[] = "That email is already associated with another account";
-            }
-        }
+            $user = array();
+            $errors = array();
 
-        $password = $request->getParameter("password");
-        if(empty($password)) {
-            $errors[] = "'password' is a required field";
-        } else {
-            // check it's sane
-            $validity = $user_mapper->checkPasswordValidity($password);
-            if(true === $validity) {
-                // OK good, go ahead
-                $user['password'] = $password;
+            $user_mapper= new UserMapper($db, $request);
+
+            // Required Fields
+            $user['username'] = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);
+            if(empty($user['username'])) {
+                $errors[] = "'username' is a required field";
             } else {
-                // the password wasn't acceptable, tell the user why
-                $errors = array_merge($errors, $validity);
+                // does anyone else have this username?
+                $existing_user = $user_mapper->getUserByUsername($user['username']);
+                if($existing_user['users']) {
+                    $errors[] = "That username is already in use. Choose another";
+                }
             }
-        }
 
-        // Optional Fields
-        $user['twitter_username'] = filter_var($request->getParameter("twitter_username"), FILTER_SANITIZE_STRING);
+            $user['full_name'] = filter_var($request->getParameter("full_name"), FILTER_SANITIZE_STRING);
+            if(empty($user['full_name'])) {
+                $errors[] = "'full_name' is a required field";
+            }
 
-        // How does it look?  With no errors, we can proceed
-        if($errors) {
-            throw new Exception(implode(". ", $errors), 400);
-        } else {
-            $user_id = $user_mapper->createUser($user);
-            header("Location: " . $request->base . $request->path_info . '/' . $user_id, NULL, 201);
+            $user['email'] = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
+            if(empty($user['email'])) {
+                $errors[] = "A valid entry for 'email' is required";
+            } else {
+                // does anyone else have this email?
+                $existing_user = $user_mapper->getUserByEmail($user['email']);
+                if($existing_user['users']) {
+                    $errors[] = "That email is already associated with another account";
+                }
+            }
 
-            // Generate a verification token and email it to the user
-            $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
+            $password = $request->getParameter("password");
+            if(empty($password)) {
+                $errors[] = "'password' is a required field";
+            } else {
+                // check it's sane
+                $validity = $user_mapper->checkPasswordValidity($password);
+                if(true === $validity) {
+                    // OK good, go ahead
+                    $user['password'] = $password;
+                } else {
+                    // the password wasn't acceptable, tell the user why
+                    $errors = array_merge($errors, $validity);
+                }
+            }
 
-            $recipients = array($user['email']);
-            $emailService = new UserRegistrationEmailService($this->config, $recipients, $token);
-            $emailService->sendEmail();
-            exit;
+            // Optional Fields
+            $user['twitter_username'] = filter_var($request->getParameter("twitter_username"), FILTER_SANITIZE_STRING);
+
+            // How does it look?  With no errors, we can proceed
+            if($errors) {
+                throw new Exception(implode(". ", $errors), 400);
+            } else {
+                $user_id = $user_mapper->createUser($user);
+                header("Location: " . $request->base . $request->path_info . '/' . $user_id, NULL, 201);
+
+                // Generate a verification token and email it to the user
+                $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
+
+                $recipients = array($user['email']);
+                $emailService = new UserRegistrationEmailService($this->config, $recipients, $token);
+                $emailService->sendEmail();
+                exit;
+            }
         }
     }
 }
