@@ -336,18 +336,39 @@ class UserMapper extends ApiMapper
 
                 $verify_stmt->execute($verify_data);
 
-                // now delete the token so it can't be reused
+                // delete all the user's tokens; they don't need them now
                 $delete_sql = "delete from email_verification_tokens "
-                    . "where token = :token";
+                    . "where user_id = :user_id";
 
                 $stmt = $this->_db->prepare($delete_sql);
-                $stmt->execute($data);
+                $stmt->execute($verify_data);
 
                 // verified
                 return true;
             }
         }
 
+        return false;
+    }
+
+    /*
+     * Function to get just the user ID
+     *
+     * @param string $email The email address of the user we're looking for
+     * @return $user_id The user's ID (or false, if we didn't find her)
+     */
+    public function getUserIdFromEmail($email) {
+        $sql = "select ID from user where email = :email";
+
+        $data = array("email" => $email);
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute($data);
+        if($response) {
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if(isset($row['ID'])) {
+                return $row['ID'];
+            }
+        }
         return false;
     }
 }
