@@ -57,13 +57,13 @@ class ApiRouterTest extends PHPUnit_Framework_TestCase
         return array(
             array( // #0
                 'config' => array('config'),
-                'routers' => array('1' => 'TestRouter1', '2.1' => 'InvalidRouter'),
+                'routers' => array('v1' => 'TestRouter1', '2.1' => 'InvalidRouter'),
                 'oldVersions' => array(),
                 'request' => $this->getRequest('v1')
             ),
             array( // #1
                 'config' => array('config'),
-                'routers' => array('1' => 'InvalidRouter', '2.1' => 'TestRouter1'),
+                'routers' => array('1' => 'InvalidRouter', 'v2.1' => 'TestRouter1'),
                 'oldVersions' => array(),
                 'request' => $this->getRequest('v2.1')
             ),
