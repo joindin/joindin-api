@@ -12,10 +12,7 @@ function handle_exception($e) {
     global $request;
     $status_code = $e->getCode() ?: 400;
     header("Status: " . $status_code, false, $status_code);
-    if (!$request->view) {
-        setView();
-    }
-	$request->view->render(array($e->getMessage()));
+	$request->getView()->render(array($e->getMessage()));
 }
 
 set_exception_handler('handle_exception');
@@ -48,106 +45,17 @@ if(isset($headers['Authorization'])) {
     $request->identifyUser($ji_db, $headers['Authorization']);
 }
 
-// Which content type to return? Parameter takes precedence over accept headers 
-// with final fall back to json 
-$format_choices = array('application/json', 'text/html');
-$header_format = $request->preferredContentTypeOutOf($format_choices);
+$routers = array(
+    "2.1" => 'V2_1Router',
+    '' => 'DefaultRouter',
+);
+$router = new ApiRouter($config, $routers, ['2']);
+$return_data = $router->route($request, $ji_db);
 
-/**
- * Determines the view to be used by the request
- * - separated out due to JOINDIN-465
- *
- * @TODO Move this logic to the Request object?
- *
- * @global Request $request
- * @global string $header_format
- *
- * @return null
- */
-function setView() {
-    global $request;
-    global $header_format;
-    $format = $request->getParameter('format', $header_format);
-
-    switch ($format) {
-        case 'text/html':
-        case 'html':
-            $request->view = new HtmlView();
-            break;
-
-        case 'application/json':
-        case 'json':
-        default:
-            // JSONP?
-            $callback = filter_var($request->getParameter('callback'), FILTER_SANITIZE_STRING);
-            if($callback) {
-                $request->view = new JsonPView($callback);
-            } else {
-                $request->view = new JsonView();
-            }
-            break;
-    }
-}
-
-setView();
-
-$version = $request->getUrlElement(1);
-switch ($version) {
-    case 'v2.1':
-        // default routing for version 2.1
-        $request->version = "v2.1";
-        $return_data = routeV2($request, $ji_db, $config);
-        break;
-    
-    case '':
-        // current newest version
-        $request->version = "v2.1";
-        // version parameter not specified routes to default controller
-        $defaultController = new DefaultController();
-        $return_data = $defaultController->handle($request, $ji_db);
-        break;
-
-    case 'v2':
-        // old versions
-        throw new Exception('This API version is no longer supported.  Please use v2.1');
-        break;
-    
-    default:
-        // unexpected version
-        throw new Exception('API version must be specified', 404);
-        break;
-}
 if(isset($request->user_id)) {
     $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;
 }
 
 // Handle output
 // TODO sort out headers, caching, etc
-$request->view->render($return_data);
-exit;
-
-/**
- *
- * @param Request $request
- * @param PDO $ji_db
- * @return array
- */
-function routeV2($request, $ji_db, $config)
-{
-    // Route: call the handle() method of the class with the first URL element
-    if(isset($request->url_elements[2])) {
-        $class = ucfirst($request->url_elements[2]) . 'Controller';
-        if(class_exists($class)) {
-            $handler = new $class($config);
-            $return_data = $handler->handle($request, $ji_db); // the DB is set by the database config
-        } else {
-            throw new Exception('Unknown controller ' . $request->url_elements[2], 400);
-        }
-    } else {
-        throw new Exception('Request not understood', 404);
-    }
-    
-    return $return_data;
-}
-
-
+$request->getView()->render($return_data);

@@ -6,6 +6,19 @@
 
 class Request
 {
+
+    /**
+     * Output formats
+     */
+    const FORMAT_JSON = 'json';
+    const FORMAT_HTML = 'html';
+
+    /**
+     * Content-types for the Accepts header
+     */
+    const CONTENT_TYPE_JSON = 'application/json';
+    const CONTENT_TYPE_HTML = 'text/html';
+
     /**
      * @var string HTTP verb
      */
@@ -15,13 +28,22 @@ class Request
     public $accept = array();
     public $host;
     public $parameters = array();
-    public $view;
     public $user_id;
     public $access_token;
     public $version;
 
     protected $oauthModel;
     protected $config;
+
+    /**
+     * @var ApiView|null This Request's View
+     */
+    protected $view = null;
+
+    /**
+     * @var array The priority-ordered list of format choices
+     */
+    protected $formatChoices = array(self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML);
 
     /**
      * Builds the request object
@@ -62,6 +84,26 @@ class Request
         if ($parseParams) {
             $this->parseParameters();
         }
+    }
+
+    /**
+     * Gets the priority-ordered list of output format choices
+     * 
+     * @return array
+     */
+    public function getFormatChoices()
+    {
+        return $this->formatChoices;
+    }
+
+    /**
+     * Sets the priority-ordered list of output format choices
+     *
+     * @param array $formatChoices
+     */
+    public function setFormatChoices(array $formatChoices)
+    {
+        $this->formatChoices = $formatChoices;
     }
 
     /**
@@ -129,21 +171,69 @@ class Request
      * formats and returns that format. If none of the desired formats
      * are found, it will return 'json'
      *
-     * @param array $formats Formats that we want to serve
+     * @param array|null $formats Formats that we want to serve; set to null to
+     *                            use the default list
      *
      * @todo need some real accept header parsing here
      *
      * @return string
      */
-    public function preferredContentTypeOutOf($formats)
+    public function preferredContentTypeOutOf(array $formats = null)
     {
+        if (!$formats) {
+            $formats = $this->getFormatChoices();
+        }
+
         foreach ($formats as $format) {
             if ($this->accepts($format)) {
                 return $format;
             }
         }
 
-        return 'json';
+        return self::FORMAT_JSON;
+    }
+
+    /**
+     * Gets the View object for this Request, initializing it as appropriate to
+     * the accepts header
+     *
+     * @return ApiView
+     */
+    public function getView()
+    {
+        if (!$this->view) {
+            $format = $this->getParameter('format', $this->preferredContentTypeOutOf());
+
+            switch ($format) {
+                case self::CONTENT_TYPE_HTML:
+                case self::FORMAT_HTML:
+                    $this->view = new \HtmlView();
+                    break;
+
+                case self::CONTENT_TYPE_JSON:
+                case self::FORMAT_JSON:
+                default:
+                    // JSONP?
+                    $callback = filter_var($this->getParameter('callback'), FILTER_SANITIZE_STRING);
+                    if ($callback) {
+                        $this->view = new \JsonPView($callback);
+                    } else {
+                        $this->view = new \JsonView();
+                    }
+            }
+        }
+
+        return $this->view;
+    }
+
+    /**
+     * Sets this Request's View object
+     *
+     * @param \ApiView $view
+     */
+    public function setView(\ApiView $view)
+    {
+        $this->view = $view;
     }
 
     /**
