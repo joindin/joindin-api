@@ -46,7 +46,7 @@ if(isset($headers['Authorization'])) {
 }
 
 $routers = array(
-    "2.1" => 'V2_1Router',
+    "v2.1" => 'V2_1Router',
     '' => 'DefaultRouter',
 );
 $router = new ApiRouter($config, $routers, ['2']);
