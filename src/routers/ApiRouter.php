@@ -71,6 +71,10 @@ class ApiRouter extends Router
     {
         $request->version = $request->getUrlElement(1);
         $version = str_replace('v', '', $request->getUrlElement(1));
+        if(!$version) {
+            // empty version, set request to use the latest
+            $request->version = $this->latestVersion;
+        }
         if (isset($this->routers[$version])) {
             $router = new $this->routers[$version]($this->config);
             return $router->route($request, $db);
