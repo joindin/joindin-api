@@ -112,7 +112,7 @@ class UsersController extends ApiController {
                 $errors[] = "'full_name' is a required field";
             }
 
-            $user['email'] = filter_var(trim($request->getParameter("email")), FILTER_VALIDATE_EMAIL));
+            $user['email'] = filter_var(trim($request->getParameter("email")), FILTER_VALIDATE_EMAIL);
             if(empty($user['email'])) {
                 $errors[] = "A valid entry for 'email' is required";
             } else {
