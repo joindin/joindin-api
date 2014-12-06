@@ -351,7 +351,7 @@ class UserMapper extends ApiMapper
         return false;
     }
 
-    /*
+    /**
      * Function to get just the user ID
      *
      * @param string $email The email address of the user we're looking for
