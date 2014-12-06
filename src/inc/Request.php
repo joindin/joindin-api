@@ -48,32 +48,34 @@ class Request
     /**
      * Builds the request object
      *
-     * @param bool $parseParams Set to false to skip parsing parameters on
-     *                          construction
+     * @param array|false   $config      The application configuration
+     * @param array         $server      The $_SERVER global, injected for testability
+     * @param bool          $parseParams Set to false to skip parsing parameters on
+     *                                   construction
      */
-    public function __construct($config, $parseParams = true)
+    public function __construct($config, array $server, $parseParams = true)
     {
         $this->config = $config;
 
-        if (isset($_SERVER['REQUEST_METHOD'])) {
-            $this->setVerb($_SERVER['REQUEST_METHOD']);
+        if (isset($server['REQUEST_METHOD'])) {
+            $this->setVerb($server['REQUEST_METHOD']);
         }
 
-        if (isset($_SERVER['PATH_INFO'])) {
-            $this->setPathInfo($_SERVER['PATH_INFO']);
-        }else if (isset($_SERVER['REQUEST_URI'])) {
-            $this->setPathInfo(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+        if (isset($server['PATH_INFO'])) {
+            $this->setPathInfo($server['PATH_INFO']);
+        }else if (isset($server['REQUEST_URI'])) {
+            $this->setPathInfo(parse_url($server['REQUEST_URI'], PHP_URL_PATH));
         }
 
-        if (isset($_SERVER['HTTP_ACCEPT'])) {
-            $this->setAccept($_SERVER['HTTP_ACCEPT']);
+        if (isset($server['HTTP_ACCEPT'])) {
+            $this->setAccept($server['HTTP_ACCEPT']);
         }
 
-        if (isset($_SERVER['HTTP_HOST'])) {
-            $this->setHost($_SERVER['HTTP_HOST']);
+        if (isset($server['HTTP_HOST'])) {
+            $this->setHost($server['HTTP_HOST']);
         }
 
-        if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == "on")) {
+        if (isset($server['HTTPS']) && ($server['HTTPS'] == "on")) {
             $this->setScheme('https://');
         } else {
             $this->setScheme('http://');
@@ -82,7 +84,7 @@ class Request
         $this->setBase($this->getScheme() . $this->getHost());
 
         if ($parseParams) {
-            $this->parseParameters();
+            $this->parseParameters($server);
         }
     }
 
@@ -272,15 +274,17 @@ class Request
     /**
      * What format/method of request is this?  Figure it out and grab the parameters
      *
+     * @param array $server     The $_SERVER global, injected for testability
+     *
      * @return boolean true
      *
      * @todo Make paginationParameters part of this object, add tests for them
      */
-    public function parseParameters()
+    public function parseParameters(array $server)
     {
         // first of all, pull the GET vars
-        if (isset($_SERVER['QUERY_STRING'])) {
-            parse_str($_SERVER['QUERY_STRING'], $parameters);
+        if (isset($server['QUERY_STRING'])) {
+            parse_str($server['QUERY_STRING'], $parameters);
             $this->parameters = $parameters;
             // grab these again, keep them separate for building page hyperlinks
             $this->paginationParameters = $parameters;
@@ -296,7 +300,7 @@ class Request
         // now how about PUT/POST bodies? These override what we already had
         if ($this->getVerb() == 'POST' || $this->getVerb() == 'PUT') {
             $body = $this->getRawBody();
-            if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == "application/json") {
+            if (isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] == "application/json") {
                 $body_params = json_decode($body);
                 if ($body_params) {
                     foreach ($body_params as $param_name => $param_value) {

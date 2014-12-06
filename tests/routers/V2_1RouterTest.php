@@ -17,15 +17,15 @@ class V2_1RouterTest extends PHPUnit_Framework_TestCase
     {
         return array(
             array( // #0
-                'request' => $this->getRequest(array('', 'v1', 'test'))
+                'url' => '/v1/test',
             ),
-            array( // #0
-                'request' => $this->getRequest(array('', 'v2', 'bob')),
+            array( // #1
+                'url' => '/v1/test',
                 'expectedException' => 'Exception',
                 400
             ),
-            array( // #0
-                'request' => $this->getRequest(array('', 'v2')),
+            array( // #2
+                'url' => '/v1/test',
                 'expectedException' => 'Exception',
                 404
             )
@@ -37,12 +37,13 @@ class V2_1RouterTest extends PHPUnit_Framework_TestCase
      *
      * @covers V2_1Router::route
      *
-     * @param Request $request
+     * @param string $url
      * @param string|false $expectedException
      * @param integer|false $expectedExceptionCode
      */
-    public function testRoute(Request $request, $expectedException = false, $expectedExceptionCode = false)
+    public function testRoute($url, $expectedException = false, $expectedExceptionCode = false)
     {
+        $request = new Request([], ['REQUEST_URI' => $url]);
         $db = 'database';
         $value = 'val';
         $obj = new V2_1Router(array('xyz' => 'abc'));

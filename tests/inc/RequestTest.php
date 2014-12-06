@@ -31,8 +31,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $_SERVER['QUERY_STRING'] = $queryString;
-        $request                 = new \Request($this->config);
+        $server = [
+            'QUERY_STRING' => $queryString
+        ];
+        $request                 = new \Request($this->config, $server);
 
         $this->assertEquals('bar', $request->getParameter('foo'));
         $this->assertEquals('samoflange', $request->getParameter('baz'));
@@ -49,7 +51,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function getParameterReturnsDefaultIfParameterNotSet()
     {
         $uniq    = uniqid();
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $result  = $request->getParameter('samoflange', $uniq);
 
         $this->assertSame($uniq, $result);
@@ -69,8 +71,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function requestMethodIsProperlyLoaded($method)
     {
-        $_SERVER['REQUEST_METHOD'] = $method;
-        $request                   = new \Request($this->config);
+        $request                   = new \Request($this->config, ['REQUEST_METHOD' => $method]);
 
         $this->assertEquals($method, $request->getVerb());
     }
@@ -87,7 +88,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function setVerbAllowsForSettingRequestVerb($verb)
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $request->setVerb($verb);
 
         $this->assertEquals($verb, $request->getVerb());
@@ -102,7 +103,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function setVerbIsFluent()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $this->assertSame($request, $request->setVerb(uniqid()));
     }
 
@@ -134,7 +135,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function getUrlElementReturnsDefaultIfIndexIsNotFound()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
 
         $default = uniqid();
         $result  = $request->getUrlElement(22, $default);
@@ -153,8 +154,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function getUrlElementReturnsRequestedElementFromPath()
     {
-        $_SERVER['PATH_INFO'] = 'foo/bar/baz';
-        $request              = new \Request($this->config);
+        $server = ['PATH_INFO' => 'foo/bar/baz'];
+        $request              = new \Request($this->config, $server);
         $this->assertEquals('foo', $request->getUrlElement(0));
         $this->assertEquals('bar', $request->getUrlElement(1));
         $this->assertEquals('baz', $request->getUrlElement(2));
@@ -170,9 +171,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function acceptsHeadersAreParsedCorrectly()
     {
-        $_SERVER['HTTP_ACCEPT'] =
-            'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
-        $request                = new \Request($this->config);
+        $server = ['HTTP_ACCEPT' =>
+            'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'];
+        $request                = new \Request($this->config, $server);
 
         $this->assertFalse($request->accepts('image/png'));
         $this->assertTrue($request->accepts('text/html'));
@@ -192,9 +193,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function preferredContentTypeOfReturnsADesiredFormatIfItIsAccepted()
     {
-        $_SERVER['HTTP_ACCEPT'] =
-            'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8';
-        $request                = new \Request($this->config);
+        $server = ['HTTP_ACCEPT' =>
+            'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8'];
+        $request                = new \Request($this->config, $server);
 
         $result = $request->preferredContentTypeOutOf(
             array('text/html', 'application/json')
@@ -218,9 +219,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function ifPreferredFormatIsNotAcceptedReturnJson()
     {
-        $_SERVER['HTTP_ACCEPT'] =
-            'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8';
-        $request                = new \Request($this->config);
+        $server =['HTTP_ACCEPT' =>
+            'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8'];
+        $request                = new \Request($this->config, $server);
 
         $result = $request->preferredContentTypeOutOf(
             array('text/html'),
@@ -240,8 +241,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function hostIsSetCorrectlyFromTheHeaders()
     {
-        $_SERVER['HTTP_HOST'] = 'joind.in';
-        $request              = new \Request($this->config);
+        $server = ['HTTP_HOST' => 'joind.in'];
+        $request              = new \Request($this->config, $server);
 
         $this->assertEquals('joind.in', $request->host);
         $this->assertEquals('joind.in', $request->getHost());
@@ -256,7 +257,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function setHostIsFluent()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $this->assertSame($request, $request->setHost(uniqid()));
     }
 
@@ -270,7 +271,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function hostCanBeSetWithSetHost()
     {
         $host    = uniqid() . '.com';
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $request->setHost($host);
 
         $this->assertEquals($host, $request->getHost());
@@ -300,16 +301,17 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $inside        = new \stdClass();
         $inside->joind = 'in';
 
-        $_SERVER['REQUEST_METHOD'] = $method;
-        $_SERVER['CONTENT_TYPE']   = 'application/json';
+        $server = [ 'REQUEST_METHOD'    => $method,
+                    'CONTENT_TYPE'      => 'application/json',
+                  ];
         /* @var $request \Request */
-        $request = $this->getMock('\Request', array('getRawBody'), array(false));
+        $request = $this->getMock('\Request', array('getRawBody'), array(array(), $server));
         $request->expects($this->once())
             ->method('getRawBody')
             ->will($this->returnValue($body));
 
         $request->setVerb($method);
-        $request->parseParameters();
+        $request->parseParameters($server);
 
         $this->assertEquals('b', $request->getParameter('a'));
         $this->assertEquals($inside, $request->getParameter('array'));
@@ -337,7 +339,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function schemeIsHttpByDefault()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
 
         $this->assertEquals('http://', $request->scheme);
         $this->assertEquals('http://', $request->getScheme());
@@ -354,8 +356,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function schemeIsHttpsIfHttpsValueIsOn()
     {
-        $_SERVER['HTTPS'] = 'on';
-        $request          = new \Request($this->config);
+        $server = ['HTTPS' => 'on'];
+        $request          = new \Request($this->config, $server);
 
         $this->assertEquals('https://', $request->scheme);
         $this->assertEquals('https://', $request->getScheme());
@@ -370,7 +372,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function setSchemeIsFluent()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $this->assertSame($request, $request->setScheme('http://'));
     }
 
@@ -386,7 +388,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function schemeCanBeSetBySetSchemeMethod($scheme)
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $request->setScheme($scheme);
 
         $this->assertEquals($scheme, $request->getScheme());
@@ -418,7 +420,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function ifIdentificationDoesNotHaveTwoPartsExceptionIsThrown()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $request->identifyUser(null, 'This is a bad header');
     }
 
@@ -435,7 +437,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function ifIdentificationHeaderDoesNotStartWithOauthThrowException()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $request->identifyUser(null, 'Auth Me');
     }
 
@@ -449,7 +451,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function ifRequestIsntHTTPSReturnsFalse()
     {
         $config = array_merge($this->config, array('mode' => 'production'));
-        $request = new \Request($config);
+        $request = new \Request($config, []);
         $request->setScheme('http://');
         $this->assertFalse($request->identifyUser(null, 'This is a bad header'));
     }
@@ -470,7 +472,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             '\JoindinTest\Inc\mockPDO',
             array('getAvailableDrivers')
         );
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $result  = $request->getOAuthModel($db);
 
         $this->assertInstanceOf('OAuthModel', $result);
@@ -488,7 +490,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function callingGetOauthModelWithoutADatabaseAdapterThrowsAnException()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $request->getOauthModel();
     }
 
@@ -503,7 +505,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         /* @var $mockOauth \OAuthModel */
         $mockOauth = $this->getMock('OAuthModel', array(), array(), '', false);
-        $request   = new \Request($this->config);
+        $request   = new \Request($this->config, []);
 
         $this->assertSame($request, $request->setOauthModel($mockOauth));
     }
@@ -520,7 +522,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         /* @var $mockOauth \OAuthModel */
         $mockOauth = $this->getMock('OAuthModel', array(), array(), '', false);
-        $request   = new \Request($this->config);
+        $request   = new \Request($this->config, []);
         $request->setOauthModel($mockOauth);
 
         $this->assertSame($mockOauth, $request->getOauthModel());
@@ -535,7 +537,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function identifyUserSetsUserIdForValidHeader()
     {
-        $request   = new \Request($this->config);
+        $request   = new \Request($this->config, []);
         $mockOauth = $this->getMock('OAuthModel', array(), array(), '', false);
         $mockOauth->expects($this->once())
             ->method('verifyAccessToken')
@@ -559,7 +561,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function setUserIdIsFluent()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $this->assertSame($request, $request->setUserId('TheUserToSet'));
     }
 
@@ -573,7 +575,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function setUserIdAllowsForSettingOfUserId()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $user    = uniqid();
 
         $request->setUserId($user);
@@ -591,7 +593,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $path    = uniqid() . '/' . uniqid() . '/' . uniqid();
         $parts   = explode('/', $path);
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $request->setPathInfo($path);
 
         $this->assertEquals($path, $request->getPathInfo());
@@ -611,7 +613,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function setPathIsFluent()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $this->assertSame($request, $request->setPathInfo(uniqid()));
     }
 
@@ -627,7 +629,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $accept      = uniqid() . ',' . uniqid() . ',' . uniqid();
         $acceptParts = explode(',', $accept);
 
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $request->setAccept($accept);
         $this->assertEquals($acceptParts, $request->accept);
 
@@ -645,7 +647,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function setAcceptsIsFluent()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $this->assertSame($request, $request->setAccept(uniqid()));
     }
 
@@ -658,7 +660,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function setBaseAllowsSettingOfBase()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $base = uniqid();
         $request->setBase($base);
         $this->assertEquals($base, $request->getBase());
@@ -674,7 +676,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function setBaseIsFluent()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $this->assertSame($request, $request->setBase(uniqid()));
     }
 
@@ -760,10 +762,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped();
         }
 
-        $_SERVER['QUERY_STRING'] = http_build_query($parameters);
-        $_SERVER['HTTP_ACCEPT'] = $accept;
+        $server = [ 'QUERY_STRING' => http_build_query($parameters),
+                    'HTTP_ACCEPT' => $accept];
 
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, $server);
         if ($view) {
             $request->setView($view);
             $this->assertEquals($view, $request->getView());
@@ -813,7 +815,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testGetSetFormatChoices(array $expected,
                                             array $choices = null)
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         if ($choices) {
             $request->setFormatChoices($choices);
         }
@@ -827,7 +829,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSetAccessToken()
     {
-        $request = new \Request($this->config);
+        $request = new \Request($this->config, []);
         $token = 'token';
         $request->setAccessToken($token);
         $this->assertEquals($token, $request->getAccessToken());
@@ -841,9 +843,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function constructorParsesRequestUri()
     {
-        unset($_SERVER['PATH_INFO']);
-        $_SERVER['REQUEST_URI'] = '/v2/one/two?three=four';
-        $request = new \Request($this->config);
+        $server = ['REQUEST_URI' => '/v2/one/two?three=four'];
+        $request = new \Request($this->config, $server);
         $this->assertEquals('/v2/one/two', $request->getPathInfo());
     }
 }

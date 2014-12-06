@@ -17,7 +17,7 @@ class DefaultRouterTest extends PHPUnit_Framework_TestCase
     {
         return array(
             array( // #0
-                'request' => $this->getRequest(array('', 'v1', 'test'))
+                'url' => '/v1/test'
             )
         );
     }
@@ -27,10 +27,11 @@ class DefaultRouterTest extends PHPUnit_Framework_TestCase
      *
      * @covers DefaultRouter::route
      *
-     * @param Request $request
+     * @param string $url
      */
-    public function testRoute(Request $request)
+    public function testRoute($url)
     {
+        $request = new Request([], ['REQUEST_URI' => $url]);
         $db = 'database';
         $value = 'val';
         $obj = new TestRouter2(array('xyz' => 'abc'));
