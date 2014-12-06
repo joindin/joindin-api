@@ -96,7 +96,7 @@ class UsersController extends ApiController {
             $user_mapper= new UserMapper($db, $request);
 
             // Required Fields
-            $user['username'] = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);
+            $user['username'] = filter_var(trim($request->getParameter("username")), FILTER_SANITIZE_STRING);
             if(empty($user['username'])) {
                 $errors[] = "'username' is a required field";
             } else {
@@ -107,12 +107,12 @@ class UsersController extends ApiController {
                 }
             }
 
-            $user['full_name'] = filter_var($request->getParameter("full_name"), FILTER_SANITIZE_STRING);
+            $user['full_name'] = filter_var(trim($request->getParameter("full_name")), FILTER_SANITIZE_STRING);
             if(empty($user['full_name'])) {
                 $errors[] = "'full_name' is a required field";
             }
 
-            $user['email'] = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
+            $user['email'] = filter_var(trim($request->getParameter("email")), FILTER_VALIDATE_EMAIL));
             if(empty($user['email'])) {
                 $errors[] = "A valid entry for 'email' is required";
             } else {
@@ -139,7 +139,7 @@ class UsersController extends ApiController {
             }
 
             // Optional Fields
-            $user['twitter_username'] = filter_var($request->getParameter("twitter_username"), FILTER_SANITIZE_STRING);
+            $user['twitter_username'] = filter_var(trim($request->getParameter("twitter_username")), FILTER_SANITIZE_STRING);
 
             // How does it look?  With no errors, we can proceed
             if($errors) {
