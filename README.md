@@ -93,6 +93,13 @@ To see a summary of the codesniff errors and warnings across the entire project,
 
     phing phpcs-human-summary
 
+#### Inline Documentation
+
+For inline documentation we recommend the use of PHPDoc-compatible documentation
+blocks - for more information, see the draft [PHP FIG PSR-5 PHPDoc Standard](https://github.com/phpDocumentor/fig-standards/blob/master/proposed/phpdoc.md).
+
+Note that we do not use the ```@author``` tag.
+
 ### Generating the API Docs
 
 The API docs can be found here: [http://joindin.github.io/joindin-api/](http://joindin.github.io/joindin-api/).  Their source code lives on the ``gh-pages`` branch, and changes should be submitted in pull requests against that branch.
