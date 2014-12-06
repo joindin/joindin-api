@@ -1,6 +1,10 @@
 <?php
 
 class EventsController extends ApiController {
+    
+    /**
+     * {@inheritdoc}
+     */
     public function handle(Request $request, $db) {
         // only GET is implemented so far
         if($request->getVerb() == 'GET') {
@@ -12,7 +16,8 @@ class EventsController extends ApiController {
         } elseif ($request->getVerb() == 'PUT') {
             return $this->putAction($request, $db);
         }
-        return false;
+
+        throw new Exception('Endpoint not found', 404);
     }
 
 	public function getAction($request, $db) {

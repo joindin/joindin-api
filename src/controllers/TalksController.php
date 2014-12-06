@@ -1,6 +1,10 @@
 <?php
 
 class TalksController extends ApiController {
+
+    /**
+     * {@inheritdoc}
+     */
     public function handle(Request $request, $db) {
         if($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
@@ -9,9 +13,8 @@ class TalksController extends ApiController {
         } elseif ($request->getVerb() == 'DELETE') {
             return $this->deleteAction($request, $db);
         } else {
-            throw new Exception("method not supported");
+            throw new Exception("method not supported", 415);
         }
-        return false;
     }
 
 	protected function getAction($request, $db) {

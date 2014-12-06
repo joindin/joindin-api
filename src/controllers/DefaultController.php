@@ -1,7 +1,11 @@
 <?php
 
 class DefaultController extends ApiController {
-	public function handle(Request $request, $db) {
+	
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(Request $request, $db) {
         $retval = array();
 
         // just add the available methods, with links

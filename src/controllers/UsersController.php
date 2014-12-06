@@ -1,12 +1,17 @@
 <?php
 
 class UsersController extends ApiController {
+
+    /**
+     * {@inheritdoc}
+     */
     public function handle(Request $request, $db) {
         // only GET is implemented so far
         if($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
         }
-        return false;
+        
+        throw new Exception('Endpoint not found', 404);
     }
 
 	public function getAction($request, $db) {

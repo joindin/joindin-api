@@ -4,6 +4,9 @@ class TokenController extends ApiController
 {
     protected $oauthModel;
 
+    /**
+     * {@inheritdoc}
+     */
     public function handle(Request $request, $db)
     {
         $this->oauthModel = $request->getOauthModel($db);
@@ -13,7 +16,7 @@ class TokenController extends ApiController
             return $this->postAction($request, $db);
         }
         
-        return false;
+        throw new Exception('Endpoint not found', 404);
     }
 
     public function postAction($request, $db)
