@@ -206,7 +206,7 @@ class UserMapper extends ApiMapper
         }
 
         // encode the password
-        $user['password'] = password_hash($user['password'], PASSWORD_DEFAULT);
+        $user['password'] = password_hash(md5($user['password']), PASSWORD_DEFAULT);
 
         $sql = "insert into user set active=1, admin=0, ";
 
