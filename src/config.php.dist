@@ -2,6 +2,10 @@
 
 $config =  array(
     'mode' => 'development',
+
+    // the URL of web2 website is used in links within emails
+    'website_url' => 'https://m.joind.in',
+
     'oauth' => array(
         'expirable_client_ids' => array(
             // some clients, (e.g. web2) do not hold onto their token after the
