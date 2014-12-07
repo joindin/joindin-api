@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__ . '/../../src/inc/Request.php');
+
 /**
  * A class to test DefaultRouter
  *

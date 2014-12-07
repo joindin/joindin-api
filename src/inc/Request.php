@@ -20,6 +20,14 @@ class Request
     const CONTENT_TYPE_HTML = 'text/html';
 
     /**
+     * HTTP Verbs
+     */
+    const HTTP_GET = 'GET';
+    const HTTP_POST = 'POST';
+    const HTTP_PUT = 'PUT';
+    const HTTP_DELETE = 'DELETE';
+
+    /**
      * @var string HTTP verb
      */
     protected $verb;

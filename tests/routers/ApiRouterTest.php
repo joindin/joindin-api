@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__ . '/../../src/inc/Request.php');
+
 /**
  * A class to test ApiRouter
  *
@@ -140,7 +142,18 @@ class ApiRouterTest extends PHPUnit_Framework_TestCase
 
 class TestRouter1 extends Router
 {
-    public function route(Request $req, $db) {
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoute(Request $request)
+    {
+        return new Route('TestController3', 'action');
+    }
+}
+
+class TestController3
+{
+    public function action(Request $request, $db) {
         if ($db == 'database') {
             return 'val';
         }

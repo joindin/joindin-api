@@ -9,11 +9,9 @@ class DefaultRouter extends Router
     /**
      * {@inheritdoc}
      */
-    public function route(Request $request, $db)
+    public function getRoute(Request $request)
     {
-        $class = $this->getClass();
-        $controller = new $class($this->config);
-        return $controller->handle($request, $db);
+        return new Route($this->getClass(), 'handle');
     }
 
     /**

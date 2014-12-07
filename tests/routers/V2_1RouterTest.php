@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__ . '/../../src/inc/Request.php');
+
 /**
  * A class to test V2_1Router
  *
@@ -59,20 +61,6 @@ class V2_1RouterTest extends PHPUnit_Framework_TestCase
                 $this->assertEquals($expectedExceptionCode, $ex->getCode());
             }
         }
-    }
-
-    /**
-     * Gets a Request for testing
-     *
-     * @param array $urlElements
-     *
-     * @return Request
-     */
-    private function getRequest(array $urlElements)
-    {
-        $request = $this->getMock('Request', array('getUrlElement'), array(), '', false);
-        $request->url_elements = $urlElements;
-        return $request;
     }
 }
 

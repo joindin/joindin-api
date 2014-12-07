@@ -67,7 +67,7 @@ class ApiRouter extends Router
     /**
      * {@inheritdoc}
      */
-    public function route(Request $request, $db)
+    public function getRoute(Request $request)
     {
         $version = $request->getUrlElement(1);
         if(!$version) {
@@ -80,7 +80,7 @@ class ApiRouter extends Router
         // now route on the original $version
         if (isset($this->routers[$version])) {
             $router = new $this->routers[$version]($this->config);
-            return $router->route($request, $db);
+            return $router->getRoute($request);
         }
 
         if (in_array(str_replace('v', '', $request->version), $this->oldVersions)) {
