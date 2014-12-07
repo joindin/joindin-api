@@ -99,4 +99,27 @@ class Route
     {
         $this->params = $params;
     }
+
+    /**
+     * Dispatches the Request to the specified Route
+     *
+     * @param Request $request  The Request to process
+     * @param mixed $db         The Database object
+     * @param mixed $config     The application configuration
+     *
+     * @return mixed
+     */
+    public function dispatch(Request $request, $db, $config)
+    {
+        $className = $this->getController();
+        $method = $this->getAction();
+        if (class_exists($className)) {
+            $controller = new $className($config);
+            if (method_exists($controller, $method)) {
+                return $controller->$method($request, $db);
+            }
+            throw new RuntimeException('Action not found', 500);
+        }
+        throw new RuntimeException('Unknown controller ' . $request->url_elements[2], 400);
+    }
 }

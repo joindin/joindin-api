@@ -74,4 +74,99 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $route->setParams($params);
         $this->assertEquals($params, $route->getParams());
     }
+
+    /**
+     * DataProvider for testDispatch
+     *
+     * @return array
+     */
+    public function dispatchProvider()
+    {
+        return array(
+            array( // #0
+                'config' => array('config'),
+                'controller' => 'TestController3',
+                'action' => 'action',
+                'request' => $this->getRequest('v1')
+            ),
+            array( // #1
+                'config' => array('config'),
+                'controller' => 'TestController3',
+                'action' => 'action2',
+                'request' => $this->getRequest('v1'),
+                'expectedException' => 'Exception',
+                'expectedExceptionCode' => 500
+            ),
+            array( // #2
+                'config' => array('config'),
+                'controller' => 'TestController4',
+                'action' => 'action2',
+                'request' => $this->getRequest('v1'),
+                'expectedException' => 'Exception',
+                'expectedExceptionCode' => 400
+            )
+        );
+    }
+
+    /**
+     * @dataProvider dispatchProvider
+     *
+     * @covers Route::dispatch
+     *
+     * @param array $config
+     * @param string $controller
+     * @param string $action
+     * @param Request $request
+     * @param string $expectedException
+     * @param integer $expectedExceptionCode
+     * 
+     * @throws Exception
+     */
+    public function testDispatch(array $config, $controller, $action, Request $request, $expectedException = false, $expectedExceptionCode = false)
+    {
+        $db = 'database';
+
+        $route = new Route($controller, $action);
+
+        try {
+            $this->assertEquals('val', $route->dispatch($request, $db, $config));
+        } catch (Exception $ex) {
+            if (!$expectedException) {
+                throw $ex;
+            }
+            $this->assertInstanceOf($expectedException, $ex);
+            if ($expectedExceptionCode !== false) {
+                $this->assertEquals($expectedExceptionCode, $ex->getCode());
+            }
+        }
+    }
+
+    /**
+     * Gets a Request for testing
+     *
+     * @param string $urlElement
+     *
+     * @return Request
+     */
+    private function getRequest($urlElement)
+    {
+        $request = $this->getMock('Request', array('getUrlElement'), array(), '', false);
+
+        $request->expects($this->any())
+                ->method('getUrlElement')
+                ->with(1)
+                ->will($this->returnValue($urlElement));
+
+        return $request;
+    }
+
+}
+
+class TestController3
+{
+    public function action(Request $request, $db) {
+        if ($db == 'database') {
+            return 'val';
+        }
+    }
 }

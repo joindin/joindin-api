@@ -10,6 +10,11 @@ require_once(__DIR__ . '/../../src/inc/Request.php');
 class VersionedRouterTest extends PHPUnit_Framework_TestCase
 {
 
+    /**
+     * DataProvider for testGetRoute
+     *
+     * @return array
+     */
     public function getRouteProvider()
     {
         return array(
@@ -161,59 +166,5 @@ class VersionedRouterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedController, $route->getController());
         $this->assertEquals($expectedAction, $route->getAction());
         $this->assertEquals($routeParams, $route->getParams());
-    }
-
-    /**
-     * DataProvider for testRoute
-     *
-     * @return array
-     */
-    public function getLegacyRouteProvider()
-    {
-        return array(
-            array( // #0
-                'url' => '/v1/test',
-                'expectedController' => 'TestController',
-                'expectedAction' => 'handle'
-            ),
-            array( // #1
-                'url' => '/v1',
-                'expectedController' => 'N/A',
-                'expectedAction' => 'N/A',
-                'expectedException' => 'Exception',
-                'expectedExceptionCode' => 404
-            ),
-        );
-    }
-
-    /**
-     * @dataProvider getLegacyRouteProvider
-     *
-     * @covers VersionedRouter::getLegacyRoute
-     *
-     * @param string $url
-     * @param string $expectedController
-     * @param string $expectedAction
-     * @param string|false $expectedException
-     * @param integer|false $expectedExceptionCode
-     */
-    public function testGetLegacyRoute($url, $expectedController, $expectedAction, $expectedException = false, $expectedExceptionCode = false)
-    {
-        $request = new Request([], ['REQUEST_URI' => $url]);
-        $obj = new VersionedRouter('1', array('xyz' => 'abc'));
-
-        try {
-            $route = $obj->getLegacyRoute($request);
-            $this->assertEquals($expectedController, $route->getController());
-            $this->assertEquals($expectedAction, $route->getAction());
-        } catch (Exception $ex) {
-            if (!$expectedException) {
-                throw $ex;
-            }
-            $this->assertInstanceOf($expectedException, $ex);
-            if ($expectedExceptionCode !== false) {
-                $this->assertEquals($expectedExceptionCode, $ex->getCode());
-            }
-        }
     }
 }

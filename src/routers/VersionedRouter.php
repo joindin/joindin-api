@@ -67,19 +67,4 @@ class VersionedRouter extends Router
         }
         throw new Exception('Endpoint not found', 404);
     }
-
-    /**
-     * This is the old behaviour; it provides legacy support for
-     *
-     * @see Router::getRoute
-     */
-    public function getLegacyRoute(Request $request)
-    {
-        if (isset($request->url_elements[2])) {
-            $class = ucfirst($request->url_elements[2]) . 'Controller';
-            return new Route($class, 'handle');
-        }
-        throw new Exception('Request not understood', 404);
-    }
-
 }

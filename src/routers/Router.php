@@ -38,42 +38,4 @@ abstract class Router
      * @return Route
      */
     abstract public function getRoute(Request $request);
-
-    /**
-     * Routes the passed Request
-     *
-     * @param Request $request
-     * @param mixed $db
-     *
-     * @return mixed
-     */
-    public function route(Request $request, $db)
-    {
-        $route = $this->getRoute($request);
-        return $this->dispatch($route, $request, $db);
-    }
-
-    /**
-     * Dispatches the Request to the specified Route
-     *
-     * @TODO  This functionality probably belongs either in
-     *        the Route class or in a Dispatcher class.
-     *
-     * @param Route $route      The Route to dispatch
-     * @param Request $request  The Request to process
-     * @param mixed $db         The Database object
-     */
-    private function dispatch(Route $route, Request $request, $db)
-    {
-        $className = $route->getController();
-        $method = $route->getAction();
-        if (class_exists($className)) {
-            $controller = new $className($this->config);
-            if (method_exists($controller, $method)) {
-                return $controller->$method($request, $db);
-            }
-            throw new RuntimeException('Action not found', 500);
-        }
-        throw new RuntimeException('Unknown controller ' . $request->url_elements[2], 400);
-    }
 }

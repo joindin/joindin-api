@@ -11,16 +11,6 @@ class DefaultRouter extends Router
      */
     public function getRoute(Request $request)
     {
-        return new Route($this->getClass(), 'handle');
-    }
-
-    /**
-     * Wrapper for testability; provides the Controller class name
-     *
-     * @return string
-     */
-    public function getClass()
-    {
-        return 'DefaultController';
+        return new Route('DefaultController', 'handle');
     }
 }
