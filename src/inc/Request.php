@@ -54,6 +54,13 @@ class Request
     protected $formatChoices = array(self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML);
 
     /**
+     * A list of parameters provided from a Route
+     * 
+     * @var array 
+     */
+    protected $routeParams = array();
+
+    /**
      * Builds the request object
      *
      * @param array|false   $config      The application configuration
@@ -114,6 +121,26 @@ class Request
     public function setFormatChoices(array $formatChoices)
     {
         $this->formatChoices = $formatChoices;
+    }
+
+    /**
+     * Gets parameters as determined from the Route
+     *
+     * @return array
+     */
+    public function getRouteParams()
+    {
+        return $this->routeParams;
+    }
+
+    /**
+     * Sets parameters as determined from the Route
+     *
+     * @param array $routeParams
+     */
+    public function setRouteParams(array $routeParams)
+    {
+        $this->routeParams = $routeParams;
     }
 
     /**

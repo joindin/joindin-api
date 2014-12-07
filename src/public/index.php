@@ -45,10 +45,13 @@ if(isset($headers['Authorization'])) {
     $request->identifyUser($ji_db, $headers['Authorization']);
 }
 
-$routers = array(
-    "v2.1" => 'V2_1Router',
-    '' => 'DefaultRouter',
-);
+// @TODO This feels just a tad... shonky.
+$rules = json_decode(file_get_contents('../conf/routes/2.1.json'), true);
+
+$routers = [
+    "v2.1" => new VersionedRouter('2.1', $config, $rules),
+    '' => new DefaultRouter($config),
+];
 $router = new ApiRouter($config, $routers, ['2']);
 $return_data = $router->route($request, $ji_db);
 

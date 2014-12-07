@@ -14,10 +14,7 @@ class ApiRouter extends Router
     /**
      * @var array A list of supported versions and Routers
      */
-    private $routers = array(
-        'v2.1' => 'V2_1Router',
-        '' => 'DefaultRouter',
-    );
+    private $routers;
 
     /**
      * @var array A list of versions once but no longer supported
@@ -79,7 +76,7 @@ class ApiRouter extends Router
 
         // now route on the original $version
         if (isset($this->routers[$version])) {
-            $router = new $this->routers[$version]($this->config);
+            $router = $this->routers[$version];
             return $router->getRoute($request);
         }
 

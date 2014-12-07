@@ -824,6 +824,18 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers Request::getRouteParams
+     * @covers Request::setRouteParams
+     */
+    public function testGetSetRouteParams()
+    {
+        $request = new \Request($this->config, []);
+        $params = array('event_id' => 10);
+        $request->setRouteParams($params);
+        $this->assertEquals($params, $request->getRouteParams());
+    }
+
+    /**
      * @covers \Request::getAccessToken
      * @covers \Request::setAccessToken
      */

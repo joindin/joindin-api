@@ -20,15 +20,24 @@ class Route
     private $action;
 
     /**
+     * Parameters derived from the URL this Route was created from
+     *
+     * @var array
+     */
+    private $params;
+
+    /**
      * Constructs a new Route
      *
      * @param string $controller    The name of the controller this Route is for
      * @param string $action        The name of the action this Route is for
+     * @param array  $params        Parameters as determined from the URL
      */
-    public function __construct($controller, $action)
+    public function __construct($controller, $action, $params = array())
     {
         $this->setController($controller);
         $this->setAction($action);
+        $this->setParams($params);
     }
 
     /**
@@ -71,4 +80,23 @@ class Route
         $this->action = $action;
     }
 
+    /**
+     * Gets the parameters for this Route
+     *
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * Sets the parameters for this Route
+     *
+     * @param array $params
+     */
+    public function setParams(array $params)
+    {
+        $this->params = $params;
+    }
 }
