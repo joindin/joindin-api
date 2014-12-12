@@ -420,7 +420,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function ifIdentificationDoesNotHaveTwoPartsExceptionIsThrown()
     {
-        $request = new \Request($this->config, []);
+        $request = new \Request($this->config, ['HTTPS' => 'on']);
         $request->identifyUser(null, 'This is a bad header');
     }
 
@@ -437,7 +437,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function ifIdentificationHeaderDoesNotStartWithOauthThrowException()
     {
-        $request = new \Request($this->config, []);
+        $request = new \Request($this->config, ['HTTPS' => 'on']);
         $request->identifyUser(null, 'Auth Me');
     }
 
@@ -537,7 +537,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function identifyUserSetsUserIdForValidHeader()
     {
-        $request   = new \Request($this->config, []);
+        $request   = new \Request($this->config, ['HTTPS' => 'on']);
         $mockOauth = $this->getMock('OAuthModel', array(), array(), '', false);
         $mockOauth->expects($this->once())
             ->method('verifyAccessToken')
