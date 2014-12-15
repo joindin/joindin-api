@@ -117,7 +117,7 @@ class Request
             $header = new Header('X-Forwarded-For', $_SERVER['HTTP_X_FORWARDED_FOR'], ',');
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
-            $ipAddress = $elementArray[0];
+            $ipAddress = count($elementArray) ? $elementArray[0] : null;
         }
         $this->clientIP        = $ipAddress;
         $this->clientUserAgent = $userAgent;
