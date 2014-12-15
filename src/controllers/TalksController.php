@@ -86,8 +86,11 @@ class TalksController extends ApiController {
 
                     try {
                         // run it by akismet if we have it
-                        if (isset($this->config['akismet']['apiKey'])) {
-                            $spamCheckService = new SpamCheckService($this->config['akismet']['apiKey']);
+                        if (isset($this->config['akismet']['apiKey'], $this->config['akismet']['blog'])) {
+                            $spamCheckService = new SpamCheckService(
+                                $this->config['akismet']['apiKey'],
+                                $this->config['akismet']['blog']
+                            );
                             $isValid = $spamCheckService->isCommentAcceptable(
                                 $data,
                                 $request->getClientIP(),

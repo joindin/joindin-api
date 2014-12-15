@@ -20,4 +20,7 @@ $config =  array(
 );
 
 // uncomment and add your akismet key here if you want to do spam checking
-// $config['akismet']['apiKey'];
+// $config['akismet'] = [
+//     'apiKey' => '',
+//     'blog' => 'http://joind.in',
+// ];
