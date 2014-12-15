@@ -134,7 +134,7 @@ class EventsController extends ApiController {
                     $talk['event_id'] = $this->getItemId($request);
                     if(empty($talk['event_id'])) {
                         throw new Exception(
-                            "POST expects a talk representation sent to a specific event URL", 
+                            "POST expects a talk representation sent to a specific event URL",
                             400
                         );
                     }
@@ -153,7 +153,7 @@ class EventsController extends ApiController {
                     $event = $list['events'][0];
 
                     $talk['title'] = filter_var(
-                        $request->getParameter('talk_title'), 
+                        $request->getParameter('talk_title'),
                         FILTER_SANITIZE_STRING
                     );
                     if(empty($talk['title'])) {
@@ -161,7 +161,7 @@ class EventsController extends ApiController {
                     }
 
                     $talk['description'] = filter_var(
-                        $request->getParameter('talk_description'), 
+                        $request->getParameter('talk_description'),
                         FILTER_SANITIZE_STRING
                     );
                     if(empty($talk['description'])) {
@@ -195,7 +195,7 @@ class EventsController extends ApiController {
                             $talk['speakers'][] = filter_var($speaker, FILTER_SANITIZE_STRING);
                         }
                     }
-                        
+
                     $talk_mapper = new TalkMapper($db, $request);
                     $new_id = $talk_mapper->save($talk);
 
@@ -239,7 +239,11 @@ class EventsController extends ApiController {
                     // run it by akismet if we have it
                     if(isset($this->config['akismet']['apiKey'])) {
                         $spamCheckService = new SpamCheckService($this->config['akismet']['apiKey']);
-                        $isValid = $spamCheckService->isCommentAcceptable($comment);
+                        $isValid = $spamCheckService->isCommentAcceptable(
+                            $comment,
+                            $request->clientIP,
+                            $request->clientUserAgent
+                        );
                         if(!$isValid) {
                             throw new Exception("Comment failed spam check", 400);
                         }
@@ -291,7 +295,7 @@ class EventsController extends ApiController {
                 $errors[] = "Both 'start_date' and 'end_date' must be supplied in a recognised format";
             } else {
                 // if the dates are okay, sort out timezones
-                
+
                 $event['tz_continent'] = filter_var($request->getParameter("tz_continent"), FILTER_SANITIZE_STRING);
                 $event['tz_place'] = filter_var($request->getParameter("tz_place"), FILTER_SANITIZE_STRING);
                 try {

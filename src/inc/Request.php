@@ -31,6 +31,8 @@ class Request
     public $user_id;
     public $access_token;
     public $version;
+    protected $clientIP;
+    protected $clientUserAgent;
 
     protected $oauthModel;
     protected $config;
@@ -84,6 +86,35 @@ class Request
         if ($parseParams) {
             $this->parseParameters();
         }
+        $this->setClientInfo();
+    }
+
+    /**
+     * Sets the IP address and User Agent of the requesting client. It checks for the presence of
+     * a Forwarded or X-Forwarded-For header and, if present, it uses the left most address listed.
+     * If both of these headers is present, the Forwarded header takes precedence.
+     * If the header is not present, it defaults to the REMOTE_ADDR value
+     */
+    public function setClientInfo()
+    {
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        if(array_key_exists('HTTP_FORWARDED',$_SERVER)){
+            $header = new Header('Forwarded',$_SERVER['HTTP_FORWARDED'],';');
+            $header->parseParams();
+            $header->setGlue(',');
+            $header->parseParams();
+            $elementArray = $header->buildEntityArray();
+            $ipAddress = $elementArray['For'][0];
+            $userAgent = $elementArray['User-agent'][0];
+        }elseif(array_key_exists('HTTP_X_FORWARDED_FOR',$_SERVER)){
+            $header = new Header('X-Forwarded-For',$_SERVER['HTTP_X_FORWARDED_FOR'],',');
+            $header->parseParams();
+            $elementArray = $header->buildEntityArray();
+            $ipAddress = $elementArray[0];
+        }
+        $this->clientIP        = $ipAddress;
+        $this->clientUserAgent = $userAgent;
     }
 
     /**
