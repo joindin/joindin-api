@@ -15,17 +15,21 @@ class SpamCheckService
     /**
      * Check your comment against the spam check service
      *
+     * @param $data
+     * @param $userIp
+     * @param $userAgent
+     *
      * @return Boolean true if the comment is okay, false if it got rated as spam
      */
-    public function isCommentAcceptable($data) {
+    public function isCommentAcceptable($data,$userIp,$userAgent) {
         $comment = array();
 
         // set some required fields
         $comment['blog'] = 'http://joind.in';
 
         // TODO what are better values to use for these required fields?
-        $comment['user_ip']    = $_SERVER['REMOTE_ADDR'];
-        $comment['user_agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown';
+        $comment['user_ip']    = $userIp;
+        $comment['user_agent'] = $userAgent;
 
         // now use the incoming data
         $comment['comment_content'] = $this->getField("comment", $data);
