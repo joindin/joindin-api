@@ -8,8 +8,11 @@ class SpamCheckService
 {
     protected $akismetUrl;
 
-    public function __construct($apiKey) {
+    protected $blog;
+
+    public function __construct($apiKey, $blog) {
         $this->akismetUrl = 'http://' . $apiKey . '.rest.akismet.com';
+        $this->blog = $blog;
     }
 
     /**
@@ -21,7 +24,7 @@ class SpamCheckService
         $comment = array();
 
         // set some required fields
-        $comment['blog'] = 'http://joind.in';
+        $comment['blog'] = $this->blog;
 
         // TODO what are better values to use for these required fields?
         $comment['user_ip']    = $_SERVER['REMOTE_ADDR'];
