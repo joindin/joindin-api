@@ -191,4 +191,184 @@ class UserMapper extends ApiMapper
         }
         return false;
     }
+
+    public function createUser($user) {
+        // Sanity check: ensure all mandatory fields are present.
+        $mandatory_fields = array(
+            'username',
+            'full_name',
+            'email',
+            'password',
+        );
+        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($user));
+        if (!$contains_mandatory_fields) {
+            throw new Exception("Missing mandatory fields");
+        }
+
+        // encode the password
+        $user['password'] = password_hash(md5($user['password']), PASSWORD_DEFAULT);
+
+        $sql = "insert into user set active=1, admin=0, ";
+
+        // create list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+        // add the fields that we don't expose for users
+        $fields["email"] = "email";
+        $fields["password"] = "password";
+
+        foreach ($fields as $api_name => $column_name) {
+            if (isset($user[$api_name])) {
+                $pairs[] = "$column_name = :$api_name";
+            }
+        }
+
+        // comma separate all pairs and add to SQL string
+        $sql .= implode(', ', $pairs);
+
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute($user);
+        if($result) {
+            return $this->_db->lastInsertId();
+        }
+
+        return false;
+    }
+
+    public function getUserByEmail($email, $verbose = false)
+    {
+        $sql = 'select user.* '
+            . 'from user '
+            . 'where active = 1 '
+            . 'and user.email= :email';
+
+        // limit clause
+        $sql .= $this->buildLimit(1, 0);
+
+        $stmt = $this->_db->prepare($sql);
+        $data = array("email" => $email);
+
+        $response = $stmt->execute($data);
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results['total'] = $this->getTotalCount($sql, $data);
+            if ($results) {
+                return $this->transformResults($results, $verbose);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Use this method to check password against our rules.
+     *
+     * Beware that it returns true or an array, so you need === true
+     *
+     * @param string $password The password to check (plain text)
+     * @return bool|array Either true if it's fine, or an array of remarks about why it isn't
+     */
+    public function checkPasswordValidity($password) {
+        $errors = array();
+        if(strlen($password) < 6) {
+            $errors[] = "Passwords must be at least 6 characters long";
+        }
+
+        if($errors) {
+            return $errors;
+        }
+
+        // it's good!
+        return true;
+
+    }
+
+
+    /**
+     * Generate and store a token in the email_verification_tokens table for this 
+     * user, when they use the token to verify, we'll set their status to verified
+     */
+    public function generateEmailVerificationTokenForUserId($user_id) {
+        $token = bin2hex(openssl_random_pseudo_bytes(8));
+
+        $sql = "insert into email_verification_tokens set "
+            . "user_id = :user_id, token = :token";
+
+        $stmt = $this->_db->prepare($sql);
+        $data = array(
+            "user_id" => $user_id, 
+            "token" => $token);
+
+        $response = $stmt->execute($data);
+        if ($response) {
+            return $token;
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Given a token, if it exists, delete it and return true
+     *
+     * @param string $token     The email verification token
+     * @return bool             True if the token was found
+     */
+    public function verifyUser($token) {
+        // does the token exist, and whose is it?
+        $select_sql = "select user_id from email_verification_tokens "
+            . "where token = :token";
+
+        $select_stmt = $this->_db->prepare($select_sql);
+        $data = array(
+            "token" => $token);
+
+        $response = $select_stmt->execute($data);
+        if($response) {
+            $row = $select_stmt->fetch(\PDO::FETCH_ASSOC);
+            if($row && is_array($row)) {
+                $user_id = $row['user_id'];
+
+                // mark the user as verified
+                $verify_sql = "update user set verified = 1 "
+                    . "where ID = :user_id";
+
+                $verify_stmt = $this->_db->prepare($verify_sql);
+                $verify_data = array("user_id" => $user_id);
+
+                $verify_stmt->execute($verify_data);
+
+                // delete all the user's tokens; they don't need them now
+                $delete_sql = "delete from email_verification_tokens "
+                    . "where user_id = :user_id";
+
+                $stmt = $this->_db->prepare($delete_sql);
+                $stmt->execute($verify_data);
+
+                // verified
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Function to get just the user ID
+     *
+     * @param string $email The email address of the user we're looking for
+     * @return $user_id The user's ID (or false, if we didn't find her)
+     */
+    public function getUserIdFromEmail($email) {
+        $sql = "select ID from user where email = :email";
+
+        $data = array("email" => $email);
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute($data);
+        if($response) {
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if(isset($row['ID'])) {
+                return $row['ID'];
+            }
+        }
+        return false;
+    }
 }
