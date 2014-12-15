@@ -97,8 +97,9 @@ class Request
      */
     public function setClientInfo()
     {
-        $ipAddress = $_SERVER['REMOTE_ADDR'];
-        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
+        
         if(array_key_exists('HTTP_FORWARDED',$_SERVER)){
             $header = new Header('Forwarded',$_SERVER['HTTP_FORWARDED'],';');
             $header->parseParams();
