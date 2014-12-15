@@ -100,8 +100,8 @@ class Request
         $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
         
-        if(array_key_exists('HTTP_FORWARDED',$_SERVER)){
-            $header = new Header('Forwarded',$_SERVER['HTTP_FORWARDED'],';');
+        if (array_key_exists('HTTP_FORWARDED', $_SERVER)) {
+            $header = new Header('Forwarded', $_SERVER['HTTP_FORWARDED'], ';');
             $header->parseParams();
             $header->setGlue(',');
             $header->parseParams();
@@ -113,6 +113,8 @@ class Request
             if (isset($elementArray['user-agent']) && count($elementArray['user-agent'])) {
                 $userAgent = $elementArray['user-agent'][0];
             }
+        } elseif (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+            $header = new Header('X-Forwarded-For', $_SERVER['HTTP_X_FORWARDED_FOR'], ',');
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
             $ipAddress = $elementArray[0];
