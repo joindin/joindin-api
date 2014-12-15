@@ -106,10 +106,13 @@ class Request
             $header->setGlue(',');
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
-            $ipAddress = $elementArray['For'][0];
-            $userAgent = $elementArray['User-agent'][0];
-        }elseif(array_key_exists('HTTP_X_FORWARDED_FOR',$_SERVER)){
-            $header = new Header('X-Forwarded-For',$_SERVER['HTTP_X_FORWARDED_FOR'],',');
+            $elementArray = array_change_key_case($elementArray);
+            if (isset($elementArray['for']) && count($elementArray['for'])) {
+                $ipAddress = $elementArray['for'][0];
+            }
+            if (isset($elementArray['user-agent']) && count($elementArray['user-agent'])) {
+                $userAgent = $elementArray['user-agent'][0];
+            }
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
             $ipAddress = $elementArray[0];
