@@ -241,8 +241,8 @@ class EventsController extends ApiController {
                         $spamCheckService = new SpamCheckService($this->config['akismet']['apiKey']);
                         $isValid = $spamCheckService->isCommentAcceptable(
                             $comment,
-                            $request->clientIP,
-                            $request->clientUserAgent
+                            $request->getClientIP(),
+                            $request->getClientUserAgent()
                         );
                         if(!$isValid) {
                             throw new Exception("Comment failed spam check", 400);

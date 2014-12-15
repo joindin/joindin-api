@@ -572,4 +572,23 @@ class Request
         return $this->access_token;
     }
 
+    /**
+     * Retrieves the client's IP address
+     *
+     * @return mixed
+     */
+    public function getClientIP()
+    {
+        return $this->clientIP;
+    }
+   
+    /**
+     * Retrieves the client's user agent
+     *
+     * @return mixed
+     */
+    public function getClientUserAgent()
+    {
+        return $this->clientUserAgent;
+    }
 }

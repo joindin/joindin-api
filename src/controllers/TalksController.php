@@ -90,8 +90,8 @@ class TalksController extends ApiController {
                             $spamCheckService = new SpamCheckService($this->config['akismet']['apiKey']);
                             $isValid = $spamCheckService->isCommentAcceptable(
                                 $data,
-                                $request->clientIP,
-                                $request->clientUserAgent
+                                $request->getClientIP(),
+                                $request->getClientUserAgent()
                             );
                             if (!$isValid) {
                                 throw new Exception("Comment failed spam check", 400);
