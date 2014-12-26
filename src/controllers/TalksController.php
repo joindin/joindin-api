@@ -42,6 +42,11 @@ class TalksController extends ApiController {
                 if(false === $list) {
                     throw new Exception('Talk not found', 404);
                 }
+            } else if (isset($request->parameters['title'])) {
+                $keyword = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
+
+                $mapper = new TalkMapper($db, $request);
+                $list = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start, $verbose);
             } else {
                 // listing makes no sense
                 throw new Exception('Generic talks listing not supported', 405);
