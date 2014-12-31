@@ -200,12 +200,114 @@ function testTracksForEvent(evt) {
 	}).toss();
 }
 
+function testSearchEventsByTitle() {
+	frisby.create('Event search by title')
+		.get(baseURL + "/v2.1/events/?resultsperpage=3&title=php")
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(response) {
+			// Check meta-data
+			expect(response.meta).toContainJsonTypes({"count":Number});
+			expect(response).toContainJsonTypes({"events":Array});
+
+			// expect at least some serch results
+			expect(response.events.length).toBeGreaterThan(1);
+
+			for(var i in response.events) {
+				datatest.checkEventData(response.events[i]);
+				testEvent(response.events[i]);
+			}
+		})
+		.toss();
+}
+
+function testSearchEventsByNonexistingTitle() {
+	frisby.create('Event search by nonexisting title')
+		.get(baseURL + "/v2.1/events/?title=some_nonexisting_title")
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(response) {
+			// Check meta-data
+			expect(response.meta).toContainJsonTypes({"count":Number});
+			expect(response).toContainJsonTypes({"events":Array});
+
+			// expect no serch results
+			expect(response.events.length).toBe(0);
+		})
+		.toss();
+}
+
+function testSearchEventsByTag() {
+	frisby.create('Event search by tags')
+		.get(baseURL + "/v2.1/events/?resultsperpage=3&tags[]=php")
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(response) {
+			// Check meta-data
+			expect(response.meta).toContainJsonTypes({"count":Number});
+			expect(response).toContainJsonTypes({"events":Array});
+
+			// expect at least some serch results
+			expect(response.events.length).toBeGreaterThan(1);
+
+			for(var i in response.events) {
+				datatest.checkEventData(response.events[i]);
+				testEvent(response.events[i]);
+			}
+		})
+		.toss();
+}
+
 function testNonexistentEvent() {
 	frisby.create('Non-existent event')
 		.get(baseURL + '/v2.1/events/100100')
 		.expectStatus(404)
 		.expectHeader("content-type", "application/json; charset=utf8")
 	.toss();
+}
+
+function testTalksIndex() {
+	frisby.create('Talks index')
+		.get(baseURL + '/v2.1/talks')
+		.expectStatus(405)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.toss();
+}
+
+function testSearchTalksByTitle() {
+	frisby.create('Talk search by title')
+		.get(baseURL + "/v2.1/talks/?resultsperpage=3&title=php")
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(response) {
+			// Check meta-data
+			expect(response.meta).toContainJsonTypes({"count":Number});
+			expect(response).toContainJsonTypes({"talks":Array});
+
+			// expect at least some serch results
+			expect(response.talks.length).toBeGreaterThan(1);
+
+			for(var i in response.talks) {
+				datatest.checkTalkData(response.talks[i]);
+			}
+		})
+		.toss();
+}
+
+function testSearchTalksByNonexistingTitle() {
+	frisby.create('Talk search by nonexisting title')
+		.get(baseURL + "/v2.1/talks/?resultsperpage=3&title=some_nonexisting_title")
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+		.afterJSON(function(response) {
+			// Check meta-data
+			expect(response.meta).toContainJsonTypes({"count":Number});
+			expect(response).toContainJsonTypes({"talks":Array});
+
+			// expect no serch results
+			expect(response.talks.length).toBe(0);
+		})
+		.toss();
 }
 
 function testNonexistentTalk() {
@@ -268,7 +370,13 @@ module.exports = {
 	testAttendeesForEvent        : testAttendeesForEvent,
 	testAttendeesForEventVerbose : testAttendeesForEventVerbose,
 	testTracksForEvent           : testTracksForEvent,
+	testSearchEventsByTitle      : testSearchEventsByTitle,
+	testSearchEventsByNonexistingTitle : testSearchEventsByNonexistingTitle,
+	testSearchEventsByTag        : testSearchEventsByTag,
 	testNonexistentEvent         : testNonexistentEvent,
+	testTalksIndex               : testTalksIndex,
+	testSearchTalksByTitle       : testSearchTalksByTitle,
+	testSearchTalksByNonexistingTitle : testSearchTalksByNonexistingTitle,
 	testNonexistentTalk          : testNonexistentTalk,
 	testNonexistentEventComment  : testNonexistentEventComment,
 	testNonexistentTalkComment   : testNonexistentTalkComment,
