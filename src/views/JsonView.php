@@ -25,6 +25,9 @@ class JsonView extends ApiView {
 
     protected function numeric_check($data)
     {
+        if (!is_array($data)) {
+            return $this->scalarNumericCheck('', $data);
+        }
         $output = array();
         foreach($data as $key => $value) {
             
@@ -32,15 +35,18 @@ class JsonView extends ApiView {
             if(is_array($value)) {
                 $output[$key] = $this->numeric_check($value);
             } else {
-
-                if(is_numeric($value) && !in_array($key, $this->string_fields)) {
-                    $output[$key] = (float)$value;
-                } else {
-                    $output[$key] = $value;
-                }
+                $output[$key] = $this->scalarNumericCheck($key, $value);
             }
         }
         return $output;
+    }
+
+    protected function scalarNumericCheck($key, $value)
+    {
+        if (is_numeric($value) && !in_array($key, $this->string_fields)) {
+            return (float)$value;
+        }
+        return $value;
     }
 
 }
