@@ -46,7 +46,7 @@ if(isset($headers['Authorization'])) {
 }
 
 // @TODO This feels just a tad... shonky.
-$rules = json_decode(file_get_contents('../conf/routes/2.1.json'), true);
+$rules = json_decode(file_get_contents('../config/routes/2.1.json'), true);
 
 $routers = [
     "v2.1" => new VersionedRouter('2.1', $config, $rules),
