@@ -38,7 +38,7 @@ $ji_db->query('SET CHARACTER SET utf8');
 
 
 // collect URL and headers
-$request = new Request($config);
+$request = new Request($config, $_SERVER);
 
 // identify our user if applicable
 $headers = apache_request_headers();
@@ -46,12 +46,17 @@ if(isset($headers['Authorization'])) {
     $request->identifyUser($ji_db, $headers['Authorization']);
 }
 
-$routers = array(
-    "v2.1" => 'V2_1Router',
-    '' => 'DefaultRouter',
-);
+// @TODO This feels just a tad... shonky.
+$rules = json_decode(file_get_contents('../config/routes/2.1.json'), true);
+
+$routers = [
+    "v2.1" => new VersionedRouter('2.1', $config, $rules),
+    '' => new DefaultRouter($config),
+];
 $router = new ApiRouter($config, $routers, ['2']);
-$return_data = $router->route($request, $ji_db);
+
+$route = $router->getRoute($request);
+$return_data = $route->dispatch($request, $ji_db, $config);
 
 if(isset($request->user_id)) {
     $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;

@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__ . '/../../src/inc/Request.php');
+
 /**
  * A class to test DefaultRouter
  *
@@ -39,6 +41,24 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
 class TestRouter3 extends Router
 {
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function dispatch(Route $route, Request $request, $db)
+    {
+        throw new BadMethodCallException('Method not implemented');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoute(Request $request)
+    {
+        throw new BadMethodCallException('Method not implemented');
+    }
+
     public function route(Request $request, $db)
     {
     }

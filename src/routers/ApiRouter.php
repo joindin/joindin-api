@@ -14,10 +14,7 @@ class ApiRouter extends Router
     /**
      * @var array A list of supported versions and Routers
      */
-    private $routers = array(
-        'v2.1' => 'V2_1Router',
-        '' => 'DefaultRouter',
-    );
+    private $routers;
 
     /**
      * @var array A list of versions once but no longer supported
@@ -67,7 +64,7 @@ class ApiRouter extends Router
     /**
      * {@inheritdoc}
      */
-    public function route(Request $request, $db)
+    public function getRoute(Request $request)
     {
         $version = $request->getUrlElement(1);
         if(!$version) {
@@ -79,8 +76,8 @@ class ApiRouter extends Router
 
         // now route on the original $version
         if (isset($this->routers[$version])) {
-            $router = new $this->routers[$version]($this->config);
-            return $router->route($request, $db);
+            $router = $this->routers[$version];
+            return $router->getRoute($request);
         }
 
         if (in_array(str_replace('v', '', $request->version), $this->oldVersions)) {

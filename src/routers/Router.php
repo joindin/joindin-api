@@ -31,12 +31,11 @@ abstract class Router
     }
 
     /**
-     * Routes the passed Request
-     *
-     * @param Request $request
-     * @param mixed $db
-     *
-     * @return mixed
+     * Gets the Route appropriate to the passed Request
+     * 
+     * @param Request $request  The Request to route
+     * 
+     * @return Route
      */
-    abstract public function route(Request $request, $db);
+    abstract public function getRoute(Request $request);
 }
