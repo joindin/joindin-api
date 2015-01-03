@@ -2,6 +2,10 @@
 
 class TracksController extends ApiController
 {
+
+    /**
+     * {@inheritdoc}
+     */
     public function handle(Request $request, $db) {
         if ($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
@@ -9,7 +13,7 @@ class TracksController extends ApiController
             throw new Exception("method not supported");
         }
 
-        return false;
+        throw new Exception('Endpoint not found', 404);
     }
 
     protected function getAction($request, $db) {
