@@ -368,6 +368,11 @@ class EventMapper extends ApiMapper
                 }
                 $list[$key]['attendees_uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'] . '/attendees';
+
+                if($verbose && isset($this->_request->user_id)) {
+                    // can this user edit this event?
+                    $list[$key]['can_edit'] = $this->thisUserHasAdminOn($row['ID']);
+                }
             }
         }
         $retval = array();
