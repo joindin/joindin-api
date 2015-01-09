@@ -247,9 +247,6 @@ function testSearchEventsByTag() {
 			expect(response.meta).toContainJsonTypes({"count":Number});
 			expect(response).toContainJsonTypes({"events":Array});
 
-			// expect at least some serch results
-			expect(response.events.length).toBeGreaterThan(1);
-
 			for(var i in response.events) {
 				datatest.checkEventData(response.events[i]);
 				testEvent(response.events[i]);
