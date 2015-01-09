@@ -129,6 +129,7 @@ events:
                 host_name: Jennifer Cole
                 host_uri: http://api.joindin.local/v2.1/users/5
         attendees_uri: http://api.joindin.local/v2.1/events/3/attendees
+        can_edit: false
 meta:
     count: 1
     this_page: http://api.joindin.local/v2.1/events/3?verbose=yes&start=0&resultsperpage=20
@@ -164,6 +165,7 @@ meta:
 *  ``website_uri``: Where to find the website joind.in page for this event
 *  ``website_humane_uri``: Where to find the website joind.in page for this event, using the quicklink if there is one (depends whether the event has a stub)
 *  ``hosts``: The organisers for this event.  An array where each element gives both the ``host_uri`` of the user and a display name to use.  *See also* [users]({{ site.baseurl}}/users.html)
+*  ``can_edit``: Whether the current user can edit this event or not.  This field is only returned when there is a valid logged in user.
 
 
 ## Event Hypermedia
