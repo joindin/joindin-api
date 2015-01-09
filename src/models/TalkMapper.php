@@ -121,6 +121,40 @@ class TalkMapper extends ApiMapper {
     }
 
     /**
+     * Search talks by title
+     *
+     * @param string $keyword
+     * @param int    $resultsperpage
+     * @param int    $start
+     * @param bool   $verbose
+     *
+     * @return array|bool Result array or false on failure
+     */
+    public function getTalksByTitleSearch($keyword, $resultsperpage, $start, $verbose = false) {
+        $sql = $this->getBasicSQL();
+        $sql .= ' and LOWER(t.talk_title) like :title';
+        $sql .= ' order by t.date_given desc';
+        $sql .= $this->buildLimit($resultsperpage, $start);
+
+        $data = array(
+            ':title' => "%" . strtolower($keyword) . "%"
+        );
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute($data);
+
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results['total'] = $this->getTotalCount($sql, $data);
+            $retval = $this->transformResults($results, $verbose);
+
+            return $retval;
+        }
+
+        return false;
+    }
+
+    /**
      * User attending a talk?
      *
      * @param int $talk_id the talk to check

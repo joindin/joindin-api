@@ -14,7 +14,13 @@ if (typeof process.env.JOINDIN_API_BASE_URL != 'undefined') {
 apitest.init(baseURL);
 
 apitest.testIndex(); // Descends into event then talk tests
+apitest.testSearchEventsByTitle();
+apitest.testSearchEventsByNonexistingTitle();
+apitest.testSearchEventsByTag();
 apitest.testNonexistentEvent();
+apitest.testTalksIndex();
+apitest.testSearchTalksByTitle();
+apitest.testSearchTalksByNonexistingTitle();
 apitest.testNonexistentTalk();
 apitest.testNonexistentEventComment();
 apitest.testNonexistentTalkComment();
