@@ -53,7 +53,7 @@ You can add comments to events via the API; you must be authenticated to do so.
 
 To create a new comment, POST the comment body in an array element called ``comment`` to the event comments collection that you want to add it to.  The API will pick up your identity and add the timestamp.  E.g (using curl against my test system):
 
-<pre class="embedcurl">curl -v -H "Content-Type: application/json" -H "Authorization: OAuth f9b4f1a9b30bdc0d" -X POST http://api.joindin.local/v2.1/events/31/comments --data '{"comment": "Wonderful event, thanks!"}'
+<pre class="embedcurl">curl -v -H "Content-Type: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" -X POST http://api.joindin.local/v2.1/events/31/comments --data '{"comment": "Wonderful event, thanks!"}'
 </pre>
 
 <!-- You only need to reference this script once per page. -->
@@ -67,7 +67,7 @@ The ``-v`` switch is there so that you see the whole response, which looks somet
 > Host: api.joindin.local
 > Accept: */*
 > Content-Type: application/json
-> Authorization: OAuth f9b4f1a9b30bdc0d
+> Authorization: Bearer f9b4f1a9b30bdc0d
 > Content-Length: 34
 > 
 * upload completely sent off: 34 out of 34 bytes

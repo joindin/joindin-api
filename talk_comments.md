@@ -78,7 +78,7 @@ To comment on a talk, the user must be authenticated and should then send a POST
 
 Curl example:
 
-<pre class="embedcurl">curl -v -H "Content-Type: application/json" -H "Authorization: OAuth f9b4f1a9b30bdc0d" /talks/139/comments --data '{"comment": "Great talk, thanks!", "rating": 4}'
+<pre class="embedcurl">curl -v -H "Content-Type: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" /talks/139/comments --data '{"comment": "Great talk, thanks!", "rating": 4}'
 </pre>
 
 <!-- You only need to reference this script once per page. -->
@@ -92,7 +92,7 @@ Here's the example request/response (the -v switch ensures that you see the resp
 > Host: api.joindin.local
 > Accept: */*
 > Content-Type: application/json
-> Authorization: OAuth f9b4f1a9b30bdc0d
+> Authorization: Bearer f9b4f1a9b30bdc0d
 > Content-Length: 47
 > 
 * upload completely sent off: 47 out of 47 bytes

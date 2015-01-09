@@ -31,7 +31,7 @@ When the user arrives on our page they will grant access (logging in first if ne
 
 Capture the access token parameter, and then send it in all requests as part of an Authorization header in the format:
 
-    Authorization: OAuth [access_code]
+    Authorization: Bearer [access_code]
 
 Where the ``[access_token]`` is the value from the query parameter when the user returned to your site.  All successfully authenticated requests will show a ``user_uri`` field in the ``meta`` block of the response.
 

@@ -147,7 +147,7 @@ The following fields are understood:
 
 Example request/response:
 
-<pre class="embedcurl">curl -H "Content-Type: application/json" -X POST -v -H "Authorization: OAuth 978d93d6ec4ab2e1" http://api.dev.joind.in:8080/v2.1/events/14/talks -d '{"talk_title":"Middling Talk", "talk_description": "This talk is about things and aims to inform the audience", "start_date": "9am Friday"}'
+<pre class="embedcurl">curl -H "Content-Type: application/json" -X POST -v -H "Authorization: Bearer 978d93d6ec4ab2e1" http://api.dev.joind.in:8080/v2.1/events/14/talks -d '{"talk_title":"Middling Talk", "talk_description": "This talk is about things and aims to inform the audience", "start_date": "9am Friday"}'
 
 </pre>
 
@@ -160,7 +160,7 @@ Example request/response:
 > Host: api.dev.joind.in:8080
 > Accept: */*
 > Content-Type: application/json
-> Authorization: OAuth 978d93d6ec4ab2e1
+> Authorization: Bearer 978d93d6ec4ab2e1
 > Content-Length: 139
 > 
 * upload completely sent off: 139 out of 139 bytes
