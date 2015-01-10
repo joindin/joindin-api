@@ -36,6 +36,7 @@ function checkEventData(ev) {
 	expect(ev.description).toBeDefined();
 	expect(ev.href).toBeDefined();
 	expect(ev.icon).toBeDefined();
+	expect(ev.icon_url).toBeDefined();
 	expect(ev.attendee_count).toBeDefined();
 	expect(ev.uri).toBeDefined();
 	expect(ev.verbose_uri).toBeDefined();
@@ -67,6 +68,7 @@ function checkVerboseEventData(evt) {
   expect(evt.description).toBeDefined();
   expect(evt.href).toBeDefined();
   expect(evt.icon).toBeDefined();
+  expect(evt.icon_url).toBeDefined();
   expect(evt.latitude).toBeDefined();
   expect(evt.longitude).toBeDefined();
   expect(evt.tz_continent).toBeDefined();
