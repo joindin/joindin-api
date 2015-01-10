@@ -32,6 +32,7 @@ class EventMapper extends ApiMapper
             'tracks_count' => 'track_count',
             'talks_count' => 'talk_count',
             'icon' => 'event_icon',
+            'icon_url' => 'event_icon',
             'location' => 'event_loc'
             );
         return $fields;
@@ -55,6 +56,7 @@ class EventMapper extends ApiMapper
             'stub' => 'event_stub',
             'href' => 'event_href',
             'icon' => 'event_icon',
+            'icon_url' => 'event_icon',
             'latitude' => 'event_lat',
             'longitude' => 'event_long',
             'tz_continent' => 'event_tz_cont',
@@ -368,6 +370,11 @@ class EventMapper extends ApiMapper
                 }
                 $list[$key]['attendees_uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'] . '/attendees';
+
+                // Prefix the icon filename for the full URL
+                if (strlen($list[$key]['icon']) > 0) {
+                    $list[$key]['icon_url'] = 'https://joind.in/inc/img/event_icons/' . $list[$key]['icon_url'];
+                }
             }
         }
         $retval = array();
