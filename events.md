@@ -187,7 +187,7 @@ You can submit events for approval via the API (site admins events are auto-appr
 
 Here's an example:
 
-<pre class="embedcurl"> curl -v -H "Content-Type: application/json" -H "Authorization: OAuth 2ffcd58992c73241" -X POST http://api.dev.joind.in:8080/v2.1/events/ -d '{"name": "New Event", "description": "this is going to be an awesome event, where great talks will take place and many people will gather", "start_date": "2014-09-08T12:15:00+01:00", "end_date": "2014-09-11T20:00:00+01:00", "tz_continent": "Europe", "tz_place": "Madrid"}'
+<pre class="embedcurl"> curl -v -H "Content-Type: application/json" -H "Authorization: Bearer 2ffcd58992c73241" -X POST http://api.dev.joind.in:8080/v2.1/events/ -d '{"name": "New Event", "description": "this is going to be an awesome event, where great talks will take place and many people will gather", "start_date": "2014-09-08T12:15:00+01:00", "end_date": "2014-09-11T20:00:00+01:00", "tz_continent": "Europe", "tz_place": "Madrid"}'
 </pre>
 
 <!-- You only need to reference this script once per page. -->
@@ -218,7 +218,7 @@ The response should include a 201 Created header.  Here is an example of a full 
 > Host: api.dev.joind.in:8080
 > Accept: */*
 > Content-Type: application/json
-> Authorization: OAuth 2ffcd58992c73241
+> Authorization: Bearer 2ffcd58992c73241
 > Content-Length: 271
 > 
 * upload completely sent off: 271 out of 271 bytes
