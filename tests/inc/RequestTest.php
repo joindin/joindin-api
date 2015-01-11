@@ -529,13 +529,14 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Ensures that identifyUser method sets a user id on the request model
+     * Ensures that identifyUser method sets a user id on the request model when
+     * using the oauth token type
      *
      * @return void
      *
      * @test
      */
-    public function identifyUserSetsUserIdForValidHeader()
+    public function identifyUserWithOauthTokenTypeSetsUserIdForValidHeader()
     {
         $request   = new \Request($this->config, ['HTTPS' => 'on']);
         $mockOauth = $this->getMock('OAuthModel', array(), array(), '', false);
@@ -547,6 +548,31 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request->setOauthModel($mockOauth);
 
         $request->identifyUser(null, 'oauth authPart');
+
+        $this->assertEquals('TheUserId', $request->user_id);
+        $this->assertEquals('TheUserId', $request->getUserId());
+    }
+
+    /**
+     * Ensures that identifyUser method sets a user id on the request model when
+     * using the bearer token type
+     *
+     * @return void
+     *
+     * @test
+     */
+    public function identifyUserWithBearerTokenTypeSetsUserIdForValidHeader()
+    {
+        $request   = new \Request($this->config, ['HTTPS' => 'on']);
+        $mockOauth = $this->getMock('OAuthModel', array(), array(), '', false);
+        $mockOauth->expects($this->once())
+            ->method('verifyAccessToken')
+            ->with('authPart')
+            ->will($this->returnValue('TheUserId'));
+
+        $request->setOauthModel($mockOauth);
+
+        $request->identifyUser(null, 'Bearer authPart');
 
         $this->assertEquals('TheUserId', $request->user_id);
         $this->assertEquals('TheUserId', $request->getUserId());
