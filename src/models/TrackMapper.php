@@ -62,7 +62,7 @@ class TrackMapper extends ApiMapper
 
         $retval = array();
         $retval['tracks'] = $list;
-        $retval['meta'] = $this->getPaginationLinks($list);
+        $retval['meta'] = $this->getPaginationLinks($list, $total);
 
         return $retval;
     }
