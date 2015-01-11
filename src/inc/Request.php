@@ -330,7 +330,9 @@ class Request
             if (count($oauth_pieces) <> 2) {
                 throw new InvalidArgumentException('Invalid Authorization Header', '400');
             }
-            if (strtolower($oauth_pieces[0]) != "oauth") {
+
+            // token type must be either 'bearer' or 'oauth'
+            if (!in_array(strtolower($oauth_pieces[0]), ["bearer", 'oauth'])) {
                 throw new InvalidArgumentException('Unknown Authorization Header Received', '400');
             }
             $oauth_model   = $this->getOauthModel($db);
