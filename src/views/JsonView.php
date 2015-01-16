@@ -16,7 +16,7 @@ class JsonView extends ApiView {
         // Don't use JSON_NUMERIC_CHECK because it eats things (e.g. talk stubs)
 
         // Specify a list of fields to NOT convert to numbers
-        $this->string_fields = array("stub", "track_name");
+        $this->string_fields = array("stub", "track_name", "comment");
 
         $output = $this->numeric_check($content);
         $retval = json_encode($output);
