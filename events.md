@@ -234,3 +234,89 @@ The response should include a 201 Created header.  Here is an example of a full 
 < 
 ~~~~
 
+## Editing Events
+
+When editing an event, you should `PUT` a representation of the whole event with all its fields (excluding hypermedia) in the body of the request.  You may find it helpful to GET the event resource and use that as the basis for your payload.
+
+In particular, note the required fields:
+
+ * ``name``
+ * ``description``
+ * ``location`` (feel free to use "online" for virtual events)
+ * ``start_date`` (evaluated by strtotime, exactly as when you submit an event)
+ * ``end_date`` (evaluated by strtotime, exactly as when you submit an event)
+ * ``tz_continent`` (e.g. "Europe", "America")
+ * ``tz_place`` (e.g. "Amsterdam", "Chicago")
+
+Also the optional fields, these don't need to be supplied but won't be overwritten if they're not (supply them empty to remove existing values):
+
+ * ``href`` should be a valid URL
+ * ``cfp_url`` should be a valid URL
+ * ``cfp_start_date``
+ * ``cfp_end_date``
+ * ``latitude``
+ * ``longitude``
+ * ``tags`` an array
+
+As an example of updating an event, here's a sample event being changed.  First the event as it is returned by the API:
+
+~~~~
+{
+    "name":"CentOSUUG",
+    "url_friendly_name":"centosuug",
+    "start_date":"2015-12-11T07:00:46+01:00",
+    "end_date":"2015-12-12T07:00:46+01:00",
+    "description":"Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent rutrum orci eget ipsum ornare et consequat neque egestas. Praesent rutrum orci eget ipsum ornare et consequat neque egestas. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vulputate vulputate lobortis.",
+    "stub":"4a070",
+    "href":"http:\/\/centosuug.example.org",
+    "tz_continent":"Europe",
+    "tz_place":"Amsterdam",
+    "attendee_count":2,
+    "attending":false,
+    "event_comments_count":0,
+    "tracks_count":2,
+    "talks_count":7,
+    "icon":"",
+    "location":"Foley",
+    "tags":[],
+    "uri":"http:\/\/api.dev.joind.in\/v2.1\/events\/33",
+    "verbose_uri":"http:\/\/api.dev.joind.in\/v2.1\/events\/33?verbose=yes",
+    "comments_uri":"http:\/\/api.dev.joind.in\/v2.1\/events\/33\/comments",
+    "talks_uri":"http:\/\/api.dev.joind.in\/v2.1\/events\/33\/talks",
+    "tracks_uri":"http:\/\/api.dev.joind.in\/v2.1\/events\/33\/tracks",
+    "attending_uri":"http:\/\/api.dev.joind.in\/v2.1\/events\/33\/attending",
+    "website_uri":"http:\/\/joind.in\/event\/view\/33",
+    "humane_website_uri":"http:\/\/joind.in\/event\/4a070",
+    "attendees_uri":"http:\/\/api.dev.joind.in\/v2.1\/events\/33\/attendees"
+}
+
+~~~~
+
+And to update it, an example command and the resulting output:
+
+<pre class="embedcurl"> curl -v -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer f3c62e0ff9d80811" http://api.dev.joind.in/v2.1/events/33 -d '{"name":"CentOSUUG","start_date":"2015-12-11T07:00:46+01:00","end_date":"2015-12-12T07:00:46+01:00","description":"Really excellent event.  Seriously","href":"http:\/\/centosuug.example.org","tz_continent":"Europe","tz_place":"Amsterdam","location":"The Pub","tags":["centos"]}'
+</pre>
+
+~~~~
+* Connected to api.dev.joind.in (10.223.175.44) port 80 (#0)
+> PUT /v2.1/events/33 HTTP/1.1
+> User-Agent: curl/7.37.1
+> Host: api.dev.joind.in
+> Accept: */*
+> Content-Type: application/json
+> Authorization: Bearer f3c62e0ff9d80811
+> Content-Length: 309
+> 
+* upload completely sent off: 309 out of 309 bytes
+< HTTP/1.1 204 No Content
+< Date: Mon, 19 Jan 2015 21:28:10 GMT
+* Server Apache/2.2.22 (Debian) is not blacklisted
+< Server: Apache/2.2.22 (Debian)
+< X-Powered-By: PHP/5.5.17-1~dotdeb.1
+< Location: http://api.dev.joind.in/v2.1/events/33
+< Vary: Accept-Encoding
+< Content-Length: 0
+< Content-Type: text/html
+< 
+
+~~~~
