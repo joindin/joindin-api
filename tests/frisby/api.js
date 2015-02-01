@@ -195,8 +195,10 @@ function testTracksForEvent(evt) {
 				for(var i in evTracks.tracks) {
 					var track = evTracks.tracks[i];
 					datatest.checkTrackData(track);
+          testTrack(track);
 				}
 			}
+
 	}).toss();
 }
 
@@ -355,6 +357,14 @@ function testExistingUser() {
 			}
 		})
 		.toss();
+}
+
+function testTrack(track) {
+  frisby.create('Single track')
+    .get(track.uri)
+		.expectStatus(200)
+		.expectHeader("content-type", "application/json; charset=utf8")
+    .toss();
 }
 
 module.exports = {
