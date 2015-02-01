@@ -56,7 +56,7 @@ class TalksController extends ApiController {
         return $list;
 	}
 
-    protected function postAction($request, $db) {
+    public function postAction($request, $db) {
         if(!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 400);
         }
