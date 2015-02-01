@@ -4,29 +4,9 @@ This is the API behind the joind.in website (the new version of it), the mobile 
 
 ## Quick Start
 
- * point a new virtual host at the public directory, one level below this file.
- * copy `src/config.php.dist` to `src/config.php` in your joind.in installation.
- * copy `src/database.php.dist` to `src/database.php` in your joind.in installation; if you have the website project installed too, these files are the same and you may copy or symlink.
- * initialise, patch, and populate the database.
+To get you going without much hassle we created a vagrant-setup. To use it [fork the joindin-vm](https://github.com/joindin/joindin-vm) repository and follow the instructions in there.
 
-    scripts/patchdb.sh -t /path/to/joind.in -d joindin -u username -p password -i
-
-(use the correct username and password)
-
-Depending on the database setup you might run into an issue with Patch 1.  In that case try to add ``` ENGINE=MyISAM DEFAULT CHARSET=latin1``` to line 5 of ```db/patch1.sql```
-
-If you are using Windows And/Or Git bash you may see an error regarding "o being an invalid option" when running step 6.
-
-To fix this, you will need to visit http://gnuwin32.sourceforge.net/packages/grep.htm and download the binaries and dependencies zip files Extract the contents of the bin folder from the zip files to the bin folder of your Git install and restart Git Bash.
-
-Alternatively in Windows, you can use the php verison of the helper script, `scripts/patchdb.php`:
-```
-    php scripts/patchdb.php -t c:\pathto\joind.in\ -d joindin -u mysqluser -p mysqlpassword -i
-```
-
-This should also work for git via the commandline (cmd.exe)
- * generate some sample data - instructions are in /tools/dbgen/README.md
- * the mbstring extension is required.
+This VM will load all three Joind.in projects (joind.in, joindin-vm and joindin-web2).
 
 ## How to use the API
 
@@ -51,7 +31,7 @@ I also found that I needed:
 
 You should set the URL that the tests run against to be your local installation:
 
-        export JOINDIN_API_BASE_URL=http://api.joindin.localhost
+        export JOINDIN_API_BASE_URL=http://api.dev.joind.in:8080/
 
 Then run the tests by going to `/tests/frisby` and running:
 
@@ -109,12 +89,6 @@ Docs are written in markdown and rendered by [Jekyll](http://jekyllrb.com/), a r
 * Get set up - the best instructions are GitHub's own and they keep these up to date: [https://help.github.com/articles/using-jekyll-with-pages](https://help.github.com/articles/using-jekyll-with-pages).
 
 * Generate the site: ``jekyll serve``.  This will output the URL of where you can access your local copy of the docs.  For me that's [http://localhost:4000/joindin-api/](http://localhost:4000/joindin-api/) (and the trailing slash does matter!)
-
-### Running the API on nginx
-
-You will have to make a few modifications to the code as it currently is optimized for running on an apache-httpd webserver.
-
-For detailed instructions have a look at [README.NGINX.md](README.NGINX.md)
 
 ## Global .gitignore
 
