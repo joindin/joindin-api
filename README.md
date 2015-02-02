@@ -10,7 +10,7 @@ This VM will load all three Joind.in projects (joind.in, joindin-vm and joindin-
 
 ## Quick start with the PHP dev server
 
-The API will run happily under the [PHP development server](http://php.net/manual/en/features.commandline.webserver.php).  Note that the web2 site will also run under the built-in webserver, but will need to be on a different listening port. 
+The API will run happily under the [PHP development server](http://php.net/manual/en/features.commandline.webserver.php).  You will need to have a MySQL running with the Joind.in schema availble, referenced from the src/database.php file (see below about initialising the DB).  Note that the web2 site will also run under the built-in webserver, but will need to be on a different listening port. 
 
 To run the API on http://localhost:8080/, do the following:
 ```
@@ -24,6 +24,22 @@ php -S localhost:8081 index.php
 Go to http://api.joind.in and click around!
 
 There's more documentation here: http://joindin.github.io/joindin-api/ - it's powered by the content of the ``gh-pages`` branch on this repo, patches very welcome there also!
+
+## Initialising the database
+
+If you are not using the [Vagrant](Quick start with Vagrant) setup, you will need to provide your own MySQL database and configure it in src/database.php.  Once there is an empty database and a username/password, you can setup the tables by running the patch script at scripts/patchdb.sh with the "-i" (initialise DB) option.
+
+```
+cd scripts
+./patchdb.sh -t ../ -d <DB name> -u <DB username> -p <DB password> -i
+```
+
+If you already have a development DB, but you want to patch it up to the latest structure, then run the same command except omit the "-i" option.
+
+```
+cd scripts
+./patchdb.sh -t ../ -d <DB name> -u <DB username> -p <DB password>
+```
 
 ## Tools and Tests
 
