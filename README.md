@@ -2,11 +2,22 @@
 
 This is the API behind the joind.in website (the new version of it), the mobile applications, and many other consumers.  This project is a dependency for the majority of the other projects under the joind.in organization https://github.com/joindin
 
-## Quick Start
+## Quick start with Vagrant
 
 To get you going without much hassle we created a vagrant-setup. To use it [fork the joindin-vm](https://github.com/joindin/joindin-vm) repository and follow the instructions in there.
 
 This VM will load all three Joind.in projects (joind.in, joindin-vm and joindin-web2).
+
+## Quick start with the PHP dev server
+
+The API will run happily under the [PHP development server](http://php.net/manual/en/features.commandline.webserver.php).  Note that the web2 site will also run under the built-in webserver, but will need to be on a different listening port. 
+
+To run the API on http://localhost:8080/, do the following:
+```
+cd src/public
+export JOINDIN_API_BASE_URL=http://localhost:8081
+php -S localhost:8081 index.php
+```
 
 ## How to use the API
 
@@ -31,7 +42,7 @@ I also found that I needed:
 
 You should set the URL that the tests run against to be your local installation:
 
-        export JOINDIN_API_BASE_URL=http://api.dev.joind.in:8080/
+        export JOINDIN_API_BASE_URL=http://api.dev.joind.in:8080
 
 Then run the tests by going to `/tests/frisby` and running:
 
