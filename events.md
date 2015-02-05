@@ -289,7 +289,6 @@ As an example of updating an event, here's a sample event being changed.  First 
     "humane_website_uri":"http:\/\/joind.in\/event\/4a070",
     "attendees_uri":"http:\/\/api.dev.joind.in\/v2.1\/events\/33\/attendees"
 }
-
 ~~~~
 
 And to update it, an example command and the resulting output:
@@ -318,5 +317,4 @@ And to update it, an example command and the resulting output:
 < Content-Length: 0
 < Content-Type: text/html
 < 
-
 ~~~~
