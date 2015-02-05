@@ -7,13 +7,14 @@ the table structure, this seed data cannot be added.
 /* Add in some sample users */
 /* John Doe is a normal site user, his password is "password" */
 insert into user (
-	username,password,
+	username,password,verified,
 	email,last_login,
 	admin,full_name,
 	active,ID
 ) value (
 	'johndoe',
 	'$2y$10$OaClfzmGnjcz79RsKLe./uYVEvzen.86HZCZ9ayrvP5vFk1z7qCJy',
+	1,
 	'johndoe@sampledomain.com',
 	unix_timestamp(),
 	0,
@@ -23,13 +24,14 @@ insert into user (
 SET @fuserid:=LAST_INSERT_ID();
 /* Ima Admin is an admin, her password is also "password" */
 insert into user (
-	username,password,
+	username,password,verified,
 	email,last_login,
 	admin,full_name,
 	active,ID
 ) value (
 	'imaadmin',
 	'$2y$10$StMpCySaSLHuvh3KLFNiZ.vSEykBF8kVWEG6ZtuXzQd4F9WWlfBFi',
+	1,
 	'ima@sampledomain.com',
 	unix_timestamp(),
 	1,
