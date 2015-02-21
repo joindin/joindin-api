@@ -23,19 +23,12 @@ We have tests that make HTTP requests from the outside of the API, functional te
 To run the frisby tests (frisby.js), you will first need to install node.js and
 npm.  Then run:
 
-        npm install -g frisby jasmine-node
+        cd tests/frisby
+        npm install
 
-I also found that I needed:
+To run the tests against your local dev VM, from the `tests/frisby` directory run:
 
-        export NODE_PATH=/usr/local/lib/node_modules
-
-You should set the URL that the tests run against to be your local installation:
-
-        export JOINDIN_API_BASE_URL=http://api.dev.joind.in:8080/
-
-Then run the tests by going to `/tests/frisby` and running:
-
-        jasmine-node api_spec.js
+        npm test
 
 ### Unit Tests
 
