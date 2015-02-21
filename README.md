@@ -21,12 +21,12 @@ There's more documentation here: http://joindin.github.io/joindin-api/ - it's po
 We have tests that make HTTP requests from the outside of the API, functional tests, if you will.
 
 To run the frisby tests (frisby.js), you will first need to install node.js and
-npm.  Then run:
+npm on you computer.  Then run:
 
         cd tests/frisby
         npm install
 
-To run the tests against your local dev VM, from the `tests/frisby` directory run:
+To run the tests on your computer against your Vagrant VM, from the `tests/frisby` directory run:
 
         npm test
 
