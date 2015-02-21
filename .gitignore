@@ -8,3 +8,4 @@ build/
 src/database.php
 vendor/.git
 .idea
+node_modules
