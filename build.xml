@@ -27,8 +27,14 @@
    <phingcall target="phplint"/>
  </target>
 
- <target name="frisby" description="Run new API tests in Frisby">
-     <exec command="jasmine-node --nocolor --junitreport --output ../../build/logs/frisby/ ." 
+ <target name="frisby" description="Run API tests in Frisby">
+     <exec command="jasmine-node --nocolor --junitreport --output ../../build/logs/frisby/ api_spec.js" 
+         dir="${basedir}/tests/frisby" checkreturn="true">
+  </exec>
+ </target>
+
+ <target name="frisby-write" description="Run write-sensitive API tests in Frisby">
+     <exec command="jasmine-node --nocolor --junitreport --output ../../build/logs/frisby/  api_write_spec.js" 
          dir="${basedir}/tests/frisby" checkreturn="true">
   </exec>
  </target>
