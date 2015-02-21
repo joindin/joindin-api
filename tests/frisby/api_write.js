@@ -2,6 +2,7 @@
 
 var frisby   = require('frisby');
 var datatest = require('./data');
+var util     = require('util');
 
 var baseURL = '';
 
@@ -15,21 +16,33 @@ function init(_baseURL) {
 }
 
 function testRegisterUser() {
+	var randomSuffix = parseInt(Math.random() * 1000000).toString();
 	frisby.create('Register user')
-		.post(baseURL + "/users", {
-			"username"  : "testUser",
+		.post(baseURL + "/v2.1/users", {
+			"username"  : "testUser" + randomSuffix,
 			"password"  : "pwpwpwpwpwpw",
 			"full_name" : "A test user",
-			"email"     : "testuser@example.com"
-		})
+			"email"     : "testuser"+randomSuffix+"@example.com"
+		}, {json:true})
 		.expectStatus(201)
-		.expectHeaderContains("Location", baseURL + "/users")
-
-		.afterJSON(function() {
-			// TODO: get the user back from the API by following the
-			// location header
+		.expectHeaderContains("Location", baseURL + "/v2.1/users")
+		.after(function(err, res, body) {
+			// Call the get user method on the place we're told to go
+		  testUserByUrl(res.headers.location);
 		})
 	.toss();
+}
+
+function testUserByUrl(url) {
+	frisby.create('Get user')
+		.get(url)
+		.expectStatus(200)
+		.expectJSONLength("users", 1)
+		.afterJSON(function (users) {
+			datatest.checkUserData(users.users[0]);
+		})
+	.toss();
+
 }
 
 module.exports = {
