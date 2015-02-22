@@ -471,8 +471,8 @@ class EventsController extends ApiController {
                 try {
                     // make the timezone, and read in times with respect to that
                     $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
-                    $start_date = new DateTime('@' . strtotime($request->getParameter("start_date")), $tz);
-                    $end_date   = new DateTime('@' . strtotime($request->getParameter("end_date")), $tz);
+                    $start_date = new DateTime($request->getParameter("start_date"), $tz);
+                    $end_date   = new DateTime($request->getParameter("end_date"), $tz);
                     $event['start_date'] = $start_date->format('U');
                     $event['end_date'] = $end_date->format('U');
                 } catch(Exception $e) {
@@ -499,12 +499,12 @@ class EventsController extends ApiController {
             }
             $cfp_start_date = $request->getParameter("cfp_start_date", false);
             if (false !== $cfp_start_date && strtotime($cfp_start_date)) {
-                $cfp_start_date = new DateTime('@' . strtotime($cfp_start_date), $tz);
+                $cfp_start_date = new DateTime($cfp_start_date, $tz);
                 $event['cfp_start_date'] = $cfp_start_date->format('U');
             }
             $cfp_end_date = $request->getParameter("cfp_end_date", false);
             if (false !== $cfp_end_date && strtotime($cfp_end_date)) {
-                $cfp_end_date = new DateTime('@' . strtotime($cfp_end_date), $tz);
+                $cfp_end_date = new DateTime($cfp_end_date, $tz);
                 $event['cfp_end_date'] = $cfp_end_date->format('U');
             }
             $latitude = $request->getParameter("latitude", false); 
