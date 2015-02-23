@@ -4,6 +4,7 @@ class EventCommentMapper extends ApiMapper {
     public function getDefaultFields() {
         // warning, users added in build array
         $fields = array(
+            'rating' => 'rating',            
             'comment' => 'comment',
             'created_date' => 'date_made'
             );
@@ -12,6 +13,7 @@ class EventCommentMapper extends ApiMapper {
 
     public function getVerboseFields() {
         $fields = array(
+            'rating' => 'rating',            
             'comment' => 'comment',
             'source' => 'source',
             'created_date' => 'date_made',
@@ -124,13 +126,14 @@ class EventCommentMapper extends ApiMapper {
             throw new Exception("Duplicate comment");
         }
 
-        $sql = 'insert into event_comments (event_id, comment, user_id, cname, '
+        $sql = 'insert into event_comments (event_id, rating, comment, user_id, cname, '
             . 'source, date_made, active) '
-            . 'values (:event_id, :comment, :user_id, :cname, :source, UNIX_TIMESTAMP(), 1)';
+            . 'values (:event_id, :rating, :comment, :user_id, :cname, :source, UNIX_TIMESTAMP(), 1)';
 
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':event_id' => $data['event_id'],
+            ':rating' => $data['rating'],            
             ':comment' => $data['comment'],
             ':cname' => $data['cname'],
             ':user_id' => $data['user_id'],

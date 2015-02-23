@@ -214,6 +214,7 @@ class EventsController extends ApiController {
                             400
                         );
                     }
+                                        
                     // no anonymous comments over the API
                     if(!isset($request->user_id) || empty($request->user_id)) {
                         throw new Exception('You must log in to comment');
@@ -222,7 +223,12 @@ class EventsController extends ApiController {
                     $users = $user_mapper->getUserById($request->user_id);
                     $thisUser = $users['users'][0];
 
-                    $commentText = filter_var($request->getParameter('comment'), FILTER_SANITIZE_STRING);
+                    $rating = $request->getParameter('rating');
+                    if(empty($rating)) {
+                        throw new Exception('The field "rating" is required', 400);
+                    }
+
+                    $commentText = $request->getParameter('comment');
                     if(empty($commentText)) {
                         throw new Exception('The field "comment" is required', 400);
                     }
@@ -233,6 +239,7 @@ class EventsController extends ApiController {
 
                     $comment['user_id'] = $request->user_id;
                     $comment['comment'] = $commentText;
+                    $comment['rating'] = $rating;                    
                     $comment['cname'] = $thisUser['full_name'];
                     $comment['source'] = $consumer_name;
 

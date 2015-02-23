@@ -28,6 +28,7 @@ class EventMapper extends ApiMapper
             'tz_place' => 'event_tz_place',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
+            'average_rating' => 'avg_rating',            
             'event_comments_count' => 'comment_count',
             'tracks_count' => 'track_count',
             'talks_count' => 'talk_count',
@@ -64,6 +65,7 @@ class EventMapper extends ApiMapper
             'hashtag' => 'event_hashtag',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
+            'average_rating' => 'avg_rating',            
             'comments_enabled' => 'comments_enabled',
             'event_comments_count' => 'comment_count',
             'tracks_count' => 'track_count',
@@ -109,6 +111,7 @@ class EventMapper extends ApiMapper
         $where = "";
 
         $sql = 'select events.*, '
+            . '(select get_event_rating(events.ID)) as avg_rating, '        
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
                 as attendee_count, '
             . 'abs(datediff(from_unixtime(events.event_start), 
@@ -212,7 +215,6 @@ class EventMapper extends ApiMapper
 
         // limit clause
         $sql .= $this->buildLimit($resultsperpage, $start);
-
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
         if ($response) {
