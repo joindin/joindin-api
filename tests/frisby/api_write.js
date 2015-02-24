@@ -27,8 +27,10 @@ function testRegisterUser() {
 		.expectStatus(201)
 		.expectHeaderContains("Location", baseURL + "/v2.1/users")
 		.after(function(err, res, body) {
-			// Call the get user method on the place we're told to go
-		  testUserByUrl(res.headers.location);
+      if(res.statusCode == 201) {
+        // Call the get user method on the place we're told to go
+        testUserByUrl(res.headers.location);
+      }
 		})
 	.toss();
 }
