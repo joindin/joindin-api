@@ -1,8 +1,7 @@
 {
   "name": "joindin-api-tests",
   "scripts": {
-    "test": "JOINDIN_API_BASE_URL=http://api.dev.joind.in ./node_modules/.bin/jasmine-node api_spec.js",
-    "test_write": "JOINDIN_API_BASE_URL=http://api.dev.joind.in ./node_modules/.bin/jasmine-node api_write_spec.js"
+    "test": "JOINDIN_API_BASE_URL=http://api.dev.joind.in ./node_modules/.bin/jasmine-node api_spec.js"
   },
   "dependencies": {
     "frisby": "^0.8.5",
