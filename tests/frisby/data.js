@@ -39,9 +39,9 @@ function checkEventData(ev) {
 	expect(ev.attendee_count).toBeDefined();
 	expect(ev.uri).toBeDefined();
 	expect(ev.verbose_uri).toBeDefined();
-    if(typeof ev.average_rating != 'undefined') {
-      expect(typeof ev.average_rating).toBe('number');
-    }	
+        if(typeof ev.average_rating != 'undefined') {
+            expect(typeof ev.average_rating).toBe('number');
+        }	
 	expect(ev.comments_uri).toBeDefined();
 	expect(ev.talks_uri).toBeDefined();
 	expect(ev.website_uri).toBeDefined();

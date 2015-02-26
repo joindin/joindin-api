@@ -1,6 +1,8 @@
+-- Add the ratings column to the event_comments table
+ALTER TABLE event_comments ADD COLUMN `rating` int(11) default NULL, ;
+
 -- Drop the function if it exists
 DROP FUNCTION IF EXISTS get_event_rating;
-
 
 -- Create get_event_rating function that takes into account ratings that should not be added by event admins
 DELIMITER //
@@ -25,7 +27,6 @@ BEGIN
 
 	RETURN rating_out;
 END//
-
-
+    
 -- Increase patch count
-INSERT INTO patch_history SET patch_number = 54;
+INSERT INTO patch_history SET patch_number = 55;
