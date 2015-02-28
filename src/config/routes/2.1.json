@@ -106,6 +106,13 @@
     },
 
     {
+        "path": "/password/?$",
+        "controller": "PasswordController",
+        "action": "handle",
+        "verbs": ["POST"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"
