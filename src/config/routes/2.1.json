@@ -84,6 +84,14 @@
         "action": "handle",
         "verbs": ["GET"]
     },
+
+    {
+        "path": "/password/?$",
+        "controller": "PasswordController",
+        "action": "handle",
+        "verbs": ["POST"]
+    },
+
     {
         "path": "/?$",
         "controller": "DefaultController",
