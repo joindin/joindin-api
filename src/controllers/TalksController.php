@@ -14,7 +14,7 @@ class TalksController extends ApiController {
         return false;
     }
 
-	protected function getAction($request, $db) {
+	public function getAction($request, $db) {
         $talk_id = $this->getItemId($request);
 
         // verbosity
@@ -42,6 +42,11 @@ class TalksController extends ApiController {
                 if(false === $list) {
                     throw new Exception('Talk not found', 404);
                 }
+            } else if (isset($request->parameters['title'])) {
+                $keyword = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
+
+                $mapper = new TalkMapper($db, $request);
+                $list = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start, $verbose);
             } else {
                 // listing makes no sense
                 throw new Exception('Generic talks listing not supported', 405);
@@ -51,7 +56,7 @@ class TalksController extends ApiController {
         return $list;
 	}
 
-    protected function postAction($request, $db) {
+    public function postAction($request, $db) {
         if(!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 400);
         }
@@ -86,9 +91,16 @@ class TalksController extends ApiController {
 
                     try {
                         // run it by akismet if we have it
-                        if (isset($this->config['akismet']['apiKey'])) {
-                            $spamCheckService = new SpamCheckService($this->config['akismet']['apiKey']);
-                            $isValid = $spamCheckService->isCommentAcceptable($data);
+                        if (isset($this->config['akismet']['apiKey'], $this->config['akismet']['blog'])) {
+                            $spamCheckService = new SpamCheckService(
+                                $this->config['akismet']['apiKey'],
+                                $this->config['akismet']['blog']
+                            );
+                            $isValid = $spamCheckService->isCommentAcceptable(
+                                $data,
+                                $request->getClientIP(),
+                                $request->getClientUserAgent()
+                            );
                             if (!$isValid) {
                                 throw new Exception("Comment failed spam check", 400);
                             }
@@ -148,7 +160,24 @@ class TalksController extends ApiController {
                     throw new Exception("Operation not supported, sorry", 404);
             }
         } else {
-            throw new Exception("Operation not supported, sorry", 404);
+            // delete the talk
+            $talk_id = $this->getItemId($request);
+            $talk_mapper = new TalkMapper($db, $request);
+            $list = $talk_mapper->getTalkById($talk_id);
+            if(false === $list) {
+                // talk isn't there so it's as good as deleted
+                header("Content-Length: 0", NULL, 204);
+                exit; // no more content
+            }
+
+            $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
+            if(!$is_admin) {
+                throw new Exception("You do not have permission to do that", 400);
+            }
+
+            $talk_mapper->delete($talk_id);
+            header("Content-Length: 0", NULL, 204);
+            exit; // no more content
         }
     }
 

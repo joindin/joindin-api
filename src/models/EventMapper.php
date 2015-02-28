@@ -368,6 +368,11 @@ class EventMapper extends ApiMapper
                 }
                 $list[$key]['attendees_uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'] . '/attendees';
+
+                if($verbose) {
+                    // can this user edit this event?
+                    $list[$key]['can_edit'] = $this->thisUserHasAdminOn($row['ID']);
+                }
             }
         }
         $retval = array();
@@ -439,6 +444,53 @@ class EventMapper extends ApiMapper
            }
         }
         return $retval;
+    }
+
+    /**
+     * Events that a particular user has admin privileges on
+     *
+     * @param int $resultsperpage how many records to return
+     * @param int $start offset to start returning records from
+     * @param boolean $verbose used to determine how many fields are needed
+     *
+     * @return array the data, or false if something went wrong
+     */
+    public function getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose = false)
+    {
+        $data = array("user_id" => (int)$user_id);
+
+        $sql = 'select events.*, '
+            . '(select count(*) from user_attend where user_attend.eid = events.ID)
+                as attendee_count, '
+            . 'abs(datediff(from_unixtime(events.event_start),
+                from_unixtime('.mktime(0, 0, 0).'))) as score, '
+            . 'CASE
+                WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
+                ELSE 0
+               END as comments_enabled '
+            . 'from events '
+            . 'join user_admin ua on (ua.rid = events.ID) AND rtype="event" AND (rcode!="pending" OR rcode is null)';
+
+        $sql .= 'where active = 1 and '
+            . '(pending = 0 or pending is NULL) and '
+            . ' ua.uid = :user_id';
+
+        $sql .= ' order by events.event_start desc ';
+
+        // limit clause
+        $sql .= $this->buildLimit($resultsperpage, $start);
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute($data);
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if(is_array($results)) {
+                $results['total'] = $this->getTotalCount($sql, $data);
+                $retval = $this->transformResults($results, $verbose);
+                return $retval;
+            }
+        }
+        return false;
     }
 
     /**
@@ -638,6 +690,65 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Edit an event.
+     *
+     * Accepts a subset of event fields
+     *
+     * @param string[] $event    Event data to insert into the database.
+     * @param int      $event_id The ID of the event to be edited
+     *
+     * @return integer|false
+     */
+    public function editEvent($event, $event_id)
+    {
+        // Sanity check: ensure all mandatory fields are present.
+        $mandatory_fields = array(
+            'name',
+            'description',
+            'start_date',
+            'end_date',
+            'tz_continent',
+            'tz_place',
+        );
+        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($event));
+        if (!$contains_mandatory_fields) {
+            throw new Exception("Missing mandatory fields");
+        }
+
+        $sql = "UPDATE events SET %s WHERE ID = :event_id";
+
+        // get the list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+        $items  = array();
+
+        foreach ($fields as $api_name => $column_name) {
+            // We don't change any activation stuff here!!
+            if (in_array($column_name, ['pending', 'active'])) {
+                continue;
+            }
+            if (isset($event[$api_name])) {
+                $pairs[] = "$column_name = :$api_name";
+                $items[$api_name] = $event[$api_name];
+            }
+        }
+
+        $items['event_id'] = $event_id;
+
+        $stmt = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
+
+        if (! $stmt->execute($items)) {
+            throw new Exception(sprintf(
+                'executing "%s" resulted in an error: %s',
+                $stmt->queryString,
+                implode(' :: ', $stmt->errorInfo())
+            ));
+            return false;
+        }
+
+        return $event_id;
+    }
+
+    /**
      * Add a user as an admin on an event
      */
     public function addUserAsHost($event_id, $user_id) {
@@ -728,14 +839,64 @@ class EventMapper extends ApiMapper
      *
      * @return int The number of pending events
      */
-    public function getPendingEventsCount() {
+    public function getPendingEventsCount()
+    {
         $sql = 'select count(*) as count '
             . 'from events '
             . 'where pending = 1';
 
-        $stmt = $this->_db->prepare($sql);
+        $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute();
-        $result = $stmt->fetch();
+        $result   = $stmt->fetch();
+
         return $result['count'];
+    }
+
+    /**
+     * Add the tags to the given event
+     *
+     * For that we first remove all entries from the tags_events-Table that
+     * connect the given event with any tag from the tags-table. Then we check
+     * for each tag whether it exists in the tags-table nad if not add it to
+     * that table. Finally we add an entry to the tags_events-table for each
+     * given tag to connect the new tags with the given event.
+     *
+     * @param int   $event_id
+     * @param array $tags
+     *
+     * @return bool
+     */
+    public function setTags($event_id, array $tags)
+    {
+        $deleteAllEventTagsSql = 'DELETE FROM tags_events WHERE event_id = :event_id;';
+        $deleteAllEventTagsStmt = $this->_db->prepare($deleteAllEventTagsSql);
+
+        $checkForTagSql = 'SELECT ID FROM tags WHERE tag_value = :tag;';
+        $checkForTagStmt = $this->_db->prepare($checkForTagSql);
+
+        $addTagToDbSql = 'INSERT INTO tags SET tag_value = :tag;';
+        $addTagToDbStmt = $this->_db->prepare($addTagToDbSql);
+
+        $addTagToEventSql = 'INSERT INTO tags_events SET tag_id = :tag_id, event_id = :event_id;';
+        $addTagToEventStmt = $this->_db->prepare($addTagToEventSql);
+
+        // remove all existing tags for the event
+        $deleteAllEventTagsStmt->execute(array('event_id' => $event_id));
+
+        // for each tag
+        foreach ($tags as $tag) {
+            // Check whether the tag already exists in the tag-list
+            $result = $checkForTagStmt->execute(array('tag' => $tag));
+            $tagId = $checkForTagStmt->fetchColumn(0);
+            if (! $tagId) {
+                // If not, add the event to the tag list
+                $addTagToDbStmt->execute(array('tag' => $tag));
+                $checkForTagStmt->execute(array('tag' => $tag));
+                $tagId = $checkForTagStmt->fetchColumn(0);
+            }
+
+            // Add an association with the event
+            $addTagToEventStmt->execute(array('tag_id' => $tagId, 'event_id' => $event_id));
+        }
     }
 }

@@ -12,7 +12,7 @@ class TracksController extends ApiController
         return false;
     }
 
-    protected function getAction($request, $db) {
+    public function getAction($request, $db) {
         $track_id = $this->getItemId($request);
 
         // verbosity

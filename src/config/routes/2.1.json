@@ -1,0 +1,92 @@
+[
+    {
+        "path": "/events(/[^/]+)*/?$",
+        "controller": "EventsController",
+        "action": "getAction",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/events(/[^/]+)*/?$",
+        "controller": "EventsController",
+        "action": "postAction",
+        "verbs": ["POST"]
+    },
+    {
+        "path": "/events(/[^/]+)*/?$",
+        "controller": "EventsController",
+        "action": "putAction",
+        "verbs": ["PUT"]
+    },
+    {
+        "path": "/events(/[^/]+)*/?$",
+        "controller": "EventsController",
+        "action": "deleteAction",
+        "verbs": ["DELETE"]
+    },
+
+    {
+        "path": "/talks(/[^/]+)*/?$",
+        "controller": "TalksController",
+        "action": "getAction",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks(/[^/]+)*/?$",
+        "controller": "TalksController",
+        "action": "postAction",
+        "verbs": ["POST"]
+    },
+    {
+        "path": "/talks(/[^/]+)*/?$",
+        "controller": "TalksController",
+        "action": "deleteAction",
+        "verbs": ["DELETE"]
+    },
+
+    {
+        "path": "/token(/[^/]+)*/?$",
+        "controller": "TokenController",
+        "action": "handle",
+        "verbs": ["POST"]
+    },
+
+    {
+        "path": "/tracks(/[^/]+)*/?$",
+        "controller": "TracksController",
+        "action": "getAction",
+        "verbs": ["GET"]
+    },
+
+    {
+        "path": "/users(/[^/]+)*/?$",
+        "controller": "UsersController",
+        "action": "getAction",
+        "verbs": ["GET"]
+    },
+
+    {
+        "path": "/users(/[^/]+)*/?$",
+        "controller": "UsersController",
+        "action": "postAction",
+        "verbs": ["POST"]
+    },
+
+    {
+        "path": "/event_comments(/[^/]+)*/?$",
+        "controller": "Event_commentsController",
+        "action": "handle",
+        "verbs": ["GET"]
+    },
+
+    {
+        "path": "/talk_comments(/[^/]+)*/?$",
+        "controller": "Talk_commentsController",
+        "action": "handle",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/?$",
+        "controller": "DefaultController",
+        "action": "handle"
+    }
+]

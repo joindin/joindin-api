@@ -131,7 +131,8 @@ class OAuthModel
     protected function getUserId($username, $password)
     {
         $sql = 'SELECT ID, password, email FROM user
-                WHERE username=:username';
+            WHERE username=:username
+            AND verified = 1';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("username" => $username)); 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
