@@ -65,6 +65,13 @@
     },
 
     {
+        "path": "/users(/[^/]+)*/?$",
+        "controller": "UsersController",
+        "action": "postAction",
+        "verbs": ["POST"]
+    },
+
+    {
         "path": "/event_comments(/[^/]+)*/?$",
         "controller": "Event_commentsController",
         "action": "handle",
