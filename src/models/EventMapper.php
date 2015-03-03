@@ -111,25 +111,24 @@ class EventMapper extends ApiMapper
         $where = "";
 
         $sql = 'select events.*, '
-            . '(select get_event_rating(events.ID)) as avg_rating, '        
-            . '(select count(*) from user_attend where user_attend.eid = events.ID) 
-                as attendee_count, '
+            . 'ifnull(round(avg(event_comments.rating)), 0) as avg_rating, '        
+            . 'count(user_attend.uid) as attendee_count, '
             . 'abs(datediff(from_unixtime(events.event_start), 
                 from_unixtime('.mktime(0, 0, 0).'))) as score, '
             . 'CASE 
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                END as comments_enabled '
-            . 'from events ';
-
+            . 'from events '
+            . 'left join user_attend on (user_attend.eid = events.ID) '
+            . 'left join event_comments on (event_comments.event_id = events.ID) ';  
         if(array_key_exists("tags", $params)) {
             $sql .= "left join tags_events on tags_events.event_id = events.ID 
                 left join tags on tags.ID = tags_events.tag_id ";
         }
-
-        $sql .= 'where active = 1 and '
-            . '(pending = 0 or pending is NULL) and '
-            . '(private <> "y" OR private IS NULL) ';
+        $sql .= 'where events.active = 1 and '
+            . '(events.pending = 0 or events.pending is NULL) and '
+            . '(events.private <> "y" OR events.private IS NULL) ';
 
         if(array_key_exists("event_id", $params)) {
             $where .= "and events.ID = :event_id ";
@@ -139,7 +138,7 @@ class EventMapper extends ApiMapper
         if(array_key_exists("filter", $params)) {
             switch($params['filter']) {
                 case "hot": // current and popular events
-                    $order .= "score - ((comment_count + attendee_count + 1) / 5)";
+                    $order .= "events.score - ((events.comment_count + events.attendee_count + 1) / 5)";
                     break;
                 case "upcoming": // future events, soonest first
                     $where .= ' and (events.event_start >=' . (mktime(0, 0, 0) - (3 * 86400)) . ')';
@@ -204,11 +203,9 @@ class EventMapper extends ApiMapper
 
         // now add all that where clause
         $sql .= $where;
-
-        // group by if we joined additional tables
-        if(array_key_exists("tags", $params)) {
-            $sql .= " group by events.ID ";
-        }
+        
+        // group by events to get the attendee count and average rating right
+        $sql .= " group by events.ID ";
 
         // add the ordering instruction
         $sql .= $order;
