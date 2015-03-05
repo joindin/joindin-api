@@ -93,6 +93,8 @@ Users will receive an email with a link in it, of a format like: <http://m.joind
 
 The API returns an empty response with a status code of 204 (No Content), unless an error occurs in which case a standard error response will be returned.
 
+If the user needs to have their verification email sent to them again, then make a POST request to ``/emails/verifications`` with the user's email address in the "email" field.  If an unverified user with matching email address is found, the system will send a new token to the user by email and return a status of 202 (Accepted).
+
 ## Sub resources
 
 ### /talk_comments
