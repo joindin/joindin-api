@@ -49,7 +49,7 @@ The verbose user format simply includes the ``gravatar_hash`` field.
 
 *  ``uri``: Where to find this record
 *  ``verbose_uri``:  Where to find the detailed version of this record (user records are the same in both formats)
-*  ``talks_uri``: Talks given by this user. *See also* [talks]({{ site.baseurl}})/talks.html
+*  ``talks_uri``: Talks given by this user. *See also* [talks]({{ site.baseurl }}/talks.html)
 *  ``attended_events_uri``: The events that this user was/will be at
 *  ``hosted_events_uri``: The events that this user is/was event host for
 *  ``talk_comments_uri``: All the comments made by this user on talks
@@ -90,23 +90,23 @@ Newly-created users are not verified, they will receive an email with a link (po
 The user resource has the `talk_comments` subresource which contains all the
 comments created by this user ordered by reverse date created.
 
-See also: </talk_comments.html>
+See also: [Talk Comments]({{ site.baseurl }}/talk_comments.html)
 
 ### /talks
 
 The talks given by this user, with the newest first.  Includes talks not given yet.
 
-See also: </talks.html>
+See also: [Talks]({{ site.baseurl }}/talks.html)
 
 ### /attended
 
 All the events a user is marked as attending, in descending date order (including future events)
 
-See also: </events.html>
+See also: [Events]({{ site.baseurl }}/events.html)
 
 ### /hosted
 
 The events that a user is the host for, in descending date order and including future events.
 
-See also: </events.html>
+See also: [Events]({{ site.baseurl }}/events.html)
 

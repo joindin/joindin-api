@@ -5,19 +5,11 @@ title: Joind.in API Documentation
 
 # Joind.in API Documentation
 
-API documentation, examples and other information about the API for http://joind.in, the event feedback site.
-
-## Sections (see also: Howtos at the end of this page)
-
-*  [Events]({{ site.baseurl }}/events.html)
-*  [Talks]({{ site.baseurl }}/talks.html)
-*  [Users]({{ site.baseurl }}/users.html)
-*  [Talk comments]({{ site.baseurl }}/talk_comments.html)
-*  [Event comments]({{ site.baseurl }}/event_comments.html)
+API documentation, examples and other information about the API for <http://joind.in>, the event feedback site.
 
 ## Overview
 
-Joind.in's API follows a RESTful style, is available in JSON and HTML formats (so point your browser at http://api.joind.in), and uses OAuth2 for authentication where this is needed; all of the data publicly visible on the site is available via the API without authentication.
+Joind.in's API follows a RESTful style, is available in JSON and HTML formats (so point your browser at <http://api.joind.in>), and uses OAuth2 for authentication where this is needed; all of the data publicly visible on the site is available via the API without authentication.
 
 ## Global Parameters
 
@@ -54,3 +46,12 @@ Read the [authentication howto]({{ site.baseurl }}/howto/authenticate.html) for 
 [users attending howto]({{ site.baseurl }}/howto/event_attending.html)
 
 [authentication howto]({{ site.baseurl }}/howto/authenticate.html)
+
+## Detailed documentation per endpoint
+
+*  [Events]({{ site.baseurl }}/events.html)
+*  [Talks]({{ site.baseurl }}/talks.html)
+*  [Users]({{ site.baseurl }}/users.html)
+*  [Talk comments]({{ site.baseurl }}/talk_comments.html)
+*  [Event comments]({{ site.baseurl }}/event_comments.html)
+
