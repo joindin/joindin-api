@@ -83,6 +83,16 @@ Your request should look something like this:
 
 Newly-created users are not verified, they will receive an email with a link (pointing to <http://m.joind.in>) that they need to click on before their account becomes active.
 
+### Verifying Users
+
+Users will receive an email with a link in it, of a format like: <http://m.joind.in/user/verification?token=81efac8e947dcd98>.  This is used to contact the website which then sends an API POST request containing the token to the ``/users/verifications`` endpoint.  The request should look like this:
+
+~~~
+{"token":"81efac8e947dcd98"}
+~~~
+
+The API returns an empty response with a status code of 204 (No Content), unless an error occurs in which case a standard error response will be returned.
+
 ## Sub resources
 
 ### /talk_comments
