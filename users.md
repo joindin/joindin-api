@@ -16,23 +16,26 @@ The user record looks something like this:
 ~~~~
 users:
     0:
-        username: sperez
-        full_name: Sharon Perez
-        twitter_username:
-        uri: http://api.dev.joind.in:8080/v2.1/users/2
-        verbose_uri: http://api.dev.joind.in:8080/v2.1/users/2?verbose=yes
-        website_uri: http://joind.in/user/view/2
-        talks_uri: http://api.dev.joind.in:8080/v2.1/users/2/talks/
-        attended_events_uri: http://api.dev.joind.in:8080/v2.1/users/2/attended/
+        username: lornajane
+        full_name: Lorna Mitchell
+        twitter_username: lornajane
+        gravatar_hash: f6bb323eb6b2ad7f5ca2f8f3fc15f887
+        uri: http://api.joind.in/v2.1/users/110
+        verbose_uri: http://api.joind.in/v2.1/users/110?verbose=yes
+        website_uri: http://joind.in/user/view/110
+        talks_uri: http://api.joind.in/v2.1/users/110/talks/
+        attended_events_uri: http://api.joind.in/v2.1/users/110/attended/
+        hosted_events_uri: http://api.joind.in/v2.1/users/110/hosted/
+        talk_comments_uri: http://api.joind.in/v2.1/users/110/talk_comments/
 meta:
     count: 1
     total: 1
-    this_page: http://api.dev.joind.in:8080/v2.1/users/2?start=0&resultsperpage=20
+    this_page: http://api.joind.in/v2.1/users/110?verbose=yes&start=0&resultsperpage=20
 ~~~~
 
 ## Verbose User Format
 
-The verbose user format simply include the ``gravatar_hash`` field.
+The verbose user format simply includes the ``gravatar_hash`` field.
 
 ## User Fields
 
@@ -48,36 +51,62 @@ The verbose user format simply include the ``gravatar_hash`` field.
 *  ``verbose_uri``:  Where to find the detailed version of this record (user records are the same in both formats)
 *  ``talks_uri``: Talks given by this user. *See also* [talks]({{ site.baseurl}})/talks.html
 *  ``attended_events_uri``: The events that this user was/will be at
+*  ``hosted_events_uri``: The events that this user is/was event host for
+*  ``talk_comments_uri``: All the comments made by this user on talks
 
 ## Filtering the Users Collection
 
 You can filter by ``username``, e.g. ``{{ site.apiurl }}/v2.1/users?username=lornajane``
 
+## Creating a User
+
+To create a user, POST to the `/users` collection.  The following fields are required:
+
+ * ``username``
+ * ``full_name``
+ * ``email``
+ * ``password``
+
+Optionally, you can also send the ``twitter_username`` field.
+
+Your request should look something like this:
+
+~~~
+{
+  "username": "testuser",
+  "password": "qwerty",
+  "email": "test@example.com",
+  "full_name": "Test User",
+  "twitter_username": "mytwitterhandle"
+}
+~~~
+
+Newly-created users are not verified, they will receive an email with a link (pointing to <http://m.joind.in>) that they need to click on before their account becomes active.
+
 ## Sub resources
+
+### /talk_comments
 
 The user resource has the `talk_comments` subresource which contains all the
 comments created by this user ordered by reverse date created.
 
-The collection looks something like this:
+See also: </talk_comments.html>
 
-~~~~
-comments:
-    0:
-        rating: 4
-        comment: Sed nisi sem, ultricies et luctus vitae, volutpat id sem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque elementum placerat lectus, sit amet dictum urna euismod quis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque elementum placerat lectus, sit amet dictum urna euismod quis. Duis eu massa justo, vel mollis velit. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Aliquam vulputate vulputate lobortis. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Proin feugiat mattis dui, ut cursus purus feugiat vel. Nulla faucibus mollis ipsum sit amet vehicula. Proin feugiat mattis dui, ut cursus purus feugiat vel. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Duis eu massa justo, vel mollis velit. Aliquam vulputate vulputate lobortis.
-        user_display_name: Sandra Warren
-        talk_title: Controlling flexible systems with Perl
-        created_date: 2014-09-11T19:59:06+02:00
-        uri: http://api.dev.joind.in:8080/v2.1/talk_comments/338
-        verbose_uri: http://api.dev.joind.in:8080/v2.1/talk_comments/338?verbose=yes
-        talk_uri: http://api.dev.joind.in:8080/v2.1/talks/163
-        talk_comments_uri: http://api.dev.joind.in:8080/v2.1/talks/163/comments
-        user_uri: http://api.dev.joind.in:8080/v2.1/users/2
+### /talks
 
-meta:
-    count: 1
-    total: 1
-    this_page: http://api.dev.joind.in:8080/v2.1/users/2/talk_comments?start=0&resultsperpage=20
-~~~~
+The talks given by this user, with the newest first.  Includes talks not given yet.
 
+See also: </talks.html>
+
+### /attended
+
+All the events a user is marked as attending, in descending date order (including future events)
+
+See also: </events.html>
+
+### /hosted
+
+The events that a user is the host for, in descending date order and including future events.
+
+See also: </events.html>
 
