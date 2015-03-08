@@ -17,6 +17,10 @@ $config =  array(
         'from' => 'info@joind.in',
         'forward_all_to' => false
     ),
+    'features' => array(
+        'allow_auto_verify_users' => false,
+        'allow_auto_approve_events' => false,
+    ),
 );
 
 // uncomment and add your akismet key here if you want to do spam checking

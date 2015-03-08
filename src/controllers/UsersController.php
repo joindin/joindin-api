@@ -148,6 +148,16 @@ class UsersController extends ApiController {
                 $user_id = $user_mapper->createUser($user);
                 header("Location: " . $request->base . $request->path_info . '/' . $user_id, NULL, 201);
 
+                // autoverify for test platforms
+                if(isset($this->config['features']['allow_auto_verify_users']) 
+                    && $this->config['features']['allow_auto_verify_users']) {
+                        if($request->getParameter("auto_verify_user") == "true") {
+                            // the test suite sends this extra field, if we got
+                            // this far then this platform supports this
+                            $user_mapper->verifyThisTestUser($user_id);
+                        }
+                    }
+
                 // Generate a verification token and email it to the user
                 $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
 

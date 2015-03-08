@@ -371,4 +371,21 @@ class UserMapper extends ApiMapper
         }
         return false;
     }
+
+    /**
+     * Used only on test platforms, if the config is enabled
+     * 
+     * Designed to allow creation of verified users for testing purposes
+     */
+    public function verifyThisTestUser($user_id) {
+        // mark the user as verified
+        $verify_sql = "update user set verified = 1 "
+            . "where ID = :user_id";
+
+        $verify_stmt = $this->_db->prepare($verify_sql);
+        $verify_data = array("user_id" => $user_id);
+
+        $verify_stmt->execute($verify_data);
+        return true;
+    }
 }
