@@ -153,7 +153,7 @@ while($row = $event_stmt->fetch(PDO::FETCH_ASSOC)) {
     $params['type']  = 'events';
     $params['id']    = $row['ID'];
 
-    echo "Trying to index event {$row['url_friendly_name']}....";
+    echo "Trying to index event {$row['event_name']}....";
     $ret = $client->index($params);
 
     if(is_array($ret) && $ret['created'] === true) { 
@@ -216,7 +216,7 @@ while($row = $speaker_stmt->fetch(PDO::FETCH_ASSOC)) {
     ];
     $params['index'] = 'ji-search';
     $params['type'] = 'speakers';
-    $params['id'] = sprintf('%s%d', (($row['state'] == 'linked') ? 'l' : 'u'), $row['speaker_id']);
+    $params['id'] = sprintf('%s%d', (($row['state'] == 'linked') ? '' : 'u'), $row['speaker_id']);
     
     echo "Trying to index speaker {$row['speaker_name']}....";
     $ret = $client->index($params);
