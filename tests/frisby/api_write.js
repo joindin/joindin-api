@@ -17,10 +17,12 @@ function init(_baseURL) {
 
 function testRegisterUser() {
 	var randomSuffix = parseInt(Math.random() * 1000000).toString();
+  var username = "testUser" + randomSuffix;
+  var password = "pwpwpwpwpwpw";
 	frisby.create('Register user')
 		.post(baseURL + "/v2.1/users", {
-			"username"  : "testUser" + randomSuffix,
-			"password"  : "pwpwpwpwpwpw",
+			"username"  : username,
+			"password"  : password,
 			"full_name" : "A test user",
 			"email"     : "testuser"+randomSuffix+"@example.com"
 		}, {json:true})
@@ -30,6 +32,7 @@ function testRegisterUser() {
       if(res.statusCode == 201) {
         // Call the get user method on the place we're told to go
         testUserByUrl(res.headers.location);
+        testUnverifiedUserFailsLogin(username, password);
       }
 		})
 	.toss();
@@ -44,6 +47,19 @@ function testUserByUrl(url) {
 			datatest.checkUserData(users.users[0]);
 		})
 	.toss();
+}
+
+function testUnverifiedUserFailsLogin(username, password) {
+  frisby.create('Log in')
+    .post(baseURL + "/v2.1/token", {
+      "grant_type": "password",
+      "username": username,
+      "password": password,
+      "client_id": "0000",
+      "client_secret": "1111"
+    }, {json:true})
+    .expectStatus(403)
+    .toss();
 
 }
 
