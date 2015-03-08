@@ -13,4 +13,5 @@ if (typeof process.env.JOINDIN_API_BASE_URL != 'undefined') {
 
 apitest.init(baseURL);
 apitest.testRegisterUser();
+apitest.testRegisterVerifiedUser();
 
