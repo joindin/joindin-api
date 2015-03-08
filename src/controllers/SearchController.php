@@ -19,58 +19,12 @@ class SearchController extends ApiController {
         );
 
         $pageRequest = $this->getStart($request);
-        $pageLimit = $this->getResultsPerPage($request) ?: 10;
+        $pageLimit = $this->getResultsPerPage($request);
 
-        $search_service = new SearchService(new Elasticsearch\Client, 'ji-search');
-        $search_service->setSearchTypes(['events', 'talks', 'speakers']);
-        $search_service->setQuery($searchRequest);
+	$searchMapper = new SearchMapper($db, $request);
+	$results = $searchMapper->getResultsByQuery($searchRequest, $pageLimit, $pageRequest);
 
-        $search_service->setLimit($pageLimit);
-        $search_service->setOffset($pageRequest);
-
-        $results = $search_service->search();
-
-        $searchResults = [];
-        foreach($results['hits']['hits'] as $hit) {
-            $searchResults[$hit['_type']][] = $hit['_id'];
-        }
-
-        // Get the info we need from the API
-        $events     = [];
-        $talks      = [];
-        $speakers   = [];
-
-        if(isset($searchResults['events'])) {
-            $event_mapper = new EventMapper($db, $request);
-            $events = $event_mapper->getEventsByIds($searchResults['events'], false);
-        }
-
-        if(isset($searchResults['talks'])) {
-            $talk_mapper = new TalkMapper($db, $request);
-            $talks = $talk_mapper->getTalksByIds($searchResults['talks'], false);
-        }
-
-        if(isset($searchResults['speakers'])) {
-            $linkedSpeakers = [];
-
-            foreach($searchResults['speakers'] as $speaker) {
-                if(substr($speaker, 0, 1) === 'l') {
-                    $linkerSpeakers[] = $speaker;
-                }
-            }
-
-            $user_mapper = new UserMapper($db, $request);
-            $speakers = $user_mapper->getUsersByIds($linkedSpeakers, false);
-        }
-
-        var_dump($speakers); exit;
-
-
-        $retval = [];
-        $retval['results'] = $searchResults;
-        $retval['meta'] = $this->getPaginationLinks($searchResults, $results['hits']['total']);
-
-        return $retval; 
+	return $results;
     }
 
     public function postAction(Request $request, $db) {

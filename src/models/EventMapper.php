@@ -17,6 +17,7 @@ class EventMapper extends ApiMapper
     public function getDefaultFields() 
     {
         $fields = array(
+            'id' => 'ID',
             'name' => 'event_name',
             'url_friendly_name' => 'url_friendly_name',
             'start_date' => 'event_start',
@@ -48,6 +49,7 @@ class EventMapper extends ApiMapper
     public function getVerboseFields() 
     {
         $fields = array(
+            'id' => 'ID',
             'name' => 'event_name',
             'url_friendly_name' => 'url_friendly_name',
             'start_date' => 'event_start',

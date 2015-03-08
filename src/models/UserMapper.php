@@ -17,6 +17,7 @@ class UserMapper extends ApiMapper
     public function getDefaultFields() 
     {
         $fields = array(
+            "id" => "ID",
             "username" => "username",
             "full_name" => "full_name",
             "twitter_username" => "twitter_username"
@@ -34,6 +35,7 @@ class UserMapper extends ApiMapper
     public function getVerboseFields() 
     {
         $fields = array(
+            "id" => "ID",
             "username" => "username",
             "full_name" => "full_name",
             "twitter_username" => "twitter_username",

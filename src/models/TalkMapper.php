@@ -3,6 +3,7 @@
 class TalkMapper extends ApiMapper {
     public function getDefaultFields() {
         $fields = array(
+            'id' => 'ID',
             'talk_title' => 'talk_title',
             'url_friendly_talk_title' => 'url_friendly_talk_title',
             'talk_description' => 'talk_desc',
@@ -21,6 +22,7 @@ class TalkMapper extends ApiMapper {
 
     public function getVerboseFields() {
         $fields = array(
+            'id' => 'ID',
             'talk_title' => 'talk_title',
             'url_friendly_talk_title' => 'url_friendly_talk_title',
             'talk_description' => 'talk_desc',

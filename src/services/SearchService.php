@@ -2,9 +2,12 @@
 class SearchService
 {
     protected $provider;
+
     protected $index;
     protected $searchTypes = [];
+
     protected $search;
+
     protected $limit = 10;
     protected $offset = 0;
 
