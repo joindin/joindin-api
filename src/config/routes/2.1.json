@@ -113,6 +113,13 @@
     },
 
     {
+        "path": "/search[/]*?$",
+        "controller": "SearchController",
+        "action": "handle",
+        "verbs": ["GET","POST"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"

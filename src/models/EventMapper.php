@@ -96,6 +96,24 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Fetch the details for a multiple events
+     * 
+     * @param array $event_id events.ID value
+     * @param boolean $verbose used to determine how many fields are needed
+     * 
+     * @return array the event detail
+     */
+    public function getEventsByIds(array $event_ids, $verbose = false) 
+    {
+        $results = $this->getEvents(count($event_ids), 0, array("event_id" => $event_ids));
+        if ($results) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+    /**
      * Internal function called by other event-fetching code, with changeable SQL
      * 
      * @param int $resultsperpage how many records to return
@@ -141,8 +159,24 @@ class EventMapper extends ApiMapper
             . '(events.private <> "y" OR events.private IS NULL) ';
 
         if(array_key_exists("event_id", $params)) {
-            $where .= "and events.ID = :event_id ";
-            $data["event_id"] = $params["event_id"];
+            // Check whether the requester is after one or multiplle event IDs returned
+            if(is_array($params['event_id'])) {
+                if(!$params['event_id']) {
+                    // No event IDs passed
+                    throw new Exception("Missing event ID values");
+                }
+
+                $whereIdToken = [];
+                foreach(array_values($params['event_id']) as $pIndex => $pValue) {
+                    $whereIdToken[] = ':event_id_'.$pIndex;
+                    $data['event_id_'.$pIndex] = $pValue;
+                }
+                
+                $where .= sprintf('and events.ID IN (%s)', implode(',', $whereIdToken));
+            } else {
+                $where .= "and events.ID = :event_id ";
+                $data["event_id"] = $params["event_id"];
+            }
         }
 
         if(array_key_exists("filter", $params)) {
