@@ -368,11 +368,25 @@ class TalkMapper extends ApiMapper {
         ));
         $talk_id = $this->_db->lastInsertId();
 
+        // Write this new event into ES if available
+        $searchService = new SearchService(new Elasticsearch\Client, 'ji-search');
+        try {
+            // Set the id for the talk
+            $data['id'] = $talk_id;
+
+            // This can return false, but we can't error for the sake of search
+            $searchService->write('talks', $data);
+        } catch(Exception $e) {
+            // Don't do anything. The search is probably not available meaning a re-index will be required anyway
+        }
+
+
         // set talk type
         // TODO support more than just talks
         $cat_sql = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, 1)';
         $cat_stmt = $this->_db->prepare($cat_sql);
         $cat_stmt->execute(array(':talk_id' => $talk_id));
+
 
         // save speakers
         if(isset($data['speakers']) && is_array($data['speakers'])) {

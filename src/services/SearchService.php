@@ -62,7 +62,6 @@ class SearchService
     }
 
     public function write($index, $data) {
-        var_dump($data);
         switch($index) {
             case 'events': 
                 $params = [];
@@ -80,16 +79,15 @@ class SearchService
 
                 break;
             case 'talks':
-                throw new Exception('Incomplete');
                 $params = [];
                 $params['body'] = [
-                    'title' => $row['talk_title'],
-                    'description' => $row['talk_desc'],
-                    'speaker' => $row['speaker']
+                    'title' => $data['title'],
+                    'description' => $data['description'],
+                    'speaker' => ((isset($data['speakers']) && is_array($data['speakers'])) ? implode(',', $data['speakers']) : '')
                 ];
 
                 $params['type'] = 'talks';
-                $params['id'] = $row['ID'];
+                $params['id'] = $data['id'];
 
                 break;
             case 'speakers':
