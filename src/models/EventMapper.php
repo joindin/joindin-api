@@ -730,7 +730,21 @@ class EventMapper extends ApiMapper
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute($event);
         if($result) {
-            return $this->_db->lastInsertId();
+            $insertId = $this->_db->lastInsertId();
+
+            // Set the new ID to the data array
+            $event['id'] = $insertId;
+
+            // Write this new event into ES if available
+            $searchService = new SearchService(new Elasticsearch\Client, 'ji-search');
+            try {
+                // This can return false, but we can't error for the sake of search
+                $searchService->write('events', $event);
+            } catch(Exception $e) {
+                // Don't do anything. The search is probably not available meaning a re-index will be required anyway
+            }
+
+            return $insertId;
         }
 
         return false;

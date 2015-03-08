@@ -60,4 +60,61 @@ class SearchService
 
         return $results;
     }
+
+    public function write($index, $data) {
+        var_dump($data);
+        switch($index) {
+            case 'events': 
+                $params = [];
+                $params['body']  = [
+                    'title' => $data['name'],
+                    'location' => $data['location'],
+                    'description' => $data['description'],
+                    'stub' => (isset($data['stub']) ? $data['stub'] : ''),
+                    'hashtag' => (isset($data['hashtag']) ? $data['hashtag'] : ''),
+                    'start' => $data['start_date'],
+                    'image' => (isset($data['icon']) ? $data['icon'] : '')
+                ];
+                $params['type']  = 'events';
+                $params['id']    = $data['id'];
+
+                break;
+            case 'talks':
+                throw new Exception('Incomplete');
+                $params = [];
+                $params['body'] = [
+                    'title' => $row['talk_title'],
+                    'description' => $row['talk_desc'],
+                    'speaker' => $row['speaker']
+                ];
+
+                $params['type'] = 'talks';
+                $params['id'] = $row['ID'];
+
+                break;
+            case 'speakers':
+                throw new Exception('Incomplete');
+                $params = [];
+                $params['body'] = [
+                    'name' => $row['speaker_name']
+                ];
+                $params['type'] = 'speakers';
+                $params['id'] = sprintf('%s%d', (($row['state'] == 'linked') ? '' : 'u'), $row['speaker_id']);
+
+                break;
+
+            default:
+                throw new Exception('Unknown index');
+        }
+
+        $params['index'] = 'ji-search';
+
+        $ret = $this->provider->index($params);
+
+        if(is_array($ret) && $ret['created'] === true) { 
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
