@@ -500,10 +500,9 @@ class DataGenerator {
         echo "TRUNCATE events;\n";
         echo "INSERT INTO `events` (`event_name`, `event_start`, `event_end`, `event_lat`, `event_long`, `ID`, `event_loc`, `event_desc`,
         `active`, `event_stub`, `event_icon`, `pending`, `event_hashtag`, `event_href`, `event_cfp_start`, `event_cfp_end`,
-        `event_voting`, `private`, `event_tz_cont`, `event_tz_place`, `event_contact_name`, `event_contact_email`, `event_cfp_url`, `url_friendly_name`) VALUES\n";
+        `event_voting`, `private`, `event_tz_cont`, `event_tz_place`, `event_contact_name`, `event_contact_email`, `event_cfp_url`) VALUES\n";
 
         $first = true;
-        $protectedUrls = [];
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "EVENT ID: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
 
@@ -522,12 +521,6 @@ class DataGenerator {
 
             // Fill the rest of the event
             $event->name = $this->_getEventTitle();
-
-            while(!isset($event->urlToken) || in_array($event->urlToken, $protectedUrls)) {
-                $event->urlToken = $this->_generateInflectedName($event->name);
-            }
-
-            $protectedUrls[] = $event->urlToken;
 
             // Find the duration
             $durations = explode(",", EVENT_DURATION);
@@ -584,21 +577,18 @@ class DataGenerator {
 
             if (! $first) echo ",\n";
 
-            printf ("('%s', %d, %d, %f, %f, %d, '%s', '%s', %d, '%s', '%s', %d, '%s', '%s', %s, %s, %d, %d, '%s', '%s', '%s', '%s', '%s', '%s')",
+            printf ("('%s', %d, %d, %f, %f, %d, '%s', '%s', %d, '%s', '%s', %d, '%s', '%s', %s, %s, %d, %d, '%s', '%s', '%s', '%s', '%s')",
                              $event->name, $event->start, $event->end, $event->lat, $event->long, $id, $event->location, $event->description,
                              1, $event->stub, $event->icon, 0, $event->hash, $event->url, 
                              $event->cfp_start ? $event->cfp_start : 'null', 
                              $event->cfp_end ? $event->cfp_end : 'null',
-                             0, 0, "Europe", "Amsterdam", "", "", $event->url."/cfp", $event->urlToken);
+                             0, 0, "Europe", "Amsterdam", "", "", $event->url."/cfp");
 
             $first = false;
         }
 
         echo ";";
         echo "\n\n";
-
-        // Let's clear up the (potentially) large URL tracker
-        unset($protectedUrls);
     }
 
     // Generate $count users
@@ -687,30 +677,6 @@ class DataGenerator {
 
         return $name;
     }
-    
-    /**
-     * Generate a event friendly url token
-     *
-     * We'll assume that random pseudo bytes with generated input  is enough to guarantee uniqueness
-     * under the premise we're expecting to replace the current db anyway.
-     * 
-     * @param string Generated event name
-     * @return string
-     */
-    protected function _generateInflectedName($eventName) {
-        // Normalise
-        $alpha = preg_replace("/[^0-9a-zA-Z- ]/", "", $eventName);
-        $inflection = strtolower(str_replace(' ', '-', $alpha));
-
-
-        // Append the random string to the inflection
-        $randString = bin2hex(openssl_random_pseudo_bytes(6));
-
-        $inflectName = $inflection . "-" . $randString;
-
-        return $inflectName;
-    }
-
 
     /***
      * Generates a talk title from some random (but fitting) words.
