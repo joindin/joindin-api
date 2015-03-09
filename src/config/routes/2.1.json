@@ -84,6 +84,14 @@
         "action": "handle",
         "verbs": ["GET"]
     },
+
+    {
+        "path": "/emails/verifications",
+        "controller": "EmailsController",
+        "action": "verifications",
+        "verbs": ["POST"]
+    },
+
     {
         "path": "/?$",
         "controller": "DefaultController",
