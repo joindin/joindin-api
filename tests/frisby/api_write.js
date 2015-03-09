@@ -19,12 +19,13 @@ function testRegisterUser() {
 	var randomSuffix = parseInt(Math.random() * 1000000).toString();
   var username = "testUser" + randomSuffix;
   var password = "pwpwpwpwpwpw";
+  var email = "testuser"+randomSuffix+"@example.com";
 	frisby.create('Register user')
 		.post(baseURL + "/v2.1/users", {
 			"username"  : username,
 			"password"  : password,
 			"full_name" : "A test user",
-			"email"     : "testuser"+randomSuffix+"@example.com"
+			"email"     : email
 		}, {json:true})
 		.expectStatus(201)
 		.expectHeaderContains("Location", baseURL + "/v2.1/users")
@@ -33,6 +34,8 @@ function testRegisterUser() {
         // Call the get user method on the place we're told to go
         testUserByUrl(res.headers.location);
         testUnverifiedUserFailsLogin(username, password);
+        testResendVerificationWorks(email);
+        testResendVerificationFails("doesntexist@lornajane.net");
       }
 		})
 	.toss();
@@ -105,6 +108,24 @@ function testUserLogin(username, password) {
         expect(typeof data.user_uri).toBe('string');
       }
     })
+    .toss();
+}
+
+function testResendVerificationWorks(email) {
+  frisby.create('Resend verification')
+    .post(baseURL + "/v2.1/emails/verifications", {
+      "email": email
+    }, {json:true})
+    .expectStatus(202)
+    .toss();
+}
+
+function testResendVerificationFails(email) {
+  frisby.create('Resend verification')
+    .post(baseURL + "/v2.1/emails/verifications", {
+      "email": email
+    }, {json:true})
+    .expectStatus(400)
     .toss();
 }
 
