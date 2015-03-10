@@ -36,7 +36,7 @@ We also have a set of "destructive" tests, these create, edit and delete data as
 
 Then run:
 
-        npm test_write
+        npm run test_write
 
 ### Unit Tests
 
