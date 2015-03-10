@@ -30,6 +30,14 @@ To run the tests on your computer against your Vagrant VM, from the `tests/frisb
 
         npm test
 
+We also have a set of "destructive" tests, these create, edit and delete data as well as just reading it.  These aren't safe to run on a live platform, but are very valuable in testing.  Before you run them, you will need to run this query against your database:
+
+        insert into oauth_consumers (consumer_key, consumer_secret, user_id, enable_password_grant) values ('0000', '1111', '1', '1');
+
+Then run:
+
+        npm test_write
+
 ### Unit Tests
 
 There are some tests set up, which use PHPUnit; these can be found in the
