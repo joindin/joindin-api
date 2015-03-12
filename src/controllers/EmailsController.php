@@ -32,4 +32,26 @@ class EmailsController extends ApiController {
             throw new Exception("Can't find that email address", 400);
         }
     }
+
+    public function usernameReminder($request, $db) {
+        $user_mapper= new UserMapper($db, $request);
+        $email = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
+        if(empty($email)) {
+            throw new Exception("The email address must be supplied", 400);
+        } else {
+            $list = $user_mapper->getUserByEmail($email);
+            if(is_array($list['users']) && count($list['users'])) {
+                $user = $list['users'][0];
+
+                $recipients = array($email);
+                $emailService = new UserUsernameReminderEmailService($this->config, $recipients, $user);
+                $emailService->sendEmail();
+
+                header("Content-Length: 0", NULL, 202);
+                exit;
+            }
+            throw new Exception("Can't find that email address", 400);
+        }
+    }
+
 }

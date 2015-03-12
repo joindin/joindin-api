@@ -93,6 +93,13 @@
     },
 
     {
+        "path": "/emails/reminders/username",
+        "controller": "EmailsController",
+        "action": "usernameReminder",
+        "verbs": ["POST"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"
