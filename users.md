@@ -93,7 +93,13 @@ Users will receive an email with a link in it, of a format like: <http://m.joind
 
 The API returns an empty response with a status code of 204 (No Content), unless an error occurs in which case a standard error response will be returned.
 
+#### Email New Verification Token
+
 If the user needs to have their verification email sent to them again, then make a POST request to ``/emails/verifications`` with the user's email address in the "email" field.  If an unverified user with matching email address is found, the system will send a new token to the user by email and return a status of 202 (Accepted).
+
+#### Email Username Reminder
+
+For a user who doesn't know their login because they don't know their username, we offer a username reminder feature.  POST to ``/emails/reminders/username`` with the user's email address in the "email" field.  If a user exists with that email address, we will email to there with a reminder of the username and a link to log in on web2.
 
 ## Sub resources
 
