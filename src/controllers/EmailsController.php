@@ -39,10 +39,8 @@ class EmailsController extends ApiController {
         if(empty($email)) {
             throw new Exception("The email address must be supplied", 400);
         } else {
-            // need the user's ID rather than the representation
-            $user_id = $user_mapper->getUserIdFromEmail($email);
-            if($user_id) {
-                $list = $user_mapper->getUserById($user_id);
+            $list = $user_mapper->getUserByEmail($email);
+            if(is_array($list['users']) && count($list['users'])) {
                 $user = $list['users'][0];
 
                 $recipients = array($email);
