@@ -16,7 +16,7 @@ class UserUsernameReminderEmailService extends EmailBaseService
 
     public function sendEmail()
     {
-        $this->setSubject('Welcome to joind.in');
+        $this->setSubject('Your joind.in username');
 
         $replacements = array(
             "full_name"   => $this->user['full_name'],
