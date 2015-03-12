@@ -33,7 +33,7 @@ class EmailsController extends ApiController {
         }
     }
 
-    public function username_reminder($request, $db) {
+    public function usernameReminder($request, $db) {
         $user_mapper= new UserMapper($db, $request);
         $email = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
         if(empty($email)) {

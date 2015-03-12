@@ -95,7 +95,7 @@
     {
         "path": "/emails/reminders/username",
         "controller": "EmailsController",
-        "action": "username_reminder",
+        "action": "usernameReminder",
         "verbs": ["POST"]
     },
 
