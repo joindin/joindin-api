@@ -20,6 +20,7 @@ users:
         full_name: Lorna Mitchell
         twitter_username: lornajane
         gravatar_hash: f6bb323eb6b2ad7f5ca2f8f3fc15f887
+        admin: 0
         uri: http://api.joind.in/v2.1/users/110
         verbose_uri: http://api.joind.in/v2.1/users/110?verbose=yes
         website_uri: http://joind.in/user/view/110
@@ -27,6 +28,7 @@ users:
         attended_events_uri: http://api.joind.in/v2.1/users/110/attended/
         hosted_events_uri: http://api.joind.in/v2.1/users/110/hosted/
         talk_comments_uri: http://api.joind.in/v2.1/users/110/talk_comments/
+        can_edit: false
 meta:
     count: 1
     total: 1
@@ -35,7 +37,7 @@ meta:
 
 ## Verbose User Format
 
-The verbose user format simply includes the ``gravatar_hash`` field.
+The verbose user format includes the ``gravatar_hash``, ``admin`` and ``can_edit`` fields.
 
 ## User Fields
 
@@ -43,7 +45,9 @@ The verbose user format simply includes the ``gravatar_hash`` field.
 *  ``full_name``: The user's name - this is used as their display name in most cases
 *  ``twitter_username``: If the user supplied their twitter username, it is here
 *  ``gravatar_hash``: Unique identifier for showing their gravatar image; append this to ``http://www.gravatar.com/avatar/`` to make the image URL
+*  ``admin``: Whether this user is a site admin. Only visible if the current user is a site admin.
 *  ``website_uri``: Where to find this user's joind.in page on the web
+*  ``can_edit``: Whether the current user can edit this user or not.
 
 ## User Hypermedia
 
