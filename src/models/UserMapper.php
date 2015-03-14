@@ -157,9 +157,20 @@ class UserMapper extends ApiMapper
 
         // add per-item links 
         if(is_array($list) && count($list)) {
+            $userIsSiteAdmin = false;
+            if (isset($this->_request->user_id)
+                && $this->isSiteAdmin($this->_request->user_id)) {
+                $userIsSiteAdmin = true;
+            }
+
             foreach ($results as $key => $row) {
                 if (true === $verbose) {
                     $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
+
+                    // expose the admin field if the currently logged in user is a site admin
+                    if ($userIsSiteAdmin) {
+                        $list[$key]['admin'] = $row['admin'];
+                    }
                 }
                 $list[$key]['uri'] = $base . '/' . $version . '/users/' 
                     . $row['ID'];
