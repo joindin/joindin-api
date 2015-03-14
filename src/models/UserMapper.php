@@ -185,6 +185,15 @@ class UserMapper extends ApiMapper
                     . $row['ID'] . '/hosted/';
                 $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/users/'
                     . $row['ID'] . '/talk_comments/';
+                
+                if ($verbose && isset($this->_request->user_id)) {
+                    // can the logged in user edit this user?
+                    $canEdit = false;
+                    if ($userIsSiteAdmin || $row['ID'] == $this->_request->user_id) {
+                        $canEdit = true;
+                    }
+                    $list[$key]['can_edit'] = $canEdit;
+                }
             }
         }
         $retval = array();
