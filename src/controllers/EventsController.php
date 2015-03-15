@@ -223,9 +223,11 @@ class EventsController extends ApiController {
                     $users = $user_mapper->getUserById($request->user_id);
                     $thisUser = $users['users'][0];
 
-                    $rating = $request->getParameter('rating');
-                    if(empty($rating)) {
+                    $rating = $request->getParameter('rating', false);
+                    if(false === $rating) {
                         throw new Exception('The field "rating" is required', 400);
+                    } elseif (false === is_numeric($rating) || $rating > 5) {
+                        throw new Exception('The field "rating" must be a number (1-5)', 400);
                     }
 
                     $commentText = $request->getParameter('comment');
