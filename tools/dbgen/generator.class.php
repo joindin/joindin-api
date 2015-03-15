@@ -374,6 +374,10 @@ class DataGenerator {
 
             $comment = $this->_genLorum();
 
+            // Exponential randomness, 0 will be the least given, 5 the most. Will take the dampening
+            // factor of the talk into account.
+            $rating = floor(log(rand(1, 1 << (3+$event->dampening)) / log(2)));
+
             $tmp = $this->getData()->getCommentSourceData();
             $source = $tmp[array_rand($tmp)];
 
@@ -383,12 +387,12 @@ class DataGenerator {
                 // It IS possible that we don't have any event comments at all. Therefore we can only push our SQL statements
                 // when at least 1 comment is available (we know that for a fact at this point)
                 echo "TRUNCATE event_comments;\n";
-                echo "INSERT INTO event_comments (event_id, comment, date_made, user_id, active, ID, cname, comment_type, source) VALUES \n";
+                echo "INSERT INTO event_comments (event_id, rating, comment, date_made, user_id, active, ID, cname, comment_type, source) VALUES \n";
                 $have_event_comments = true;
             }
 
-            printf ("(%d, '%s', %d, %s, %d, %d, %s, NULL, '%s')",
-                                   $event->id, $comment, $date_made, $user_id, 1, $id, $comment_name, $source);
+            printf ("(%d, %d, '%s', %d, %s, %d, %d, %s, NULL, '%s')",
+                                   $event->id, $rating, $comment, $date_made, $user_id, 1, $id, $comment_name, $source);
 
             $first = false;
         }
@@ -505,7 +509,12 @@ class DataGenerator {
 
             $event = new StdClass();
             $event->id = $id;
-
+            
+            // Add a dampening for this event. This is a 0-5 value (0 being the most used) that will give an overall
+            // view of the event. When a event wasn't good, it should reflect on the comments as well
+            // because they should be lower than usual.
+            
+            $event->dampening = floor(log(rand(1,256) / log(2)));
             // Store this event in the cache
             $this->_cacheStore('events', $id, $event);
 

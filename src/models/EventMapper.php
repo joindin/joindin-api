@@ -28,6 +28,7 @@ class EventMapper extends ApiMapper
             'tz_place' => 'event_tz_place',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
+            'event_average_rating' => 'avg_rating',            
             'event_comments_count' => 'comment_count',
             'tracks_count' => 'track_count',
             'talks_count' => 'talk_count',
@@ -64,6 +65,7 @@ class EventMapper extends ApiMapper
             'hashtag' => 'event_hashtag',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
+            'event_average_rating' => 'avg_rating',            
             'comments_enabled' => 'comments_enabled',
             'event_comments_count' => 'comment_count',
             'tracks_count' => 'track_count',
@@ -109,6 +111,9 @@ class EventMapper extends ApiMapper
         $where = "";
 
         $sql = 'select events.*, '
+            . '(select ifnull(round(avg(event_comments.rating)), 0) 
+                from event_comments where event_comments.event_id = events.ID) 
+                as avg_rating, '        
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
                 as attendee_count, '
             . 'abs(datediff(from_unixtime(events.event_start), 
@@ -118,15 +123,13 @@ class EventMapper extends ApiMapper
                 ELSE 0
                END as comments_enabled '
             . 'from events ';
-
         if(array_key_exists("tags", $params)) {
             $sql .= "left join tags_events on tags_events.event_id = events.ID 
                 left join tags on tags.ID = tags_events.tag_id ";
         }
-
-        $sql .= 'where active = 1 and '
-            . '(pending = 0 or pending is NULL) and '
-            . '(private <> "y" OR private IS NULL) ';
+        $sql .= 'where events.active = 1 and '
+            . '(events.pending = 0 or events.pending is NULL) and '
+            . '(events.private <> "y" OR events.private IS NULL) ';
 
         if(array_key_exists("event_id", $params)) {
             $where .= "and events.ID = :event_id ";
@@ -201,7 +204,7 @@ class EventMapper extends ApiMapper
 
         // now add all that where clause
         $sql .= $where;
-
+        
         // group by if we joined additional tables
         if(array_key_exists("tags", $params)) {
             $sql .= " group by events.ID ";
@@ -212,7 +215,6 @@ class EventMapper extends ApiMapper
 
         // limit clause
         $sql .= $this->buildLimit($resultsperpage, $start);
-
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
         if ($response) {

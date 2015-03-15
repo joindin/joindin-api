@@ -52,7 +52,8 @@ insert into events (
 	event_href,event_cfp_start,event_cfp_end,
 	event_voting,private,
 	pending,active,
-	ID
+	ID,
+    event_tz_cont,event_tz_place
 ) values (
 	'Test Event #1',
 	(select unix_timestamp()-345600),
@@ -63,7 +64,8 @@ insert into events (
 	'','seedload_hash',
 	'http://sampledomain.com',
 	null,null,0,
-	0,0,1,NULL
+	0,0,1,NULL,
+    "Europe","Amsterdam"
 );
 SET @pevtid:=LAST_INSERT_ID();
 /* ----------------------------------*/
@@ -94,7 +96,8 @@ insert into events (
 	event_href,event_cfp_start,event_cfp_end,
 	event_voting,private,
 	pending,active,
-	ID
+	ID,
+    event_tz_cont,event_tz_place
 ) values (
 	'Test Event #2',
 	unix_timestamp(),
@@ -105,7 +108,8 @@ insert into events (
 	'','seedload_hash',
 	'http://sampledomain.com',
 	null,null,0,
-	0,0,1,NULL
+	0,0,1,NULL,
+    "America","Denver"
 );
 SET @evtid:=LAST_INSERT_ID();
 /* ----------------------------------*/

@@ -39,6 +39,9 @@ function checkEventData(ev) {
 	expect(ev.attendee_count).toBeDefined();
 	expect(ev.uri).toBeDefined();
 	expect(ev.verbose_uri).toBeDefined();
+        if(typeof ev.average_rating != 'undefined') {
+            expect(typeof ev.average_rating).toBe('number');
+        }	
 	expect(ev.comments_uri).toBeDefined();
 	expect(ev.talks_uri).toBeDefined();
 	expect(ev.website_uri).toBeDefined();
@@ -74,6 +77,9 @@ function checkVerboseEventData(evt) {
   expect(evt.location).toBeDefined();
   expect(evt.attendee_count).toBeDefined();
   expect(evt.comments_enabled).toBeDefined();
+  if(typeof evt.average_rating != 'undefined') {
+    expect(typeof evt.average_rating).toBe('number');
+  }  
   expect(evt.event_comments_count).toBeDefined();
   expect(evt.talks_count).toBeDefined();
   expect(evt.tracks_count).toBeDefined();
@@ -125,6 +131,8 @@ function checkVerboseEventData(evt) {
 }
 
 function checkEventCommentData(comment) {
+  expect(comment.rating).toBeDefined();
+  expect(typeof comment.rating).toBeTypeOrNull('number');    
   expect(comment.comment).toBeDefined();
   expect(typeof comment.comment).toBe('string');
   expect(comment.created_date).toBeDefined();

@@ -6,6 +6,12 @@
         "verbs": ["GET"]
     },
     {
+        "path": "/events(/[^/]+)*/comments",
+        "controller": "Event_commentsController",
+        "action": "createComment",
+        "verbs": ["POST"]
+    },
+    {
         "path": "/events(/[^/]+)*/?$",
         "controller": "EventsController",
         "action": "postAction",
