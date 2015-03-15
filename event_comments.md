@@ -5,7 +5,7 @@ title: Joind.in API Documentation
 
 ## Event Comments
 
-Users can comment on events.  Currently the user must be signed in before they can comment (anonymous options are likely to appear in the future).
+Users can comment on events.  Currently the user must be signed in before they can comment (anonymous options may appear in the future).
 
 ## Event Comments Format
 
@@ -14,6 +14,7 @@ Event comments are available from the location in the ``comments_uri`` of an eve
 ~~~~
 comments:
     0:
+        rating: 4
         comment: Proin feugiat mattis dui, ut cursus purus feugiat vel. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Proin feugiat mattis dui, ut cursus purus feugiat vel. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Etiam ligula elit, condimentum lacinia fermentum nec, elementum id urna. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo.
         created_date: 2013-10-03T16:30:02+02:00
         user_display_name: Maria Hansen
@@ -32,6 +33,7 @@ Verbose adds the ``source`` and ``gravatar_hash`` fields to the representation.
 
 The fields in an event comment are as follows:
 
+*  ``rating``: The rating from the user (not all our platforms do or historically did support this, so this field is often empty)
 *  ``comment``: The comment made by the user
 *  ``source``: Which tool the user made to create this comment (can be empty if we don't have the info)
 *  ``created_date``:  The date that this comment was made, in ISO format
@@ -51,9 +53,9 @@ The fields in an event comment are as follows:
 
 You can add comments to events via the API; you must be authenticated to do so.
 
-To create a new comment, POST the comment body in an array element called ``comment`` to the event comments collection that you want to add it to.  The API will pick up your identity and add the timestamp.  E.g (using curl against my test system):
+To create a new comment, POST the ``rating`` and ``comment`` comments fields in an array to the event comments collection that you want to add it to.  The API will pick up your identity and add the timestamp.  E.g (using curl against my test system):
 
-<pre class="embedcurl">curl -v -H "Content-Type: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" -X POST http://api.joindin.local/v2.1/events/31/comments --data '{"comment": "Wonderful event, thanks!"}'
+<pre class="embedcurl">curl -v -H "Content-Type: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" -X POST http://api.dev.joind.in/v2.1/events/31/comments --data '{"rating": 5, "comment": "Wonderful event, thanks!"}'
 </pre>
 
 <!-- You only need to reference this script once per page. -->
