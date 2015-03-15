@@ -28,7 +28,7 @@ class EventMapper extends ApiMapper
             'tz_place' => 'event_tz_place',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
-            'average_rating' => 'avg_rating',            
+            'event_average_rating' => 'avg_rating',            
             'event_comments_count' => 'comment_count',
             'tracks_count' => 'track_count',
             'talks_count' => 'talk_count',
@@ -65,7 +65,7 @@ class EventMapper extends ApiMapper
             'hashtag' => 'event_hashtag',
             'attendee_count' => 'attendee_count',
             'attending' => 'attending',
-            'average_rating' => 'avg_rating',            
+            'event_average_rating' => 'avg_rating',            
             'comments_enabled' => 'comments_enabled',
             'event_comments_count' => 'comment_count',
             'tracks_count' => 'track_count',
@@ -111,8 +111,11 @@ class EventMapper extends ApiMapper
         $where = "";
 
         $sql = 'select events.*, '
-            . '(select ifnull(round(avg(event_comments.rating)), 0) from event_comments where event_comments.event_id = events.ID) as avg_rating, '        
-            . '(select count(*) from user_attend where user_attend.eid = events.ID) as attendee_count, '
+            . '(select ifnull(round(avg(event_comments.rating)), 0) 
+                from event_comments where event_comments.event_id = events.ID) 
+                as avg_rating, '        
+            . '(select count(*) from user_attend where user_attend.eid = events.ID) 
+                as attendee_count, '
             . 'abs(datediff(from_unixtime(events.event_start), 
                 from_unixtime('.mktime(0, 0, 0).'))) as score, '
             . 'CASE 
