@@ -198,9 +198,7 @@ class OAuthModel
         $fp = fopen('/dev/urandom', 'rb');
         $entropy = fread($fp, 32);
         fclose($fp);
-        // in case /dev/urandom is reusing entropy from its pool,
-        // let's add a bit more entropy
-        $entropy .= uniqid(mt_rand(), true);
+
         $hash = sha1($entropy); // sha1 gives us a 40-byte hash
         return $hash;
     }
