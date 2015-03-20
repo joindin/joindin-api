@@ -147,7 +147,7 @@ class OAuthModel
     }
 
     /**
-     * Set's the password for a specified user id.
+     * Sets the password for a specified user id.
      *
      * @param  int     $userId   user's id
      * @param  string  $password the new password
@@ -309,6 +309,54 @@ class OAuthModel
         $result = $stmt->fetch();
         if ($result) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check whether the consumer related to an access token may use
+     * the "password" grant type during the OAuth process
+     *
+     * @param string $token The access token
+     * @return bool Whether the consumer is permitted
+     */
+    public function isAccessTokenPermittedPasswordGrant($token) {
+        $sql = 'select c.enable_password_grant from '
+            . 'oauth_consumers c '
+            . 'inner join oauth_access_tokens at using (consumer_key) '
+            . 'where at.access_token = :token '
+            . 'and c.enable_password_grant = 1';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("token" => $token));
+        $result = $stmt->fetch();
+        if ($result) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check that this password is current for this user ID
+     *
+     * Useful when confirming old password before changing to a new one
+     *
+     * @param int $userId The ID of the user we're checking
+     * @param string $password Their supplied password
+     * @return boolean True if the password is correct, false otherwise
+     */
+    public function reverifyUserPassword($userId, $password) {
+        $sql = 'SELECT ID, password FROM user
+            WHERE ID = :user_id
+            AND verified = 1';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("user_id" => $userId)); 
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            if(password_verify(md5($password), $result['password'])) {
+                return true;
+            }
         }
 
         return false;

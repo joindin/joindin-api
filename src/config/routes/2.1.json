@@ -78,6 +78,13 @@
     },
 
     {
+        "path": "/users(/[^/]+)*/password",
+        "controller": "UsersController",
+        "action": "updatePassword",
+        "verbs": ["PUT"]
+    },
+
+    {
         "path": "/event_comments(/[^/]+)*/?$",
         "controller": "Event_commentsController",
         "action": "handle",
@@ -102,13 +109,6 @@
         "path": "/emails/reminders/username",
         "controller": "EmailsController",
         "action": "usernameReminder",
-        "verbs": ["POST"]
-    },
-
-    {
-        "path": "/password/?$",
-        "controller": "PasswordController",
-        "action": "handle",
         "verbs": ["POST"]
     },
 
