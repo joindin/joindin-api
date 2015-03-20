@@ -168,4 +168,56 @@ class UsersController extends ApiController {
             }
         }
     }
+
+    /**
+     * Allow a user to set a new value for their password
+     *
+     * @param Request $request the request.
+     * @param         $db      the database.
+     *
+     * @return mixed
+     */
+    public function updatePassword(Request $request, $db)
+    {
+        if (!isset($request->user_id)) {
+            throw new Exception("You must be logged in to change your password", 400);
+        }
+
+        // only support setting password for the currently logged in user
+        $userId = $request->getUserId();
+        
+        $password = $request->getParameter('password');
+        if (empty($password)) {
+            throw new Exception('The field "password" is required and must not be empty', 400);
+        }
+
+        // they must supply their old password to be allowed to set a new one
+        $old_password = $request->getParameter('old_password');
+        if (empty($old_password)) {
+            throw new Exception('The field "old_password" is required and must not be empty', 400);
+        }
+
+        $oauthModel = $request->getOauthModel($db);
+        $accessToken = $request->getAccessToken();
+
+        // check if this client is allowed to do this
+        if (!$oauthModel->isAccessTokenPermittedPasswordGrant($accessToken)) {
+            throw new Exception("This client cannot authenticate using the password grant type", 403);
+        }
+
+        // is the old password correct before we proceed?
+        if (!$oauthModel->reverifyUserPassword($userId, $old_password)) {
+            throw new Exception("The credentials could not be verified", 403);
+        }
+
+        // now update the password
+        if (!$oauthModel->setPasswordForUserId($userId, $password)) {
+            throw new Exception("Update of password failed", 403);
+        }
+
+        // we're good!
+        header("Content-Length: 0", NULL, 204);
+        exit; // no more content
+
+    }
 }

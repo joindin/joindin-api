@@ -78,6 +78,13 @@
     },
 
     {
+        "path": "/users(/[^/]+)*/password",
+        "controller": "UsersController",
+        "action": "updatePassword",
+        "verbs": ["PUT"]
+    },
+
+    {
         "path": "/event_comments(/[^/]+)*/?$",
         "controller": "Event_commentsController",
         "action": "handle",
