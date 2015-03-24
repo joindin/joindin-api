@@ -410,4 +410,80 @@ class UserMapper extends ApiMapper
         $verify_stmt->execute($verify_data);
         return true;
     }
+
+    /**
+     * Does the currently-authenticated user have right to edit this user?
+     *
+     * User must be the edited user, or a site admin
+     *
+     * @param int $user_id The identifier for the user to edit
+     * @return bool True if the user has privileges, false otherwise
+     */
+    public function thisUserHasAdminOn($user_id) {
+        // do we even have an authenticated user?
+        $loggedInUser = $this->_request->getUserId();
+        if(false !== $loggedInUser) {
+            // are we asking for access to the current user?
+            if($loggedInUser == $user_id) {
+                // user can edit themselves
+                return true;
+            }
+
+            // is this a site admin?
+            if($this->isSiteAdmin($loggedInUser)) {
+                return true;
+            }
+        } 
+        return false;
+    }
+
+    /**
+     * Update an existing user record
+     *
+     * @param array $user   An array of fields to change
+     * @param int   $userId The user to update
+     * @return bool True if successful
+     */
+    public function editUser($user, $userId) {
+        // Sanity check: ensure all mandatory fields are present.
+        $mandatory_fields = array(
+            'full_name',
+            'email',
+        );
+        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($user));
+        if (!$contains_mandatory_fields) {
+            throw new Exception("Missing mandatory fields");
+        }
+
+        // encode the password
+        $user['password'] = password_hash(md5($user['password']), PASSWORD_DEFAULT);
+
+        $sql = "update user set ";
+
+        // create list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+        // add the fields that we don't expose for users
+        $fields["email"] = "email";
+        $fields["password"] = "password";
+
+        foreach ($fields as $api_name => $column_name) {
+            if (isset($user[$api_name])) {
+                $pairs[] = "$column_name = :$api_name";
+            }
+        }
+
+        // comma separate all pairs and add to SQL string
+        $sql .= implode(', ', $pairs);
+        $sql .= " where ID = :user_id ";
+
+        $stmt   = $this->_db->prepare($sql);
+        $result = $stmt->execute($user);
+        if($result) {
+            return true;
+        }
+
+        return false;
+    }
+
+
 }
