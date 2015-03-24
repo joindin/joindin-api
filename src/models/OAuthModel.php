@@ -147,33 +147,6 @@ class OAuthModel
     }
 
     /**
-     * Sets the password for a specified user id.
-     *
-     * @param  int     $userId   user's id
-     * @param  string  $password the new password
-     * @return boolean           true on success
-     */
-    public function setPasswordForUserId($userId, $password)
-    {
-         $hash =  password_hash(md5($password), PASSWORD_DEFAULT);
-         $sql  = 'UPDATE user SET password=:password
-                  WHERE ID=:user_id';
-         $stmt = $this->_db->prepare($sql);
-         $result = $stmt->execute(
-             array(
-                 "user_id"  => $userId, 
-                 "password" => $hash 
-             )
-         );
-
-         if ($result) {
-             return true;
-         }
-
-         return false;
-    }
-
-    /**
      * Retrieve the user's uri based on the user id.
      *
      * @param  int    $userId user's id.

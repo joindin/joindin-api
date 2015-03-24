@@ -78,9 +78,9 @@
     },
 
     {
-        "path": "/users(/[^/]+)*/password",
+        "path": "/users(/[0-9]+)/?$",
         "controller": "UsersController",
-        "action": "updatePassword",
+        "action": "updateUser",
         "verbs": ["PUT"]
     },
 
