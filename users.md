@@ -38,7 +38,7 @@ meta:
 
 ## Verbose User Format
 
-The verbose user format includes the ``gravatar_hash``, ``admin`` and ``can_edit`` fields.
+The verbose user format includes the ``gravatar_hash``, ``email``, admin`` and ``can_edit`` fields.
 
 ## User Fields
 
