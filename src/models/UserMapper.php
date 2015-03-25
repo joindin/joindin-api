@@ -164,8 +164,19 @@ class UserMapper extends ApiMapper
             }
 
             foreach ($results as $key => $row) {
+                // can the logged in user edit this user?
+                $canEdit = false;
+                if ($userIsSiteAdmin || $row['ID'] == $this->_request->user_id) {
+                    $canEdit = true;
+                }
+                
                 if (true === $verbose) {
                     $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
+
+                    // if this record can be edited, then expose the email address
+                    if ($canEdit) {
+                        $list[$key]['email'] = $row['email'];
+                    }
 
                     // expose the admin field if the currently logged in user is a site admin
                     if ($userIsSiteAdmin) {
@@ -187,11 +198,6 @@ class UserMapper extends ApiMapper
                     . $row['ID'] . '/talk_comments/';
                 
                 if ($verbose && isset($this->_request->user_id)) {
-                    // can the logged in user edit this user?
-                    $canEdit = false;
-                    if ($userIsSiteAdmin || $row['ID'] == $this->_request->user_id) {
-                        $canEdit = true;
-                    }
                     $list[$key]['can_edit'] = $canEdit;
                 }
             }
