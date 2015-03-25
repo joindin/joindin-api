@@ -20,6 +20,7 @@ users:
         full_name: Lorna Mitchell
         twitter_username: lornajane
         gravatar_hash: f6bb323eb6b2ad7f5ca2f8f3fc15f887
+        email: lornajane@example.org
         admin: 0
         uri: http://api.joind.in/v2.1/users/110
         verbose_uri: http://api.joind.in/v2.1/users/110?verbose=yes
@@ -45,6 +46,7 @@ The verbose user format includes the ``gravatar_hash``, ``admin`` and ``can_edit
 *  ``full_name``: The user's name - this is used as their display name in most cases
 *  ``twitter_username``: If the user supplied their twitter username, it is here
 *  ``gravatar_hash``: Unique identifier for showing their gravatar image; append this to ``http://www.gravatar.com/avatar/`` to make the image URL
+*  ``email``: The user's email addres. Only visible to the current user or a site admin.
 *  ``admin``: Whether this user is a site admin. Only visible if the current user is a site admin.
 *  ``website_uri``: Where to find this user's joind.in page on the web
 *  ``can_edit``: Whether the current user can edit this user or not.
