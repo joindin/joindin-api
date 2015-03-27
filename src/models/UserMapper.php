@@ -397,7 +397,7 @@ class UserMapper extends ApiMapper
     public function thisUserHasAdminOn($user_id) {
         // do we even have an authenticated user?
         $loggedInUser = $this->_request->getUserId();
-        if(false !== $loggedInUser) {
+        if($loggedInUser) {
             // are we asking for access to the current user?
             if($loggedInUser == $user_id) {
                 // user can edit themselves
