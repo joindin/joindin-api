@@ -249,10 +249,7 @@ class UsersController extends ApiController {
             // Optional Fields
             $twitter_username = $request->getParameter("twitter_username", false);
             if(false !== $twitter_username) {
-                $twitter_username = filter_var(trim($twitter_username), FILTER_SANITIZE_STRING);
-                if($twitter_username) {
-                    $user['twitter_username'] = $twitter_username;
-                }
+                $user['twitter_username'] = filter_var(trim($twitter_username), FILTER_SANITIZE_STRING);
             }
 
             if($errors) {
