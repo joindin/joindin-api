@@ -265,7 +265,6 @@ class UsersController extends ApiController {
                 exit; // no more content
             }
         }
-        return false;
-
+        throw new Exception("Could not update user", 400);
     }
 }
