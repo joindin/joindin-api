@@ -455,16 +455,19 @@ class UserMapper extends ApiMapper
             throw new Exception("Missing mandatory fields");
         }
 
+        // create list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+
         // encode the password
-        $user['password'] = password_hash(md5($user['password']), PASSWORD_DEFAULT);
+        if(isset($user['password'])) {
+            $user['password'] = password_hash(md5($user['password']), PASSWORD_DEFAULT);
+            $fields["password"] = "password";
+        }
 
         $sql = "update user set ";
 
-        // create list of column to API field name for all valid fields
-        $fields = $this->getVerboseFields();
         // add the fields that we don't expose for users
         $fields["email"] = "email";
-        $fields["password"] = "password";
 
         foreach ($fields as $api_name => $column_name) {
             if (isset($user[$api_name])) {
