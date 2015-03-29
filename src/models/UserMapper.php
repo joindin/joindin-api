@@ -157,9 +157,30 @@ class UserMapper extends ApiMapper
 
         // add per-item links 
         if(is_array($list) && count($list)) {
+            $userIsSiteAdmin = false;
+            if ($this->_request->user_id && $this->isSiteAdmin($this->_request->user_id)) {
+                $userIsSiteAdmin = true;
+            }
+
             foreach ($results as $key => $row) {
+                // can the logged in user edit this user?
+                $canEdit = false;
+                if ($userIsSiteAdmin || $row['ID'] == $this->_request->user_id) {
+                    $canEdit = true;
+                }
+                
                 if (true === $verbose) {
                     $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
+
+                    // if this record can be edited, then expose the email address
+                    if ($canEdit) {
+                        $list[$key]['email'] = $row['email'];
+                    }
+
+                    // expose the admin field if the currently logged in user is a site admin
+                    if ($userIsSiteAdmin) {
+                        $list[$key]['admin'] = $row['admin'];
+                    }
                 }
                 $list[$key]['uri'] = $base . '/' . $version . '/users/' 
                     . $row['ID'];
@@ -174,6 +195,10 @@ class UserMapper extends ApiMapper
                     . $row['ID'] . '/hosted/';
                 $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/users/'
                     . $row['ID'] . '/talk_comments/';
+                
+                if ($verbose && isset($this->_request->user_id)) {
+                    $list[$key]['can_edit'] = $canEdit;
+                }
             }
         }
         $retval = array();
@@ -186,7 +211,7 @@ class UserMapper extends ApiMapper
 
     public function isSiteAdmin($user_id) {
         $results = $this->getUsers(1, 0, 'user.ID=' . (int)$user_id, null);
-        if($results[0]['admin'] == 1) {
+        if(isset($results[0]) && $results[0]['admin'] == 1) {
             return true;
         }
         return false;
