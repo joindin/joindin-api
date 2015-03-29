@@ -158,7 +158,7 @@ class UserMapper extends ApiMapper
         // add per-item links 
         if(is_array($list) && count($list)) {
             $userIsSiteAdmin = false;
-            if ($this->isSiteAdmin($this->_request->user_id)) {
+            if ($this->_request->user_id && $this->isSiteAdmin($this->_request->user_id)) {
                 $userIsSiteAdmin = true;
             }
 
@@ -211,7 +211,7 @@ class UserMapper extends ApiMapper
 
     public function isSiteAdmin($user_id) {
         $results = $this->getUsers(1, 0, 'user.ID=' . (int)$user_id, null);
-        if($results[0]['admin'] == 1) {
+        if(isset($results[0]) && $results[0]['admin'] == 1) {
             return true;
         }
         return false;
