@@ -62,6 +62,7 @@ function testRegisterVerifiedUser() {
         // Call the get user method on the place we're told to go
         testUserByUrl(res.headers.location);
         testUserLogin(username, password);
+        testEditUser(username, password);
       }
 		})
 	.toss();
@@ -146,6 +147,47 @@ function testForgotUsernameFails(email) {
       "email": email
     }, {json:true})
     .expectStatus(400)
+    .toss();
+}
+
+function testEditUser(username, password) {
+  frisby.create('Edit user')
+    .post(baseURL + "/v2.1/token", {
+      "grant_type": "password",
+      "username": username,
+      "password": password,
+      "client_id": "0000",
+      "client_secret": "1111"
+    }, {json:true})
+    .expectStatus(200) // fails if user didn't get autoverified
+    .after(function(error, res, data) {
+      if(res.statusCode == 200) {
+        access_token = data.access_token;
+        user_uri = data.user_uri;
+        frisby.create('Edit user no data')
+          .put(user_uri, {
+          }, {json:true, headers: {'Authorization' : 'Bearer ' + access_token}})
+        .expectStatus(400)
+        .toss()
+
+        frisby.create('Edit user good data')
+          .put(user_uri, {
+            "email": username + "@example.com",
+            "full_name": "An updated test user"
+          }, {json:true, headers: {'Authorization' : 'Bearer ' + access_token}})
+        .expectStatus(204)
+        .after(function(error, res, data) {
+          frisby.create('Check user data after edit name')
+            .get(user_uri) 
+              .expectStatus(200)
+              .expectHeader("content-type", "application/json; charset=utf8")
+              .expectBodyContains('An updated test user')
+          .toss();
+
+        })
+        .toss()
+      }
+    })
     .toss();
 }
 

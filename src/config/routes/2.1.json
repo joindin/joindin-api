@@ -78,6 +78,13 @@
     },
 
     {
+        "path": "/users(/[0-9]+)/?$",
+        "controller": "UsersController",
+        "action": "updateUser",
+        "verbs": ["PUT"]
+    },
+
+    {
         "path": "/event_comments(/[^/]+)*/?$",
         "controller": "Event_commentsController",
         "action": "handle",

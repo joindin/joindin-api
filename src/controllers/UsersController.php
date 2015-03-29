@@ -168,4 +168,103 @@ class UsersController extends ApiController {
             }
         }
     }
+
+    /**
+     * Allow a user to edit their own record
+     *
+     * @param Request $request the request.
+     * @param         $db      the database.
+     *
+     * @return mixed
+     */
+    public function updateUser(Request $request, $db)
+    {
+        if (false === ($request->getUserId())) {
+            throw new Exception("You must be logged in to change a user account", 400);
+        }
+
+        $userId = $this->getItemId($request);
+
+        $user_mapper= new UserMapper($db, $request);
+        if($user_mapper->thisUserHasAdminOn($userId)) {
+        
+            $oauthModel = $request->getOauthModel($db);
+            $accessToken = $request->getAccessToken();
+
+            // only trusted clients can change account details
+            if (!$oauthModel->isAccessTokenPermittedPasswordGrant($accessToken)) {
+                throw new Exception("This client does not have permission to perform this operation", 403);
+            }
+
+            // start building up a representation of the user
+            $user = array("user_id" => $userId);
+            $errors = array();
+
+            // start with passwords
+            $password = $request->getParameter('password');
+            if(!empty($password)) {
+
+                // they must supply their old password to be allowed to set a new one
+                $old_password = $request->getParameter('old_password');
+                if (empty($old_password)) {
+                    throw new Exception('The field "old_password" is needed to update a user password', 400);
+                }
+
+                // is the old password correct before we proceed?
+                if (!$oauthModel->reverifyUserPassword($userId, $old_password)) {
+                    throw new Exception("The credentials could not be verified", 403);
+                }
+
+                $validity = $user_mapper->checkPasswordValidity($password);
+                if(true === $validity) {
+                    // OK good, go ahead
+                    $user['password'] = $password;
+                } else {
+                    // the password wasn't acceptable, tell the user why
+                    $errors = array_merge($errors, $validity);
+                }
+            }
+
+            $user['full_name'] = filter_var(trim($request->getParameter("full_name")), FILTER_SANITIZE_STRING);
+            if(empty($user['full_name'])) {
+                $errors[] = "'full_name' is a required field";
+            }
+
+            $user['email'] = filter_var(trim($request->getParameter("email")), FILTER_VALIDATE_EMAIL);
+            if(empty($user['email'])) {
+                $errors[] = "A valid entry for 'email' is required";
+            } else {
+                // does anyone else have this email?
+                $existing_user = $user_mapper->getUserByEmail($user['email']);
+                if($existing_user['users']) {
+                    // yes but is that our existing user being found?
+                    $old_user = $user_mapper->getUserById($userId);
+                    if($old_user['users'][0]['uri'] != $existing_user['users'][0]['uri']) {
+                        // the email address exists and not on this user's account
+                        $errors[] = "That email is already associated with another account";
+                    }
+                }
+            }
+
+            // Optional Fields
+            $twitter_username = $request->getParameter("twitter_username", false);
+            if(false !== $twitter_username) {
+                $user['twitter_username'] = filter_var(trim($twitter_username), FILTER_SANITIZE_STRING);
+            }
+
+            if($errors) {
+                throw new Exception(implode(". ", $errors), 400);
+            } else {
+                // now update the user
+                if (!$user_mapper->editUser($user, $userId)) {
+                    throw new Exception("User not updated", 400);
+                }
+
+                // we're good!
+                header("Content-Length: 0", NULL, 204);
+                exit; // no more content
+            }
+        }
+        throw new Exception("Could not update user", 400);
+    }
 }
