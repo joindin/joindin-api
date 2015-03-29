@@ -169,6 +169,23 @@ function testEditUser(username, password) {
           }, {json:true, headers: {'Authorization' : 'Bearer ' + access_token}})
         .expectStatus(400)
         .toss()
+
+        frisby.create('Edit user good data')
+          .put(user_uri, {
+            "email": username + "@example.com",
+            "full_name": "An updated test user"
+          }, {json:true, headers: {'Authorization' : 'Bearer ' + access_token}})
+        .expectStatus(204)
+        .after(function(error, res, data) {
+          frisby.create('Check user data after edit name')
+            .get(user_uri) 
+              .expectStatus(200)
+              .expectHeader("content-type", "application/json; charset=utf8")
+              .expectBodyContains('An updated test user')
+          .toss();
+
+        })
+        .toss()
       }
     })
     .toss();
