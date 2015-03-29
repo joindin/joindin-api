@@ -88,6 +88,12 @@ class Event_commentsController extends ApiController {
         }
 
         $comment_mapper = new EventCommentMapper($db, $request);
+
+        // should rating be allowed?
+        if ($comment_mapper->hasUserRatedThisEvent($comment['user_id'], $comment['event_id'])) {
+            $comment['rating'] = 0;
+        }
+
         try {
             $new_id = $comment_mapper->save($comment);
         } catch (Exception $e) {
