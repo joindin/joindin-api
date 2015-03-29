@@ -6,8 +6,7 @@ class OAuthModel
      * @var PDO
      */
     protected $_db;
-    protected $base;
-    protected $version;
+    protected $request;
 
     /**
      * Object constructor, sets up the db and some objects need request too
@@ -18,8 +17,7 @@ class OAuthModel
     public function __construct(PDO $db, Request $request)
     {
         $this->setDb($db);
-        $this->setBase($request->base);
-        $this->setVersion($request->version);
+        $this->setRequest($request);
     }
 
     /**
@@ -39,19 +37,19 @@ class OAuthModel
     }
 
     /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
+    }
+
+    /**
      * @return mixed
      */
     public function getBase()
     {
-        return $this->base;
-    }
-
-    /**
-     * @param mixed $base
-     */
-    public function setBase($base)
-    {
-        $this->base = $base;
+        return $this->request->base;
     }
 
     /**
@@ -59,15 +57,7 @@ class OAuthModel
      */
     public function getVersion()
     {
-        return $this->version;
-    }
-
-    /**
-     * @param mixed $version
-     */
-    public function setVersion($version)
-    {
-        $this->version = $version;
+        return $this->request->version;
     }
 
     /**
@@ -116,7 +106,7 @@ class OAuthModel
         $accessToken = $this->newAccessToken($clientId, $userId);
 
         // we also want to send back the logged in user's uri
-        $userUri = $this->base . '/' . $this->version . '/users/' . $userId;
+        $userUri = $this->getBase() . '/' . $this->getVersion() . '/users/' . $userId;
 
         return array('access_token' => $accessToken, 'user_uri' => $userUri);
     }
