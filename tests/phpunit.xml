@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- https://github.com/sebastianbergmann/phpunit/wiki/Release-Announcement-for-PHPUnit-4.5.0 -->
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         strict="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         checkForUnintentionallyCoveredCode="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTestSize="true"
          bootstrap="./bootstrap.php"
          colors="true"
          verbose="true">
