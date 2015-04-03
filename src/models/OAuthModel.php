@@ -143,7 +143,7 @@ class OAuthModel
      * @return string         user's uri.
      */
     public function getUserUri($userId) {
-        $userUri = $this->base . '/' . $this->version . '/users/' . $userId;
+        $userUri = $this->getBase() . '/' . $this->getVersion() . '/users/' . $userId;
 
         return $userUri;
     }
