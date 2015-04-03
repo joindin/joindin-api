@@ -488,5 +488,70 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * Function to get just the user ID
+     *
+     * @param string $username The username of the user we're looking for
+     * @return $user_id The user's ID (or false, if we didn't find her)
+     */
+    public function getUserIdFromUsername($username) {
+        $sql = "select ID from user where username = :username";
+
+        $data = array("username" => $username);
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute($data);
+        if($response) {
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if(isset($row['ID'])) {
+                return $row['ID'];
+            }
+        }
+        return false;
+    }
+
+    /**
+     * We don't expose the email address in resources, but sometimes we need 
+     * to email users, so this is how to get the email address
+     *
+     * @param int $user_id The ID of the user
+     * @return string $email The email address
+     */
+    public function getEmailByUserId($user_id) {
+        $sql = "select email from user where ID = :user_id";
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array("user_id" => $user_id));
+        if($response) {
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if(isset($row['email'])) {
+                return $row['email'];
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Generate and store a token in the password_reset_tokens table for this 
+     * user, when they come to web2 with this token, we'll let them set a new
+     * password
+     */
+    public function generatePasswordResetTokenForUserId($user_id) {
+        $token = bin2hex(openssl_random_pseudo_bytes(8));
+
+        $sql = "insert into password_reset_tokens set "
+            . "user_id = :user_id, token = :token";
+
+        $stmt = $this->_db->prepare($sql);
+        $data = array(
+            "user_id" => $user_id, 
+            "token" => $token);
+
+        $response = $stmt->execute($data);
+        if ($response) {
+            return $token;
+        }
+
+        return false;
+    }
 
 }

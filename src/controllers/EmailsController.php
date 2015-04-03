@@ -54,4 +54,31 @@ class EmailsController extends ApiController {
         }
     }
 
+    public function passwordReset($request, $db) {
+        $user_mapper= new UserMapper($db, $request);
+        $username = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);
+        if(empty($username)) {
+            throw new Exception("A username must be supplied", 400);
+        } else {
+            $list = $user_mapper->getUserByUsername($username);
+            if(is_array($list['users']) && count($list['users'])) {
+                $user = $list['users'][0];
+
+                $user_id = $user_mapper->getUserIdFromUsername($username);
+                $email = $user_mapper->getEmailByUserId($user_id);
+                $recipients = array($email);
+
+                // we need a token to send so we know it is a valid reset
+                $token = $user_mapper->generatePasswordResetTokenForUserId($user_id);
+
+                $emailService = new UserPasswordResetEmailService($this->config, $recipients, $user, $token);
+                $emailService->sendEmail();
+
+                header("Content-Length: 0", NULL, 202);
+                exit;
+            }
+            throw new Exception("Can't find that user", 400);
+        }
+    }
+
 }
