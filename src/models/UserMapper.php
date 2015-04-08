@@ -554,4 +554,49 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * When the user forgets their password, we generate and send them a token.
+     * Check that the token is valid, find out which user this is, save their
+     * new password and then delete their other tokens
+     *
+     * @param string $token    The reset we sent them by email (link goes to web2)
+     * @param string $password The new password they chose
+     */
+    public function resetPassword($token, $password) {
+        // does the token exist, and whose is it?
+        $select_sql = "select user_id from password_reset_tokens "
+            . "where token = :token";
+
+        $select_stmt = $this->_db->prepare($select_sql);
+        $data = array(
+            "token" => $token);
+
+        $response = $select_stmt->execute($data);
+        if($response) {
+            $row = $select_stmt->fetch(\PDO::FETCH_ASSOC);
+            if($row && is_array($row)) {
+                $user_id = $row['user_id'];
+
+                // save the new password
+                $update_sql = "update user set password = :password "
+                    . "where ID = :user_id";
+
+                $update_stmt = $this->_db->prepare($update_sql);
+                $update_data = array(
+                    "password" => password_hash(md5($password), PASSWORD_DEFAULT),
+                    "user_id"  => $user_id);
+                $update_stmt->execute($update_data);
+
+                // delete all the user's tokens; they don't need them now
+                $delete_sql = "delete from password_reset_tokens "
+                    . "where user_id = :user_id";
+
+                $stmt = $this->_db->prepare($delete_sql);
+                $stmt->execute(array("user_id"  => $user_id));
+
+                // all good
+                return true;
+            }
+        }
+    }
 }

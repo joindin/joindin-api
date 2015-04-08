@@ -267,4 +267,26 @@ class UsersController extends ApiController {
         }
         throw new Exception("Could not update user", 400);
     }
+
+    public function passwordReset(Request $request, $db)
+    {
+        $token = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
+        if(empty($token)) {
+            throw new Exception("Reset token must be supplied", 400);
+        }
+
+        $password = $request->getParameter("password");
+        if(empty($password)) {
+            throw new Exception("New password must be supplied", 400);
+        }
+
+        $user_mapper = new UserMapper($db, $request);
+        $success = $user_mapper->resetPassword($token, $password);
+        if($success) {
+            header("Content-Length: 0", NULL, 204);
+            exit; // no more content
+        } else {
+            throw new Exception("Verification failed", 400);
+        }
+    }
 }
