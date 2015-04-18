@@ -185,4 +185,28 @@ class TalkCommentMapper extends ApiMapper {
 
         return $comment_id;
     }
+
+    /**
+     * Has this user provided a rating for this talk which is greater than zero?
+     *
+     * @param  integer  $user_id
+     * @param  integer  $talk_id
+     * @return boolean
+     */
+    public function hasUserRatedThisTalk($user_id, $talk_id)
+    {
+        $sql = 'select ID from talk_comments '
+            . 'where talk_id = :talk_id and user_id = :user_id and rating > 0';
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array(
+            ':talk_id' => $talk_id,
+            ':user_id' => $user_id,
+        ));
+
+        if ($stmt->fetch()) {
+            return true;
+        }
+        return false;
+    }
 }
