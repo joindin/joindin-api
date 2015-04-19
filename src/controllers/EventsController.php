@@ -303,7 +303,22 @@ class EventsController extends ApiController {
                 $event_owner = $user_mapper->getUserById($request->user_id);
                 $event['contact_name'] = $event_owner['users'][0]['full_name'];
 
-                if($user_mapper->isSiteAdmin($request->user_id)) {
+
+                // When a site admin creates an event, we want to approve it immediately
+                $approveEventOnCreation = $user_mapper->isSiteAdmin($request->user_id);
+
+                // Do we want to automatically approve when testing?
+                if (isset($this->config['features']['allow_auto_approve_events'])
+                    && $this->config['features']['allow_auto_approve_events']) {
+
+                    if ($request->getParameter("auto_approve_event") == "true") {
+                        // The test suite sends this extra field, if we got
+                        // this far then this platform supports this
+                        $approveEventOnCreation = true;
+                    }
+                }
+
+                if ($approveEventOnCreation) {
                     $event_id = $event_mapper->createEvent($event, true);
 
                     // redirect to event listing
