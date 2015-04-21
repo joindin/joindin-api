@@ -17,9 +17,11 @@ spl_autoload_register('apiv2Autoload');
 
 /**
  * Autoloader
- * 
+ *
+ * @codeCoverageIgnore
+ *
  * @param string $classname name of class to load
- * 
+ *
  * @return boolean
  */
 function apiv2Autoload($classname)
