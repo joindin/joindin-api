@@ -568,8 +568,7 @@ class UserMapper extends ApiMapper
             . "where token = :token";
 
         $select_stmt = $this->_db->prepare($select_sql);
-        $data = array(
-            "token" => $token);
+        $data = array("token" => $token);
 
         $response = $select_stmt->execute($data);
         if($response) {
@@ -585,17 +584,19 @@ class UserMapper extends ApiMapper
                 $update_data = array(
                     "password" => password_hash(md5($password), PASSWORD_DEFAULT),
                     "user_id"  => $user_id);
-                $update_stmt->execute($update_data);
+                $update_response = $update_stmt->execute($update_data);
 
-                // delete all the user's tokens; they don't need them now
-                $delete_sql = "delete from password_reset_tokens "
-                    . "where user_id = :user_id";
+                if($update_response) {
+                    // delete all the user's tokens; they don't need them now
+                    $delete_sql = "delete from password_reset_tokens "
+                        . "where user_id = :user_id";
 
-                $stmt = $this->_db->prepare($delete_sql);
-                $stmt->execute(array("user_id"  => $user_id));
+                    $stmt = $this->_db->prepare($delete_sql);
+                    $stmt->execute(array("user_id"  => $user_id));
 
-                // all good
-                return true;
+                    // all good
+                    return true;
+                }
             }
         }
     }
