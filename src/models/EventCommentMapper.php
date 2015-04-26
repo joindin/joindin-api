@@ -144,4 +144,27 @@ class EventCommentMapper extends ApiMapper {
 
         return $comment_id;
     }
+
+    /**
+     * Has this user provided a rating for this event which is greater than zero?
+     *
+     * @param  integer  $user_id
+     * @return boolean
+     */
+    public function hasUserRatedThisEvent($user_id, $event_id)
+    {
+        $sql = 'select ec.ID from event_comments ec '
+            . 'where event_id = :event_id and user_id = :user_id and rating > 0';
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array(
+            ':event_id' => $event_id,
+            ':user_id' => $user_id,
+        ));
+
+        if ($stmt->fetch()) {
+            return true;
+        }
+        return false;
+    }
 }

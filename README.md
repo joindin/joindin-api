@@ -38,6 +38,16 @@ Then run:
 
         npm run test_write
 
+
+#### Proxying the frisy tests
+
+If you want to proxy the frisby tests via Charles or another proxy, then export `HTTP_PROXY` first:
+
+    export HTTP_PROXY=http://localhost:8888
+
+You can now run `npm run test_write` or `npm test` as required and all the network requests will go via the proxy.
+
+
 ### Unit Tests
 
 There are some tests set up, which use PHPUnit; these can be found in the

@@ -112,8 +112,17 @@ class EventMapper extends ApiMapper
 
         $sql = 'select events.*, '
             . '(select ifnull(round(avg(event_comments.rating)), 0) 
-                from event_comments where event_comments.event_id = events.ID) 
-                as avg_rating, '        
+                from event_comments
+                where
+                    event_comments.event_id = events.ID
+                    and event_comments.rating > 0
+                    and event_comments.user_id not in (
+                        select ifnull(user_admin.uid, 0) from user_admin
+                            where rid = events.ID and rtype="event" and (rcode!="pending" OR rcode is null)
+                        union
+                        select 0
+                    )
+                ) as avg_rating, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
                 as attendee_count, '
             . 'abs(datediff(from_unixtime(events.event_start), 

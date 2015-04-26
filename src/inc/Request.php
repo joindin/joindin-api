@@ -193,7 +193,7 @@ class Request
     public function getParameter($param, $default = '')
     {
         $value = $default;
-        if (isset($this->parameters[$param])) {
+        if (array_key_exists($param, $this->parameters)) {
             $value = $this->parameters[$param];
         }
 

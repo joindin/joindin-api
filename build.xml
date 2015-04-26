@@ -18,7 +18,7 @@
  </target>
 
  <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
-  <exec command="phpunit -c tests/phpunit.xml" logoutput="/dev/stdout" checkreturn="true" />
+  <exec command="phpunit -c tests/phpunit.xml" logoutput="true" checkreturn="true" />
  </target>
 
  <target name="buildTasks" description="Run the phpmd, phpcs, phpdoc, phploc and lint tasks.">
@@ -29,13 +29,13 @@
 
  <target name="frisby" description="Run API tests in Frisby">
      <exec command="jasmine-node --nocolor --junitreport --output ../../build/logs/frisby/ api_spec.js" 
-         dir="${basedir}/tests/frisby" checkreturn="true">
+         dir="${basedir}/tests/frisby" checkreturn="true" logoutput="true">
   </exec>
  </target>
 
  <target name="frisby-write" description="Run write-sensitive API tests in Frisby">
      <exec command="jasmine-node --nocolor --junitreport --output ../../build/logs/frisby/  api_write_spec.js" 
-         dir="${basedir}/tests/frisby" checkreturn="true">
+         dir="${basedir}/tests/frisby" checkreturn="true" logoutput="true">
   </exec>
  </target>
 
@@ -66,7 +66,7 @@
 </target>
 
  <target name="phpdoc" description="Generate API documentation using PHPDocumentor">
-     <exec command="phpdoc -d ${apiv2source} -t ${basedir}/build/api/" />
+     <exec command="phpdoc -d ${apiv2source} -t ${basedir}/build/api/" logoutput="true" />
  </target>
 
  <target name="phplint" description="Run php -l over the fileset">
@@ -82,7 +82,7 @@
  <target name="build" depends="clean,buildTasks,phpunit"/>
 
  <target name="launch">
-  <exec command="scripts/jenkinslaunch.sh" checkreturn="true" />
+  <exec command="scripts/jenkinslaunch.sh" checkreturn="true" logoutput="true" />
  </target>
 
 </project>
