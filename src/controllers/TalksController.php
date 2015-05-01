@@ -140,8 +140,81 @@ class TalksController extends ApiController {
                     throw new Exception("Operation not supported, sorry", 404);
             }
         } else {
-            throw new Exception("method not yet supported - sorry");
+
+            // incoming data
+            $talk   = array();
+            $errors = array();
+
+            $talk['event_id'] = filter_var($request->getParameter('event_id'), FILTER_SANITIZE_NUMBER_INT);
+            if (empty($talk['event_id'])) {
+                $errors[] = '"event_id" is a required field';
+            }
+
+            $talk['title'] = filter_var($request->getParameter("title"), FILTER_SANITIZE_STRING);
+            var_Dump($request->parameters);
+            if(empty($talk['title'])) {
+                $errors[] = "'title' is a required field";
+            }
+
+            $talk['url_friendly_title'] = filter_var($request->getParameter("ur_friendly_title"), FILTER_SANITIZE_STRING);
+            if(empty($talk['url_friendly_title'])) {
+                $talk['url_friendly_title'] = $talk['title'];
+            }
+
+            $talk['description']  = filter_var($request->getParameter("description"), FILTER_SANITIZE_STRING);
+            if (empty($talk['description'])) {
+                $errors[] = "'description' is a required field";
+            }
+
+            $talk['type']  = filter_var($request->getParameter("type"), FILTER_SANITIZE_STRING);
+            if (empty($talk['type'])) {
+                $errors[] = "'type' is a required field";
+            }
+
+            if ($errors) {
+                throw new Exception(implode(". ", $errors), 400);
+            }
+
+
+            $talk['date'] = (new \DateTime($request->getParameter("start_date")))->format('U');
+
+            $talk['duration'] = filter_var($request->getParameter('duration'), FILTER_SANITIZE_NUMBER_INT);
+            if (empty($talk['type'])) {
+                $talk['duration'] = 60;
+            }
+
+            $talk['language'] = filter_var($request->getParameter('language'), FILTER_SANITIZE_STRING);
+            if (empty($talk['language'])) {
+                $talk['language'] = 'english';
+            }
+
+            $incoming_speakers_list = $request->getParameter('speakers');
+            if(is_array($incoming_speakers_list)) {
+                $talk['speakers'] = array_map(function($speaker){
+                    $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
+                    $speaker = trim($speaker);
+                    return $speaker;
+                }, $incoming_speakers_list);
+            }
+
+            $talk_mapper = new TalkMapper($db, $request);
+            $new_id = $talk_mapper->save($talk);
+
+            $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
+            header("Location: " . $uri, true, 201);
+            exit;
+        //    throw new Exception("method not yet supported - sorry");
         }
+    }
+
+    public function putAction($request, $db)
+    {
+        if(!isset($request->user_id)) {
+            throw new Exception("You must be logged in to edit data", 400);
+        }
+        $talk_id = $this->getItemId($request);
+
+
     }
 
     public function deleteAction($request, $db) {
