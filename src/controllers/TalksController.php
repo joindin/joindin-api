@@ -141,11 +141,17 @@ class TalksController extends ApiController {
             }
         } else {
 
+            $event_id = filter_var($request->getParameter('event_id'), FILTER_SANITIZE_NUMBER_INT);
+            $event_mapper = new EventMapper($db, $request);
+            if (! $event_mapper->thisUserHasAdminOn($event_id)) {
+                throw new Exception('You are not an host for this event', 403);
+            }
+
             // incoming data
             $talk   = array();
             $errors = array();
 
-            $talk['event_id'] = filter_var($request->getParameter('event_id'), FILTER_SANITIZE_NUMBER_INT);
+            $talk['event_id'] = $event_id;
             if (empty($talk['event_id'])) {
                 $errors[] = '"event_id" is a required field';
             }
