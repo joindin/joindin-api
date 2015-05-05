@@ -157,7 +157,6 @@ class TalksController extends ApiController {
             }
 
             $talk['title'] = filter_var($request->getParameter("title"), FILTER_SANITIZE_STRING);
-            var_Dump($request->parameters);
             if(empty($talk['title'])) {
                 $errors[] = "'title' is a required field";
             }
@@ -184,8 +183,11 @@ class TalksController extends ApiController {
 
             $talk['date'] = (new \DateTime($request->getParameter("start_date")))->format('U');
 
-            $talk['duration'] = filter_var($request->getParameter('duration'), FILTER_SANITIZE_NUMBER_INT);
-            if (empty($talk['type'])) {
+            $talk['duration'] = filter_var(
+                $request->getParameter('duration'),
+                FILTER_SANITIZE_NUMBER_INT
+            );
+            if (empty($talk['duration'])) {
                 $talk['duration'] = 60;
             }
 
@@ -220,7 +222,102 @@ class TalksController extends ApiController {
         }
         $talk_id = $this->getItemId($request);
 
+        if (isset($request->url_elements[4])) {
+            // Not editing the talk but something "below"
+            throw new Exception('Operation not supported, sorry', 404);
+        }
 
+        $talk_mapper = new TalkMapper($db, $request);
+
+        $existing_talk = $talk_mapper->getTalkById($talk_id, true);
+        if (! $existing_talk) {
+            throw new Exception(sprintf(
+                'There is no talk with ID "%s"',
+                $talk_id
+            ), 404);
+        }
+
+        $isAdmin   = $talk_mapper->thisUserHasAdminOn($talk_id);
+        $isSpeaker = $talk_mapper->thisUserIsSpeakerOn($talk_id);
+        if (! $isAdmin && ! $isSpeaker) {
+            throw new Exception('You are not entitled to edit this entry', 403);
+        }
+
+        $talk = array(
+            'talk_id' => $talk_id,
+            'event_id' => $existing_talk['event_id'],
+        );
+
+        $talk['title'] = filter_var($request->getParameter("title"), FILTER_SANITIZE_STRING);
+        if(empty($talk['title'])) {
+            $errors[] = "'title' is a required field";
+        }
+
+        $talk['description']  = filter_var($request->getParameter("description"), FILTER_SANITIZE_STRING);
+        if (empty($talk['description'])) {
+            $errors[] = "'description' is a required field";
+        }
+
+        $talk['language'] = filter_var($request->getParameter('language'), FILTER_SANITIZE_STRING);
+        if (empty($talk['language'])) {
+            $talk['language'] = 'english';
+        }
+
+        $talk['slides_link'] = filter_var($request->getParameter('slides_link'), FILTER_SANITIZE_URL);
+
+        if (! $isAdmin) {
+            $talk['url_friendly_title'] = $existing_talk['url_friendly_title'];
+            $talk['type']               = $existing_talk['type'];
+            $talk['duration']           = $existing_talk['duration'];
+            $talk['date']               = (new \DateTime($existing_talk['start_date']))->format('U');
+        } else {
+
+            $talk['url_friendly_talk_title'] = filter_var(
+                $request->getParameter("url_friendly_talk_title"),
+                FILTER_SANITIZE_STRING
+            );
+            if (empty($talk['url_friendly_talk_title'])) {
+                $talk['url_friendly_talk_title'] = $talk['title'];
+            }
+
+            $talk['type'] = filter_var(
+                $request->getParameter("type"),
+                FILTER_SANITIZE_STRING
+            );
+            if (empty($talk['type'])) {
+                $errors[] = "'type' is a required field";
+            }
+
+            $talk['date'] = (new \DateTime($request->getParameter("start_date")))->format('U');
+
+            $talk['duration'] = filter_var(
+                $request->getParameter('duration'),
+                FILTER_SANITIZE_NUMBER_INT
+            );
+
+            if (empty($talk['duration'])) {
+                $talk['duration'] = 60;
+            }
+
+            $incoming_speakers_list = $request->getParameter('speakers');
+            if(is_array($incoming_speakers_list)) {
+                $talk['speakers'] = array_map(function($speaker){
+                    $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
+                    $speaker = trim($speaker);
+                    return $speaker;
+                }, $incoming_speakers_list);
+            }
+        }
+
+        if ($errors) {
+            throw new Exception(implode(". ", $errors), 400);
+        }
+
+        $new_id = $talk_mapper->edit($talk);
+
+        $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
+        header("Location: " . $uri, true, 201);
+        exit;
     }
 
     public function deleteAction($request, $db) {

@@ -340,10 +340,10 @@ class TalkMapper extends ApiMapper {
 
         // save speakers
         if(isset($data['speakers']) && is_array($data['speakers'])) {
+            $speaker_sql = 'insert into talk_speaker (talk_id, speaker_name) values '
+                . '(:talk_id, :speaker)';
+            $speaker_stmt = $this->_db->prepare($speaker_sql);
             foreach($data['speakers'] as $speaker) {
-                $speaker_sql = 'insert into talk_speaker (talk_id, speaker_name) values '
-                    . '(:talk_id, :speaker)';
-                $speaker_stmt = $this->_db->prepare($speaker_sql);
                 $speaker_stmt->execute(array(
                     ':talk_id' => $talk_id,
                     ':speaker' => $speaker
@@ -353,6 +353,119 @@ class TalkMapper extends ApiMapper {
 
         return $talk_id;
     }
+
+    /**
+     * Edit a talk.
+     *
+     * Accepts a subset of talk fields
+     *
+     * @param string[] $talk    talk data to insert into the database.
+     * @param int      $talk_id The ID of the talk to be edited
+     *
+     * @return integer|false
+     */
+    public function edit($talk, $talk_id)
+    {
+        // Sanity check: ensure all mandatory fields are present.
+        $mandatory_fields = array(
+            'title',
+            'description',
+            'date',
+            'duration',
+            'type',
+        );
+        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($talk));
+        if (!$contains_mandatory_fields) {
+            throw new Exception("Missing mandatory fields");
+        }
+
+        $sql = "UPDATE talks SET %s WHERE ID = :talk_id";
+
+        // get the list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+        $items  = array();
+
+        foreach ($fields as $api_name => $column_name) {
+            // We don't change any activation stuff here!!
+            if (in_array($column_name, ['pending', 'active'])) {
+                continue;
+            }
+            if (isset($talk[$api_name])) {
+                $pairs[] = "$column_name = :$api_name";
+                $items[$api_name] = $talk[$api_name];
+            }
+        }
+
+        $items['talk_id'] = $talk_id;
+
+        $stmt = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
+
+        if (! $stmt->execute($items)) {
+            throw new Exception(sprintf(
+                'executing "%s" resulted in an error: %s',
+                $stmt->queryString,
+                implode(' :: ', $stmt->errorInfo())
+            ));
+            return false;
+        }
+
+        if (isset($talk['category'])) {
+            $cat_sql = 'select id from talk_cat where talk_id = :talk_id and cat_id = :cat_id';
+            $cat_stmt = $this->_db->prepare($cat_sql);
+            $result = $cat_stmt->execute(array(
+                ':talk_id' => $talk_id,
+                ':cat_id'  => $talk['type'],
+            ));
+            if (! $result) {
+                $cat_sql = 'delete from talk_cat where talk_id = :talk_id and cat_id = :cat_id';
+                $cat_stmt = $this->_db->prepare($cat_sql);
+                $cat_stmt->execute(array(
+                    ':talk_id' => $talk_id,
+                    ':cat_id'  => $talk['type'],
+                ));
+                $cat_sql = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, :cat_id)';
+                $cat_stmt = $this->_db->prepare($cat_sql);
+                $cat_stmt->execute(array(
+                    ':talk_id' => $talk_id,
+                    ':cat_id'  => $talk['type'],
+                ));
+            }
+
+        }
+
+        if (isset($talk['speakers']) && is_array($talk['speakers'])) {
+            $speaker_sql = 'update talk_speaker (talk_id, speaker_name) values '
+                           . '(:talk_id, :speaker)';
+            $speaker_stmt = $this->_db->prepare($speaker_sql);
+
+            $remove_sql = 'delete from talk_speaker WHERE talk_id = :talk_id AND speaker_name = :speaker_name';
+            $remove_stmt = $this->_db->prepare($remove_sql);
+
+            $speakers = array();
+            foreach ($this->getSpeakers($talk_id) as $speaker) {
+                $key = array_search($speaker['speaker_name'], $talk['speakers']);
+                if (false !== $key) {
+                    unset($talk['speakers'][$key]);
+                    continue;
+                }
+
+                $remove_stmt->execute(array(
+                    ':talk_id' => $talk_id,
+                    ':speaker_name' => $speaker['speaker_name'],
+                ));
+            }
+
+            foreach($talk['speakers'] as $speaker) {
+                $speaker_stmt->execute(array(
+                    ':talk_id' => $talk_id,
+                    ':speaker' => $speaker,
+                ));
+            }
+        }
+
+        return $talk_id;
+    }
+
 
     /**
      * Is this user attending this talk?
@@ -509,6 +622,38 @@ class TalkMapper extends ApiMapper {
                 return true;
             }
         } 
+        return false;
+    }
+
+    /**
+     * Is the currently authenticated user set as speaker on a particular talk?
+     *
+     * @param int $talk_id The identifier of the talk to check
+     *
+     * @return bool true if the user is set as speaker, false otherwise
+     */
+    public function thisUserIsSpeakerOn($talk_id) {
+        if (! isset($this->_request->user_id)) {
+            return false;
+        }
+
+        $speakers = $this->getSpeakers($talk_id);
+        $speaker_uri = $this->_request->base
+                     . '/'
+                     . $this->_request->version
+                     . '/users/'
+                     . $this->_request->user_id;
+        foreach ($speakers as $speaker) {
+            if (! isset($speaker['speaker_uri'])) {
+                // The speaker is not verified
+                continue;
+            }
+
+            if ($speaker['speaker_uri'] == $speaker_uri) {
+                return true;
+            }
+        }
+
         return false;
     }
 
