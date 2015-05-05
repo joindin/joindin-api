@@ -1,6 +1,7 @@
 // vim: tabstop=2:softtabstop=2:shiftwidth=2 
 // ./node_modules/.bin/jasmine-node . 
 var apitest  = require('./api_write');
+var eventstest = require('./api_write_events');
 var datatest = require('./data');
 
 var baseURL;
@@ -15,3 +16,5 @@ apitest.init(baseURL);
 apitest.testRegisterUser();
 apitest.testRegisterVerifiedUser();
 
+eventstest.init(baseURL);
+eventstest.setupAndRunEventTests();
