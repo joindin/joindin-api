@@ -92,7 +92,7 @@ function testCreateEventFailsWithIncorrectData(access_token)
       {},
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("'name' is a required field");
     })
@@ -106,7 +106,7 @@ function testCreateEventFailsWithIncorrectData(access_token)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("'description' is a required field");
     })
@@ -121,7 +121,7 @@ function testCreateEventFailsWithIncorrectData(access_token)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("'location' is a required field");
     })
@@ -137,7 +137,7 @@ function testCreateEventFailsWithIncorrectData(access_token)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("Both 'start_date' and 'end_date' must be supplied in a recognised format");
     })
@@ -154,7 +154,7 @@ function testCreateEventFailsWithIncorrectData(access_token)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("Both 'start_date' and 'end_date' must be supplied in a recognised format");
     })
@@ -172,7 +172,7 @@ function testCreateEventFailsWithIncorrectData(access_token)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("Both 'start_date' and 'end_date' must be supplied in a recognised format");
     })
@@ -190,7 +190,7 @@ function testCreateEventFailsWithIncorrectData(access_token)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("The fields 'tz_continent' and 'tz_place' must be supplied");
     })
@@ -210,7 +210,7 @@ function testCreateEventFailsWithIncorrectData(access_token)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("The fields 'tz_continent' and 'tz_place' must be supplied");
     })
@@ -230,7 +230,7 @@ function testCreateEventFailsWithIncorrectData(access_token)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("The fields 'tz_continent' and 'tz_place' must be supplied");
     })
@@ -250,7 +250,7 @@ function testCreateEventFailsWithIncorrectData(access_token)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("The fields 'tz_continent' and 'tz_place' must be supplied");
     })
@@ -359,19 +359,19 @@ function testEditEventFailsIfNotLoggedIn(event_uri)
 
 function testEditEventFailsWithIncorrectData(access_token, event_uri)
 {
-  frisby.create('Create event fails with missing name')
+  frisby.create('Edit event fails with missing name')
     .put(
       event_uri,
       {},
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("'name' is a required field");
     })
     .toss();
 
-  frisby.create('Create event fails with missing description')
+  frisby.create('Edit event fails with missing description')
     .put(
       event_uri,
       {
@@ -379,13 +379,13 @@ function testEditEventFailsWithIncorrectData(access_token, event_uri)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("'description' is a required field");
     })
     .toss();
 
-  frisby.create('Create event fails with missing location')
+  frisby.create('Edit event fails with missing location')
     .put(
       event_uri,
       {
@@ -394,13 +394,13 @@ function testEditEventFailsWithIncorrectData(access_token, event_uri)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("'location' is a required field");
     })
     .toss();
 
-  frisby.create('Create event fails with missing start_date')
+  frisby.create('Edit event fails with missing start_date')
     .put(
       event_uri,
       {
@@ -410,13 +410,13 @@ function testEditEventFailsWithIncorrectData(access_token, event_uri)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("Both 'start_date' and 'end_date' must be supplied in a recognised format");
     })
     .toss();
 
-  frisby.create('Create event fails with missing end_date')
+  frisby.create('Edit event fails with missing end_date')
     .put(
       event_uri,
       {
@@ -427,13 +427,13 @@ function testEditEventFailsWithIncorrectData(access_token, event_uri)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("Both 'start_date' and 'end_date' must be supplied in a recognised format");
     })
     .toss();
 
-  frisby.create('Create event fails with invalid end_date')
+  frisby.create('Edit event fails with invalid end_date')
     .put(
       event_uri,
       {
@@ -445,13 +445,13 @@ function testEditEventFailsWithIncorrectData(access_token, event_uri)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("Both 'start_date' and 'end_date' must be supplied in a recognised format");
     })
     .toss();
 
-  frisby.create('Create event fails with missing tx_continent')
+  frisby.create('Edit event fails with missing tx_continent')
     .put(
       event_uri,
       {
@@ -463,13 +463,13 @@ function testEditEventFailsWithIncorrectData(access_token, event_uri)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("The fields 'tz_continent' and 'tz_place' must be supplied");
     })
     .toss();
 
-  frisby.create('Create event fails with missing tx_place')
+  frisby.create('Edit event fails with missing tx_place')
     .put(
       event_uri,
       {
@@ -483,13 +483,13 @@ function testEditEventFailsWithIncorrectData(access_token, event_uri)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("The fields 'tz_continent' and 'tz_place' must be supplied");
     })
     .toss();
 
-  frisby.create('Create event fails with invalid tx_continent')
+  frisby.create('Edit event fails with invalid tx_continent')
     .put(
       event_uri,
       {
@@ -503,13 +503,13 @@ function testEditEventFailsWithIncorrectData(access_token, event_uri)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("The fields 'tz_continent' and 'tz_place' must be supplied");
     })
     .toss();
 
-  frisby.create('Create event fails with invalid tx_place')
+  frisby.create('Edit event fails with invalid tx_place')
     .put(
       event_uri,
       {
@@ -523,7 +523,7 @@ function testEditEventFailsWithIncorrectData(access_token, event_uri)
       },
       {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
     )
-    .expectStatus(400) // fails as no user token
+    .expectStatus(400)
     .afterJSON(function(result) {
       expect(result[0]).toContain("The fields 'tz_continent' and 'tz_place' must be supplied");
     })
@@ -537,7 +537,7 @@ function testEditEvent(access_token, event_uri)
   var yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
 
-  frisby.create('Edit event fails if not logged in')
+  frisby.create('Edit users own event')
     .put(
       event_uri,
       {
