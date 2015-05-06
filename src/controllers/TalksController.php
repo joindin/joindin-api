@@ -193,8 +193,11 @@ class TalksController extends ApiController {
 
             $talk['language'] = filter_var($request->getParameter('language'), FILTER_SANITIZE_STRING);
             if (empty($talk['language'])) {
-                $talk['language'] = 'english';
+                $talk['language'] = 'English - UK';
             }
+
+            // TODO: @heiglandreas Check whether the language actually exists in the database
+            // When the language doesn't exist, the talk will not be found
 
             $incoming_speakers_list = $request->getParameter('speakers');
             if(is_array($incoming_speakers_list)) {
@@ -260,7 +263,7 @@ class TalksController extends ApiController {
 
         $talk['language'] = filter_var($request->getParameter('language'), FILTER_SANITIZE_STRING);
         if (empty($talk['language'])) {
-            $talk['language'] = 'english';
+            $talk['language'] = 'English - UK';
         }
 
         $talk['slides_link'] = filter_var($request->getParameter('slides_link'), FILTER_SANITIZE_URL);
