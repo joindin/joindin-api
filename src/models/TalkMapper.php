@@ -662,6 +662,19 @@ class TalkMapper extends ApiMapper {
         $sql = "delete from talks where ID = :talk_id";
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("talk_id" => $talk_id));
+
+        $sql = "delete from talk_speaker where talk_id = :talk_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('talk_id' => $talk_id));
+
+        $sql = "delete from talk_comments where talk_id = :talk_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('talk_id' => $talk_id));
+
+        $sql = "delete from talk_cat where talk_id = :talk_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array('talk_id' => $talk_id));
+        
         return true;
     }
 }
