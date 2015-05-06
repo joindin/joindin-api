@@ -317,10 +317,10 @@ class TalkMapper extends ApiMapper {
     public function save($data) {
         // TODO map from the field mappings in getVerboseFields()
         $sql = 'insert into talks (event_id, talk_title, talk_desc, '
-            . 'lang, date_given) '
+            . 'lang, date_given, duration) '
             . 'values (:event_id, :talk_title, :talk_description, '
             . '(select ID from lang where lang_name = :language), '
-            . ':date)';
+            . ':date, :duration)';
 
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
@@ -328,7 +328,8 @@ class TalkMapper extends ApiMapper {
             ':talk_title' => $data['title'],
             ':talk_description' => $data['description'],
             ':language' => $data['language'],
-            ':date' => $data['date']
+            ':date' => $data['date'],
+            ':duration' => $data['duration'],
         ));
         $talk_id = $this->_db->lastInsertId();
 
