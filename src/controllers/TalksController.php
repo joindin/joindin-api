@@ -2,16 +2,18 @@
 
 class TalksController extends ApiController {
     public function handle(Request $request, $db) {
-        if($request->getVerb() == 'GET') {
-            return $this->getAction($request, $db);
-        } elseif($request->getVerb() == 'POST') {
-            return $this->postAction($request, $db);
-        } elseif ($request->getVerb() == 'DELETE') {
-            return $this->deleteAction($request, $db);
-        } else {
-            throw new Exception("method not supported");
+        switch ($request->getVerb()) {
+            case 'GET':
+                return $this->getAction($request, $db);
+            case 'POST':
+                return $this->postAction($request, $db);
+            case 'PUT':
+                return $this->putAction($request, $db);
+            case 'DELETE':
+                return $this->deleteAction($request, $db);
         }
-        return false;
+
+        throw new Exception('method not supported');
     }
 
 	public function getAction($request, $db) {

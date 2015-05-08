@@ -45,6 +45,12 @@
     {
         "path": "/talks(/[^/]+)*/?$",
         "controller": "TalksController",
+        "action": "putAction",
+        "verbs": ["PUT"]
+    },
+    {
+        "path": "/talks(/[^/]+)*/?$",
+        "controller": "TalksController",
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
