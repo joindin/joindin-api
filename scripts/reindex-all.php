@@ -1,8 +1,21 @@
 <?php
 
-require 'vendor/autoload.php';
+define('BASEPATH', '');
 
-$db = new PDO("mysql:host=localhost;dbname=joindin", "root", NULL);
+require 'vendor/autoload.php';
+require 'src/database.php';
+
+
+// Set up the DB connection using JI standard config
+$ji_db = new PDO(
+    'mysql:host=' . $db['default']['hostname'] . ';dbname=' . $db['default']['database'],
+    $db['default']['username'],
+    $db['default']['password']
+);
+
+// Set the correct charset for this connection
+$ji_db->query("SET NAMES 'utf8' COLLATE 'utf8_general_ci'");
+$ji_db->query('SET CHARACTER SET utf8');
 
 $client = new Elasticsearch\Client();
 
@@ -135,7 +148,7 @@ $event_sql = "  SELECT ID, url_friendly_name, event_name, event_loc, event_desc,
                 FROM events 
                 WHERE active = 1 AND private = '0'";
 
-$event_stmt = $db->prepare($event_sql);
+$event_stmt = $ji_db->prepare($event_sql);
 $event_stmt->execute();
 while($row = $event_stmt->fetch(PDO::FETCH_ASSOC)) {
     $params = [];
@@ -171,7 +184,7 @@ $talk_sql = '   SELECT t.ID, t.talk_title, t.talk_desc, t.speaker
                     ON e.ID = t.event_id
                 WHERE t.active = 1
                     AND t.event_id IS NOT NULL';
-$talk_stmt = $db->prepare($talk_sql);
+$talk_stmt = $ji_db->prepare($talk_sql);
 $talk_stmt->execute();
 
 while($row = $talk_stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -206,7 +219,7 @@ $speaker_sql = "SELECT DISTINCT speaker_name, speaker_id, 'linked' AS state
                 WHERE speaker_id IS NULL 
                 ORDER BY speaker_name ASC";
 
-$speaker_stmt = $db->prepare($speaker_sql);
+$speaker_stmt = $ji_db->prepare($speaker_sql);
 $speaker_stmt->execute();
 
 while($row = $speaker_stmt->fetch(PDO::FETCH_ASSOC)) {
