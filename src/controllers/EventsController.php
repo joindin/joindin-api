@@ -197,7 +197,12 @@ class EventsController extends ApiController {
                     }
 
                     $talk_mapper = new TalkMapper($db, $request);
-                    $new_id = $talk_mapper->save($talk);
+                    $new_id = $talk['id'] = $talk_mapper->save($talk);
+
+
+                    // Write talk to search index
+                    $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
+                    $searchSrv->write('talks', $talk);
 
                     // Update the cache count for the number of talks at this event
                     $event_mapper->cacheTalkCount($talk['event_id']);
@@ -319,12 +324,19 @@ class EventsController extends ApiController {
                 }
 
                 if ($approveEventOnCreation) {
-                    $event_id = $event_mapper->createEvent($event, true);
+                    $event_id = $event['id'] = $event_mapper->createEvent($event, true);
+
+                    // Write the event to search index
+                    $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
+                    $searchSrv->write('event', $event);
 
                     // redirect to event listing
                     header("Location: " . $request->base . $request->path_info . '/' . $event_id, NULL, 201);
                 } else {
+                    // NOTE: Don't write to the search index if we're not approving yet
+                    
                     $event_id = $event_mapper->createEvent($event);
+
 
                     // set status to accepted; a pending event won't be visible
                     header("Location: " . $request->base . $request->path_info, NULL, 202);
@@ -483,6 +495,16 @@ class EventsController extends ApiController {
             }
 
             $event_mapper->editEvent($event, $event_id);
+
+            // NOTE - When getting the existing event, the WHERE clause explicitly
+            // makes sure the the event is active and not pending. Just index.
+
+            // Write talk to search index
+            $searchEvt = array_merge($existing_event, $event);
+            $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
+            $searchSrv->write('events', $searchEvt);
+
+
             if (isset($tags)) {
                 $event_mapper->setTags($event_id, $tags);
             }

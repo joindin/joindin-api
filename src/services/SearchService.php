@@ -115,4 +115,8 @@ class SearchService
             return false;
         }
     }
+
+    public function remove($index, $id) {
+
+    }
 }
