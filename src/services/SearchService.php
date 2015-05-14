@@ -64,6 +64,11 @@ class SearchService
     public function write($index, $data) {
         switch($index) {
             case 'events': 
+                // Check we have all required fields
+                if(count(array_diff(['name', 'location', 'description', 'start_date', 'id'], array_keys($data)))) { 
+                    throw new \Exception('Missing required fields');
+                }
+
                 $params = [];
                 $params['body']  = [
                     'title' => $data['name'],
@@ -79,6 +84,11 @@ class SearchService
 
                 break;
             case 'talks':
+                // Check we have all required fields
+                if(count(array_diff(['title', 'description', 'id'], array_keys($data)))) { 
+                    throw new \Exception('Missing required fields');
+                }
+
                 $params = [];
                 $params['body'] = [
                     'title' => $data['title'],
@@ -92,6 +102,11 @@ class SearchService
                 break;
             case 'speakers':
                 throw new Exception('Incomplete');
+                // Check we have all required fields
+                if(count(array_diff(['speaker_name', 'state', 'speaker_id'], array_keys($data)))) { 
+                    throw new \Exception('Missing required fields');
+                }
+
                 $params = [];
                 $params['body'] = [
                     'name' => $row['speaker_name']
