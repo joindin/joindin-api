@@ -132,6 +132,27 @@ class SearchService
     }
 
     public function remove($index, $id) {
+        if(!in_array($index, ['events', 'talks', 'speakers'])) {
+            throw new Exception('Unknown index type');
+        }
+
+        if(!ctype_digit((string)$id)) {
+            throw new Exception('Invalid ID');
+        }
+
+        $params = [
+            'index'     => 'ji-search',
+            'type'      => $index,
+            'id'        => intval($id)
+        ];
+
+        $ret = $this->provider->delete($params);
+
+        if(is_array($ret) && $ret['found'] === true) { 
+            return true;
+        } else {
+            return false;
+        }
 
     }
 }
