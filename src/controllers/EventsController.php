@@ -199,10 +199,16 @@ class EventsController extends ApiController {
                     $talk_mapper = new TalkMapper($db, $request);
                     $new_id = $talk['id'] = $talk_mapper->save($talk);
 
+                    try {
+                        // Write talk to search index
+                        $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
+                        $searchSrv->write('talks', $talk);
+                    } catch(Exception $e) {
+                        // We can always do a full reindex later if ES isn't playing ball, so don't
+                        // fail the entire process just because of search index.
 
-                    // Write talk to search index
-                    $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
-                    $searchSrv->write('talks', $talk);
+                        // Notify admins that this may be necessary
+                    }
 
                     // Update the cache count for the number of talks at this event
                     $event_mapper->cacheTalkCount($talk['event_id']);
@@ -326,9 +332,16 @@ class EventsController extends ApiController {
                 if ($approveEventOnCreation) {
                     $event_id = $event['id'] = $event_mapper->createEvent($event, true);
 
-                    // Write the event to search index
-                    $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
-                    $searchSrv->write('event', $event);
+                    try {
+                        // Write the event to search index
+                        $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
+                        $searchSrv->write('events', $event);
+                    } catch(Exception $e) {
+                        // We can always do a full reindex later if ES isn't playing ball, so don't
+                        // fail the entire process just because of search index.
+    
+                        // Notify admins that this may be necessary
+                    }
 
                     // redirect to event listing
                     header("Location: " . $request->base . $request->path_info . '/' . $event_id, NULL, 201);
@@ -499,10 +512,18 @@ class EventsController extends ApiController {
             // NOTE - When getting the existing event, the WHERE clause explicitly
             // makes sure the the event is active and not pending. Just index.
 
-            // Write talk to search index
-            $searchEvt = array_merge($existing_event, $event);
-            $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
-            $searchSrv->write('events', $searchEvt);
+            try {
+                // Write event to search index
+                $searchEvt = array_merge($existing_event, $event);
+                $searchEvt['id'] = $event_id;
+                $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
+                $searchSrv->write('events', $searchEvt);
+            } catch(Exception $e) {
+                // We can always do a full reindex later if ES isn't playing ball, so don't
+                // fail the entire process just because of search index.
+
+                // Notify admins that this may be necessary
+            }
 
 
             if (isset($tags)) {

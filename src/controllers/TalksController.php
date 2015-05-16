@@ -182,9 +182,16 @@ class TalksController extends ApiController {
 
             $talk_mapper->delete($talk_id);
 
-            // Remove the talk from the index
-            $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
-            $searchSrv->remove('talks', $talk_id);
+            try {
+                // Remove the talk from the index
+                $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
+                $searchSrv->remove('talks', $talk_id);
+            } catch(Exception $e) {
+                // We can always do a full reindex later if ES isn't playing ball, so don't
+                // fail the entire process just because of search index.
+
+                // Notify admins that this may be necessary
+            }
 
             header("Content-Length: 0", NULL, 204);
             exit; // no more content
