@@ -108,6 +108,11 @@ class TalksController extends ApiController {
                             }
                         }
 
+                        // should rating be allowed?
+                        if ($comment_mapper->hasUserRatedThisTalk($data['user_id'], $data['talk_id'])) {
+                            $data['rating'] = 0;
+                        }
+
                         $new_id = $comment_mapper->save($data);
                     } catch (Exception $e) {
                         // just throw this again but with a 400 status code
