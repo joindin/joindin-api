@@ -279,14 +279,22 @@ class UsersController extends ApiController {
         if(empty($password)) {
             throw new Exception("New password must be supplied", 400);
         }
-
-        $user_mapper = new UserMapper($db, $request);
-        $success = $user_mapper->resetPassword($token, $password);
-        if($success) {
-            header("Content-Length: 0", NULL, 204);
-            exit; // no more content
+        // now check the password complies with our rules
+        $validity = $user_mapper->checkPasswordValidity($password);
+        if(true === $validity) {
+            // OK, go ahead
+            $user_mapper = new UserMapper($db, $request);
+            $success = $user_mapper->resetPassword($token, $password);
+            if($success) {
+                header("Content-Length: 0", NULL, 204);
+                exit; // no more content
+            } else {
+                throw new Exception("Password could not be reset", 400);
+            }
         } else {
-            throw new Exception("Verification failed", 400);
+            // the password wasn't acceptable, tell the user why
+            throw new Exception(implode(". ", $validity), 400);
         }
+
     }
 }
