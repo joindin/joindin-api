@@ -64,6 +64,7 @@ class EmailsController extends ApiController {
             if(is_array($list['users']) && count($list['users'])) {
                 $user = $list['users'][0];
 
+                // neither user_id nor email are in the user resource returned by the mapper
                 $user_id = $user_mapper->getUserIdFromUsername($username);
                 $email = $user_mapper->getEmailByUserId($user_id);
                 $recipients = array($email);

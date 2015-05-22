@@ -377,7 +377,8 @@ class UserMapper extends ApiMapper
      * @return $user_id The user's ID (or false, if we didn't find her)
      */
     public function getUserIdFromEmail($email) {
-        $sql = "select ID from user where email = :email";
+        $sql = "select ID from user " 
+            . "where email = :email and active = 1";
 
         $data = array("email" => $email);
         $stmt = $this->_db->prepare($sql);
