@@ -71,6 +71,9 @@ class EmailsController extends ApiController {
 
                 // we need a token to send so we know it is a valid reset
                 $token = $user_mapper->generatePasswordResetTokenForUserId($user_id);
+                if (!$token) {
+                    throw new Exception("Unable to generate a reset token", 400);
+                }
 
                 $emailService = new UserPasswordResetEmailService($this->config, $recipients, $user, $token);
                 $emailService->sendEmail();
