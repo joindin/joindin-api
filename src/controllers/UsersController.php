@@ -280,10 +280,10 @@ class UsersController extends ApiController {
             throw new Exception("New password must be supplied", 400);
         }
         // now check the password complies with our rules
+        $user_mapper = new UserMapper($db, $request);
         $validity = $user_mapper->checkPasswordValidity($password);
         if(true === $validity) {
             // OK, go ahead
-            $user_mapper = new UserMapper($db, $request);
             $success = $user_mapper->resetPassword($token, $password);
             if($success) {
                 header("Content-Length: 0", NULL, 204);
