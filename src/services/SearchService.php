@@ -39,7 +39,7 @@ class SearchService
     public function search() {
         $params = [
             'index' => $this->index,
-            'type'  => implode($this->searchTypes, ','),
+            'type'  => implode(',', $this->searchTypes),
             'body'  => [
                 'size'  => $this->limit,
                 'from'  => $this->offset,

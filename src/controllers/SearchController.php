@@ -18,13 +18,26 @@ class SearchController extends ApiController {
             FILTER_SANITIZE_STRING
         );
 
+        $searchTypes = filter_var(
+            $request->getParameter('type'),
+            FILTER_SANITIZE_STRING
+        );
+
+        $types = ['events', 'talks', 'speakers'];
+        if($searchTypes) {
+            $types = explode(',', $searchTypes);
+
+            // Validate selected types
+            $types = array_intersect(['events', 'talks', 'speakers'], $types);
+        }
+
         $pageRequest = $this->getStart($request);
         $pageLimit = $this->getResultsPerPage($request);
 
-	$searchMapper = new SearchMapper($db, $request);
-	$results = $searchMapper->getResultsByQuery($searchRequest, $pageLimit, $pageRequest);
+        $searchMapper = new SearchMapper($db, $request);
+        $results = $searchMapper->getResultsByQuery($searchRequest, $pageLimit, $pageRequest, $types);
 
-	return $results;
+        return $results;
     }
 
     public function postAction(Request $request, $db) {
