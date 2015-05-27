@@ -62,9 +62,13 @@ class SearchMapper extends ApiMapper
                 }
             }
 
-            $user_mapper = new UserMapper($this->_db, $this->_request);
-            $speakers = $user_mapper->getUsersByIds($linkedSpeakers, false);
-            $search['speakers'] = $speakers['users'];
+            if(!$linkedSpeakers) {
+                $search['speakers'] = [];
+            } else {
+                $user_mapper = new UserMapper($this->_db, $this->_request);
+                $speakers = $user_mapper->getUsersByIds($linkedSpeakers, false);
+                $search['speakers'] = $speakers['users'];
+            }
         }
 
 
