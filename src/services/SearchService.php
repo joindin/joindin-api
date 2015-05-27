@@ -44,18 +44,38 @@ class SearchService
                 'size'  => $this->limit,
                 'from'  => $this->offset,
                 'query' => [
-                    'multi_match' => [
-                        'query' => $this->search,
-                        'type'  => 'best_fields',
-                        'fields'=> [
-                            'title^3', 'name^4', 'description^2', 'location'
-                        ],
-                        'tie_breaker' => 0.3,
-                        'minimum_should_match' => '20%'
-                    ] 
+                    'function_score' => [
+                        'query'         => [
+                            'multi_match' => [
+                                'query' => $this->search,
+                                'type'  => 'best_fields',
+                                'fields'=> [
+                                    'title^3', 'name^4', 'description^2', 'location'
+                                ],
+                                'tie_breaker' => 0.3,
+                                'minimum_should_match' => '50%'
+                            ] 
+                        ]
+                    ]
                 ]
             ]
         ];
+
+        if(count($this->searchTypes) > 1 || current($this->searchTypes) !== 'speakers') {
+        $params['body']['query']['function_score']['functions'] = [
+                            [
+                                'gauss'     => [
+                                    'start'     => [ 
+                                        'origin'    => time(),
+                                        'scale'     => '2592000',
+                                        'offset'    => '2592000',
+                                        'decay'     => 0.5
+                                    ]
+                                ]
+                            ]
+                        ];
+        }
+
         $results = $this->provider->search($params);
 
         return $results;
