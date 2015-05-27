@@ -90,6 +90,9 @@ $talkMapping = [
             'type' => 'string',
             'analyzer' => 'standard'
         ],
+        'start' => [
+            'type' => 'date'
+        ]
     ]
 ];
 
@@ -107,6 +110,9 @@ $speakerMapping = [
             'type' => 'string',
             'analyzer' => 'standard'
         ],
+        'start' => [
+            'type' => 'date'
+        ]
     ]
 ];
 
@@ -178,7 +184,7 @@ while($row = $event_stmt->fetch(PDO::FETCH_ASSOC)) {
 
 }
 
-$talk_sql = '   SELECT t.ID, t.talk_title, t.talk_desc, t.speaker  
+$talk_sql = '   SELECT t.ID, t.talk_title, t.talk_desc, t.speaker, COALESCE(t.date_given, e.event_start) AS talk_date
                 FROM talks t
                 INNER JOIN events e
                     ON e.ID = t.event_id
@@ -193,6 +199,7 @@ while($row = $talk_stmt->fetch(PDO::FETCH_ASSOC)) {
         'title' => $row['talk_title'],
         'description' => $row['talk_desc'],
         'speaker' => $row['speaker'],
+        'start' => $row['talk_date']
     ];
 
     $params['index'] = 'ji-search';
@@ -225,7 +232,8 @@ $speaker_stmt->execute();
 while($row = $speaker_stmt->fetch(PDO::FETCH_ASSOC)) {
     $params = [];
     $params['body'] = [
-        'name' => $row['speaker_name']
+        'name' => $row['speaker_name'],
+        'start' => null
     ];
     $params['index'] = 'ji-search';
     $params['type'] = 'speakers';
