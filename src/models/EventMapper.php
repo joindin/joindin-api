@@ -136,15 +136,16 @@ class EventMapper extends ApiMapper
             $sql .= "left join tags_events on tags_events.event_id = events.ID 
                 left join tags on tags.ID = tags_events.tag_id ";
         }
-        $sql .= 'where events.active = 1 and '
-            . '(events.pending = 0 or events.pending is NULL) and '
-            . '(events.private <> "y" OR events.private IS NULL) ';
+
+
+        $sql .= ' where (events.private <> "y" OR events.private IS NULL) ';
 
         if(array_key_exists("event_id", $params)) {
             $where .= "and events.ID = :event_id ";
             $data["event_id"] = $params["event_id"];
         }
 
+        $active = true;
         if(array_key_exists("filter", $params)) {
             switch($params['filter']) {
                 case "hot": // current and popular events
@@ -162,6 +163,11 @@ class EventMapper extends ApiMapper
                     $where .= ' and events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
                     $order .= 'events.event_start';
                     break;
+                case "pending": // events to be approved
+                    $where .= ' and events.active = 0 AND events.pending = 1';
+                    $order .= 'events.event_start';
+                    $active = false;
+                    break;
                 default:
                     $order .= 'events.event_start desc';
                     break;
@@ -171,7 +177,13 @@ class EventMapper extends ApiMapper
             $order .= 'events.event_start desc ';
         }
 
-        if(array_key_exists("stub", $params)) {
+        if ($active) {
+            $sql .= " and events.active = 1 and (events.pending = 0 or events.pending is NULL) ";
+        } else {
+            $sql .= " and events.active = 0 and events.pending = 1 ";
+        }
+
+        if (array_key_exists("stub", $params)) {
             $where .= ' and events.event_stub = :stub';
             $data['stub'] = $params['stub'];
         }

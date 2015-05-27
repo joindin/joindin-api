@@ -68,9 +68,21 @@ class EventsController extends ApiController {
                 $params = array();
 
                 // collection type filter
-                $filters = array("hot", "upcoming", "past", "cfp");
+                $filters = array("hot", "upcoming", "past", "cfp", "pending");
                 if(isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters)) {
                     $params["filter"] = $request->parameters['filter'];
+
+                    // for pending events we need a logged in user with the correct permissions
+                    if ($params["filter"] == 'pending') {
+                        if (!isset($request->user_id)) {
+                            throw new Exception("You must be logged in to view pending events", 400);
+                        }
+                        $user_mapper= new UserMapper($db, $request);
+                        $canApproveEvents = $user_mapper->isSiteAdmin($request->user_id);
+                        if (!$canApproveEvents) {
+                            throw new Exception("You don't have permission to view pending events", 400);
+                        }
+                    }
                 }
 
                 if(isset($request->parameters['title'])) {
