@@ -127,6 +127,13 @@
     },
 
     {
+        "path": "/languages(/[0-9]+)?/?$",
+        "controller": "LanguagesController",
+        "action": "handle",
+        "verbs": ["GET"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"
