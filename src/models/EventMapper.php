@@ -348,6 +348,9 @@ class EventMapper extends ApiMapper
 
         // add per-item links 
         if (is_array($list) && count($list)) {
+
+            $thisUserCanApproveEvents = $this->thisUserCanApproveEvents();
+
             foreach ($results as $key => $row) {
                 // generate and store an inflected event name if there isn't one already
                 if(empty($row['url_friendly_name'])) {
@@ -378,6 +381,10 @@ class EventMapper extends ApiMapper
                     . $row['ID'] . '/tracks';
                 $list[$key]['attending_uri'] = $base . '/' . $version . '/events/'
                     . $row['ID'] . '/attending';
+                if ($row['pending'] == 1 && $thisUserCanApproveEvents) {
+                    $list[$key]['approval_uri'] = $base . '/' . $version . '/events/'
+                        . $row['ID'] . '/approval';
+                }
                 $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
                 // handle the slug
                 if(!empty($row['event_stub'])) {
@@ -593,7 +600,27 @@ class EventMapper extends ApiMapper
             if($results) {
                 return true;
             }
-        } 
+        }
+        return false;
+    }
+
+    /**
+     * Does the currently-authenticated user have rights to approve events?
+     *
+     * @return bool True if the user has rights, false otherwise
+     */
+    public function thisUserCanApproveEvents()
+    {
+        // do we even have an authenticated user?
+        if (isset($this->_request->user_id)) {
+            $user_mapper = new UserMapper($this->_db, $this->_request);
+
+            // is user site admin?
+            $is_site_admin = $user_mapper->isSiteAdmin($this->_request->user_id);
+            if ($is_site_admin) {
+                return true;
+            }
+        }
         return false;
     }
 
