@@ -80,7 +80,7 @@ class EventsController extends ApiController {
                         $user_mapper= new UserMapper($db, $request);
                         $canApproveEvents = $user_mapper->isSiteAdmin($request->user_id);
                         if (!$canApproveEvents) {
-                            throw new Exception("You don't have permission to view pending events", 400);
+                            throw new Exception("You don't have permission to view pending events", 403);
                         }
                     }
                 }
