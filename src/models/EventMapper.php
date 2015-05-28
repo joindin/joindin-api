@@ -137,7 +137,6 @@ class EventMapper extends ApiMapper
                 left join tags on tags.ID = tags_events.tag_id ";
         }
 
-
         $sql .= ' where (events.private <> "y" OR events.private IS NULL) ';
 
         if(array_key_exists("event_id", $params)) {
@@ -948,5 +947,27 @@ class EventMapper extends ApiMapper
             // Add an association with the event
             $addTagToEventStmt->execute(array('tag_id' => $tagId, 'event_id' => $event_id));
         }
+    }
+
+    /**
+     * Approve a pending event
+     *
+     * @param  integer $event_id
+     * @return boolean
+     */
+    public function approve($event_id)
+    {
+        $sql = "select ID from events where pending = 1 and active = 0 and ID = :event_id";
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(["event_id" => $event_id]);
+        $result = $stmt->fetch();
+        if ($result === false) {
+            // Event either doesn't exist or is not pending
+            return false;
+        }
+
+        $sql = "update events set pending = 0, active = 1 where ID = :event_id";
+        $stmt = $this->_db->prepare($sql);
+        return $stmt->execute(["event_id" => $event_id]);
     }
 }

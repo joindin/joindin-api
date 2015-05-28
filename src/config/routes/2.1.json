@@ -6,6 +6,12 @@
         "verbs": ["GET"]
     },
     {
+        "path": "/events/(\\d+)/approval$",
+        "controller": "EventsController",
+        "action": "approveAction",
+        "verbs": ["POST"]
+    },
+    {
         "path": "/events(/[^/]+)*/comments",
         "controller": "Event_commentsController",
         "action": "createComment",

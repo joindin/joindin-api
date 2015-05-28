@@ -503,4 +503,37 @@ class EventsController extends ApiController {
             exit;
         }
     }
+
+    /**
+     * Approve a pending event by POSTing to /events/{id}/approval
+     *
+     * The body of this request is completely irrelevant, simply POSTing to this
+     * endpoint is all that's needed to approve an pending event
+     *
+     * @param  Request $request
+     * @param  PDO $db
+     * @return void
+     */
+    public function approveAction($request, $db)
+    {
+        if (!isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 400);
+        }
+        
+        $event_id = $this->getItemId($request);
+        $event_mapper = new EventMapper($db, $request);
+
+        if (!$event_mapper->thisUserCanApproveEvents()) {
+            throw new Exception("You are not allowed to approve this event", 403);
+        }
+
+        $result = $event_mapper->approve($event_id);
+        if (!$result) {
+            throw new Exception("This event cannot be approved", 400);
+        }
+        
+        $location = $request->base . '/' . $request->version . '/events/' . $event_id;
+        header('Location: ' . $location, null, 204);
+        return;
+    }
 }
