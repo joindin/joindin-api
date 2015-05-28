@@ -452,6 +452,26 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Fetch the email addresses of the event hosts so that we can email them
+     *
+     * @param int $event_id
+     * @return array The email addresses of people hosting the event
+     */
+    public function getHostsEmailAddresses($event_id)
+    {
+        $base = $this->_request->base;
+        $version = $this->_request->version;
+
+        $host_sql = 'select u.email'
+            . ' from user_admin a '
+            . ' inner join user u on u.ID = a.uid '
+            . ' where rid = :event_id and rtype="event" and (rcode!="pending" OR rcode is null)';
+        $host_stmt = $this->_db->prepare($host_sql);
+        $host_stmt->execute(array("event_id" => $event_id));
+        return $host_stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    /**
      * Return an array of tags for the event
      * 
      * @param int $event_id The event whose tags we want

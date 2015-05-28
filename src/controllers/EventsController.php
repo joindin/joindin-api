@@ -531,6 +531,14 @@ class EventsController extends ApiController {
         if (!$result) {
             throw new Exception("This event cannot be approved", 400);
         }
+
+        if ($result) {
+            // Send a notification email as we have approved
+            $event = $event_mapper->getEventById($event_id, true)['events'][0];
+            $recipients = $event_mapper->getHostsEmailAddresses($event_id);
+            $emailService = new EventApprovedEmailService($this->config, $recipients, $event);
+            $emailService->sendEmail();
+        }
         
         $location = $request->base . '/' . $request->version . '/events/' . $event_id;
         header('Location: ' . $location, null, 204);
