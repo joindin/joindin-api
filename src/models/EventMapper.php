@@ -990,4 +990,27 @@ class EventMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         return $stmt->execute(["event_id" => $event_id]);
     }
+
+    /**
+     * Reject a pending event
+     *
+     * Currently, this is done by deleting it
+     *
+     * @param  integer $event_id
+     * @return boolean
+     */
+    public function reject($event_id)
+    {
+        $sql = "select ID from events where pending = 1 and active = 0 and ID = :event_id";
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(["event_id" => $event_id]);
+        $result = $stmt->fetch();
+        if ($result === false) {
+            return false;
+        }
+
+        $sql = "delete from events WHERE pending = 1 and active = 0 and ID = :event_id";
+        $stmt = $this->_db->prepare($sql);
+        return $stmt->execute(["event_id" => $event_id]);
+    }
 }

@@ -544,4 +544,33 @@ class EventsController extends ApiController {
         header('Location: ' . $location, null, 204);
         return;
     }
+
+    /**
+     * Reject a pending event by DELETEing to /events/{id}/approval
+     *
+     * @param  Request $request
+     * @param  PDO $db
+     * @return void
+     */
+    public function rejectAction($request, $db)
+    {
+        if (!isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 400);
+        }
+        
+        $event_id = $this->getItemId($request);
+        $event_mapper = new EventMapper($db, $request);
+
+        if (!$event_mapper->thisUserCanApproveEvents()) {
+            throw new Exception("You are not allowed to reject this event", 403);
+        }
+
+        $result = $event_mapper->reject($event_id, $request->user_id);
+        if (!$result) {
+            throw new Exception("This event cannot be rejected", 400);
+        }
+        
+        header("Content-Length: 0", null, 204);
+        return;
+    }
 }

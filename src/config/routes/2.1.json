@@ -12,6 +12,12 @@
         "verbs": ["POST"]
     },
     {
+        "path": "/events/(\\d+)/approval$",
+        "controller": "EventsController",
+        "action": "rejectAction",
+        "verbs": ["DELETE"]
+    },
+    {
         "path": "/events(/[^/]+)*/comments",
         "controller": "Event_commentsController",
         "action": "createComment",
