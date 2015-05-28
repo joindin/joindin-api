@@ -1,5 +1,11 @@
 [
     {
+        "path": "/events(/[^/]+)/talks/?$",
+        "controller": "TalksController",
+        "action": "postAction",
+        "verbs": ["POST"]
+    },
+    {
         "path": "/events(/[^/]+)*/?$",
         "controller": "EventsController",
         "action": "getAction",
@@ -29,7 +35,6 @@
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
-
     {
         "path": "/talks(/[^/]+)*/?$",
         "controller": "TalksController",
@@ -43,7 +48,7 @@
         "verbs": ["POST"]
     },
     {
-        "path": "/talks(/[^/]+)*/?$",
+        "path": "/talks(/[^/]+)/?$",
         "controller": "TalksController",
         "action": "putAction",
         "verbs": ["PUT"]

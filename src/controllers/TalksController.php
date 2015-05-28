@@ -64,7 +64,7 @@ class TalksController extends ApiController {
         }
         $talk_id = $this->getItemId($request);
 
-        if(isset($request->url_elements[4])) {
+        if($request->url_elements[2] == 'talks' && isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
                 case "comments":
                     $comment = $request->getParameter('comment');
@@ -148,7 +148,17 @@ class TalksController extends ApiController {
             }
         } else {
 
-            $event_id = filter_var($request->getParameter('event_id'), FILTER_SANITIZE_NUMBER_INT);
+            // Set the event-ID either via URL or via POST-Data depending on how the
+            // method was called.
+            // When it's called via a POST to /talks/ the event-id is part of the
+            // POST-data, when it's called via POST to /events/<id>/talks/ the
+            // event-id is part of the URL but will be overwritten by POST-data
+            $event_id = null;
+            if ($request->url_elements[2] == 'events' && isset($request->url_elements[3])) {
+                $event_id = $request->url_elements[3];
+            }
+            var_dump($event_id);
+            $event_id = filter_var($request->getParameter('event_id', $event_id), FILTER_SANITIZE_NUMBER_INT);
             $event_mapper = new EventMapper($db, $request);
             if (! $event_mapper->thisUserHasAdminOn($event_id)) {
                 throw new Exception('You are not an host for this event', 403);
