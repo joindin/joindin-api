@@ -1,14 +1,13 @@
 <?php
 
-class TalksController extends ApiController {
+class TalksController extends ApiController
+{
     public function handle(Request $request, $db) {
         switch ($request->getVerb()) {
             case 'GET':
                 return $this->getAction($request, $db);
             case 'POST':
                 return $this->postAction($request, $db);
-            case 'PUT':
-                return $this->putAction($request, $db);
             case 'DELETE':
                 return $this->deleteAction($request, $db);
         }
@@ -59,8 +58,9 @@ class TalksController extends ApiController {
 	}
 
     public function postAction($request, $db) {
+
         if(!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 403);
         }
         $talk_id = $this->getItemId($request);
 
@@ -157,12 +157,20 @@ class TalksController extends ApiController {
             if ($request->url_elements[2] == 'events' && isset($request->url_elements[3])) {
                 $event_id = $request->url_elements[3];
             }
-            var_dump($event_id);
-            $event_id = filter_var($request->getParameter('event_id', $event_id), FILTER_SANITIZE_NUMBER_INT);
+            $event_id = filter_var(
+                $request->getParameter('event_id', $event_id),
+                FILTER_SANITIZE_NUMBER_INT
+            );
+
             $event_mapper = new EventMapper($db, $request);
             if (! $event_mapper->thisUserHasAdminOn($event_id)) {
-                throw new Exception('You are not an host for this event', 403);
+                throw new Exception('You do not have permissions to add a talk to this event', 403);
             }
+            $eventlist = $event_mapper->getEventById($event_id);
+            if (count($eventlist['events']) < 1) {
+                throw new Exception('Event not found', 400);
+            }
+            $event = $eventlist['events'][0];
 
             // incoming data
             $talk   = array();
@@ -173,33 +181,63 @@ class TalksController extends ApiController {
                 $errors[] = '"event_id" is a required field';
             }
 
-            $talk['talk_title'] = filter_var($request->getParameter("talk_title"), FILTER_SANITIZE_STRING);
+            $talk['talk_title'] = filter_var(
+                $request->getParameter("talk_title"),
+                FILTER_SANITIZE_STRING
+            );
             if(empty($talk['talk_title'])) {
-                $errors[] = "'talk_title' is a required field";
+                $errors[] = "The 'talk_title' field is required";
             }
 
-            $talk['url_friendly_talk_title'] = filter_var($request->getParameter("ur_friendly_talk_title"), FILTER_SANITIZE_STRING);
-            if(empty($talk['url_friendly_talk_title'])) {
-                $talk['url_friendly_talk_title'] = $talk['talk_title'];
-            }
-
-            $talk['talk_description']  = filter_var($request->getParameter("talk_description"), FILTER_SANITIZE_STRING);
+            $talk['talk_description']  = filter_var(
+                $request->getParameter("talk_description"),
+                FILTER_SANITIZE_STRING
+            );
             if (empty($talk['talk_description'])) {
-                $errors[] = "'talk_description' is a required field";
+                $errors[] = "The 'talk_description' field is required";
             }
 
-            $talk['type']  = filter_var($request->getParameter("type"), FILTER_SANITIZE_STRING);
+            $talk['type']  = filter_var(
+                $request->getParameter("type"),
+                FILTER_SANITIZE_STRING
+            );
             if (empty($talk['type'])) {
-                $errors[] = "'type' is a required field";
+                $errors[] = "The 'type' field is required";
             }
-            // TODO @heiglandreas check whether the type already exists in the database.
+
+            $talk_mapper = new TalkMapper($db, $request);
+            if ($talk['type'] && ! in_array($talk['type'], $talk_mapper->getCategories())) {
+                $errors[] = sprintf(
+                    'The given talk-category "%s" isn\'t recognized',
+                    $talk['type']
+                );
+            }
 
             if ($errors) {
                 throw new Exception(implode(". ", $errors), 400);
             }
 
+            $talk['language'] = filter_var(
+                $request->getParameter('language'),
+                FILTER_SANITIZE_STRING
+            );
+            if (empty($talk['language'])) {
+                $talk['language'] = 'English - UK';
+            }
+            // When the language doesn't exist, the talk will not be found
+            if (! in_array($talk['language'], $talk_mapper->getLanguages())) {
+                $errors[] = sprintf('The language "%s" isn\'t known', $talk['language']);
+            }
 
-            $talk['start_date'] = (new \DateTime($request->getParameter("start_date")))->format('U');
+            $start_date = filter_var(
+                $request->getParameter('start_date'),
+                FILTER_SANITIZE_STRING
+            );
+            if (empty($start_date)) {
+                throw new Exception('Please give the date nad time of the talk', 400);
+            }
+            $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+            $talk['start_date'] = (new DateTime($start_date, $tz))->format('U');
 
             $talk['duration'] = filter_var(
                 $request->getParameter('duration'),
@@ -209,31 +247,27 @@ class TalksController extends ApiController {
                 $talk['duration'] = 60;
             }
 
-            $talk['language'] = filter_var($request->getParameter('language'), FILTER_SANITIZE_STRING);
-            if (empty($talk['language'])) {
-                $talk['language'] = 'English - UK';
-            }
-            // TODO: @heiglandreas Check whether the language actually exists in the database
-            // When the language doesn't exist, the talk will not be found
 
-            $talk['slides_link'] = filter_var($request->getParameter('slides_link'), FILTER_SANITIZE_URL);
+            $talk['slides_link'] = filter_var(
+                $request->getParameter('slides_link'),
+                FILTER_SANITIZE_URL
+            );
 
-            $incoming_speakers_list = $request->getParameter('speakers');
-            if(is_array($incoming_speakers_list)) {
-                $talk['speakers'] = array_map(function($speaker){
-                    $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
-                    $speaker = trim($speaker);
-                    return $speaker;
-                }, $incoming_speakers_list);
-            }
+            $incoming_speakers_list = (array) $request->getParameter('speakers');
+            $talk['speakers'] = array_map(function($speaker){
+                $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
+                $speaker = trim($speaker);
+                return $speaker;
+            }, $incoming_speakers_list);
 
-            $talk_mapper = new TalkMapper($db, $request);
             $new_id = $talk_mapper->save($talk);
+            $event_mapper->cacheTalkCount($talk['event_id']);
 
             $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
             header("Location: " . $uri, true, 201);
-            exit;
-        //    throw new Exception("method not yet supported - sorry");
+
+            $new_talk = $talk_mapper->getTalkById($new_id);
+            return $new_talk;
         }
     }
 
@@ -242,17 +276,14 @@ class TalksController extends ApiController {
      *
      * This action expects the following parameters:
      *
-     * * int talk_id
-     * * int event_id
-     * * string title
-     * * string url_friendly_talk_title
-     * * string description
-     * * string language (has to be a value from the langauges-table
-     * * string slides_link (has to be a URL)
-     * * string type (has to be a value from the categories-table
-     * * int duration
-     * * string date (will be parsed as date)
-     * * string[] speakers (speaker names as the fullnames in the user-table)
+     * - string title
+     * - string description
+     * - string language (has to be a value from the langauges-table
+     * - string slides_link (has to be a URL)
+     * - string type (has to be a value from the categories-table
+     * - int duration
+     * - string date (will be parsed as datetime - include start time as well!)
+     * - string[] speakers (speaker names as the fullnames in the user-table)
      *
      * Users with admin-rights on the talk (the admins as well as the event-hosts)
      * can edit all fields, verified speakers will only be able to edit title,
@@ -269,21 +300,14 @@ class TalksController extends ApiController {
         if(!isset($request->user_id)) {
             throw new Exception("You must be logged in to edit data", 400);
         }
-        $talk_id = $this->getItemId($request);
 
-        if (isset($request->url_elements[4])) {
-            // Not editing the talk but something "below"
-            throw new Exception('Operation not supported, sorry', 404);
-        }
+        $talk_id = $this->getItemId($request);
 
         $talk_mapper = new TalkMapper($db, $request);
 
         $existing_talk = $talk_mapper->getTalkById($talk_id, true);
         if (! $existing_talk || $existing_talk['meta']['count'] < 1) {
-            throw new Exception(sprintf(
-                'There is no talk with ID "%s"',
-                $talk_id
-            ), 404);
+            throw new Exception('The talk could not be found', 404);
         }
         $existing_talk = $existing_talk['talks'][0];
 
@@ -301,12 +325,18 @@ class TalksController extends ApiController {
             'event_id' => $existing_talk['event_id']
         );
 
-        $talk['talk_title'] = filter_var($request->getParameter("talk_title"), FILTER_SANITIZE_STRING);
+        $talk['talk_title'] = filter_var(
+            $request->getParameter("talk_title"),
+            FILTER_SANITIZE_STRING
+        );
         if(empty($talk['talk_title'])) {
             $errors[] = "'title' is a required field";
         }
 
-        $talk['talk_description']  = filter_var($request->getParameter("talk_description"), FILTER_SANITIZE_STRING);
+        $talk['talk_description']  = filter_var(
+            $request->getParameter("talk_description"),
+            FILTER_SANITIZE_STRING
+        );
         if (empty($talk['talk_description'])) {
             $errors[] = "'description' is a required field";
         }
@@ -321,19 +351,10 @@ class TalksController extends ApiController {
         $talk['slides_link'] = filter_var($request->getParameter('slides_link'), FILTER_SANITIZE_URL);
 
         if (! $isAdmin) {
-            $talk['url_friendly_talk_title'] = $existing_talk['url_friendly_talk_title'];
-            $talk['type']               = $existing_talk['type'];
-            $talk['duration']           = $existing_talk['duration'];
-            $talk['start_date']               = (new \DateTime($existing_talk['start_date']))->format('U');
+            $talk['type']       = $existing_talk['type'];
+            $talk['duration']   = $existing_talk['duration'];
+            $talk['start_date'] = (new \DateTime($existing_talk['start_date']))->format('U');
         } else {
-
-            $talk['url_friendly_talk_title'] = filter_var(
-                $request->getParameter("url_friendly_talk_title"),
-                FILTER_SANITIZE_STRING
-            );
-            if (empty($talk['url_friendly_talk_title'])) {
-                $talk['url_friendly_talk_title'] = $talk['talk_title'];
-            }
 
             $talk['type'] = filter_var(
                 $request->getParameter("type"),
@@ -375,10 +396,9 @@ class TalksController extends ApiController {
             throw new Exception(implode(". ", $errors), 400);
         }
 
-        $new_id = $talk_mapper->edit($talk, $talk_id);
+        $talk_mapper->edit($talk, $talk_id);
 
-        $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
-        header("Location: " . $uri, true, 201);
+        header("HTTP/1.1 204 No Content", NULL, 204);
         exit;
     }
 

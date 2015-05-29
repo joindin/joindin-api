@@ -318,27 +318,26 @@ class TalkMapper extends ApiMapper {
      *
      * The data-array is expected to have the following keys:
      *
-     * * event_id
-     * * title
-     * * url_fiendly_title
-     * * description
-     * * slides_link
-     * * language (a value from the column lang:lang_name
-     * * date (a timestamp)
-     * * duration
-     * * speakers (an array of names)
-     * * category (a value from the column categories:title)
+     * - event_id
+     * - title
+     * - description
+     * - slides_link
+     * - language (a value from the column lang:lang_name
+     * - date (a timestamp)
+     * - duration
+     * - speakers (an array of names)
+     * - category (a value from the column categories:title)
      *
      * @param $data
      *
-     * @return string
+     * @return int
      */
-    public function save($data) {
+    public function createTalk($data) {
 
         // TODO map from the field mappings in getVerboseFields()
-        $sql = 'insert into talks (event_id, talk_title, url_friendly_talk_title, '
+        $sql = 'insert into talks (event_id, talk_title, '
             . 'talk_desc, slides_link, lang, date_given, duration) '
-            . 'values (:event_id, :talk_title, :url_friendly_talk_title, :talk_description, '
+            . 'values (:event_id, :talk_title, :talk_description, '
             . ':slides_link, (select ID from lang where lang_name = :language), '
             . ':date, :duration)';
 
@@ -346,7 +345,6 @@ class TalkMapper extends ApiMapper {
         $response = $stmt->execute(array(
             ':event_id' => $data['event_id'],
             ':talk_title' => $data['talk_title'],
-            ':url_friendly_talk_title' => $data['url_friendly_talk_title'],
             ':talk_description' => $data['talk_description'],
             ':language' => $data['language'],
             ':date' => $data['start_date'],
