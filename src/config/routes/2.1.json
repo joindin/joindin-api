@@ -127,6 +127,13 @@
     },
 
     {
+        "path": "/twitter/request_token",
+        "controller": "TwitterController",
+        "action": "getRequestToken",
+        "verbs": ["POST"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"
