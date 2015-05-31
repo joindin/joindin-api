@@ -87,7 +87,7 @@ class OAuthModel
     }
 
     /**
-     * Create an access token for a username or password
+     * Create an access token for a username and password combination
      *
      * @param  string $clientId aka consumer_key
      * @param  string $username username
