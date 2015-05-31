@@ -324,4 +324,36 @@ class OAuthModel
 
         return false;
     }
+
+    /**
+     * Create an access token for someone identified by twitter username
+     *
+     * @param  string $clientId         aka consumer_key (of the joindin client)
+     * @param  string $twitterUsername  User's twitter nick 
+     * (that we just got back from authenticating them)
+     * @return string                   access token
+     */
+    public function createAccessTokenFromTwitterUsername($clientId, $twitterUsername)
+    {
+        $sql = "select ID from user "
+            . "where twitter_username = :twitter_username "
+            . "and verified = 1";
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("twitter_username" => $twitterUsername)); 
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            $userId = $result['ID'];
+
+            // create new token
+            $accessToken = $this->newAccessToken($clientId, $userId);
+
+            // we also want to send back the logged in user's uri
+            $userUri = $this->getUserUri($userId);
+
+            return array('access_token' => $accessToken, 'user_uri' => $userUri);
+        }
+        return false;
+    }
+
 }

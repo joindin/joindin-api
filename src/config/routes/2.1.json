@@ -134,6 +134,13 @@
     },
 
     {
+        "path": "/twitter/token",
+        "controller": "TwitterController",
+        "action": "logUserIn",
+        "verbs": ["POST"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"
