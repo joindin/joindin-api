@@ -39,11 +39,11 @@ class TwitterController extends ApiController {
             parse_str($res->getBody(), $data);
 
             $requestTokenMapper = new TwitterRequestTokenMapper($db);
-            // token is instance of TwitterRequestTokenModel
-            $token = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
-            $output_token = $token->transform($request);
-            header("Location: " . $output_token['uri'], NULL, 201);
-            return $output_token;
+            // $tokens is instance of TwitterRequestTokenModelCollection
+            $tokens = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
+            $output_list = $tokens->getOutputView($request);
+            header("Location: " . $output_list['twitter_request_tokens'][0]['uri'], NULL, 201);
+            return $output_list;
         } else {
 
             error_log("Twitter: no request token (" . $res->getStatusCode() . ": " . $res->getBody() . ")");
