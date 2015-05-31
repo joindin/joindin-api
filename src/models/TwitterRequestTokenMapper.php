@@ -21,4 +21,14 @@ class TwitterRequestTokenMapper extends ApiMapper {
         }
         return false;
     }
+
+    public function delete($token) {
+        $sql = 'delete from twitter_request_tokens '
+            . 'where token=:token';
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array(
+            ':token' => $token,
+            ));
+        return true;
+    }
 }

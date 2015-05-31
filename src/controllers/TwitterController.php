@@ -95,6 +95,10 @@ class TwitterController extends ApiController {
             
             $result = $this->oauthModel->createAccessTokenFromTwitterUsername($clientId, $twitterUsername);
             if ($result) {
+                // clean up request token data
+                $requestTokenMapper = new TwitterRequestTokenMapper($db);
+                $requestTokenMapper->delete($request_token);
+
                 return array('access_token' => $result['access_token'], 'user_uri' => $result['user_uri']);
             }
 
