@@ -363,19 +363,6 @@ class TalkMapper extends ApiMapper {
         $cat_stmt = $this->_db->prepare($cat_sql);
         $cat_stmt->execute(array(':talk_id' => $talk_id));
 
-        // save speakers
-        if(isset($data['speakers']) && is_array($data['speakers'])) {
-            $speaker_sql = 'insert into talk_speaker (talk_id, speaker_name) values '
-                . '(:talk_id, :speaker)';
-            $speaker_stmt = $this->_db->prepare($speaker_sql);
-            foreach($data['speakers'] as $speaker) {
-                $speaker_stmt->execute(array(
-                    ':talk_id' => $talk_id,
-                    ':speaker' => $speaker
-                ));
-            }
-        }
-
         return $talk_id;
     }
 
@@ -386,15 +373,15 @@ class TalkMapper extends ApiMapper {
      *
      * The data-array is expected to have the following keys:
      *
-     * * talk_title
-     * * url_fiendly_talk_title
-     * * talk_description
-     * * slides_link
-     * * language (a value from the column lang:lang_name
-     * * start_date (a timestamp)
-     * * duration
-     * * speakers (an array of names)
-     * * category (a value from the column categories:title)
+     * - talk_title
+     * - url_fiendly_talk_title
+     * - talk_description
+     * - slides_link
+     * - language (a value from the column lang:lang_name
+     * - start_date (a timestamp)
+     * - duration
+     * - speakers (an array of names)
+     * - category (a value from the column categories:title)
      *
      * @param array $talk    talk data to insert into the database.
      * @param int   $talk_id The ID of the talk to be edited
@@ -403,7 +390,6 @@ class TalkMapper extends ApiMapper {
      */
     public function edit($talk, $talk_id)
     {
-        var_dump($talk);
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields = array(
             'talk_title',
@@ -474,36 +460,6 @@ class TalkMapper extends ApiMapper {
                 ));
             }
 
-        }
-
-        if (isset($talk['speakers']) && is_array($talk['speakers'])) {
-            $speaker_sql = 'insert into talk_speaker (talk_id, speaker_name) values '
-                           . '(:talk_id, :speaker)';
-            $speaker_stmt = $this->_db->prepare($speaker_sql);
-
-            $remove_sql = 'delete from talk_speaker WHERE talk_id = :talk_id AND speaker_name = :speaker_name';
-            $remove_stmt = $this->_db->prepare($remove_sql);
-
-            $speakers = array();
-            foreach ($this->getSpeakers($talk_id) as $speaker) {
-                $key = array_search($speaker['speaker_name'], $talk['speakers']);
-                if (false !== $key) {
-                    unset($talk['speakers'][$key]);
-                    continue;
-                }
-
-                $remove_stmt->execute(array(
-                    ':talk_id' => $talk_id,
-                    ':speaker_name' => $speaker['speaker_name'],
-                ));
-            }
-
-            foreach($talk['speakers'] as $speaker) {
-                $speaker_stmt->execute(array(
-                    ':talk_id' => $talk_id,
-                    ':speaker' => $speaker,
-                ));
-            }
         }
 
         return $talk_id;

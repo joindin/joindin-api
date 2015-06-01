@@ -412,7 +412,7 @@ class EventsController extends ApiController {
                 $event_mapper->setTags($event_id, $tags);
             }
 
-            header("Location: " . $request->base . $request->path_info, NULL, 204);
+            header("HTTP/1.1 204 No Content", NULL, 204);
             exit;
         }
     }
