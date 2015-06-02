@@ -24,3 +24,49 @@ If you already have a development DB, but you want to patch it up to the latest 
 cd scripts
 ./patchdb.sh -t ../ -d <DB name> -u <DB username> -p <DB password>
 ```
+
+## Supporting Elasticsearch
+
+The new search is supported by elasticsearch. To install and populate, follow the instruction following:
+
+First off, elasticsearch relies on java. 
+
+```
+sudo apt-get install openjdk-7-jre
+```
+
+Next, let's add the necessary keys and add ES repositories to apt so we can install from the package manager, then install.
+
+```
+wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+echo "deb http://packages.elastic.co/elasticsearch/1.5/debian stable main" | sudo tee -a /etc/apt/sources.list
+sudo apt-get update && sudo apt-get install elasticsearch
+```
+
+If you wish to run elasticsearch on VM boot, run:
+
+```
+sudo update-rc.d elasticsearch defaults 95 10
+```
+
+Finally for install, start the service.
+
+```
+sudo service elasticsearch start
+```
+
+Now that we're all installed we need to import the current data available to us. We need the SDK.
+
+```
+curl -sS https://getcomposer.org/installer | php
+./composer.phar install --no-dev
+```
+
+Now we're all set up and ready for data. Running the following should put everything in place automatically for you.
+
+```
+php scripts/reindex-all.php
+```
+
+Go ahead and start your searches.
+
