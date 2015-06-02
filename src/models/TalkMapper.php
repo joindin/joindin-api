@@ -379,6 +379,24 @@ class TalkMapper extends ApiMapper {
             return false;
         }
 
+        // Check whether the current category is already set
+        $cat_sql = 'select id from talk_cat where talk_id = :talk_id and cat_id = :cat_id';
+        $cat_stmt = $this->_db->prepare($cat_sql);
+        $result = $cat_stmt->execute(array(
+            ':talk_id' => $talk_id,
+            ':cat_id'  => array_search($category, $categories),
+        ));
+
+        if ($cat_stmt->rowCount() > 0) {
+            return true;
+        }
+
+        $cat_sql = 'delete from talk_cat where talk_id = :talk_id';
+        $cat_stmt = $this->_db->prepare($cat_sql);
+        $cat_stmt->execute(array(
+            ':talk_id' => $talk_id,
+        ));
+
         $cat_sql = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, :category_id)';
         $cat_stmt = $this->_db->prepare($cat_sql);
         return $cat_stmt->execute(array(
@@ -402,7 +420,7 @@ class TalkMapper extends ApiMapper {
      * - start_date (a timestamp)
      * - duration
      * - speakers (an array of names)
-     * - category (a value from the column categories:title)
+     * - type (a value from the column categories:title)
      *
      * @param array $talk    talk data to insert into the database.
      * @param int   $talk_id The ID of the talk to be edited
@@ -454,28 +472,8 @@ class TalkMapper extends ApiMapper {
             throw new Exception('Editing the talk failed', 400);
         }
 
-        if (isset($talk['category'])) {
-            $cat_sql = 'select id from talk_cat where talk_id = :talk_id and cat_id = :cat_id';
-            $cat_stmt = $this->_db->prepare($cat_sql);
-            $result = $cat_stmt->execute(array(
-                ':talk_id' => $talk_id,
-                ':cat_id'  => $talk['type'],
-            ));
-            if (! $result) {
-                $cat_sql = 'delete from talk_cat where talk_id = :talk_id and cat_id = :cat_id';
-                $cat_stmt = $this->_db->prepare($cat_sql);
-                $cat_stmt->execute(array(
-                    ':talk_id' => $talk_id,
-                    ':cat_id'  => $talk['type'],
-                ));
-                $cat_sql = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, :cat_id)';
-                $cat_stmt = $this->_db->prepare($cat_sql);
-                $cat_stmt->execute(array(
-                    ':talk_id' => $talk_id,
-                    ':cat_id'  => $talk['type'],
-                ));
-            }
-
+        if (isset($talk['type'])) {
+            $this->setCategory($talk_id, $talk['type']);
         }
 
         return $talk_id;
@@ -652,21 +650,17 @@ class TalkMapper extends ApiMapper {
             return false;
         }
 
-        $speakers = $this->getSpeakers($talk_id);
-        $speaker_uri = $this->_request->base
-                     . '/'
-                     . $this->_request->version
-                     . '/users/'
-                     . $this->_request->user_id;
-        foreach ($speakers as $speaker) {
-            if (! isset($speaker['speaker_uri'])) {
-                // The speaker is not verified
-                continue;
-            }
+        $sql = 'SELECT * FROM talk_speaker WHERE speaker_id = :user_id AND talk_id = :talk_id';
 
-            if ($speaker['speaker_uri'] == $speaker_uri) {
-                return true;
-            }
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array(
+            'user_id' => $this->_request->user_id,
+            'talk_id' => $talk_id,
+        ));
+
+        $results = $stmt->fetchAll();
+        if (count($result) > 0) {
+            return true;
         }
 
         return false;

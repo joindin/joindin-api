@@ -287,4 +287,21 @@ class TalkSpeakerMapper extends ApiMapper
         return $result[0]['talk_id'];
     }
 
+    public function isSpeakerOnTalk($user_id, $talk_id)
+    {
+        $sql = 'SELECT * FROM talk_speaker WHERE speaker_id = :user_id AND talk_id = :talk_id';
+
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array(
+            'user_id' => $user_id,
+            'talk_id' => $talk_id,
+        ));
+
+        if (count($result->fetchAll()) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
 }
