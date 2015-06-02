@@ -55,7 +55,7 @@ Finally for install, start the service.
 sudo service elasticsearch start
 ```
 
-Now that we're all installed we need to import the current data available to us. We need the SDK.
+The service is now sorted. Now we need the PHP ES SDK to communicate with the service. We'll use composer for to make this simple.
 
 ```
 curl -sS https://getcomposer.org/installer | php
@@ -68,5 +68,5 @@ Now we're all set up and ready for data. Running the following should put everyt
 php scripts/reindex-all.php
 ```
 
-Go ahead and start your searches.
+Job done.
 
