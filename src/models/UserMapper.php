@@ -403,7 +403,8 @@ class UserMapper extends ApiMapper
      * @return $user_id The user's ID (or false, if we didn't find her)
      */
     public function getUserIdFromEmail($email) {
-        $sql = "select ID from user where email = :email";
+        $sql = "select ID from user " 
+            . "where email = :email and active = 1";
 
         $data = array("email" => $email);
         $stmt = $this->_db->prepare($sql);
@@ -514,5 +515,118 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * Function to get just the user ID
+     *
+     * @param string $username The username of the user we're looking for
+     * @return $user_id The user's ID (or false, if we didn't find her)
+     */
+    public function getUserIdFromUsername($username) {
+        $sql = "select ID from user where username = :username";
 
+        $data = array("username" => $username);
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute($data);
+        if($response) {
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if(isset($row['ID'])) {
+                return $row['ID'];
+            }
+        }
+        return false;
+    }
+
+    /**
+     * We don't expose the email address in resources, but sometimes we need 
+     * to email users, so this is how to get the email address
+     *
+     * @param int $user_id The ID of the user
+     * @return string $email The email address
+     */
+    public function getEmailByUserId($user_id) {
+        $sql = "select email from user where ID = :user_id";
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array("user_id" => $user_id));
+        if($response) {
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if(isset($row['email'])) {
+                return $row['email'];
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Generate and store a token in the password_reset_tokens table for this 
+     * user, when they come to web2 with this token, we'll let them set a new
+     * password
+     */
+    public function generatePasswordResetTokenForUserId($user_id) {
+        $token = bin2hex(openssl_random_pseudo_bytes(8));
+
+        $sql = "insert into password_reset_tokens set "
+            . "user_id = :user_id, token = :token";
+
+        $stmt = $this->_db->prepare($sql);
+        $data = array(
+            "user_id" => $user_id, 
+            "token" => $token);
+
+        $response = $stmt->execute($data);
+        if ($response) {
+            return $token;
+        }
+
+        return false;
+    }
+
+    /**
+     * When the user forgets their password, we generate and send them a token.
+     * Check that the token is valid, find out which user this is, save their
+     * new password and then delete their other tokens
+     *
+     * @param string $token    The reset we sent them by email (link goes to web2)
+     * @param string $password The new password they chose
+     */
+    public function resetPassword($token, $password) {
+        // does the token exist, and whose is it?
+        $select_sql = "select user_id from password_reset_tokens "
+            . "where token = :token";
+
+        $select_stmt = $this->_db->prepare($select_sql);
+        $data = array("token" => $token);
+
+        $response = $select_stmt->execute($data);
+        if($response) {
+            $row = $select_stmt->fetch(\PDO::FETCH_ASSOC);
+            if($row && is_array($row)) {
+                $user_id = $row['user_id'];
+
+                // save the new password
+                $update_sql = "update user set password = :password "
+                    . "where ID = :user_id";
+
+                $update_stmt = $this->_db->prepare($update_sql);
+                $update_data = array(
+                    "password" => password_hash(md5($password), PASSWORD_DEFAULT),
+                    "user_id"  => $user_id);
+                $update_response = $update_stmt->execute($update_data);
+
+                if($update_response) {
+                    // delete all the user's tokens; they don't need them now
+                    $delete_sql = "delete from password_reset_tokens "
+                        . "where user_id = :user_id";
+
+                    $stmt = $this->_db->prepare($delete_sql);
+                    $stmt->execute(array("user_id"  => $user_id));
+
+                    // all good
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

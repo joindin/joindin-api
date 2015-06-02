@@ -64,6 +64,13 @@
     },
 
     {
+        "path": "/users/passwords$",
+        "controller": "UsersController",
+        "action": "passwordReset",
+        "verbs": ["POST"]
+    },
+
+    {
         "path": "/users(/[^/]+)*/?$",
         "controller": "UsersController",
         "action": "getAction",
@@ -117,6 +124,12 @@
         "controller": "SearchController",
         "action": "handle",
         "verbs": ["GET","POST"]
+    },
+    {
+        "path": "/emails/reminders/password",
+        "controller": "EmailsController",
+        "action": "passwordReset",
+        "verbs": ["POST"]
     },
 
     {
