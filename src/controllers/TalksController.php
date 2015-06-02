@@ -253,7 +253,7 @@ class TalksController extends ApiController
                 FILTER_SANITIZE_URL
             );
 
-            $new_id = $talk_mapper->save($talk);
+            $new_id = $talk_mapper->createTalk($talk);
             $event_mapper->cacheTalkCount($talk['event_id']);
 
             $incoming_speakers_list = (array) $request->getParameter('speakers');

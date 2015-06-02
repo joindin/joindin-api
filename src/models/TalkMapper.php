@@ -359,12 +359,32 @@ class TalkMapper extends ApiMapper {
         }
 
         // set talk type
-        // TODO support more than just talks
-        $cat_sql = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, 1)';
-        $cat_stmt = $this->_db->prepare($cat_sql);
-        $cat_stmt->execute(array(':talk_id' => $talk_id));
+        $this->setCategory($talk_id, $data['type']);
 
         return $talk_id;
+    }
+
+    /**
+     * Set the given category for the talk
+     *
+     * @param int $talk_id
+     * @param string $category
+     *
+     * @return boolean
+     */
+    public function setCategory($talk_id, $category)
+    {
+        $categories = $this->getCategories();
+        if (! in_array($category, $categories)) {
+            return false;
+        }
+
+        $cat_sql = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, :category_id)';
+        $cat_stmt = $this->_db->prepare($cat_sql);
+        return $cat_stmt->execute(array(
+            ':talk_id' => $talk_id,
+            ':category_id' => array_search($category, $categories),
+        ));
     }
 
     /**
@@ -431,12 +451,7 @@ class TalkMapper extends ApiMapper {
         $stmt = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
 
         if (! $stmt->execute($items)) {
-            throw new Exception(sprintf(
-                'executing "%s" resulted in an error: %s',
-                $stmt->queryString,
-                implode(' :: ', $stmt->errorInfo())
-            ));
-            return false;
+            throw new Exception('Editing the talk failed', 400);
         }
 
         if (isset($talk['category'])) {
