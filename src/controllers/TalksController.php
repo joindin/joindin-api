@@ -253,15 +253,24 @@ class TalksController extends ApiController
                 FILTER_SANITIZE_URL
             );
 
+            $new_id = $talk_mapper->save($talk);
+            $event_mapper->cacheTalkCount($talk['event_id']);
+
             $incoming_speakers_list = (array) $request->getParameter('speakers');
-            $talk['speakers'] = array_map(function($speaker){
+            $speakers = array_map(function($speaker){
                 $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
                 $speaker = trim($speaker);
                 return $speaker;
             }, $incoming_speakers_list);
 
-            $new_id = $talk_mapper->save($talk);
-            $event_mapper->cacheTalkCount($talk['event_id']);
+            $speaker_mapper = new TalkSpeakerMapper($db, $request);
+            foreach ($speakers as $speaker) {
+                $speaker_mapper->createSpeaker(array(
+                    'talk_id' => $new_id,
+                    'speaker_name' => $speaker,
+                ));
+            }
+
 
             $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
             header("Location: " . $uri, true, 201);
@@ -283,7 +292,6 @@ class TalksController extends ApiController
      * - string type (has to be a value from the categories-table
      * - int duration
      * - string date (will be parsed as datetime - include start time as well!)
-     * - string[] speakers (speaker names as the fullnames in the user-table)
      *
      * Users with admin-rights on the talk (the admins as well as the event-hosts)
      * can edit all fields, verified speakers will only be able to edit title,
@@ -382,14 +390,15 @@ class TalksController extends ApiController
                 $talk['duration'] = 60;
             }
 
-            $incoming_speakers_list = $request->getParameter('speakers');
-            if(is_array($incoming_speakers_list)) {
-                $talk['speakers'] = array_map(function($speaker){
-                    $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
-                    $speaker = trim($speaker);
-                    return $speaker;
-                }, $incoming_speakers_list);
-            }
+// TODO: Shall it be possible to edit speakers via a talk?
+//            $incoming_speakers_list = $request->getParameter('speakers');
+//            if(is_array($incoming_speakers_list)) {
+//                $talk['speakers'] = array_map(function($speaker){
+//                    $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
+//                    $speaker = trim($speaker);
+//                    return $speaker;
+//                }, $incoming_speakers_list);
+//            }
         }
 
         if ($errors) {

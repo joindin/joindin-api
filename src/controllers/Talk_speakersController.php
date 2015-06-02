@@ -135,7 +135,7 @@ class Talk_speakersController extends ApiController
             throw new Exception('You are not allowed to edit this speaker', 403);
         }
 
-        throw new Exception('THis merthod is not yet fully implemented', 400);
+        throw new Exception('This method is not yet fully implemented', 400);
 
     }
 

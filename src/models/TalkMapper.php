@@ -242,10 +242,11 @@ class TalkMapper extends ApiMapper {
                $entry = array();
                if($person['full_name']) {
                    $entry['speaker_name'] = $person['full_name'];
-                   $entry['speaker_uri'] = $base . '/' . $version . '/users/' . $person['speaker_id'];
+                   $entry['user_uri'] = $base . '/' . $version . '/users/' . $person['speaker_id'];
                } else {
                    $entry['speaker_name'] = $person['speaker_name'];
                }
+               $entry['speaker_uri'] = $base . '/' . $version . '/speakers/' . $person['ID'];
                $retval[] = $entry;
            }
         }
