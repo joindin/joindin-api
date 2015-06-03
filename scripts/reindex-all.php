@@ -44,7 +44,7 @@ $eventMapping = [
         ],
         'title' => [
             'type' => 'string',
-            'analyzer' => 'trigrams'
+            'analyzer' => 'quadgrams'
         ],
         'location' => [
             'type' => 'string',
@@ -80,7 +80,7 @@ $talkMapping = [
         ],
         'title' => [
             'type' => 'string',
-            'analyzer' => 'trigrams'
+            'analyzer' => 'quadgrams'
         ],
         'description' => [
             'type' => 'string',
@@ -117,18 +117,18 @@ $speakerMapping = [
 ];
 
 
-$triGramsFilter = [
+$quadGramsFilter = [
     'type'      => 'ngram',
     'min_gram'  => 3,
-    'max_gram'  => 3
+    'max_gram'  => 10
 ];
 
-$triGramsAnalyzer = [
+$quadGramsAnalyzer = [
     'type'      => 'custom',
     'tokenizer' => 'standard',
     'filter'    => [
         'lowercase',
-        'trigrams_filter'    
+        'quadgrams_filter'    
     ]
 ]
 ;
@@ -137,8 +137,8 @@ $triGramsAnalyzer = [
 
 $indexParams = ['index' => 'ji-search'];
 
-$indexParams['body']['settings']['analysis']['filter']['trigrams_filter'] = $triGramsFilter;
-$indexParams['body']['settings']['analysis']['analyzer']['trigrams'] = $triGramsAnalyzer;
+$indexParams['body']['settings']['analysis']['filter']['quadgrams_filter'] = $quadGramsFilter;
+$indexParams['body']['settings']['analysis']['analyzer']['quadgrams'] = $quadGramsAnalyzer;
 
 
 $indexParams['body']['mappings']['events'] = $eventMapping;
@@ -184,12 +184,15 @@ while($row = $event_stmt->fetch(PDO::FETCH_ASSOC)) {
 
 }
 
-$talk_sql = '   SELECT t.ID, t.talk_title, t.talk_desc, t.speaker, COALESCE(t.date_given, e.event_start) AS talk_date
+$talk_sql = '   SELECT t.ID, t.talk_title, t.talk_desc, GROUP_CONCAT(s.speaker_name) AS speaker, COALESCE(t.date_given, e.event_start) AS talk_date
                 FROM talks t
                 INNER JOIN events e
                     ON e.ID = t.event_id
+                LEFT JOIN talk_speaker s
+                    ON s.talk_id = t.ID
                 WHERE t.active = 1
-                    AND t.event_id IS NOT NULL';
+                    AND t.event_id IS NOT NULL
+                GROUP BY t.ID';
 $talk_stmt = $ji_db->prepare($talk_sql);
 $talk_stmt->execute();
 
@@ -217,13 +220,9 @@ while($row = $talk_stmt->fetch(PDO::FETCH_ASSOC)) {
     }
 }
 
-$speaker_sql = "SELECT DISTINCT speaker_name, speaker_id, 'linked' AS state 
+$speaker_sql = "SELECT DISTINCT speaker_name, speaker_id 
                 FROM talk_speaker 
                 WHERE speaker_id IS NOT NULL 
-                UNION ALL 
-                SELECT speaker_name,  ID AS speaker_id, 'unlinked' AS state
-                FROM talk_speaker 
-                WHERE speaker_id IS NULL 
                 ORDER BY speaker_name ASC";
 
 $speaker_stmt = $ji_db->prepare($speaker_sql);
@@ -237,7 +236,7 @@ while($row = $speaker_stmt->fetch(PDO::FETCH_ASSOC)) {
     ];
     $params['index'] = 'ji-search';
     $params['type'] = 'speakers';
-    $params['id'] = sprintf('%s%d', (($row['state'] == 'linked') ? '' : 'u'), $row['speaker_id']);
+    $params['id'] = $row['speaker_id'];
     
     echo "Trying to index speaker {$row['speaker_name']}....";
     $ret = $client->index($params);
