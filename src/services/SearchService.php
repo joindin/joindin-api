@@ -50,9 +50,9 @@ class SearchService
                                 'query' => $this->search,
                                 'type'  => 'best_fields',
                                 'fields'=> [
-                                    'title^3', 'name^4', 'description^2', 'location'
+                                    'title^3', 'description^2', 'location', 'name^3', 'speaker^3'
                                 ],
-                                'tie_breaker' => 0.3,
+                                'tie_breaker' => 1,
                                 'minimum_should_match' => '50%'
                             ] 
                         ]
@@ -61,20 +61,23 @@ class SearchService
             ]
         ];
 
-        if(count($this->searchTypes) > 1 || current($this->searchTypes) !== 'speakers') {
-        $params['body']['query']['function_score']['functions'] = [
+            $params['body']['query']['function_score']['functions'] = [
                             [
                                 'gauss'     => [
                                     'start'     => [ 
                                         'origin'    => time(),
-                                        'scale'     => '2592000',
-                                        'offset'    => '2592000',
+                                        'scale'     => 2592000,
+                                        'offset'    => 604800,
                                         'decay'     => 0.5
                                     ]
                                 ]
                             ]
                         ];
-        }
+            $params['body']['query']['function_score']['boost'] = 1;
+            $params['body']['query']['function_score']['score_mode'] = 'multiply';
+            $params['body']['query']['function_score']['boost_mode'] = 'multiply';
+
+            echo json_encode($params['body']);
 
         $results = $this->provider->search($params);
 
