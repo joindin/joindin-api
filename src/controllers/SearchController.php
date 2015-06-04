@@ -5,9 +5,6 @@ class SearchController extends ApiController {
         if($request->getVerb() == 'GET') {
             // Get from all index types
             return $this->getAction($request, $db);
-        } else if($request->getVerb() == 'POST') {
-            // Complex query
-
         }
         return false;
     }
@@ -42,12 +39,5 @@ class SearchController extends ApiController {
 
     public function postAction(Request $request, $db) {
 
-    }
-
-    private function getFilter($request) {
-        if(!empty($request->url_elements[3])) {
-            return $request->url_elements[3];
-        }
-        return false;
     }
 }
