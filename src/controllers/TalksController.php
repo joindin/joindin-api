@@ -60,7 +60,7 @@ class TalksController extends ApiController
     public function postAction($request, $db) {
 
         if(!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 403);
+            throw new Exception("You must be logged in to create data", 401);
         }
         $talk_id = $this->getItemId($request);
 
@@ -168,7 +168,7 @@ class TalksController extends ApiController
             }
             $eventlist = $event_mapper->getEventById($event_id);
             if (count($eventlist['events']) < 1) {
-                throw new Exception('Event not found', 400);
+                throw new Exception('Event not found', 404);
             }
             $event = $eventlist['events'][0];
 
@@ -234,7 +234,7 @@ class TalksController extends ApiController
                 FILTER_SANITIZE_STRING
             );
             if (empty($start_date)) {
-                throw new Exception('Please give the date nad time of the talk', 400);
+                throw new Exception('Please give the date and time of the talk', 400);
             }
             $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
             $talk['start_date'] = (new DateTime($start_date, $tz))->format('U');
@@ -413,7 +413,7 @@ class TalksController extends ApiController
 
     public function deleteAction($request, $db) {
         if(!isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 400);
+            throw new Exception("You must be logged in to delete data", 401);
         }
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
@@ -439,7 +439,7 @@ class TalksController extends ApiController
 
             $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
             if(!$is_admin) {
-                throw new Exception("You do not have permission to do that", 400);
+                throw new Exception("You do not have permission to do that", 403);
             }
 
             $talk_mapper->delete($talk_id);
