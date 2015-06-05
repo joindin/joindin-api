@@ -15,7 +15,7 @@ function init(_baseURL) {
 	});
 }
 
-function testAddTalk() {
+function testAddUser() {
   var randomSuffix = parseInt(Math.random() * 1000000).toString();
   var username = "testUser" + randomSuffix;
   var password = "pwpwpwpwpwpw";
@@ -41,9 +41,9 @@ function testAddTalk() {
 	.toss();
 }
 
-function testReadTalk(){}
+function testReadUser(){}
 
-function testEditTalk() {
+function testEditUser() {
 	var randomSuffix = parseInt(Math.random() * 1000000).toString();
   var username = "testUser" + randomSuffix;
   var password = "pwpwpwpwpwpw";
@@ -67,7 +67,7 @@ function testEditTalk() {
 	.toss();
 }
 
-function testRemoveTalk() {
+function testRemoveUser() {
 	frisby.create('Get user')
 		.get(url)
 		.expectStatus(200)
@@ -80,6 +80,6 @@ function testRemoveTalk() {
 
 module.exports = {
 	init      : init,
-	testRegisterUser : testAddTalk,
+	testRegisterUser : testAddUser,
 	testRegisterVerifiedUser : testRegisterVerifiedUser
 }
