@@ -47,6 +47,11 @@ class SearchService
     }
 
     public function search() {
+        // Check we have all required data
+        if(!$this->searchTypes || !$this->search || !$this->limit || !$this->offset) {
+            throw new Exception('Missing search data', 400); 
+        }
+
         $params = [
             'index' => $this->index,
             'type'  => implode(',', $this->searchTypes),
