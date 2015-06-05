@@ -61,23 +61,21 @@ class SearchService
             ]
         ];
 
-            $params['body']['query']['function_score']['functions'] = [
-                            [
-                                'gauss'     => [
-                                    'start'     => [ 
-                                        'origin'    => time(),
-                                        'scale'     => 2592000,
-                                        'offset'    => 604800,
-                                        'decay'     => 0.5
-                                    ]
+        $params['body']['query']['function_score']['functions'] = [
+                        [
+                            'gauss'     => [
+                                'start'     => [ 
+                                    'origin'    => time(),
+                                    'scale'     => 2592000,
+                                    'offset'    => 604800,
+                                    'decay'     => 0.5
                                 ]
                             ]
-                        ];
-            $params['body']['query']['function_score']['boost'] = 1;
-            $params['body']['query']['function_score']['score_mode'] = 'multiply';
-            $params['body']['query']['function_score']['boost_mode'] = 'multiply';
-
-            echo json_encode($params['body']);
+                        ]
+                    ];
+        $params['body']['query']['function_score']['boost'] = 1;
+        $params['body']['query']['function_score']['score_mode'] = 'multiply';
+        $params['body']['query']['function_score']['boost_mode'] = 'multiply';
 
         $results = $this->provider->search($params);
 
