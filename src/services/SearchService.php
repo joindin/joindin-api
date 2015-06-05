@@ -187,7 +187,7 @@ class SearchService
 
         $params = [
             'index'     => 'ji-search',
-            'type'      => $index,
+            'type'      => $type,
             'id'        => intval($id)
         ];
 
@@ -198,6 +198,5 @@ class SearchService
         } else {
             return false;
         }
-
     }
 }
