@@ -98,7 +98,7 @@ class EventMapper extends ApiMapper
     }
 
     /**
-     * Fetch the details for a multiple events
+     * Fetch the details for multiple events
      * 
      * @param array $event_id events.ID value
      * @param boolean $verbose used to determine how many fields are needed

@@ -11,10 +11,20 @@ class SearchService
     protected $limit = 10;
     protected $offset = 0;
 
+    /**
+     * Set up the basics
+     * 
+     * @param object The ElasticSearch SDK object. This can be updated to use an interface later if more providers are added
+     * @param string $index The Index we want ES to look in for search
+     */
     public function __construct(Elasticsearch\Client $provider, $index) {
         $this->provider = $provider;
         $this->index = $index;
     }
+
+    /**
+     * Basic search data setters
+     */
 
     public function setSearchTypes($types) {
         if(!is_array($types)) {
@@ -153,8 +163,16 @@ class SearchService
         }
     }
 
-    public function remove($index, $id) {
-        if(!in_array($index, ['events', 'talks', 'speakers'])) {
+    /**
+     * Remove document from the search index in the provided type
+     * 
+     * @param string $type Define the index's type we want to remove from
+     * @param int $id The ID of the document we want to remove
+     *
+     * @return bool
+     */
+    public function remove($type, $id) {
+        if(!in_array($type, ['events', 'talks', 'speakers'])) {
             throw new Exception('Unknown index type');
         }
 
