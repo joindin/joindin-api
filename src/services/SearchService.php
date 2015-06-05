@@ -102,7 +102,7 @@ class SearchService
             case 'events': 
                 // Check we have all required fields
                 if(count(array_diff(['name', 'location', 'description', 'start_date', 'id'], array_keys($data)))) { 
-                    throw new \Exception('Missing required fields');
+                    throw new Exception('Missing required fields');
                 }
 
                 $params = [];
@@ -122,7 +122,7 @@ class SearchService
             case 'talks':
                 // Check we have all required fields
                 if(count(array_diff(['title', 'description', 'id'], array_keys($data)))) { 
-                    throw new \Exception('Missing required fields');
+                    throw new Exception('Missing required fields');
                 }
 
                 $params = [];
