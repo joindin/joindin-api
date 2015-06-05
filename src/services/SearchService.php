@@ -138,18 +138,18 @@ class SearchService
 
                 break;
             case 'speakers':
-                throw new Exception('Incomplete');
                 // Check we have all required fields
-                if(count(array_diff(['speaker_name', 'state', 'speaker_id'], array_keys($data)))) { 
-                    throw new \Exception('Missing required fields');
+                if(count(array_diff(['speaker_name', 'speaker_id'], array_keys($data)))) { 
+                    throw new Exception('Missing required fields');
                 }
 
                 $params = [];
                 $params['body'] = [
-                    'name' => $row['speaker_name']
+                    'name' => $row['speaker_name'],
+                    'start' => null
                 ];
                 $params['type'] = 'speakers';
-                $params['id'] = sprintf('%s%d', (($row['state'] == 'linked') ? '' : 'u'), $row['speaker_id']);
+                $params['id'] = $row['speaker_id'];
 
                 break;
 
