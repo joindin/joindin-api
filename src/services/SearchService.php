@@ -130,7 +130,7 @@ class SearchService
                     'title' => $data['title'],
                     'description' => $data['description'],
                     'speaker' => ((isset($data['speakers']) && is_array($data['speakers'])) ? implode(',', $data['speakers']) : ''),
-                    'start' => isset($data['start_date']) && $data['start_date'] ? $data['start_date'] : null; 
+                    'start' => isset($data['start_date']) && $data['start_date'] ? $data['start_date'] : null 
                 ];
 
                 $params['type'] = 'talks';
