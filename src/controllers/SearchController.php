@@ -1,4 +1,7 @@
 <?php
+/**
+ * Actions to deal with search endpoints triggering an elasticsearch query
+ */
 
 class SearchController extends ApiController {
     public function handle(Request $request, $db) {
@@ -35,9 +38,5 @@ class SearchController extends ApiController {
         $results = $searchMapper->getResultsByQuery($searchRequest, $pageLimit, $pageRequest, $types);
 
         return $results;
-    }
-
-    public function postAction(Request $request, $db) {
-
     }
 }
