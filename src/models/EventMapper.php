@@ -116,6 +116,39 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Fetch the relevant event fora given talk ID
+     *
+     * @param int $talkId The talk we want the event for
+     * @param boolean $verbose, used to determine the fields to return
+     *
+     * @return array The event
+     */
+    public function getEventByTalkId($talkId, $verbose = false) 
+    {
+        if(!$talkId || !ctype_digit((string)$talkId)) {
+            throw new Exception('Missing valid talk ID');
+        }
+
+        // First get the event ID from talks
+        $sql = 'SELECT event_id
+                FROM talks
+                WHERE ID = ?
+                LIMIT 1';
+
+         
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([$talkId]);
+        if ($response) {
+            $eventId = $stmt->fetchColumn();
+
+            // Load the event using the standard mechanism
+            return $this->getEventById($eventId, $verbose);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Internal function called by other event-fetching code, with changeable SQL
      * 
      * @param int $resultsperpage how many records to return
