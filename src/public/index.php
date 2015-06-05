@@ -44,6 +44,8 @@ $request = new Request($config, $_SERVER);
 $headers = apache_request_headers();
 if(isset($headers['Authorization'])) {
     $request->identifyUser($ji_db, $headers['Authorization']);
+} else if(isset($headers['authorization'])) {
+    $request->identifyUser($ji_db, $headers['authorization']);
 }
 
 // @TODO This feels just a tad... shonky.
