@@ -102,9 +102,8 @@ class TwitterController extends ApiController {
 
             throw new Exception("Could not sign in with Twitter", 403);
 
-        } else {
-            return [(string)$res->getBody()];
         }
 
+        throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);
     }
 }
