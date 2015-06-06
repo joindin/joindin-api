@@ -44,11 +44,9 @@ class TwitterController extends ApiController {
             $output_list = $tokens->getOutputView($request);
             header("Location: " . $output_list['twitter_request_tokens'][0]['uri'], NULL, 201);
             return $output_list;
-        } else {
-
-            error_log("Twitter: no request token (" . $res->getStatusCode() . ": " . $res->getBody() . ")");
-            exit;
         }
+
+        throw new Exception("Twitter: no request token (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);
     }
 
     /**
