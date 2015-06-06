@@ -43,7 +43,7 @@ class TwitterRequestTokenModel {
     /**
      * Return this object with client-facing fields and hypermedia, ready for output
      */
-    public function transform($request, $verbose = false) {
+    public function getOutputView($request, $verbose = false) {
         $item = array();
         $base = $request->base;
         $version = $request->version;

@@ -33,7 +33,7 @@ class TwitterRequestTokenModelCollection {
         $retval = array();
         $retval['twitter_request_tokens'] = array();
         foreach($this->list as $item) {
-            $retval['twitter_request_tokens'][] = $item->transform($request, $verbose);
+            $retval['twitter_request_tokens'][] = $item->getOutputView($request, $verbose);
         }
 
         // add other fields
