@@ -5,9 +5,6 @@
 */
 
 class TwitterRequestTokenModel {
-    /**
-     * These are boilerplate, could be moved to a parent class and reused
-     */
 
     protected $data;
 
