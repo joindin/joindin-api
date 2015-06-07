@@ -17,6 +17,12 @@ $config =  array(
         'from' => 'info@joind.in',
         'forward_all_to' => false
     ),
+    'twitter' => array(
+        // set up the key at https://apps.twitter.com/
+        // configure the callback url as /user/twitter-access on web2
+        'consumer_key' => '',
+        'consumer_secret' => ''
+    ),
     'features' => array(
         'allow_auto_verify_users' => false,
         'allow_auto_approve_events' => false,
