@@ -370,4 +370,35 @@ class OAuthModel
 
         return false;
     }
+
+    /**
+     * Create an access token for someone identified by email address via a
+     * third party authentication system such as Facebook
+     *
+     * @param  string $clientId         aka consumer_key (of the joindin client)
+     * @param  string $email            User's email address (that we just got back from authenticating them)
+     * @return string                   access token
+     */
+    public function createAccessTokenFromTrustedEmail($clientId, $email)
+    {
+        $sql = "select ID from user "
+            . "where email = :email "
+            . "and verified = 1";
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("email" => $email));
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            $userId = $result['ID'];
+
+            // create new token
+            $accessToken = $this->newAccessToken($clientId, $userId);
+
+            // we also want to send back the logged in user's uri
+            $userUri = $this->getUserUri($userId);
+
+            return array('access_token' => $accessToken, 'user_uri' => $userUri);
+        }
+        return false;
+    }
 }
