@@ -35,44 +35,50 @@ class SearchMapper extends ApiMapper
         $results = $search_service->search();
 
         $searchResults = [];
-        foreach($results['hits']['hits'] as $hit) {
-            $searchResults[$hit['_type']][] = $hit['_id'];
-        }
 
-        $search = [];
+        // Process if we actually have results to transform
+        if($results) {
+            foreach($results['hits']['hits'] as $hit) {
+                $searchResults[$hit['_type']][] = $hit['_id'];
+            }
 
-        // Get the info we need from the API
-        if(isset($searchResults['events'])) {
-            $event_mapper = new EventMapper($this->_db, $this->_request);
-            $events = $event_mapper->getEventsByIds($searchResults['events'], false);
-            $search['events'] = $events['events'];
-        }
+            $search = [];
 
-        if(isset($searchResults['talks'])) {
-            $talk_mapper = new TalkMapper($this->_db, $this->_request);
-            $talks = $talk_mapper->getTalksByIds($searchResults['talks'], false);
-            $search['talks'] = $talks['talks'];
-        }
+            // Get the info we need from the API
+            if(isset($searchResults['events'])) {
+                $event_mapper = new EventMapper($this->_db, $this->_request);
+                $events = $event_mapper->getEventsByIds($searchResults['events'], false);
+                $search['events'] = $events['events'];
+            }
 
-        if(isset($searchResults['speakers'])) {
-            $linkedSpeakers = [];
-            foreach($searchResults['speakers'] as $speaker) {
-                if(substr($speaker, 0, 1) !== 'u') {
-                    $linkedSpeakers[] = $speaker;
+            if(isset($searchResults['talks'])) {
+                $talk_mapper = new TalkMapper($this->_db, $this->_request);
+                $talks = $talk_mapper->getTalksByIds($searchResults['talks'], false);
+                $search['talks'] = $talks['talks'];
+            }
+
+            if(isset($searchResults['speakers'])) {
+                $linkedSpeakers = [];
+                foreach($searchResults['speakers'] as $speaker) {
+                    if(substr($speaker, 0, 1) !== 'u') {
+                        $linkedSpeakers[] = $speaker;
+                    }
+                }
+
+                if(!$linkedSpeakers) {
+                    $search['speakers'] = [];
+                } else {
+                    $user_mapper = new UserMapper($this->_db, $this->_request);
+                    $speakers = $user_mapper->getUsersByIds($linkedSpeakers, false);
+                    $search['speakers'] = $speakers['users'];
                 }
             }
-
-            if(!$linkedSpeakers) {
-                $search['speakers'] = [];
-            } else {
-                $user_mapper = new UserMapper($this->_db, $this->_request);
-                $speakers = $user_mapper->getUsersByIds($linkedSpeakers, false);
-                $search['speakers'] = $speakers['users'];
-            }
+            
+            $return_data = $this->transformResults($results, $search);
+        } else {
+            $return_data = ['results' => [], 'meta' => $this->getPaginationLinks([], 0)];
         }
 
-
-        $return_data = $this->transformResults($results, $search);
 
         return $return_data;
     }

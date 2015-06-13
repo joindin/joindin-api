@@ -48,7 +48,13 @@ class SearchService
 
     public function search() {
         // Check we have all required data
-        if(!$this->searchTypes || !$this->search || !$this->limit || !$this->offset) {
+        
+        // Check search first. If we have no query string, there are no results, but 200 still expected
+        if(!$this->search) {
+            return array();
+        }
+
+        if(!$this->searchTypes || !$this->limit || !$this->offset) {
             throw new Exception('Missing search data', 400); 
         }
 
