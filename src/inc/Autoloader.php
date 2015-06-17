@@ -37,6 +37,8 @@ function apiv2Autoload($classname)
         $filename = __DIR__ . '/../models/' . $classname . '.php';
     } elseif (preg_match('/[a-zA-Z]+Model$/', $classname)) {
         $filename = __DIR__ . '/../models/' . $classname . '.php';
+    } elseif (preg_match('/[a-zA-Z]+ModelCollection$/', $classname)) {
+        $filename = __DIR__ . '/../models/' . $classname . '.php';
     } elseif (preg_match('/[a-zA-Z]+View$/', $classname)) {
         $filename = __DIR__ . '/../views/' . $classname . '.php';
     } elseif (preg_match('/[a-zA-Z]+Service$/', $classname)) {
