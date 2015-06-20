@@ -58,8 +58,12 @@ class EventsController extends ApiController {
             }
         } else {
             $mapper = new EventMapper($db, $request);
+            $user_mapper= new UserMapper($db, $request);
+            $isSiteAdmin = $user_mapper->isSiteAdmin($request->user_id);
+            $activeEventsOnly = $isSiteAdmin ? false : true;
+
             if($event_id) {
-                $list = $mapper->getEventById($event_id, $verbose);
+                $list = $mapper->getEventById($event_id, $verbose, $activeEventsOnly);
                 if(count($list['events']) == 0) {
                     throw new Exception('Event not found', 404);
                 }

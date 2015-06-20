@@ -85,9 +85,9 @@ class EventMapper extends ApiMapper
      * 
      * @return array the event detail
      */
-    public function getEventById($event_id, $verbose = false) 
+    public function getEventById($event_id, $verbose = false, $activeEventsOnly = true)
     {
-        $results = $this->getEvents(1, 0, array("event_id" => $event_id));
+        $results = $this->getEvents(1, 0, array("event_id" => $event_id, 'active' => $activeEventsOnly));
         if ($results) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
@@ -145,6 +145,9 @@ class EventMapper extends ApiMapper
         }
 
         $active = true;
+        if(array_key_exists("active", $params)) {
+            $active = $params['active'];
+        }
         if(array_key_exists("filter", $params)) {
             switch($params['filter']) {
                 case "hot": // current and popular events
