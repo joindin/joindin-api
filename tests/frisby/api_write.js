@@ -36,8 +36,10 @@ function testRegisterUser() {
         testUnverifiedUserFailsLogin(username, password);
         testResendVerificationWorks(email);
         testForgotUsernameWorks(email);
+        testSendResetPasswordEmailWorks(username);
         testResendVerificationFails("doesntexist@lornajane.net");
         testForgotUsernameFails("doesntexist@lornajane.net");
+        testSendResetPasswordEmailFails("doesntexist");
       }
 		})
 	.toss();
@@ -145,6 +147,24 @@ function testForgotUsernameFails(email) {
   frisby.create('Forgot username')
     .post(baseURL + "/v2.1/emails/reminders/username", {
       "email": email
+    }, {json:true})
+    .expectStatus(400)
+    .toss();
+}
+
+function testSendResetPasswordEmailWorks(username) {
+  frisby.create('Reset password email')
+    .post(baseURL + "/v2.1/emails/reminders/password", {
+      "username": username
+    }, {json:true})
+    .expectStatus(202)
+    .toss();
+}
+
+function testSendResetPasswordEmailFails(username) {
+  frisby.create('Reset password email fails')
+    .post(baseURL + "/v2.1/emails/reminders/password", {
+      "username": username
     }, {json:true})
     .expectStatus(400)
     .toss();
