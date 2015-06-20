@@ -202,16 +202,6 @@ class EventsController extends ApiController {
                     try {
                         // Write talk to search index
 
-                        // Talks don't always have dates, but they're very useful to search.
-                        // If talk doesn't have one, try and use the event start date
-                        if(!isset($talk['start_date']) || !$talk['start_date']) {
-                            $event = $event_mapper->getEventByTalkId($talk['id']);
-
-                            if($event) {
-                                $talk['start_date'] = $event['start_date'];
-                            }
-                        }
-
                         $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
                         $searchSrv->write('talks', $talk);
                     } catch(Exception $e) {
