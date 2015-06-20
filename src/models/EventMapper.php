@@ -1009,7 +1009,7 @@ class EventMapper extends ApiMapper
             return false;
         }
 
-        $sql = "delete from events WHERE pending = 1 and active = 0 and ID = :event_id";
+        $sql = "update events set pending = 0, active = 0 where ID = :event_id";
         $stmt = $this->_db->prepare($sql);
         return $stmt->execute(["event_id" => $event_id]);
     }
