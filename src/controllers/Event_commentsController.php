@@ -87,10 +87,15 @@ class Event_commentsController extends ApiController {
             }
         }
 
+        $event_mapper = new EventMapper($db, $request);
         $comment_mapper = new EventCommentMapper($db, $request);
 
         // should rating be allowed?
         if ($comment_mapper->hasUserRatedThisEvent($comment['user_id'], $comment['event_id'])) {
+            $comment['rating'] = 0;
+        }
+        if ($event_mapper->isUserAHostOn($comment['user_id'], $comment['event_id'])) {
+            // event hosts cannot rate their own event
             $comment['rating'] = 0;
         }
 
@@ -102,7 +107,6 @@ class Event_commentsController extends ApiController {
         }
 
         // Update the cache count for the number of event comments on this event
-        $event_mapper = new EventMapper($db, $request);
         $event_mapper->cacheCommentCount($comment['event_id']);
 
         $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
