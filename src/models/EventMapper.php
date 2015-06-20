@@ -177,9 +177,9 @@ class EventMapper extends ApiMapper
         }
 
         if ($active) {
-            $sql .= " and events.active = 1 and (events.pending = 0 or events.pending is NULL) ";
+            $where .= " and events.active = 1 and (events.pending = 0 or events.pending is NULL) ";
         } else {
-            $sql .= " and events.active = 0 and events.pending = 1 ";
+            $where .= " and events.active = 0 and events.pending = 1 ";
         }
 
         if (array_key_exists("stub", $params)) {
