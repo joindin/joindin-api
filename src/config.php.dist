@@ -14,6 +14,7 @@ $config =  array(
         ),
     ),
     'email' => array(
+        'contact' => 'feedback@joind.in',
         'from' => 'info@joind.in',
         'forward_all_to' => false
     ),
