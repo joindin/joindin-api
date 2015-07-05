@@ -41,10 +41,8 @@ $ji_db->query('SET CHARACTER SET utf8');
 $request = new Request($config, $_SERVER);
 
 // identify our user if applicable
-$headers = apache_request_headers();
-if(isset($headers['Authorization'])) {
-    $request->identifyUser($ji_db, $headers['Authorization']);
-} else if(isset($headers['authorization'])) {
+$headers = array_change_key_case(apache_request_headers(), CASE_LOWER);
+if (isset($headers['authorization'])) {
     $request->identifyUser($ji_db, $headers['authorization']);
 }
 
