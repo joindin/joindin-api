@@ -20,7 +20,7 @@ class ContactEmailService extends EmailBaseService
 
     public function sendEmail($data)
     {
-        $this->setSubject('Contact from Joind.in');
+        $this->setSubject('Joind.in contact: ' . $data['subject']);
 
         $replyTo = $this->recipients;
         array_unshift($replyTo, $data['email']);

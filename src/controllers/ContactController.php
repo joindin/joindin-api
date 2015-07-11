@@ -30,7 +30,7 @@ class ContactController extends ApiController {
             throw new Exception("This client cannot perform this action", 403);
         }
 
-        $fields = ['name', 'email', 'comment'];
+        $fields = ['name', 'email', 'subject', 'comment'];
         $error = [];
         foreach ($fields as $name) {
             $value = $request->getParameter($name);
