@@ -35,14 +35,15 @@ abstract class EmailBaseService
      * @param array $config     The system config
      * @param array $recipients An array of email addresses
      */
-    public function __construct($config, $recipients) {
+    public function __construct($config, $recipients)
+    {
         $transport = \Swift_MailTransport::newInstance();
         $this->mailer  = \Swift_Mailer::newInstance($transport);
         $this->message = \Swift_Message::newInstance();
 
-        if(isset($config['email']['forward_all_to']) 
+        if (isset($config['email']['forward_all_to'])
             && !empty($config['email']['forward_all_to'])) {
-                $this->recipients = array($config['email']['forward_all_to']);
+            $this->recipients = array($config['email']['forward_all_to']);
         } else {
             $this->recipients = $recipients;
         }
@@ -60,7 +61,7 @@ abstract class EmailBaseService
             . file_get_contents($this->templatePath . 'signature.md');
 
         $message = $template;
-        foreach($replacements as $field => $value) {
+        foreach ($replacements as $field => $value) {
             $message = str_replace('['. $field . ']', $value, $message);
         }
 
@@ -70,7 +71,8 @@ abstract class EmailBaseService
     /**
      * Set the body of the message
      */
-    protected function setBody($body) {
+    protected function setBody($body)
+    {
         $this->message->setBody($body);
         return $this;
     }
@@ -80,7 +82,8 @@ abstract class EmailBaseService
      *
      * Call setBody first
      */
-    protected function setHtmlBody($body) {
+    protected function setHtmlBody($body)
+    {
         $this->message->addPart($body, 'text/html');
         return $this;
     }
@@ -90,7 +93,7 @@ abstract class EmailBaseService
      */
     protected function dispatchEmail()
     {
-        foreach($this->recipients as $to) {
+        foreach ($this->recipients as $to) {
             $this->message->setTo($to);
             $this->mailer->send($this->message);
         }
@@ -99,27 +102,30 @@ abstract class EmailBaseService
     /**
      * Set the subject line of the email
      */
-    protected function setSubject($subject) {
+    protected function setSubject($subject)
+    {
         $this->message->setSubject($subject);
     }
 
     /**
      * Get recipients list to check it
      */
-    public function getRecipients() {
+    public function getRecipients()
+    {
         return $this->recipients;
     }
 
     /**
      * Markdown to HTML
      */
-    public function markdownToHtml($markdown) {
+    public function markdownToHtml($markdown)
+    {
         $messageHTML = Michelf\Markdown::defaultTransform($markdown);
         return $messageHTML;
     }
 
-    public function htmlToPlainText($html) {
+    public function htmlToPlainText($html)
+    {
         return strip_tags($html);
     }
-
 }

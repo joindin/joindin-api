@@ -7,12 +7,15 @@
 use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
-class TwitterController extends ApiController {
-    public function handle(Request $request, $db) {
+class TwitterController extends ApiController
+{
+    public function handle(Request $request, $db)
+    {
         // really need to not require this to be declared
     }
 
-    public function getRequestToken($request, $db){
+    public function getRequestToken($request, $db)
+    {
         // only trusted clients can change account details
         $clientId = $request->getParameter('client_id');
         $clientSecret = $request->getParameter('client_secret');
@@ -35,14 +38,14 @@ class TwitterController extends ApiController {
         $client->getEmitter()->attach($oauth);
 
         $res = $client->post('oauth/request_token');
-        if($res->getStatusCode() == 200) {
+        if ($res->getStatusCode() == 200) {
             parse_str($res->getBody(), $data);
 
             $requestTokenMapper = new TwitterRequestTokenMapper($db);
             // $tokens is instance of TwitterRequestTokenModelCollection
             $tokens = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
             $output_list = $tokens->getOutputView($request);
-            header("Location: " . $output_list['twitter_request_tokens'][0]['uri'], NULL, 201);
+            header("Location: " . $output_list['twitter_request_tokens'][0]['uri'], null, 201);
             return $output_list;
         }
 
@@ -54,8 +57,8 @@ class TwitterController extends ApiController {
      * this includes the user's screen name.  From that, look up who they are, create them a
      * new access token and return the same format as we do when logging in a user
      */
-    public function logUserIn($request, $db) {
-
+    public function logUserIn($request, $db)
+    {
         $clientId = $request->getParameter('client_id');
         $clientSecret = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
@@ -64,10 +67,10 @@ class TwitterController extends ApiController {
         }
 
         // check incoming values
-        if(empty($request_token = $request->getParameter("token"))) {
+        if (empty($request_token = $request->getParameter("token"))) {
             throw new Exception("The request token must be supplied");
         }
-        if(empty($verifier = $request->getParameter("verifier"))) {
+        if (empty($verifier = $request->getParameter("verifier"))) {
             throw new Exception("The verifier code must be supplied");
         }
 
@@ -85,7 +88,7 @@ class TwitterController extends ApiController {
         $client->getEmitter()->attach($oauth);
 
         $res = $client->post('oauth/access_token', ['body' => ['oauth_verifier' => $verifier]]);
-        if($res->getStatusCode() == 200) {
+        if ($res->getStatusCode() == 200) {
             parse_str($res->getBody(), $data);
 
             // we might want to store oauth_token and oauth_token_secret at some point if we want any more info from twitter
@@ -101,7 +104,6 @@ class TwitterController extends ApiController {
             }
 
             throw new Exception("Could not sign in with Twitter", 403);
-
         }
 
         throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);

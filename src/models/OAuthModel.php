@@ -124,16 +124,15 @@ class OAuthModel
             WHERE username=:username
             AND verified = 1';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("username" => $username)); 
+        $stmt->execute(array("username" => $username));
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($result) {
-            if(password_verify(md5($password), $result['password'])) {
+            if (password_verify(md5($password), $result['password'])) {
                 return $result['ID'];
             }
         }
 
         return false;
-
     }
 
     /**
@@ -142,7 +141,8 @@ class OAuthModel
      * @param  int    $userId user's id.
      * @return string         user's uri.
      */
-    public function getUserUri($userId) {
+    public function getUserUri($userId)
+    {
         $userUri = $this->getBase() . '/' . $this->getVersion() . '/users/' . $userId;
 
         return $userUri;
@@ -261,7 +261,8 @@ class OAuthModel
      * @param string $secret The corresponding consumer secret
      * @return bool Whether the consumer is permitted
      */
-    public function isClientPermittedPasswordGrant($key, $secret) {
+    public function isClientPermittedPasswordGrant($key, $secret)
+    {
         $sql = 'select c.enable_password_grant from '
             . 'oauth_consumers c '
             . 'where c.consumer_key=:key '
@@ -284,7 +285,8 @@ class OAuthModel
      * @param string $token The access token
      * @return bool Whether the consumer is permitted
      */
-    public function isAccessTokenPermittedPasswordGrant($token) {
+    public function isAccessTokenPermittedPasswordGrant($token)
+    {
         $sql = 'select c.enable_password_grant from '
             . 'oauth_consumers c '
             . 'inner join oauth_access_tokens at using (consumer_key) '
@@ -309,15 +311,16 @@ class OAuthModel
      * @param string $password Their supplied password
      * @return boolean True if the password is correct, false otherwise
      */
-    public function reverifyUserPassword($userId, $password) {
+    public function reverifyUserPassword($userId, $password)
+    {
         $sql = 'SELECT ID, password FROM user
             WHERE ID = :user_id
             AND verified = 1';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("user_id" => $userId)); 
+        $stmt->execute(array("user_id" => $userId));
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($result) {
-            if(password_verify(md5($password), $result['password'])) {
+            if (password_verify(md5($password), $result['password'])) {
                 return true;
             }
         }
@@ -340,7 +343,7 @@ class OAuthModel
             . "and verified = 1";
 
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("twitter_username" => $twitterUsername)); 
+        $stmt->execute(array("twitter_username" => $twitterUsername));
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($result) {
             $userId = $result['ID'];
@@ -355,5 +358,4 @@ class OAuthModel
         }
         return false;
     }
-
 }

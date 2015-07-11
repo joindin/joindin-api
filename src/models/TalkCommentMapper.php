@@ -1,7 +1,9 @@
 <?php
 
-class TalkCommentMapper extends ApiMapper {
-    public function getDefaultFields() {
+class TalkCommentMapper extends ApiMapper
+{
+    public function getDefaultFields()
+    {
         $fields = array(
             'rating' => 'rating',
             'comment' => 'comment',
@@ -12,7 +14,8 @@ class TalkCommentMapper extends ApiMapper {
         return $fields;
     }
 
-    public function getVerboseFields() {
+    public function getVerboseFields()
+    {
         $fields = array(
             'rating' => 'rating',
             'comment' => 'comment',
@@ -24,7 +27,8 @@ class TalkCommentMapper extends ApiMapper {
         return $fields;
     }
 
-    public function getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose = false) {
+    public function getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose = false)
+    {
         $sql = $this->getBasicSQL();
         $sql .= 'and talk_id = :talk_id';
         $sql .= ' order by tc.date_made';
@@ -34,7 +38,7 @@ class TalkCommentMapper extends ApiMapper {
         $response = $stmt->execute(array(
             ':talk_id' => $talk_id
             ));
-        if($response) {
+        if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':talk_id' => $talk_id));
             $retval = $this->transformResults($results, $verbose);
@@ -43,7 +47,8 @@ class TalkCommentMapper extends ApiMapper {
         return false;
     }
 
-    public function getCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false) {
+    public function getCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
+    {
         $sql = $this->getBasicSQL();
         $sql .= 'and event_id = :event_id ';
 
@@ -56,7 +61,7 @@ class TalkCommentMapper extends ApiMapper {
         $response = $stmt->execute(array(
             ':event_id' => $event_id
             ));
-        if($response) {
+        if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
             $retval = $this->transformResults($results, $verbose);
@@ -65,7 +70,8 @@ class TalkCommentMapper extends ApiMapper {
         return false;
     }
 
-    public function getCommentsByUserId($user_id, $resultsperpage, $start, $verbose = false) {
+    public function getCommentsByUserId($user_id, $resultsperpage, $start, $verbose = false)
+    {
         $sql = $this->getBasicSQL();
         $sql .= 'and tc.user_id = :user_id ';
 
@@ -78,7 +84,7 @@ class TalkCommentMapper extends ApiMapper {
         $response = $stmt->execute(array(
             ':user_id' => $user_id
         ));
-        if($response) {
+        if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':user_id' => $user_id));
             $retval = $this->transformResults($results, $verbose);
@@ -87,14 +93,15 @@ class TalkCommentMapper extends ApiMapper {
         return false;
     }
 
-    public function getCommentById($comment_id, $verbose = false) {
+    public function getCommentById($comment_id, $verbose = false)
+    {
         $sql = $this->getBasicSQL();
         $sql .= ' and tc.ID = :comment_id ';
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':comment_id' => $comment_id
             ));
-        if($response) {
+        if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
                 $results['total'] = $this->getTotalCount($sql, array(':comment_id' => $comment_id));
@@ -105,8 +112,8 @@ class TalkCommentMapper extends ApiMapper {
         return false;
     }
 
-    public function transformResults($results, $verbose) {
-
+    public function transformResults($results, $verbose)
+    {
         $total = $results['total'];
         unset($results['total']);
         $list = parent::transformResults($results, $verbose);
@@ -116,17 +123,17 @@ class TalkCommentMapper extends ApiMapper {
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                if(true === $verbose) {
+                if (true === $verbose) {
                     $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
                 }
                 $list[$key]['uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
-                $list[$key]['talk_uri'] = $base . '/' . $version . '/talks/' 
+                $list[$key]['talk_uri'] = $base . '/' . $version . '/talks/'
                     . $row['talk_id'];
-                $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/talks/' 
+                $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/talks/'
                     . $row['talk_id'] . '/comments';
-                if($row['user_id']) {
-                    $list[$key]['user_uri'] = $base . '/' . $version . '/users/' 
+                if ($row['user_id']) {
+                    $list[$key]['user_uri'] = $base . '/' . $version . '/users/'
                         . $row['user_id'];
                 }
             }
@@ -138,7 +145,8 @@ class TalkCommentMapper extends ApiMapper {
         return $retval;
     }
 
-    protected function getBasicSQL() {
+    protected function getBasicSQL()
+    {
         $sql = 'select tc.*, user.email, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
             . 'from talk_comments tc '
             . 'inner join talks t on t.ID = tc.talk_id '
@@ -149,7 +157,8 @@ class TalkCommentMapper extends ApiMapper {
         return $sql;
     }
 
-    public function save($data) {
+    public function save($data)
+    {
         // check for a duplicate first
         $dupe_sql = 'select tc.ID from talk_comments tc '
             . 'where talk_id = :talk_id and user_id = :user_id and comment = :comment';
@@ -162,7 +171,7 @@ class TalkCommentMapper extends ApiMapper {
         ));
 
         // only proceed if we didn't already find a row like this
-        if($dupe_stmt->fetch()) {
+        if ($dupe_stmt->fetch()) {
             throw new Exception("Duplicate comment");
         }
 

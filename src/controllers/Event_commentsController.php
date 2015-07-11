@@ -1,15 +1,18 @@
 <?php
 
-class Event_commentsController extends ApiController {
-    public function handle(Request $request, $db) {
+class Event_commentsController extends ApiController
+{
+    public function handle(Request $request, $db)
+    {
         // only GET is implemented so far
-        if($request->getVerb() == 'GET') {
+        if ($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
         }
         return false;
     }
 
-	public function getAction($request, $db) {
+    public function getAction($request, $db)
+    {
         $comment_id = $this->getItemId($request);
 
         // verbosity
@@ -20,21 +23,22 @@ class Event_commentsController extends ApiController {
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = new EventCommentMapper($db, $request);
-        if($comment_id) {
+        if ($comment_id) {
             $list = $mapper->getCommentById($comment_id, $verbose);
-            if(false === $list) {
+            if (false === $list) {
                 throw new Exception('Comment not found', 404);
             }
             return $list;
-        } 
+        }
 
         return false;
-	}
+    }
 
-    public function createComment($request, $db) {
+    public function createComment($request, $db)
+    {
         $comment = array();
         $comment['event_id'] = $this->getItemId($request);
-        if(empty($comment['event_id'])) {
+        if (empty($comment['event_id'])) {
             throw new Exception(
                 "POST expects a comment representation sent to a specific event URL",
                 400
@@ -42,7 +46,7 @@ class Event_commentsController extends ApiController {
         }
                             
         // no anonymous comments over the API
-        if(!isset($request->user_id) || empty($request->user_id)) {
+        if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to comment');
         }
         $user_mapper = new UserMapper($db, $request);
@@ -50,14 +54,14 @@ class Event_commentsController extends ApiController {
         $thisUser = $users['users'][0];
 
         $rating = $request->getParameter('rating', false);
-        if(false === $rating) {
+        if (false === $rating) {
             throw new Exception('The field "rating" is required', 400);
         } elseif (false === is_numeric($rating) || $rating > 5) {
             throw new Exception('The field "rating" must be a number (1-5)', 400);
         }
 
         $commentText = $request->getParameter('comment');
-        if(empty($commentText)) {
+        if (empty($commentText)) {
             throw new Exception('The field "comment" is required', 400);
         }
 
@@ -67,7 +71,7 @@ class Event_commentsController extends ApiController {
 
         $comment['user_id'] = $request->user_id;
         $comment['comment'] = $commentText;
-        $comment['rating'] = $rating;                    
+        $comment['rating'] = $rating;
         $comment['cname'] = $thisUser['full_name'];
         $comment['source'] = $consumer_name;
 
@@ -110,7 +114,7 @@ class Event_commentsController extends ApiController {
         $event_mapper->cacheCommentCount($comment['event_id']);
 
         $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
-        header("Location: " . $uri, NULL, 201);
+        header("Location: " . $uri, null, 201);
         exit;
     }
 }

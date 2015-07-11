@@ -5,7 +5,6 @@
  */
 class VersionedRouter extends Router
 {
-
     /**
      * The version this Router represents
      * 

@@ -1,9 +1,11 @@
 <?php
 
-class UsersController extends ApiController {
-    public function handle(Request $request, $db) {
+class UsersController extends ApiController
+{
+    public function handle(Request $request, $db)
+    {
         // only GET is implemented so far
-        if($request->getVerb() == 'GET') {
+        if ($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
         } elseif ($request->getVerb() == 'POST') {
             return $this->postAction($request, $db);
@@ -11,7 +13,8 @@ class UsersController extends ApiController {
         return false;
     }
 
-	public function getAction($request, $db) {
+    public function getAction($request, $db)
+    {
         $user_id = $this->getItemId($request);
 
         // verbosity
@@ -21,8 +24,8 @@ class UsersController extends ApiController {
         $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
-        if(isset($request->url_elements[4])) {
-            switch($request->url_elements[4]) {
+        if (isset($request->url_elements[4])) {
+            switch ($request->url_elements[4]) {
                 case 'talks':
                             $talk_mapper = new TalkMapper($db, $request);
                             $list = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose);
@@ -45,13 +48,13 @@ class UsersController extends ApiController {
             }
         } else {
             $mapper = new UserMapper($db, $request);
-            if($user_id) {
+            if ($user_id) {
                 $list = $mapper->getUserById($user_id, $verbose);
-                if(count($list['users']) == 0) {
+                if (count($list['users']) == 0) {
                     throw new Exception('User not found', 404);
                 }
             } else {
-                if(isset($request->parameters['username'])) {
+                if (isset($request->parameters['username'])) {
                     $username = filter_var($request->parameters['username'], FILTER_SANITIZE_STRING);
                     $list = $mapper->getUserByUsername($username, $verbose);
                     if ($list === false) {
@@ -64,21 +67,22 @@ class UsersController extends ApiController {
         }
 
         return $list;
-	}
+    }
 
-    public function postAction($request, $db){
+    public function postAction($request, $db)
+    {
         // check element 3, there's no user associated with the not-logged-in collections
-        if(isset($request->url_elements[3])) {
-            switch($request->url_elements[3]) {
+        if (isset($request->url_elements[3])) {
+            switch ($request->url_elements[3]) {
                 case 'verifications':
                             $user_mapper= new UserMapper($db, $request);
                             $token = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
-                            if(empty($token)) {
+                            if (empty($token)) {
                                 throw new Exception("Verification token must be supplied", 400);
                             } else {
                                 $success = $user_mapper->verifyUser($token);
-                                if($success) {
-                                    header("Content-Length: 0", NULL, 204);
+                                if ($success) {
+                                    header("Content-Length: 0", null, 204);
                                     exit; // no more content
                                 } else {
                                     throw new Exception("Verification failed", 400);
@@ -97,39 +101,39 @@ class UsersController extends ApiController {
 
             // Required Fields
             $user['username'] = filter_var(trim($request->getParameter("username")), FILTER_SANITIZE_STRING);
-            if(empty($user['username'])) {
+            if (empty($user['username'])) {
                 $errors[] = "'username' is a required field";
             } else {
                 // does anyone else have this username?
                 $existing_user = $user_mapper->getUserByUsername($user['username']);
-                if($existing_user['users']) {
+                if ($existing_user['users']) {
                     $errors[] = "That username is already in use. Choose another";
                 }
             }
 
             $user['full_name'] = filter_var(trim($request->getParameter("full_name")), FILTER_SANITIZE_STRING);
-            if(empty($user['full_name'])) {
+            if (empty($user['full_name'])) {
                 $errors[] = "'full_name' is a required field";
             }
 
             $user['email'] = filter_var(trim($request->getParameter("email")), FILTER_VALIDATE_EMAIL);
-            if(empty($user['email'])) {
+            if (empty($user['email'])) {
                 $errors[] = "A valid entry for 'email' is required";
             } else {
                 // does anyone else have this email?
                 $existing_user = $user_mapper->getUserByEmail($user['email']);
-                if($existing_user['users']) {
+                if ($existing_user['users']) {
                     $errors[] = "That email is already associated with another account";
                 }
             }
 
             $password = $request->getParameter("password");
-            if(empty($password)) {
+            if (empty($password)) {
                 $errors[] = "'password' is a required field";
             } else {
                 // check it's sane
                 $validity = $user_mapper->checkPasswordValidity($password);
-                if(true === $validity) {
+                if (true === $validity) {
                     // OK good, go ahead
                     $user['password'] = $password;
                 } else {
@@ -142,21 +146,21 @@ class UsersController extends ApiController {
             $user['twitter_username'] = filter_var(trim($request->getParameter("twitter_username")), FILTER_SANITIZE_STRING);
 
             // How does it look?  With no errors, we can proceed
-            if($errors) {
+            if ($errors) {
                 throw new Exception(implode(". ", $errors), 400);
             } else {
                 $user_id = $user_mapper->createUser($user);
-                header("Location: " . $request->base . $request->path_info . '/' . $user_id, NULL, 201);
+                header("Location: " . $request->base . $request->path_info . '/' . $user_id, null, 201);
 
                 // autoverify for test platforms
-                if(isset($this->config['features']['allow_auto_verify_users']) 
+                if (isset($this->config['features']['allow_auto_verify_users'])
                     && $this->config['features']['allow_auto_verify_users']) {
-                        if($request->getParameter("auto_verify_user") == "true") {
-                            // the test suite sends this extra field, if we got
+                    if ($request->getParameter("auto_verify_user") == "true") {
+                        // the test suite sends this extra field, if we got
                             // this far then this platform supports this
                             $user_mapper->verifyThisTestUser($user_id);
-                        }
                     }
+                }
 
                 // Generate a verification token and email it to the user
                 $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
@@ -186,8 +190,7 @@ class UsersController extends ApiController {
         $userId = $this->getItemId($request);
 
         $user_mapper= new UserMapper($db, $request);
-        if($user_mapper->thisUserHasAdminOn($userId)) {
-        
+        if ($user_mapper->thisUserHasAdminOn($userId)) {
             $oauthModel = $request->getOauthModel($db);
             $accessToken = $request->getAccessToken();
 
@@ -202,7 +205,7 @@ class UsersController extends ApiController {
 
             // start with passwords
             $password = $request->getParameter('password');
-            if(!empty($password)) {
+            if (!empty($password)) {
 
                 // they must supply their old password to be allowed to set a new one
                 $old_password = $request->getParameter('old_password');
@@ -216,7 +219,7 @@ class UsersController extends ApiController {
                 }
 
                 $validity = $user_mapper->checkPasswordValidity($password);
-                if(true === $validity) {
+                if (true === $validity) {
                     // OK good, go ahead
                     $user['password'] = $password;
                 } else {
@@ -226,20 +229,20 @@ class UsersController extends ApiController {
             }
 
             $user['full_name'] = filter_var(trim($request->getParameter("full_name")), FILTER_SANITIZE_STRING);
-            if(empty($user['full_name'])) {
+            if (empty($user['full_name'])) {
                 $errors[] = "'full_name' is a required field";
             }
 
             $user['email'] = filter_var(trim($request->getParameter("email")), FILTER_VALIDATE_EMAIL);
-            if(empty($user['email'])) {
+            if (empty($user['email'])) {
                 $errors[] = "A valid entry for 'email' is required";
             } else {
                 // does anyone else have this email?
                 $existing_user = $user_mapper->getUserByEmail($user['email']);
-                if($existing_user['users']) {
+                if ($existing_user['users']) {
                     // yes but is that our existing user being found?
                     $old_user = $user_mapper->getUserById($userId);
-                    if($old_user['users'][0]['uri'] != $existing_user['users'][0]['uri']) {
+                    if ($old_user['users'][0]['uri'] != $existing_user['users'][0]['uri']) {
                         // the email address exists and not on this user's account
                         $errors[] = "That email is already associated with another account";
                     }
@@ -248,11 +251,11 @@ class UsersController extends ApiController {
 
             // Optional Fields
             $twitter_username = $request->getParameter("twitter_username", false);
-            if(false !== $twitter_username) {
+            if (false !== $twitter_username) {
                 $user['twitter_username'] = filter_var(trim($twitter_username), FILTER_SANITIZE_STRING);
             }
 
-            if($errors) {
+            if ($errors) {
                 throw new Exception(implode(". ", $errors), 400);
             } else {
                 // now update the user
@@ -261,7 +264,7 @@ class UsersController extends ApiController {
                 }
 
                 // we're good!
-                header("Content-Length: 0", NULL, 204);
+                header("Content-Length: 0", null, 204);
                 exit; // no more content
             }
         }
@@ -271,22 +274,22 @@ class UsersController extends ApiController {
     public function passwordReset(Request $request, $db)
     {
         $token = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
-        if(empty($token)) {
+        if (empty($token)) {
             throw new Exception("Reset token must be supplied", 400);
         }
 
         $password = $request->getParameter("password");
-        if(empty($password)) {
+        if (empty($password)) {
             throw new Exception("New password must be supplied", 400);
         }
         // now check the password complies with our rules
         $user_mapper = new UserMapper($db, $request);
         $validity = $user_mapper->checkPasswordValidity($password);
-        if(true === $validity) {
+        if (true === $validity) {
             // OK, go ahead
             $success = $user_mapper->resetPassword($token, $password);
-            if($success) {
-                header("Content-Length: 0", NULL, 204);
+            if ($success) {
+                header("Content-Length: 0", null, 204);
                 exit; // no more content
             } else {
                 throw new Exception("Password could not be reset", 400);
@@ -295,6 +298,5 @@ class UsersController extends ApiController {
             // the password wasn't acceptable, tell the user why
             throw new Exception(implode(". ", $validity), 400);
         }
-
     }
 }

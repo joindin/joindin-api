@@ -1,7 +1,7 @@
 <?php
 
-class TalkCommentEmailService extends EmailBaseService {
-
+class TalkCommentEmailService extends EmailBaseService
+{
     protected $talk;
     protected $comment;
 
@@ -32,6 +32,4 @@ class TalkCommentEmailService extends EmailBaseService {
 
         $this->dispatchEmail();
     }
-
-
 }

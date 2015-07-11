@@ -5,7 +5,7 @@ class EventSubmissionEmailService extends EmailBaseService
     protected $event;
     protected $comment;
 
-    public function __construct($config, $recipients, $event, $count = NULL)
+    public function __construct($config, $recipients, $event, $count = null)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
@@ -29,7 +29,7 @@ class EventSubmissionEmailService extends EmailBaseService
             "contact_name"   => $this->event['contact_name'],
         );
 
-        if($this->count) {
+        if ($this->count) {
             $replacements["count"] = "(" . $this->count . " events are pending)";
         } else {
             $replacements["count"] = "";

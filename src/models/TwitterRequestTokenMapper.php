@@ -1,7 +1,9 @@
 <?php
 
-class TwitterRequestTokenMapper extends ApiMapper {
-    public function create($token, $secret) {
+class TwitterRequestTokenMapper extends ApiMapper
+{
+    public function create($token, $secret)
+    {
         $sql = 'insert into twitter_request_tokens '
             . 'set token=:token, secret=:secret';
         $stmt = $this->_db->prepare($sql);
@@ -9,7 +11,7 @@ class TwitterRequestTokenMapper extends ApiMapper {
             ':token' => $token,
             ':secret' => $secret
             ));
-        if($response) {
+        if ($response) {
             $token_id = $this->_db->lastInsertId();
 
             $select_sql = "select ID, token, secret from twitter_request_tokens "
@@ -23,7 +25,8 @@ class TwitterRequestTokenMapper extends ApiMapper {
         return false;
     }
 
-    public function delete($token) {
+    public function delete($token)
+    {
         $sql = 'delete from twitter_request_tokens '
             . 'where token=:token';
         $stmt = $this->_db->prepare($sql);

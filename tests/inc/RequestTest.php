@@ -8,7 +8,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     /**
      * Make sure we have everything we need - in this case the config
      */
-    public function setUp() {
+    public function setUp()
+    {
         include __DIR__ . '/../../src/config.php';
         $this->config = $config;
     }

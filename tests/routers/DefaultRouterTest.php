@@ -9,7 +9,6 @@ require_once(__DIR__ . '/../../src/inc/Request.php');
  */
 class DefaultRouterTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * DataProvider for testGetRoute
      *

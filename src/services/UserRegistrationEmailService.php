@@ -32,4 +32,3 @@ class UserRegistrationEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 }
-

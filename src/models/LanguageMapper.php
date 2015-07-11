@@ -2,7 +2,8 @@
 
 class LanguageMapper extends ApiMapper
 {
-    public function getDefaultFields() {
+    public function getDefaultFields()
+    {
         $fields = array(
             'name' => 'lang_name',
             'code' => 'lang_abbr',
@@ -11,7 +12,8 @@ class LanguageMapper extends ApiMapper
         return $fields;
     }
 
-    public function getVerboseFields() {
+    public function getVerboseFields()
+    {
         $fields = array(
             'name' => 'lang_name',
             'code' => 'lang_abbr',
@@ -20,7 +22,8 @@ class LanguageMapper extends ApiMapper
         return $fields;
     }
 
-    public function getLanguageById($language_id, $verbose = false) {
+    public function getLanguageById($language_id, $verbose = false)
+    {
         $results = $this->getLanguages(1, 0, array('ID' => (int) $language_id));
         if ($results) {
             return $this->transformResults($results, $verbose);
@@ -28,7 +31,8 @@ class LanguageMapper extends ApiMapper
         return false;
     }
 
-    public function getLanguageList($resultsperpage, $start = 0, $verbose = false) {
+    public function getLanguageList($resultsperpage, $start = 0, $verbose = false)
+    {
         $results = $this->getLanguages($resultsperpage, $start);
         if ($results) {
             return $this->transformResults($results, $verbose);
@@ -36,7 +40,8 @@ class LanguageMapper extends ApiMapper
         return false;
     }
 
-    public function transformResults($results, $verbose) {
+    public function transformResults($results, $verbose)
+    {
         $total = $results['total'];
         unset($results['total']);
 
@@ -45,7 +50,7 @@ class LanguageMapper extends ApiMapper
         $base = $this->_request->base;
         $version = $this->_request->version;
 
-        if(is_array($list) && count($list)) {
+        if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
                 $list[$key]['uri'] = $base . '/' . $version . '/languages/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/languages/' . $row['ID'] . '?verbose=yes';
@@ -58,7 +63,8 @@ class LanguageMapper extends ApiMapper
         );
     }
 
-    protected function getLanguages($resultsperpage, $start, $params = array()) {
+    protected function getLanguages($resultsperpage, $start, $params = array())
+    {
         $sql = 'select l.ID, l.lang_name, l.lang_abbr ' .
                'from lang as l ';
 

@@ -5,7 +5,6 @@
  */
 class JsonViewTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * DataProvider for testBuildOutput
      *

@@ -15,7 +15,7 @@
  * 
  * @return array
  */
-function new_consumer_key() 
+function new_consumer_key()
 {
     $fp = fopen('/dev/urandom', 'rb');
     $entropy = fread($fp, 32);
@@ -31,5 +31,5 @@ function new_consumer_key()
 
 $keys = new_consumer_key();
 
-echo "INSERT INTO oauth_consumers SET consumer_key = '" . 
+echo "INSERT INTO oauth_consumers SET consumer_key = '" .
 $keys[0] . "', consumer_secret = '" . $keys[1] . "'";

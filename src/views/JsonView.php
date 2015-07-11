@@ -1,7 +1,9 @@
 <?php
 
-class JsonView extends ApiView {
-    public function render($content) {
+class JsonView extends ApiView
+{
+    public function render($content)
+    {
         header('Content-Type: application/json; charset=utf8');
         echo $this->buildOutput($content);
         return true;
@@ -10,7 +12,8 @@ class JsonView extends ApiView {
     /**
      *  Function to build output, can be used by JSON and JSONP
      */
-    public function buildOutput ($content) {
+    public function buildOutput($content)
+    {
         $content = $this->addCount($content);
         // need to work out which fields should have been numbers
         // Don't use JSON_NUMERIC_CHECK because it eats things (e.g. talk stubs)
@@ -29,10 +32,10 @@ class JsonView extends ApiView {
             return $this->scalarNumericCheck('', $data);
         }
         $output = array();
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             
             // recurse as needed
-            if(is_array($value)) {
+            if (is_array($value)) {
                 $output[$key] = $this->numeric_check($value);
             } else {
                 $output[$key] = $this->scalarNumericCheck($key, $value);
@@ -48,5 +51,4 @@ class JsonView extends ApiView {
         }
         return $value;
     }
-
 }

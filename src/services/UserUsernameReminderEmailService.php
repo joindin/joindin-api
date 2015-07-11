@@ -33,5 +33,3 @@ class UserUsernameReminderEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 }
-
-

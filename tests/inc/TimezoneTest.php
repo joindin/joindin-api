@@ -1,10 +1,9 @@
 <?php
-namespace JoindinTest\Inc;
+namespace JoindinTest\inc;
 
 require_once __DIR__ . '/../../src/inc/Timezone.php';
 class TimezoneTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * Makes sure the UnixtimeForTimeInTimezone function is working correctly.
      *
@@ -104,4 +103,3 @@ class TimezoneTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new \DateTimeZone('UTC'), $datetime->getTimezone());
     }
 }
-

@@ -1,10 +1,12 @@
 <?php
 
-class TalksController extends ApiController {
-    public function handle(Request $request, $db) {
-        if($request->getVerb() == 'GET') {
+class TalksController extends ApiController
+{
+    public function handle(Request $request, $db)
+    {
+        if ($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
-        } elseif($request->getVerb() == 'POST') {
+        } elseif ($request->getVerb() == 'POST') {
             return $this->postAction($request, $db);
         } elseif ($request->getVerb() == 'DELETE') {
             return $this->deleteAction($request, $db);
@@ -14,7 +16,8 @@ class TalksController extends ApiController {
         return false;
     }
 
-	public function getAction($request, $db) {
+    public function getAction($request, $db)
+    {
         $talk_id = $this->getItemId($request);
 
         // verbosity
@@ -25,7 +28,7 @@ class TalksController extends ApiController {
         $resultsperpage = $this->getResultsPerPage($request);
 
         $list = array();
-        if(isset($request->url_elements[4])) {
+        if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'comments':
                     $comment_mapper = new TalkCommentMapper($db, $request);
@@ -37,12 +40,12 @@ class TalksController extends ApiController {
                     break;
             }
         } else {
-            if($talk_id) {
+            if ($talk_id) {
                 $list = $this->getTalkById($db, $request, $talk_id, $verbose);
-                if(false === $list) {
+                if (false === $list) {
                     throw new Exception('Talk not found', 404);
                 }
-            } else if (isset($request->parameters['title'])) {
+            } elseif (isset($request->parameters['title'])) {
                 $keyword = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
 
                 $mapper = new TalkMapper($db, $request);
@@ -54,24 +57,25 @@ class TalksController extends ApiController {
         }
 
         return $list;
-	}
+    }
 
-    public function postAction($request, $db) {
-        if(!isset($request->user_id)) {
+    public function postAction($request, $db)
+    {
+        if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 400);
         }
         $talk_id = $this->getItemId($request);
 
-        if(isset($request->url_elements[4])) {
-            switch($request->url_elements[4]) {
+        if (isset($request->url_elements[4])) {
+            switch ($request->url_elements[4]) {
                 case "comments":
                     $comment = $request->getParameter('comment');
-                    if(empty($comment)) {
+                    if (empty($comment)) {
                         throw new Exception('The field "comment" is required', 400);
                     }
 
                     $rating = $request->getParameter('rating');
-                    if(empty($rating)) {
+                    if (empty($rating)) {
                         throw new Exception('The field "rating" is required', 400);
                     }
 
@@ -123,12 +127,12 @@ class TalksController extends ApiController {
                         throw new Exception($e->getMessage(), 400);
                     }
 
-                    if($new_id) {
+                    if ($new_id) {
                         $comment = $comment_mapper->getCommentById($new_id);
                         $talk = $talk_mapper->getTalkById($talk_id);
                         $speakers = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
                         $recipients = array();
-                        foreach($speakers as $person) {
+                        foreach ($speakers as $person) {
                             $recipients[] = $person['email'];
                         }
                         $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
@@ -144,7 +148,7 @@ class TalksController extends ApiController {
                     // The logged in user *is* attending the talk.  Use DELETE to unattend
                     $talk_mapper = new TalkMapper($db, $request);
                     $talk_mapper->setUserStarred($talk_id, $request->user_id);
-                    header("Location: " . $request->base . $request->path_info, NULL, 201);
+                    header("Location: " . $request->base . $request->path_info, null, 201);
                     exit;
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
@@ -154,17 +158,18 @@ class TalksController extends ApiController {
         }
     }
 
-    public function deleteAction($request, $db) {
-        if(!isset($request->user_id)) {
+    public function deleteAction($request, $db)
+    {
+        if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", 400);
         }
-        if(isset($request->url_elements[4])) {
-            switch($request->url_elements[4]) {
+        if (isset($request->url_elements[4])) {
+            switch ($request->url_elements[4]) {
                 case 'starred':
                     $talk_id = $this->getItemId($request);
                     $talk_mapper = new TalkMapper($db, $request);
                     $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
-                    header("Location: " . $request->base . $request->path_info, NULL, 200);
+                    header("Location: " . $request->base . $request->path_info, null, 200);
                     exit;
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
@@ -174,19 +179,19 @@ class TalksController extends ApiController {
             $talk_id = $this->getItemId($request);
             $talk_mapper = new TalkMapper($db, $request);
             $list = $talk_mapper->getTalkById($talk_id);
-            if(false === $list) {
+            if (false === $list) {
                 // talk isn't there so it's as good as deleted
-                header("Content-Length: 0", NULL, 204);
+                header("Content-Length: 0", null, 204);
                 exit; // no more content
             }
 
             $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
-            if(!$is_admin) {
+            if (!$is_admin) {
                 throw new Exception("You do not have permission to do that", 400);
             }
 
             $talk_mapper->delete($talk_id);
-            header("Content-Length: 0", NULL, 204);
+            header("Content-Length: 0", null, 204);
             exit; // no more content
         }
     }
@@ -195,11 +200,10 @@ class TalksController extends ApiController {
     {
         $mapper = new TalkMapper($db, $request);
         $list = $mapper->getTalkById($talk_id, $verbose);
-        if(false === $list) {
+        if (false === $list) {
             throw new Exception('Talk not found', 404);
         }
 
         return $list;
     }
-
 }

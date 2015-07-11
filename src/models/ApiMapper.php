@@ -8,7 +8,7 @@ class ApiMapper
      * @param PDO     $db      The database connection handle
      * @param Request $request The request object (optional not all objects need it)
      */
-    public function __construct(PDO $db, Request $request = null) 
+    public function __construct(PDO $db, Request $request = null)
     {
         $this->_db = $db;
         if (isset($request)) {
@@ -17,16 +17,16 @@ class ApiMapper
         return true;
     }
 
-    public function getDefaultFields() 
+    public function getDefaultFields()
     {
         return array();
     }
-    public function getVerboseFields() 
+    public function getVerboseFields()
     {
         return array();
     }
 
-    public function transformResults($results, $verbose) 
+    public function transformResults($results, $verbose)
     {
         $fields = $verbose ? $this->getVerboseFields() : $this->getDefaultFields();
         $retval = array();
@@ -52,7 +52,7 @@ class ApiMapper
         return $retval;
     }
 
-    protected function buildLimit($resultsperpage, $start) 
+    protected function buildLimit($resultsperpage, $start)
     {
         if ($resultsperpage == 0) {
             // special case, no limits
@@ -106,13 +106,16 @@ class ApiMapper
         }
         if (0 < $firstOnThisPage) {
             $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
-            if ($prev_params['start'] < 0) $prev_params['start'] = 0;
+            if ($prev_params['start'] < 0) {
+                $prev_params['start'] = 0;
+            }
             $meta['prev_page'] = $request->base . $request->path_info . '?' . http_build_query($prev_params);
         }
         return $meta;
     }
 
-    protected function inflect($string) {
+    protected function inflect($string)
+    {
         // code ported from web2 
         $alpha = preg_replace("/[^0-9a-zA-Z- ]/", "", $string);
         $inflection = strtolower(str_replace(' ', '-', $alpha));

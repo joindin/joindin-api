@@ -1,17 +1,18 @@
 <?php
 
-namespace JoindinTest\Inc;
+namespace JoindinTest\inc;
 
 require_once __DIR__ . '/../../src/services/TalkCommentEmailService.php';
 
-class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase {
-
+class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase
+{
     /**
      * Check that we can create the service
      *
      * @test
      */
-    public function createService() {
+    public function createService()
+    {
         $config = array("email" => array("from" => "test@joind.in"));
         $recipients = array("test@joind.in");
         $talk = array("talks" => array(array("talk_title" => "sample talk")));
@@ -26,7 +27,8 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase {
      *
      * @test
      */
-    public function createServiceWithEmailRedirect() {
+    public function createServiceWithEmailRedirect()
+    {
         $config = array("email" => array("from" => "test@joind.in", "forward_all_to" => "blackhole@joind.in"));
         $recipients = array("test@joind.in");
         $talk = array("talks" => array(array("talk_title" => "sample talk")));
@@ -41,7 +43,8 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase {
      *
      * @test
      */
-    public function templateReplacements() {
+    public function templateReplacements()
+    {
         $config = array("email" => array("from" => "test@joind.in"));
         $recipients = array("test@joind.in");
         $talk = array("talks" => array(array("talk_title" => "sample talk")));
@@ -69,7 +72,8 @@ Questions? Comments?  Get in touch: [feedback@joind.in](mailto:feedback@joind.in
      *
      * @test
      */
-    public function markdownTransform() {
+    public function markdownTransform()
+    {
         $markdown = "A *sunny* day";
         
         $config = array("email" => array("from" => "test@joind.in"));
