@@ -2,7 +2,8 @@
 
 class TracksController extends ApiController
 {
-    public function handle(Request $request, $db) {
+    public function handle(Request $request, $db)
+    {
         if ($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
         } else {
@@ -12,7 +13,8 @@ class TracksController extends ApiController
         return false;
     }
 
-    public function getAction($request, $db) {
+    public function getAction($request, $db)
+    {
         $track_id = $this->getItemId($request);
 
         // verbosity

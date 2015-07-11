@@ -4,15 +4,17 @@
 * Object to represent a twitter request token
 */
 
-class TwitterRequestTokenModel {
-
+class TwitterRequestTokenModel
+{
     protected $data;
 
-    public function __construct($data) {
+    public function __construct($data)
+    {
         $this->data = $data;
     }
-    public function __get($field) {
-        if(isset($this->data[$field])) {
+    public function __get($field)
+    {
+        if (isset($this->data[$field])) {
             return $this->data[$field];
         }
 
@@ -22,7 +24,8 @@ class TwitterRequestTokenModel {
     /**
      * The fields to return, with public-facing name first, and database column second
      */
-    protected function getDefaultFields() {
+    protected function getDefaultFields()
+    {
         $fields = array(
             'token' => 'token',
         );
@@ -30,7 +33,8 @@ class TwitterRequestTokenModel {
         return $fields;
     }
 
-    protected function getVerboseFields() {
+    protected function getVerboseFields()
+    {
         $fields = array(
             'token' => 'token',
             'secret' => 'secret',
@@ -43,18 +47,19 @@ class TwitterRequestTokenModel {
     /**
      * Return this object with client-facing fields and hypermedia, ready for output
      */
-    public function getOutputView($request, $verbose = false) {
+    public function getOutputView($request, $verbose = false)
+    {
         $item = array();
         $base = $request->base;
         $version = $request->version;
 
-        if($verbose) {
+        if ($verbose) {
             $fields = $this->getVerboseFields();
         } else {
             $fields = $this->getDefaultFields();
         }
 
-        foreach($fields as $output_name => $name) {
+        foreach ($fields as $output_name => $name) {
             $item[$output_name] = $this->$name;
         }
 

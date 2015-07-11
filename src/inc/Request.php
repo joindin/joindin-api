@@ -6,7 +6,6 @@
 
 class Request
 {
-
     /**
      * Output formats
      */
@@ -80,7 +79,7 @@ class Request
 
         if (isset($server['PATH_INFO'])) {
             $this->setPathInfo($server['PATH_INFO']);
-        }else if (isset($server['REQUEST_URI'])) {
+        } elseif (isset($server['REQUEST_URI'])) {
             $this->setPathInfo(parse_url($server['REQUEST_URI'], PHP_URL_PATH));
         }
 
@@ -322,7 +321,7 @@ class Request
      */
     public function identifyUser($db, $auth_header)
     {
-        if(($this->getScheme() == "https://") || 
+        if (($this->getScheme() == "https://") ||
             (isset($this->config['mode']) && $this->config['mode'] == "development")) {
 
             // identify the user
@@ -377,7 +376,7 @@ class Request
             if (
                 (isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] == "application/json")
                 || (isset($server['HTTP_CONTENT_TYPE']) && $server['HTTP_CONTENT_TYPE'] == "application/json")
-			) {
+            ) {
                 $body_params = json_decode($body);
                 if ($body_params) {
                     foreach ($body_params as $param_name => $param_value) {

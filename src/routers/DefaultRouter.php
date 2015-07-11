@@ -5,7 +5,6 @@
  */
 class DefaultRouter extends Router
 {
-
     /**
      * {@inheritdoc}
      */

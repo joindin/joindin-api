@@ -9,7 +9,7 @@ class TokenController extends ApiController
         $this->oauthModel = $request->getOauthModel($db);
 
         // only POST is implemented so far
-        if($request->getVerb() == 'POST') {
+        if ($request->getVerb() == 'POST') {
             return $this->postAction($request, $db);
         }
         
@@ -26,11 +26,11 @@ class TokenController extends ApiController
         $password = $request->getParameter('password');
 
         // all fields are required or this makes no sense
-        if(empty($grantType)) {
+        if (empty($grantType)) {
             throw new Exception('The field "grant_type" is required', 400);
         }
 
-        if(empty($username) || empty($password)) {
+        if (empty($username) || empty($password)) {
             throw new Exception('The fields "username" and "password" are both required', 400);
         }
 
@@ -44,7 +44,7 @@ class TokenController extends ApiController
             }
 
             // expire any old tokens
-            if(isset($this->config['oauth']['expirable_client_ids'])) {
+            if (isset($this->config['oauth']['expirable_client_ids'])) {
                 $this->oauthModel->expireOldTokens($this->config['oauth']['expirable_client_ids']);
             }
 
@@ -63,5 +63,4 @@ class TokenController extends ApiController
 
         throw new Exception("Grant type not recognised", 400);
     }
-
 }

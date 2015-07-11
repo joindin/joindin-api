@@ -2,7 +2,8 @@
 
 class TrackMapper extends ApiMapper
 {
-    public function getDefaultFields() {
+    public function getDefaultFields()
+    {
         $fields = array(
             'track_name' => 'track_name',
             'track_description' => 'track_desc',
@@ -12,7 +13,8 @@ class TrackMapper extends ApiMapper
         return $fields;
     }
 
-    public function getVerboseFields() {
+    public function getVerboseFields()
+    {
         $fields = array(
             'track_name' => 'track_name',
             'track_description' => 'track_desc',
@@ -22,7 +24,8 @@ class TrackMapper extends ApiMapper
         return $fields;
     }
 
-    public function getTracksByEventId($event_id, $resultsperpage, $start, $verbose = false) {
+    public function getTracksByEventId($event_id, $resultsperpage, $start, $verbose = false)
+    {
         $sql = $this->getBasicSQL();
         $sql .= ' where t.event_id = :event_id';
         $sql .= ' order by t.track_name';
@@ -43,8 +46,8 @@ class TrackMapper extends ApiMapper
         return false;
     }
 
-    public function transformResults($results, $verbose) {
-
+    public function transformResults($results, $verbose)
+    {
         $total = $results['total'];
         unset($results['total']);
         $list = parent::transformResults($results, $verbose);
@@ -67,7 +70,8 @@ class TrackMapper extends ApiMapper
         return $retval;
     }
 
-    public function getTrackById($track_id, $verbose = false) {
+    public function getTrackById($track_id, $verbose = false)
+    {
         $sql = $this->getBasicSQL();
         $sql .= ' where t.ID = :track_id';
         $stmt = $this->_db->prepare($sql);
@@ -85,7 +89,8 @@ class TrackMapper extends ApiMapper
         return false;
     }
 
-    public function getBasicSQL() {
+    public function getBasicSQL()
+    {
         $sql = 'select t.*, '
             . '(select COUNT(tk.ID) from talks tk '
             . 'inner join talk_track ttk ON tk.ID = ttk.talk_id '

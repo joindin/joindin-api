@@ -5,7 +5,6 @@
  */
 class ApiRouter extends Router
 {
-
     /**
      * @var array The configuration for this Router
      */
@@ -67,7 +66,7 @@ class ApiRouter extends Router
     public function getRoute(Request $request)
     {
         $version = $request->getUrlElement(1);
-        if(!$version) {
+        if (!$version) {
             // empty version, set request to use the latest
             $request->version = $this->latestVersion;
         } else {

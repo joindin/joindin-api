@@ -1,7 +1,9 @@
 <?php
 
-class DefaultController extends ApiController {
-	public function handle(Request $request, $db) {
+class DefaultController extends ApiController
+{
+    public function handle(Request $request, $db)
+    {
         $retval = array();
 
         // just add the available methods, with links
@@ -13,5 +15,5 @@ class DefaultController extends ApiController {
         $retval['docs'] = 'http://joindin.github.io/joindin-api/';
 
         return $retval;
-	}
+    }
 }

@@ -141,14 +141,14 @@ class Header
         foreach ($this->values as $value) {
             $parts = explode('=', $value);
             $key = ucwords($parts[0]);
-            if(count($parts) == 1){
-                if(array_key_exists(0,$assocArray)) {
+            if (count($parts) == 1) {
+                if (array_key_exists(0, $assocArray)) {
                     $assocArray[0][] = $parts[0];
-                }else{
+                } else {
                     $assocArray[0] = array();
                     $assocArray[0][] = $parts[0];
                 }
-            }elseif (array_key_exists($key, $assocArray)) {
+            } elseif (array_key_exists($key, $assocArray)) {
                 $assocArray[$key][] = $parts[1];
             } else {
                 $assocArray[$key]   = array();
