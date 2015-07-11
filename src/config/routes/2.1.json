@@ -1,5 +1,11 @@
 [
     {
+        "path": "/events(/[^/]+)/talks/?$",
+        "controller": "TalksController",
+        "action": "postAction",
+        "verbs": ["POST"]
+    },
+    {
         "path": "/events(/[^/]+)*/?$",
         "controller": "EventsController",
         "action": "getAction",
@@ -29,7 +35,42 @@
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
-
+    {
+        "path": "/talks(/[^/]+)*/speakers/?$",
+        "controller": "Talk_speakersController",
+        "action": "listAction",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks(/[^/]+)*/speakers/?$",
+        "controller": "Talk_speakersController",
+        "action": "postAction",
+        "verbs" : ["POST"]
+    },
+    {
+        "path": "/speakers(/[^/]+)*/?$",
+        "controller": "Talk_speakersController",
+        "action": "getAction",
+        "verbs" : ["GET"]
+    },
+    {
+        "path": "/speakers(/[^/]+)*/?$",
+        "controller": "Talk_speakersController",
+        "action": "putAction",
+        "verbs" : ["PUT"]
+    },
+    {
+        "path": "/speakers(/[^/]+)*/?$",
+        "controller": "Talk_speakersController",
+        "action": "deleteAction",
+        "verbs" : ["DELETE"]
+    },
+    {
+        "path": "/talks(/[^/]+)*/speakers(/[^/]+)?$",
+        "controller": "Talk_speakersController",
+        "action": "getAction",
+        "verbs": ["GET"]
+    },
     {
         "path": "/talks(/[^/]+)*/?$",
         "controller": "TalksController",
@@ -41,6 +82,12 @@
         "controller": "TalksController",
         "action": "postAction",
         "verbs": ["POST"]
+    },
+    {
+        "path": "/talks(/[^/]+)/?$",
+        "controller": "TalksController",
+        "action": "putAction",
+        "verbs": ["PUT"]
     },
     {
         "path": "/talks(/[^/]+)*/?$",
