@@ -54,4 +54,4 @@ Read the [authentication howto]({{ site.baseurl }}/howto/authenticate.html) for 
 *  [Users]({{ site.baseurl }}/users.html)
 *  [Talk comments]({{ site.baseurl }}/talk_comments.html)
 *  [Event comments]({{ site.baseurl }}/event_comments.html)
-
+*  [Languages]({{ site.baseurl }}/languages.html)
