@@ -48,6 +48,22 @@ class ContactController extends ApiController {
             throw new Exception($message, 400);
         }
 
+        // run it by akismet if we have it
+        if (isset($this->config['akismet']['apiKey'], $this->config['akismet']['blog'])) {
+            $spamCheckService = new SpamCheckService(
+                $this->config['akismet']['apiKey'],
+                $this->config['akismet']['blog']
+            );
+            $isValid = $spamCheckService->isCommentAcceptable(
+                $data['comment'],
+                $request->getClientIP(),
+                $request->getClientUserAgent()
+            );
+            if (!$isValid) {
+                throw new Exception("Comment failed spam check", 400);
+            }
+        }
+
         $emailService = new ContactEmailService($this->config);
         $emailService->sendEmail($data);
 
