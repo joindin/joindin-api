@@ -67,7 +67,7 @@ The fields available for talk comments:
 ## Talk Comment Hypermedia
 
 *  ``uri``: Where to find this individual record
-*  ``verbse_uri``: Where to find a more detailed representation of this record
+*  ``verbose_uri``: Where to find a more detailed representation of this record
 *  ``talk_uri``: The talk that this comment belongs to
 *  ``talk_comments_uri``: Where to find all the comments on the same talk as this comment
 *  ``user_uri``: The user record of the commenting user (if there is one, this field isn't present for anonymous comments)
