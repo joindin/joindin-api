@@ -141,6 +141,20 @@
     },
 
     {
+        "path": "/languages?$",
+        "controller": "LanguagesController",
+        "action": "getAllLanguages",
+        "verbs": ["GET"]
+    },
+
+    {
+        "path": "/languages(/[0-9]+)?/?$",
+        "controller": "LanguagesController",
+        "action": "getLanguage",
+        "verbs": ["GET"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"
