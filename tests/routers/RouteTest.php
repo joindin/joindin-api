@@ -7,7 +7,6 @@
  */
 class RouteTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * DataProvider for testConstruct
      * 
@@ -159,12 +158,12 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
         return $request;
     }
-
 }
 
 class TestController3
 {
-    public function action(Request $request, $db) {
+    public function action(Request $request, $db)
+    {
         if ($db == 'database') {
             return 'val';
         }

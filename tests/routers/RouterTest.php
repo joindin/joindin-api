@@ -9,7 +9,6 @@ require_once(__DIR__ . '/../../src/inc/Request.php');
  */
 class RouterTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * DataProvider for testConstruct
      *
@@ -41,8 +40,6 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
 class TestRouter3 extends Router
 {
-
-
     /**
      * {@inheritdoc}
      */
