@@ -58,7 +58,7 @@ class SearchService
             return array();
         }
 
-        if(!$this->searchTypes || !$this->limit || !$this->offset) {
+        if(!$this->searchTypes || !$this->limit || (!$this->offset && $this->offset !== 0)) {
             throw new Exception('Missing search data', 400); 
         }
 
