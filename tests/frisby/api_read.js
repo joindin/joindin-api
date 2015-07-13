@@ -367,6 +367,26 @@ function testTrack(track) {
     .toss();
 }
 
+function testLanguages() {
+    frisby.create('Get all languages')
+        .get(baseURL + "/v2.1/languages")
+        .expectStatus(200)
+        .expectHeader("content-type", "application/json; charset=utf8")
+        .afterJSON(function(response) {
+            // Check meta-data
+            expect(response.meta).toContainJsonTypes({"count":Number});
+            expect(response).toContainJsonTypes({"languages":Array});
+
+            // expect at least 1 language to be returned
+            expect(response.languages.length).toBeGreaterThan(1);
+
+            for(var i in response.languages) {
+                datatest.checkLanguageData(response.languages[i]);
+            }
+        })
+        .toss();
+}
+
 module.exports = {
 	init                         : init,
 	testIndex                    : testIndex,
@@ -388,5 +408,6 @@ module.exports = {
 	testNonexistentEventComment  : testNonexistentEventComment,
 	testNonexistentTalkComment   : testNonexistentTalkComment,
 	testNonexistentUser          : testNonexistentUser,
-	testExistingUser             : testExistingUser
+	testExistingUser             : testExistingUser,
+    testLanguages                : testLanguages
 }

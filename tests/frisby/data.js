@@ -10,7 +10,8 @@ module.exports = {
 	checkVerboseUserData        : checkVerboseUserData,
 	checkTrackData              : checkTrackData,
 	checkTalkCommentData        : checkTalkCommentData,
-	checkVerboseTalkCommentData : checkVerboseTalkCommentData
+	checkVerboseTalkCommentData : checkVerboseTalkCommentData,
+    checkLanguageData           : checkLanguageData
 }
 
 function checkEventData(ev) {
@@ -293,6 +294,17 @@ function checkVerboseTalkCommentData(comment) {
   }
   expect(comment.gravatar_hash).toBeDefined();
   expect(typeof comment.gravatar_hash).toBe('string');
+}
+
+function checkLanguageData(language) {
+    expect(language.name).toBeDefined();
+    expect(typeof language.name).toBe('string');
+    expect(language.code).toBeDefined();
+    expect(typeof language.code).toBe('string');
+    expect(language.uri).toBeDefined();
+    expect(typeof language.uri).toBe('string');
+    expect(language.verbose_uri).toBeDefined();
+    expect(typeof language.verbose_uri).toBe('string');
 }
 
 function checkDate(fieldValue) {

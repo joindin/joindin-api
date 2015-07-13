@@ -408,6 +408,25 @@ class TalkMapper extends ApiMapper {
     }
 
     /**
+     * Is this user a speaker?
+     *
+     * @param int $talk_id the talk of interest
+     * @param int $user_id which user
+     * @return bool
+     */
+    public function isUserASpeakerOnTalk($talk_id, $user_id)
+    {
+        $sql = "select ID from talk_speaker where talk_id = :talk_id and speaker_id = :user_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("talk_id" => (int)$talk_id, "user_id" => (int)$user_id));
+
+        if ($stmt->fetch()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * This talk has no stub, so create, store and return one
      *
      * @param int $talk_id The talk that needs a new stub

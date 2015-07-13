@@ -81,7 +81,9 @@ class TalksController extends ApiController {
                     $oauth_model = $request->getOauthModel($db);
                     $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
+                    $talk_mapper = new TalkMapper($db, $request);
                     $comment_mapper = new TalkCommentMapper($db, $request);
+
                     $data['user_id'] = $request->user_id;
                     $data['talk_id'] = $talk_id;
                     $data['comment'] = $comment;
@@ -110,6 +112,10 @@ class TalksController extends ApiController {
                         if ($comment_mapper->hasUserRatedThisTalk($data['user_id'], $data['talk_id'])) {
                             $data['rating'] = 0;
                         }
+                        if ($talk_mapper->isUserASpeakerOnTalk($data['talk_id'], $data['user_id'])) {
+                            // speakers cannot cannot rate their own talk
+                            $data['rating'] = 0;
+                        }
 
                         $new_id = $comment_mapper->save($data);
                     } catch (Exception $e) {
@@ -119,7 +125,6 @@ class TalksController extends ApiController {
 
                     if($new_id) {
                         $comment = $comment_mapper->getCommentById($new_id);
-                        $talk_mapper = new TalkMapper($db, $request);
                         $talk = $talk_mapper->getTalkById($talk_id);
                         $speakers = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
                         $recipients = array();
