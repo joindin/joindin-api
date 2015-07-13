@@ -4,7 +4,11 @@ class SearchService
     protected $provider;
 
     protected $index;
-    protected $searchTypes = [];
+    protected $searchTypes = [
+        SearchMapper::SEARCH_EVENTS, 
+        SearchMapper::SEARCH_TALKS, 
+        SearchMapper::SEARCH_SPEAKERS
+    ];
 
     protected $search;
 
