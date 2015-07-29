@@ -168,6 +168,7 @@ class EventMapper extends ApiMapper
                 case "pending": // events to be approved
                     $order .= 'events.event_start';
                     $active = false;
+                    $where .= ' and pending = 1';
                     break;
                 default:
                     $order .= 'events.event_start desc';
@@ -180,8 +181,6 @@ class EventMapper extends ApiMapper
 
         if ($active) {
             $where .= " and events.active = 1 and (events.pending = 0 or events.pending is NULL) ";
-        } else {
-            $where .= " and events.active = 0 and events.pending = 1 ";
         }
 
         if (array_key_exists("stub", $params)) {
