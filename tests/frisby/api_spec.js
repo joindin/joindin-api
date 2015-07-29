@@ -26,4 +26,4 @@ apitest.testNonexistentEventComment();
 apitest.testNonexistentTalkComment();
 apitest.testNonexistentUser();
 apitest.testExistingUser();
-
+apitest.testLanguages();

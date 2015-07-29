@@ -612,16 +612,8 @@ class EventMapper extends ApiMapper
             }
 
             // is user an event admin?
-            $sql = $this->getHostSql();
-            $sql .= ' AND u.ID = :user_id';
-            $stmt = $this->_db->prepare($sql);
-            $stmt->execute(array("event_id" => $event_id, 
-                "user_id" => $this->_request->user_id));
-            $results = $stmt->fetchAll();
-            if($results) {
-                return true;
-            }
-        }
+            return $this->isUserAHostOn($this->_request->user_id, $event_id);
+        } 
         return false;
     }
 
@@ -641,6 +633,27 @@ class EventMapper extends ApiMapper
             if ($is_site_admin) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    /**
+     * Is this user
+     * @param  int $user_id The identifier of the user to check
+     * @param  int $event_id The identifier of the event to check
+     * @return True if the user is a host, false otherwise
+     */
+    public function isUserAHostOn($user_id, $event_id)
+    {
+        $sql = $this->getHostSql();
+        $sql .= ' AND u.ID = :user_id';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array(
+            "event_id" => $event_id,
+            "user_id" => $user_id));
+        $results = $stmt->fetchAll();
+        if ($results) {
+            return true;
         }
         return false;
     }

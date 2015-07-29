@@ -139,6 +139,34 @@
     },
 
     {
+        "path": "/twitter/request_token",
+        "controller": "TwitterController",
+        "action": "getRequestToken",
+        "verbs": ["POST"]
+    },
+
+    {
+        "path": "/twitter/token",
+        "controller": "TwitterController",
+        "action": "logUserIn",
+        "verbs": ["POST"]
+    },
+
+    {
+        "path": "/languages?$",
+        "controller": "LanguagesController",
+        "action": "getAllLanguages",
+        "verbs": ["GET"]
+    },
+
+    {
+        "path": "/languages(/[0-9]+)?/?$",
+        "controller": "LanguagesController",
+        "action": "getLanguage",
+        "verbs": ["GET"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"
