@@ -16,7 +16,7 @@ class EventApprovedEmailService extends EmailBaseService
 
     public function sendEmail()
     {
-        $this->setSubject('Your joind.in username');
+        $this->setSubject('Event approved');
 
         $date = new DateTime($this->event['start_date']);
         $replacements = array(
