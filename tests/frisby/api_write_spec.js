@@ -2,6 +2,7 @@
 // ./node_modules/.bin/jasmine-node . 
 var apitest  = require('./api_write');
 var eventstest = require('./api_write_events');
+var talktest = require('./api_talks');
 var datatest = require('./data');
 
 var baseURL;
@@ -15,6 +16,8 @@ if (typeof process.env.JOINDIN_API_BASE_URL != 'undefined') {
 apitest.init(baseURL);
 apitest.testRegisterUser();
 apitest.testRegisterVerifiedUser();
+
+talktest.init(baseURL);
 
 eventstest.init(baseURL);
 eventstest.setupAndRunEventTests();
