@@ -84,7 +84,35 @@ function testAddTalk(token) {
                 console.log(body);
                 return;
             }
-            //testReadTalk(token, res.headers.location);
+            testReadTalk(token, res.headers.location);
+            testEditTalk(token, res.headers.location, data);
+        })
+        .toss();
+}
+
+function testReadTalk(token, uri) {
+    frisby.create("read a talk from an URI")
+        .get(uri)
+        .expectStatus(200)
+        .addHeader("authorization", "oauth " + token)
+        .toss();
+};
+
+function testEditTalk(token, uri, data) {
+    editedData = util._extend(data,{
+        'talk_title' : 'fooBar'
+    });
+    frisby.create("Edit a talk from an URI")
+        .put(uri,editedData, {json:true})
+        .expectStatus(204)
+        //.expectHeaderContains("Location", uri)
+        .addHeader("Authorization", "oauth " + token)
+        .after(function(err, res, body){
+            frisby.create('read edited talk')
+                .get(uri, data, {json:true})
+                .expectStatus(200)
+                .expectJSONLength('talks.0.talk_title', 6)
+                .toss();
         })
         .toss();
 }

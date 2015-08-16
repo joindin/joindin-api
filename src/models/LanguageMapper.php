@@ -88,4 +88,27 @@ class LanguageMapper extends ApiMapper
         }
         return false;
     }
+
+    /**
+     * Check whether the given Language name is available in the language-table
+     *
+     * @param string $language The language-name to check for
+     *
+     * @return bool
+     */
+    public function isLanguageAvailable($language)
+    {
+        $sql = 'SELECT * FROM lang WHERE lang_name=:lang_name';
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array('lang_name' => $language));
+        if (! $response) {
+            return false;
+        }
+        if (false === $stmt->fetch()) {
+            return false;
+        }
+
+        return true;
+    }
 }

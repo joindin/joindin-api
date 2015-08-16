@@ -260,7 +260,7 @@ class TalksController extends ApiController
         }
         // When the language doesn't exist, the talk will not be found
         $language_mapper = new LanguageMapper($db, $request);
-        if (! in_array($talk['language'], $language_mapper->getLanguageList(100))) {
+        if (! $language_mapper->isLanguageAvailable($talk['language'])) {
             $errors[] = sprintf('The language "%s" isn\'t known', $talk['language']);
         }
 
@@ -307,6 +307,132 @@ class TalksController extends ApiController
         $new_talk = $talk_mapper->getTalkById($new_id);
         return $new_talk;
     }
+
+    /**
+     * Edit a talk
+     *
+     * This action expects the following parameters:
+     *
+     * - string title
+     * - string description
+     * - string language (has to be a value from the languages-table
+     * - string slides_link (has to be a URL)
+     * - string type (has to be a value from the categories-table
+     * - int duration
+     * - string date (will be parsed as datetime - include start time as well!)
+     *
+     * Users with admin-rights on the talk (the admins as well as the event-hosts)
+     * can edit all fields, verified speakers will only be able to edit title,
+     * description, language and slides-link.
+     *
+     * @param $request
+     * @param $db
+     *
+     * @throws Exception
+     */
+    public function editTalkAction($request, $db)
+    {
+        $errors = array();
+        if(!isset($request->user_id)) {
+            throw new Exception("You must be logged in to edit data", 403);
+        }
+
+        $talk_id = $this->getItemId($request);
+
+        $talk_mapper = new TalkMapper($db, $request);
+
+        $existing_talk = $talk_mapper->getTalkById($talk_id, true);
+        if (! $existing_talk || $existing_talk['meta']['count'] < 1) {
+            throw new Exception('The talk could not be found', 404);
+        }
+        $existing_talk = $existing_talk['talks'][0];
+
+        $isAdmin   = $talk_mapper->thisUserHasAdminOn($talk_id);
+        //$isSpeaker = $talk_mapper->thisUserIsSpeakerOn($talk_id);
+        //if (! $isAdmin  && ! $isSpeaker) {
+        if (! $isAdmin) {
+            throw new Exception('You are not entitled to edit this entry', 403);
+        }
+
+        $eUri = explode('/', $existing_talk['event_uri']);
+        $existing_talk['event_id'] = $eUri[(count($eUri)-1)];
+
+        $talk = array(
+            'talk_id' => $talk_id,
+            'event_id' => $existing_talk['event_id']
+        );
+
+        $talk['talk_title'] = filter_var(
+            $request->getParameter("talk_title"),
+            FILTER_SANITIZE_STRING
+        );
+        if(empty($talk['talk_title'])) {
+            $errors[] = "'title' is a required field";
+        }
+
+        $talk['talk_description']  = filter_var(
+            $request->getParameter("talk_description"),
+            FILTER_SANITIZE_STRING
+        );
+        if (empty($talk['talk_description'])) {
+            $errors[] = "'description' is a required field";
+        }
+
+        $talk['language'] = filter_var($request->getParameter('language'), FILTER_SANITIZE_STRING);
+        if (empty($talk['language'])) {
+            $talk['language'] = 'English - UK';
+        }
+
+        $language_mapper = new LanguageMapper($db, $request);
+        if (! $language_mapper->isLanguageAvailable($talk['language'])) {
+            $errors[] = sprintf('The language "%s" isn\'t known', $talk['language']);
+        }
+
+        $talk['slides_link'] = filter_var($request->getParameter('slides_link'), FILTER_SANITIZE_URL);
+
+        if (! $isAdmin) {
+            $talk['type']       = $existing_talk['type'];
+            $talk['duration']   = $existing_talk['duration'];
+            $talk['start_date'] = (new \DateTime($existing_talk['start_date']))->format('U');
+        } else {
+
+            $talk['type'] = filter_var(
+                $request->getParameter("type"),
+                FILTER_SANITIZE_STRING
+            );
+            if (empty($talk['type'])) {
+                $errors[] = "'type' is a required field";
+            }
+
+            if (! in_array($talk['type'], $talk_mapper->getCategories())) {
+                $errors[] = sprintf(
+                    'The talk-category "%s" isn\'t known',
+                    $talk['type']
+                );
+            }
+
+            $talk['start_date'] = (new \DateTime($request->getParameter("start_date")))->format('U');
+
+            $talk['duration'] = filter_var(
+                $request->getParameter('duration'),
+                FILTER_SANITIZE_NUMBER_INT
+            );
+
+            if (empty($talk['duration'])) {
+                $talk['duration'] = 60;
+            }
+        }
+
+        if ($errors) {
+            throw new Exception(implode(". ", $errors), 400);
+        }
+
+        $talk_mapper->edit($talk, $talk_id);
+
+        header("HTTP/1.1 204 No Content", NULL, 204);
+        exit;
+    }
+
 
     public function deleteAction($request, $db) {
         if(!isset($request->user_id)) {
