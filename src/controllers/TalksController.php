@@ -1,9 +1,7 @@
 <?php
 
-class TalksController extends ApiController
-{
-    public function handle(Request $request, $db)
-    {
+class TalksController extends ApiController {
+    public function handle(Request $request, $db) {
         if($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
         } elseif($request->getVerb() == 'POST') {
@@ -58,43 +56,40 @@ class TalksController extends ApiController
         return $list;
 	}
 
-    public function postAction($request, $db)
-    {
-        if (! isset($request->user_id)) {
+    public function postAction($request, $db) {
+        if(!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);
         }
         $talk_id = $this->getItemId($request);
 
-        if (isset($request->url_elements[4])) {
-            switch ($request->url_elements[4]) {
+        if(isset($request->url_elements[4])) {
+            switch($request->url_elements[4]) {
                 case "comments":
                     $comment = $request->getParameter('comment');
-                    if (empty($comment)) {
-                        throw new Exception('The field "comment" is required',
-                            400);
+                    if(empty($comment)) {
+                        throw new Exception('The field "comment" is required', 400);
                     }
 
                     $rating = $request->getParameter('rating');
-                    if (empty($rating)) {
-                        throw new Exception('The field "rating" is required',
-                            400);
+                    if(empty($rating)) {
+                        throw new Exception('The field "rating" is required', 400);
                     }
 
                     $private = ($request->getParameter('private') ? 1 : 0);
 
                     // Get the API key reference to save against the comment
-                    $oauth_model   = $request->getOauthModel($db);
+                    $oauth_model = $request->getOauthModel($db);
                     $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
-                    $talk_mapper    = new TalkMapper($db, $request);
+                    $talk_mapper = new TalkMapper($db, $request);
                     $comment_mapper = new TalkCommentMapper($db, $request);
 
                     $data['user_id'] = $request->user_id;
                     $data['talk_id'] = $talk_id;
                     $data['comment'] = $comment;
-                    $data['rating']  = $rating;
+                    $data['rating'] = $rating;
                     $data['private'] = $private;
-                    $data['source']  = $consumer_name;
+                    $data['source'] = $consumer_name;
 
                     try {
                         // run it by akismet if we have it
@@ -103,26 +98,21 @@ class TalksController extends ApiController
                                 $this->config['akismet']['apiKey'],
                                 $this->config['akismet']['blog']
                             );
-                            $isValid          = $spamCheckService->isCommentAcceptable(
+                            $isValid = $spamCheckService->isCommentAcceptable(
                                 $data,
                                 $request->getClientIP(),
                                 $request->getClientUserAgent()
                             );
-                            if (! $isValid) {
-                                throw new Exception("Comment failed spam check",
-                                    400);
+                            if (!$isValid) {
+                                throw new Exception("Comment failed spam check", 400);
                             }
                         }
 
                         // should rating be allowed?
-                        if ($comment_mapper->hasUserRatedThisTalk($data['user_id'],
-                            $data['talk_id'])
-                        ) {
+                        if ($comment_mapper->hasUserRatedThisTalk($data['user_id'], $data['talk_id'])) {
                             $data['rating'] = 0;
                         }
-                        if ($talk_mapper->isUserASpeakerOnTalk($data['talk_id'],
-                            $data['user_id'])
-                        ) {
+                        if ($talk_mapper->isUserASpeakerOnTalk($data['talk_id'], $data['user_id'])) {
                             // speakers cannot cannot rate their own talk
                             $data['rating'] = 0;
                         }
@@ -133,31 +123,28 @@ class TalksController extends ApiController
                         throw new Exception($e->getMessage(), 400);
                     }
 
-                    if ($new_id) {
-                        $comment    = $comment_mapper->getCommentById($new_id);
-                        $talk       = $talk_mapper->getTalkById($talk_id);
-                        $speakers   = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
+                    if($new_id) {
+                        $comment = $comment_mapper->getCommentById($new_id);
+                        $talk = $talk_mapper->getTalkById($talk_id);
+                        $speakers = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
                         $recipients = array();
-                        foreach ($speakers as $person) {
+                        foreach($speakers as $person) {
                             $recipients[] = $person['email'];
                         }
-                        $emailService = new TalkCommentEmailService($this->config,
-                            $recipients, $talk, $comment);
+                        $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
                         $emailService->sendEmail();
                         $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
                         header("Location: " . $uri, true, 201);
                         exit;
                     } else {
-                        throw new Exception("The comment could not be stored",
-                            400);
+                        throw new Exception("The comment could not be stored", 400);
                     }
                 case 'starred':
                     // the body of this request is completely irrelevant
                     // The logged in user *is* attending the talk.  Use DELETE to unattend
                     $talk_mapper = new TalkMapper($db, $request);
                     $talk_mapper->setUserStarred($talk_id, $request->user_id);
-                    header("Location: " . $request->base . $request->path_info,
-                        null, 201);
+                    header("Location: " . $request->base . $request->path_info, NULL, 201);
                     exit;
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
@@ -180,7 +167,7 @@ class TalksController extends ApiController
      * @throws Exception on different occasions
      * @return array|bool
      */
-    public function createTalkAction($request, $db)
+    public function postAction($request, $db)
     {
         // Set the event-ID either via URL or via POST-Data depending on how the
         // method was called.
