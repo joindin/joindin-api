@@ -150,7 +150,7 @@ class TalksController extends ApiController {
                     throw new Exception("Operation not supported, sorry", 404);
             }
         } else {
-            throw new Exception('This should never have happened, sorry', 500);
+            $this->createTalkAction($request, $db);
         }
     }
 
@@ -167,7 +167,7 @@ class TalksController extends ApiController {
      * @throws Exception on different occasions
      * @return array|bool
      */
-    public function postAction($request, $db)
+    public function createTalkAction($request, $db)
     {
         // Set the event-ID either via URL or via POST-Data depending on how the
         // method was called.
