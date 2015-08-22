@@ -13,9 +13,12 @@ class ContactController extends ApiController {
      * Send an email to feedback email address
      *
      * Expected fields:
+	 *  - client_id
+	 *  - client_secret
      *  - name
      *  - email
-     *  - comments
+	 *  - subject
+     *  - comment
      *
      * @param  Request $request
      * @param  PDO $db
