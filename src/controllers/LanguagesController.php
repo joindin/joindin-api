@@ -2,9 +2,6 @@
 
 class LanguagesController extends ApiController
 {
-    public function handle(Request $request, $db) {
-    }
-
     public function getLanguage($request, $db) {
         $language_id = $this->getItemId($request);
         // verbosity - here for consistency as we don't have verbose language details to return at the moment

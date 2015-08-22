@@ -8,10 +8,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
 class TwitterController extends ApiController {
-    public function handle(Request $request, $db) {
-        // really need to not require this to be declared
-    }
-
     public function getRequestToken($request, $db){
         // only trusted clients can change account details
         $clientId = $request->getParameter('client_id');
