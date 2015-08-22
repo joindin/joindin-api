@@ -167,6 +167,13 @@
     },
 
     {
+        "path": "/contact",
+        "controller": "ContactController",
+        "action": "contact",
+        "verbs": ["POST"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"

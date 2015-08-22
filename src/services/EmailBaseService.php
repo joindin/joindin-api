@@ -104,6 +104,13 @@ abstract class EmailBaseService
     }
 
     /**
+     * Set the reply to header
+     */
+    protected function setReplyTo($email) {
+        $this->message->setReplyTo($email);
+    }
+
+    /**
      * Get recipients list to check it
      */
     public function getRecipients() {
