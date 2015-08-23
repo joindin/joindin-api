@@ -45,7 +45,7 @@ class TalksController extends ApiController {
 
     public function postAction($request, $db) {
         if(!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 401);
         }
         $talk_id = $this->getItemId($request);
 
@@ -137,8 +137,146 @@ class TalksController extends ApiController {
                     throw new Exception("Operation not supported, sorry", 404);
             }
         } else {
-            throw new Exception("method not yet supported - sorry");
+            throw new Exception("method not supported - sorry");
         }
+    }
+
+    /**
+     * Create a new Talk.
+     *
+     * This method creates a new talk after being called via the URL
+     * "/events/<ID>/talks"
+     *
+     * @param Request $request
+     * @param DB $db
+     *
+     * @throws Exception on different occasions
+     * @return array|bool
+     */
+    public function createTalkAction($request, $db)
+    {
+        // Set the event-ID either via URL or via POST-Data depending on how the
+        // method was called.
+        // The event-id is part of the URL but can be overwritten by POST-data
+        $event_id = null;
+        if ($request->url_elements[2] == 'events' && isset($request->url_elements[3])) {
+            $event_id = $request->url_elements[3];
+        }
+        $event_id = filter_var(
+            $request->getParameter('event_id', $event_id),
+            FILTER_SANITIZE_NUMBER_INT
+        );
+
+        $event_mapper = new EventMapper($db, $request);
+        if (! $event_mapper->thisUserHasAdminOn($event_id)) {
+            throw new Exception('You do not have permissions to add a talk to this event', 403);
+        }
+        $eventlist = $event_mapper->getEventById($event_id);
+        if (count($eventlist['events']) < 1) {
+            throw new Exception('Event not found', 404);
+        }
+        $event = $eventlist['events'][0];
+
+        // incoming data
+        $talk   = array();
+        $errors = array();
+
+        $talk['event_id'] = $event_id;
+        if (empty($talk['event_id'])) {
+            $errors[] = '"event_id" is a required field';
+        }
+
+        $talk['talk_title'] = filter_var(
+            $request->getParameter("talk_title"),
+            FILTER_SANITIZE_STRING
+        );
+        if(empty($talk['talk_title'])) {
+            $errors[] = "The 'talk_title' field is required";
+        }
+
+        $talk['talk_description']  = filter_var(
+            $request->getParameter("talk_description"),
+            FILTER_SANITIZE_STRING
+        );
+        if (empty($talk['talk_description'])) {
+            $errors[] = "The 'talk_description' field is required";
+        }
+
+        $talk['type']  = filter_var(
+            $request->getParameter("type"),
+            FILTER_SANITIZE_STRING
+        );
+        if (empty($talk['type'])) {
+            $errors[] = "The 'type' field is required";
+        }
+
+        $talk_mapper = new TalkMapper($db, $request);
+        if ($talk['type'] && ! in_array($talk['type'], $talk_mapper->getCategories())) {
+            $errors[] = sprintf(
+                'The given talk-category "%s" isn\'t recognized',
+                $talk['type']
+            );
+        }
+
+        if ($errors) {
+            throw new Exception(implode(". ", $errors), 400);
+        }
+
+        $talk['language'] = filter_var(
+            $request->getParameter('language'),
+            FILTER_SANITIZE_STRING
+        );
+        if (empty($talk['language'])) {
+            $talk['language'] = 'English - UK';
+        }
+        // When the language doesn't exist, the talk will not be found
+        $language_mapper = new LanguageMapper($db, $request);
+        if (! in_array($talk['language'], $language_mapper->getLanguageList(100))) {
+            $errors[] = sprintf('The language "%s" isn\'t known', $talk['language']);
+        }
+
+        $start_date = filter_var(
+            $request->getParameter('start_date'),
+            FILTER_SANITIZE_STRING
+        );
+        if (empty($start_date)) {
+            throw new Exception('Please give the date and time of the talk', 400);
+        }
+        $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+        $talk['start_date'] = (new DateTime($start_date, $tz))->format('U');
+
+        $talk['duration'] = filter_var(
+            $request->getParameter('duration'),
+            FILTER_SANITIZE_NUMBER_INT
+        );
+        if (empty($talk['duration'])) {
+            $talk['duration'] = 60;
+        }
+
+        $talk['slides_link'] = filter_var(
+            $request->getParameter('slides_link'),
+            FILTER_SANITIZE_URL
+        );
+
+        $new_id = $talk_mapper->createTalk($talk);
+        $event_mapper->cacheTalkCount($talk['event_id']);
+
+        $incoming_speakers_list = (array) $request->getParameter('speakers');
+        $speakers = array_map(function($speaker){
+            $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
+            $speaker = trim($speaker);
+            return $speaker;
+        }, $incoming_speakers_list);
+
+        foreach($speakers as $speaker) {
+            $talk['speakers'][] = filter_var($speaker, FILTER_SANITIZE_STRING);
+        }
+
+        $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
+        header("Location: " . $uri, true, 201);
+
+        $new_talk = $talk_mapper->getTalkById($new_id);
+        return $new_talk;
     }
 
     public function deleteAction($request, $db) {
