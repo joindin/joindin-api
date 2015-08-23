@@ -42,4 +42,27 @@ class Talk_speakersController extends ApiController
 
         return $list;
 	}
+
+
+    /**
+     * Handle getting a specific speaker for a talk
+     *
+     * @param Request $request
+     * @param PDO $db
+     *
+     * @return array;
+     */
+    public function getSpeakerAction($request, $db)
+    {
+        $speaker_id = $this->getItemId($request);
+
+        $verbose = $this->getVerbosity($request);
+
+        $talkSpeakerMapper = new TalkSpeakerMapper($db, $request);
+        $list = $talkSpeakerMapper->getSpeakerById( $speaker_id, $verbose);
+
+        return $list;
+
+    }
+
 }

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <table name="talk_speaker">
+        <column>talk_id</column>
+        <column>speaker_name</column>
+        <column>ID</column>
+        <column>speaker_id</column>
+        <column>status</column>
+        <row>
+            <value>44</value>
+            <value>Karl Napp</value>
+            <value>1</value>
+            <value>12</value>
+            <value></value>
+        </row>
+        <row>
+            <value>44</value>
+            <value>Foo Bar</value>
+            <value>2</value>
+            <value></value>
+            <value></value>
+        </row>
+        <row>
+            <value>44</value>
+            <value>Bar Foo</value>
+            <value>3</value>
+            <value>13</value>
+            <value>foo</value>
+        </row>
+        <row>
+            <value>44</value>
+            <value>barBaz</value>
+            <value>4</value>
+            <value>22</value>
+            <value>bar</value>
+        </row>
+        <row>
+            <value>45</value>
+            <value>barBaz</value>
+            <value>5</value>
+            <value>22</value>
+            <value></value>
+        </row>
+    </table>
+    <table name="user">
+        <column>username</column>
+        <column>password</column>
+        <column>email</column>
+        <column>lastlogin</column>
+        <column>ID</column>
+        <column>admin</column>
+        <column>full_name</column>
+        <column>active</column>
+        <column>twitter_username</column>
+        <column>request_code</column>
+        <row>
+            <value>karlnapp</value>
+            <value>passwd</value>
+            <value>karlnapp@example.org</value>
+            <value>1</value>
+            <value>12</value>
+            <value>1</value>
+            <value>Karl Napp</value>
+            <value>0</value>
+            <value>karlnapp</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>barfoo</value>
+            <value>passwd</value>
+            <value>barfoo@example.org</value>
+            <value>1</value>
+            <value>13</value>
+            <value>1</value>
+            <value>Bar Foo</value>
+            <value>0</value>
+            <value>barfoo</value>
+            <value>1</value>
+        </row>
+        <row>
+            <value>barbaz</value>
+            <value>passwd</value>
+            <value>barbaz@example.org</value>
+            <value>1</value>
+            <value>22</value>
+            <value>1</value>
+            <value>barBaz</value>
+            <value>0</value>
+            <value>barbaz</value>
+            <value>1</value>
+        </row>
+    </table>
+</dataset>
