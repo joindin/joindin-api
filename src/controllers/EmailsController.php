@@ -5,10 +5,6 @@
  */
 
 class EmailsController extends ApiController {
-    public function handle(Request $request, $db) {
-        // really need to not require this to be declared
-    }
-
     public function verifications($request, $db){
         $user_mapper= new UserMapper($db, $request);
         $email = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);

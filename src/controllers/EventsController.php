@@ -1,20 +1,6 @@
 <?php
 
 class EventsController extends ApiController {
-    public function handle(Request $request, $db) {
-        // only GET is implemented so far
-        if($request->getVerb() == 'GET') {
-            return $this->getAction($request, $db);
-        } elseif ($request->getVerb() == 'POST') {
-            return $this->postAction($request, $db);
-        } elseif ($request->getVerb() == 'DELETE') {
-            return $this->deleteAction($request, $db);
-        } elseif ($request->getVerb() == 'PUT') {
-            return $this->putAction($request, $db);
-        }
-        return false;
-    }
-
 	public function getAction($request, $db) {
         $event_id = $this->getItemId($request);
 

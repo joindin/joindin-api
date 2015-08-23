@@ -1,19 +1,6 @@
 <?php
 
 class TalksController extends ApiController {
-    public function handle(Request $request, $db) {
-        if($request->getVerb() == 'GET') {
-            return $this->getAction($request, $db);
-        } elseif($request->getVerb() == 'POST') {
-            return $this->postAction($request, $db);
-        } elseif ($request->getVerb() == 'DELETE') {
-            return $this->deleteAction($request, $db);
-        } else {
-            throw new Exception("method not supported");
-        }
-        return false;
-    }
-
 	public function getAction($request, $db) {
         $talk_id = $this->getItemId($request);
 

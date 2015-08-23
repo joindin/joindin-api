@@ -1,16 +1,6 @@
 <?php
 
 class UsersController extends ApiController {
-    public function handle(Request $request, $db) {
-        // only GET is implemented so far
-        if($request->getVerb() == 'GET') {
-            return $this->getAction($request, $db);
-        } elseif ($request->getVerb() == 'POST') {
-            return $this->postAction($request, $db);
-        }
-        return false;
-    }
-
 	public function getAction($request, $db) {
         $user_id = $this->getItemId($request);
 

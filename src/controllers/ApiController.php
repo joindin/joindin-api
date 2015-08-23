@@ -3,8 +3,6 @@
 abstract class ApiController {
     protected $config;
 
-	abstract public function handle(Request $request, $db);
-
     public function __construct($config = null) {
         $this->config = $config;
     }

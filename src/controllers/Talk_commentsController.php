@@ -1,15 +1,7 @@
 <?php
 
 class Talk_commentsController extends ApiController {
-    public function handle(Request $request, $db) {
-        // only GET is implemented so far
-        if($request->getVerb() == 'GET') {
-            return $this->getAction($request, $db);
-        }
-        return false;
-    }
-
-	public function getAction($request, $db) {
+	public function getComments($request, $db) {
         $comment_id = $this->getItemId($request);
 
         // verbosity

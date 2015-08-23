@@ -2,16 +2,6 @@
 
 class TracksController extends ApiController
 {
-    public function handle(Request $request, $db) {
-        if ($request->getVerb() == 'GET') {
-            return $this->getAction($request, $db);
-        } else {
-            throw new Exception("method not supported");
-        }
-
-        return false;
-    }
-
     public function getAction($request, $db) {
         $track_id = $this->getItemId($request);
 

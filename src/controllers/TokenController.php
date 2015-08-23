@@ -4,20 +4,9 @@ class TokenController extends ApiController
 {
     protected $oauthModel;
 
-    public function handle(Request $request, $db)
-    {
-        $this->oauthModel = $request->getOauthModel($db);
-
-        // only POST is implemented so far
-        if($request->getVerb() == 'POST') {
-            return $this->postAction($request, $db);
-        }
-        
-        return false;
-    }
-
     public function postAction($request, $db)
     {
+        $this->oauthModel = $request->getOauthModel($db);
         // The "password" grant type posts here to exchange a username and
         // password for an access token. This is used by web2.
 

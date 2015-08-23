@@ -64,7 +64,7 @@
     {
         "path": "/token(/[^/]+)*/?$",
         "controller": "TokenController",
-        "action": "handle",
+        "action": "postAction",
         "verbs": ["POST"]
     },
 
@@ -106,14 +106,14 @@
     {
         "path": "/event_comments(/[^/]+)*/?$",
         "controller": "Event_commentsController",
-        "action": "handle",
+        "action": "getComments",
         "verbs": ["GET"]
     },
 
     {
         "path": "/talk_comments(/[^/]+)*/?$",
         "controller": "Talk_commentsController",
-        "action": "handle",
+        "action": "getComments",
         "verbs": ["GET"]
     },
 
