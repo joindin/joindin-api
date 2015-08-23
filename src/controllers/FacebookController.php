@@ -8,11 +8,6 @@ use GuzzleHttp\Client;
 
 class FacebookController extends ApiController
 {
-    public function handle(Request $request, $db)
-    {
-        // really need to not require this to be declared
-    }
-
     /**
      * Take the verification code from the client, send to Facebook to get an access token.
      * With the access token, read the user's profile to get their email address.
