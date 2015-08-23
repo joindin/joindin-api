@@ -99,9 +99,6 @@ class Request
         }
 
         $this->setBase($this->getScheme() . $this->getHost());
-        if (isset($server['HTTP_PORT']) && $server['HTTP_PORT'] && $server['HTTP_PORT'] != 80) {
-            $this->setBase($this->getBase() . ':' . $server['HTTP_PORT']);
-        }
 
         if ($parseParams) {
             $this->parseParameters($server);

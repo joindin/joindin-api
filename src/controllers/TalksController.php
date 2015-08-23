@@ -150,7 +150,7 @@ class TalksController extends ApiController {
                     throw new Exception("Operation not supported, sorry", 404);
             }
         } else {
-            $this->createTalkAction($request, $db);
+            throw new Exception("method not supported - sorry");
         }
     }
 
@@ -158,8 +158,7 @@ class TalksController extends ApiController {
      * Create a new Talk.
      *
      * This method creates a new talk after being called via the URL
-     * "/events/<ID>/talks" or "/talks" with the event-id being part of the
-     * POST-values
+     * "/events/<ID>/talks"
      *
      * @param Request $request
      * @param DB $db
@@ -171,9 +170,7 @@ class TalksController extends ApiController {
     {
         // Set the event-ID either via URL or via POST-Data depending on how the
         // method was called.
-        // When it's called via a POST to /talks/ the event-id is part of the
-        // POST-data, when it's called via POST to /events/<id>/talks/ the
-        // event-id is part of the URL but will be overwritten by POST-data
+        // The event-id is part of the URL but can be overwritten by POST-data
         $event_id = null;
         if ($request->url_elements[2] == 'events' && isset($request->url_elements[3])) {
             $event_id = $request->url_elements[3];
