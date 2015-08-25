@@ -24,6 +24,12 @@
         "verbs": ["POST"]
     },
     {
+        "path": "/events(/[\\d]+)/talks",
+        "controller": "TalksController",
+        "action": "createTalkAction",
+        "verbs": ["POST"]
+    },
+    {
         "path": "/events(/[^/]+)*/?$",
         "controller": "EventsController",
         "action": "postAction",
