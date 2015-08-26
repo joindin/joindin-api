@@ -141,7 +141,7 @@ class TalksController extends ApiController
                     throw new Exception("Operation not supported, sorry", 404);
             }
         } else {
-            throw new Exception("method not yet supported - sorry");
+            throw new Exception("method not supported - sorry");
         }
     }
 
