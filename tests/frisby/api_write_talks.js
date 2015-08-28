@@ -38,7 +38,7 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
   )
       .expectStatus(400)
       .afterJSON(function (result) {
-        expect(result[0]).toContain("The talk title field is required");
+        expect(result[0]).toContain("The \'talk_title\' field is required");
       })
       .toss();
 
@@ -50,7 +50,7 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
     )
         .expectStatus(400)
         .afterJSON(function (result) {
-            expect(result[0]).toContain("The talk description field is required");
+            expect(result[0]).toContain("The \'talk_description\' field is required");
         })
         .toss();
 
@@ -65,7 +65,23 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
     )
         .expectStatus(400)
         .afterJSON(function (result) {
-            expect(result[0]).toContain("Please give the date and time of the talk");
+            expect(result[0]).toContain("The \'start_date\' field is required");
+        })
+        .toss();
+
+    frisby.create('Create talk fails with missing type')
+        .post(
+        baseURL + "/v2.1/events/" + eventId + "/talks",
+        {
+            'talk_title' : 'talk_title',
+            'talk_description' : 'talk-description',
+            'start_date' : (new Date()).toISOString()
+        },
+        {json : true, headers : {'Authorization' : 'oauth ' + access_token}}
+    )
+        .expectStatus(400)
+        .afterJSON(function (result) {
+            expect(result[0]).toContain("The \'type\' field is required");
         })
         .toss();
 
@@ -75,7 +91,8 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
             {
                 'talk_title' : 'talk_title',
                 'talk_description' : 'talk-description',
-                'start_date' : (new Date()).toISOString()
+                'start_date' : (new Date()).toISOString(),
+                'type' : 'Talk'
             },
             {json : true, headers : {'Authorization' : 'oauth ' + access_token}}
         )
