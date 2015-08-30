@@ -694,6 +694,8 @@ class EventMapper extends ApiMapper
             $inflected_name . $date->format('-Y'),
             $inflected_name . $date->format('-Y-m'),
             $inflected_name . $date->format('-Y-m-d'),
+			// weird/random friendly name is better than no friendly name
+			$inflected_name . $date->format('-Y-m-d') . '-' . mt_rand(1,99),
         );
 
         foreach ($name_choices as $inflected_name) {
