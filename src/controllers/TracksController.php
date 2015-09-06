@@ -2,7 +2,8 @@
 
 class TracksController extends ApiController
 {
-    public function getAction($request, $db) {
+    public function getAction($request, $db)
+    {
         $track_id = $this->getItemId($request);
 
         // verbosity
@@ -10,7 +11,7 @@ class TracksController extends ApiController
 
         if ($track_id) {
             $mapper = new TrackMapper($db, $request);
-            $list = $mapper->getTrackById($track_id, $verbose);
+            $list   = $mapper->getTrackById($track_id, $verbose);
             if (false === $list) {
                 throw new Exception('Track not found', 404);
             }
