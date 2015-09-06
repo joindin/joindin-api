@@ -16,6 +16,11 @@ class FacebookController extends ApiController
      */
     public function logUserIn($request, $db)
     {
+        if (empty($this->config['facebook']['app_id'])
+            || empty($this->config['facebook']['app_secret'])) {
+            throw new Exception("Cannot login via Facebook", 501);
+        }
+
         $clientId = $request->getParameter('client_id');
         $clientSecret = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
