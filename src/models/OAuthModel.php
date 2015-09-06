@@ -377,7 +377,7 @@ class OAuthModel
      *
      * @param  string $clientId         aka consumer_key (of the joindin client)
      * @param  string $email            User's email address (that we just got back from authenticating them)
-     * @return string                   access token
+     * @return array|false              Array of access token and user uri on success or false or failure
      */
     public function createAccessTokenFromTrustedEmail($clientId, $email)
     {
