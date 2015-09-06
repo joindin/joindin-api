@@ -73,6 +73,7 @@ class FacebookController extends ApiController
             throw new Exception("Could not sign in with Facebook", 403);
         }
 
-        throw new Exception("Facebook: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);
+        trigger_error('Unexpected Facebook error (' . $res->getStatusCode() . ': ' . $res->getBody() . ')', E_USER_WARNING);
+        throw new Exception("Unexpected Facebook error", 500);
     }
 }
