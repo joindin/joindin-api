@@ -17,9 +17,9 @@ spl_autoload_register('apiv2Autoload');
 
 /**
  * Autoloader
- * 
+ *
  * @param string $classname name of class to load
- * 
+ *
  * @return boolean
  */
 function apiv2Autoload($classname)
@@ -29,7 +29,7 @@ function apiv2Autoload($classname)
         exit;
     }
 
-	$filename = false;
+    $filename = false;
 
     if (preg_match('/[a-zA-Z]+Controller$/', $classname)) {
         $filename = __DIR__ . '/../controllers/' . $classname . '.php';
@@ -47,8 +47,9 @@ function apiv2Autoload($classname)
         $filename = __DIR__ . '/../routers/' . $classname . '.php';
     }
 
-	if (file_exists($filename)) {
-		include $filename;
-		return true;
-	}
+    if (file_exists($filename)) {
+        include $filename;
+
+        return true;
+    }
 }
