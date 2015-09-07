@@ -8,10 +8,10 @@ class ContactEmailService extends EmailBaseService
     public function __construct($config)
     {
         $recipients = $config['email']['contact'];
-        if (!is_array($recipients)) {
-            $recipients = (array)$recipients;
+        if (! is_array($recipients)) {
+            $recipients = (array) $recipients;
         }
-        
+
         // set up the common stuff
         parent::__construct($config, $recipients);
 
@@ -26,7 +26,7 @@ class ContactEmailService extends EmailBaseService
         array_unshift($replyTo, $data['email']);
         $this->setReplyTo($replyTo);
 
-        $replacements = $data;
+        $replacements                = $data;
         $replacements["website_url"] = $this->website_url;
 
         $messageBody = $this->parseEmail("contact.md", $replacements);
@@ -38,5 +38,3 @@ class ContactEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 }
-
-
