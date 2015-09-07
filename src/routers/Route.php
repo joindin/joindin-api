@@ -29,9 +29,9 @@ class Route
     /**
      * Constructs a new Route
      *
-     * @param string $controller    The name of the controller this Route is for
-     * @param string $action        The name of the action this Route is for
-     * @param array  $params        Parameters as determined from the URL
+     * @param string $controller The name of the controller this Route is for
+     * @param string $action The name of the action this Route is for
+     * @param array $params Parameters as determined from the URL
      */
     public function __construct($controller, $action, $params = array())
     {
@@ -103,16 +103,16 @@ class Route
     /**
      * Dispatches the Request to the specified Route
      *
-     * @param Request $request  The Request to process
-     * @param mixed $db         The Database object
-     * @param mixed $config     The application configuration
+     * @param Request $request The Request to process
+     * @param mixed $db The Database object
+     * @param mixed $config The application configuration
      *
      * @return mixed
      */
     public function dispatch(Request $request, $db, $config)
     {
         $className = $this->getController();
-        $method = $this->getAction();
+        $method    = $this->getAction();
         if (class_exists($className)) {
             $controller = new $className($config);
             if (method_exists($controller, $method)) {
