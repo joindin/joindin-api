@@ -1,6 +1,7 @@
 <?php
 
-class TalkCommentEmailService extends EmailBaseService {
+class TalkCommentEmailService extends EmailBaseService
+{
 
     protected $talk;
     protected $comment;
@@ -11,7 +12,7 @@ class TalkCommentEmailService extends EmailBaseService {
         parent::__construct($config, $recipients);
 
         // this email needs talk and comment info
-        $this->talk = $talk['talks'][0];
+        $this->talk    = $talk['talks'][0];
         $this->comment = $comment['comments'][0];
     }
 
@@ -32,6 +33,4 @@ class TalkCommentEmailService extends EmailBaseService {
 
         $this->dispatchEmail();
     }
-
-
 }
