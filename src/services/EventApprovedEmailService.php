@@ -18,7 +18,7 @@ class EventApprovedEmailService extends EmailBaseService
     {
         $this->setSubject('Event approved');
 
-        $date = new DateTime($this->event['start_date']);
+        $date         = new DateTime($this->event['start_date']);
         $replacements = array(
             "title"        => $this->event['name'],
             "description"  => $this->event['description'],
