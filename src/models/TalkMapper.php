@@ -443,22 +443,21 @@ class TalkMapper extends ApiMapper {
      */
     protected function generateInflectedTitle($title, $talk_id)
     {
+        // Try to store without a suffix
         $inflected_title = $this->inflect($title);
         $result = $this->storeInflectedTitle($inflected_title, $talk_id);
         if ($result) {
             return $inflected_title;
         }
-        
-        // Add a number to the
-        $inflected_title .= '-1';
-        for ($i=2; $i <=5; $i++) {
-            $inflected_title = preg_replace('/-(\d)$/', "-$i", $inflected_title);
-            $result = $this->storeInflectedTitle($inflected_title, $talk_id);
-            if ($result) {
-                return $inflected_title;
-            }
+
+        // If that doesn't work, try to store with the talk ID tacked on
+        $inflected_title .= '-' . $talk_id;
+        $result = $this->storeInflectedTitle($inflected_title, $talk_id);
+        if ($result) {
+            return $inflected_title;
         }
 
+        // If neither of those worked, fail. We shouldn't get to here.
         return false;
     }
 
