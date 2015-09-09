@@ -75,7 +75,7 @@ class TalkSpeakerMapper extends ApiMapper
             array('talk_id' => $talk_id)
         );
 
-        if ($results) {
+        if ($results && $results['total'] > 0) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
@@ -113,10 +113,7 @@ class TalkSpeakerMapper extends ApiMapper
             $sql .= ' order by ' . $order;
         }
 
-        error_log($sql);
-
         $countStmt = $this->_db->prepare($sql);
-
 
         // limit clause
         $sql .= $this->buildLimit($resultsperpage, $start);
