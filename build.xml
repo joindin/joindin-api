@@ -58,8 +58,8 @@
 <target name="phpcs-human" description="Check codes style with PHP_CodeSniffer">
     <phpcodesniffer standard="tools/codesniffer/JoindInPSR2/">
         <fileset dir="${apiv2source}">
-            <patternset>
-                <include name="**/${filename}" />
+          <patternset>
+              <include name="**/*.php"/>
             </patternset>
         </fileset>
     </phpcodesniffer>
