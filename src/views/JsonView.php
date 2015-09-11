@@ -35,7 +35,6 @@ class JsonView extends ApiView
         }
         $output = array();
         foreach ($data as $key => $value) {
-
             // recurse as needed
             if (is_array($value)) {
                 $output[$key] = $this->numericCheck($value);
