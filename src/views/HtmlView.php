@@ -30,6 +30,7 @@ class HtmlView extends ApiView
             $this->printUrlOrString($content);
         }
         $this->layoutStop();
+
         return true;
     }
 
