@@ -2,6 +2,14 @@
 
 This is the API behind the joind.in website (the new version of it), the mobile applications, and many other consumers.  This project is a dependency for the majority of the other projects under the joind.in organization https://github.com/joindin
 
+### Welcome
+
+Joind.in welcomes all contributors regardless of your ability or experience. We especially welcome
+you if you are new to Open Source development and will provide a helping hand. To ensure that
+everyone understands what we expect from our community, our projects have a [Contributor Code of
+Conduct](CODE_OF_CONDUCT.md) and by participating in the development of joind.in you agree to abide
+by its terms.
+
 ## Quick start with Vagrant
 
 To get you going without much hassle we created a vagrant-setup. To use it [fork the joindin-vm](https://github.com/joindin/joindin-vm) repository and follow the instructions in there.
