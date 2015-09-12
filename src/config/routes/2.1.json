@@ -41,7 +41,12 @@
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
-
+    {
+        "path": "/talks(/[^/]+)*/speakers/?$",
+        "controller": "Talk_speakersController",
+        "action": "listSpeakersAction",
+        "verbs": ["GET"]
+    },
     {
         "path": "/talks(/[^/]+)*/?$",
         "controller": "TalksController",
@@ -60,7 +65,12 @@
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
-
+    {
+        "path": "/speakers(/[^/]+)*/?$",
+        "controller": "Talk_speakersController",
+        "action": "getSpeakerAction",
+        "verbs" : ["GET"]
+    },
     {
         "path": "/token(/[^/]+)*/?$",
         "controller": "TokenController",
