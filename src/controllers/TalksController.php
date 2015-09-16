@@ -205,36 +205,36 @@ class TalksController extends ApiController
      */
     public function createTalkAction(Request $request, PDO $db)
     {
-        if(!isset($request->user_id)) {
+        if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 400);
         }
 
             $talk['event_id'] = $this->getItemId($request);
-            if(empty($talk['event_id'])) {
-                throw new Exception(
-                    "POST expects a talk representation sent to a specific event URL",
-                    400
-                );
-            }
+        if (empty($talk['event_id'])) {
+            throw new Exception(
+                "POST expects a talk representation sent to a specific event URL",
+                400
+            );
+        }
 
             $event_mapper = new EventMapper($db, $request);
             $is_admin = $event_mapper->thisUserHasAdminOn($talk['event_id']);
-            if(!$is_admin) {
-                throw new Exception("You do not have permission to add talks to this event", 400);
-            }
+        if (!$is_admin) {
+            throw new Exception("You do not have permission to add talks to this event", 400);
+        }
 
             // get the event so we can get the timezone info
             $list = $event_mapper->getEventById($talk['event_id'], true);
-            if(count($list['events']) == 0) {
-                throw new Exception('Event not found', 404);
-            }
+        if (count($list['events']) == 0) {
+            throw new Exception('Event not found', 404);
+        }
             $event = $list['events'][0];
 
             $talk['title'] = filter_var(
                 $request->getParameter('talk_title'),
                 FILTER_SANITIZE_STRING
             );
-            if(empty($talk['title'])) {
+            if (empty($talk['title'])) {
                 throw new Exception("The talk title field is required", 400);
             }
 
@@ -242,25 +242,25 @@ class TalksController extends ApiController
                 $request->getParameter('talk_description'),
                 FILTER_SANITIZE_STRING
             );
-            if(empty($talk['description'])) {
+            if (empty($talk['description'])) {
                 throw new Exception("The talk description field is required", 400);
             }
 
             $talk_types = array("Talk", "Social event", "Keynote", "Workshop", "Event related");
-            if($request->getParameter("talk_type") && in_array($request->getParameter("talk_type"), $talk_types)) {
+            if ($request->getParameter("talk_type") && in_array($request->getParameter("talk_type"), $talk_types)) {
                 $talk['talk_type'] = $request->getParameter("talk_type");
             } else {
                 $talk['talk_type'] = "Talk";
             }
 
             $talk['language'] = filter_var($request->getParameter('language'), FILTER_SANITIZE_STRING);
-            if(empty($talk['language'])) {
+            if (empty($talk['language'])) {
                 // default to UK English
                 $talk['language'] = 'English - UK';
             }
 
             $start_date = $request->getParameter('start_date');
-            if(empty($start_date)) {
+            if (empty($start_date)) {
                 throw new Exception("Please give the date and time of the talk", 400);
             }
             $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
@@ -268,8 +268,8 @@ class TalksController extends ApiController
             $talk['date'] = $start_date->format('U');
 
             $speakers = $request->getParameter('speakers');
-            if(is_array($speakers)) {
-                foreach($speakers as $speaker) {
+            if (is_array($speakers)) {
+                foreach ($speakers as $speaker) {
                     $talk['speakers'][] = filter_var($speaker, FILTER_SANITIZE_STRING);
                 }
             }
@@ -280,7 +280,7 @@ class TalksController extends ApiController
             // Update the cache count for the number of talks at this event
             $event_mapper->cacheTalkCount($talk['event_id']);
 
-            header("Location: " . $request->base . $request->path_info .'/' . $new_id, NULL, 201);
+            header("Location: " . $request->base . $request->path_info .'/' . $new_id, null, 201);
             $new_talk = $talk_mapper->getTalkById($new_id);
             return $new_talk;
     }
