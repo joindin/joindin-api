@@ -19,6 +19,3 @@ apitest.testRegisterVerifiedUser();
 
 eventstest.init(baseURL);
 eventstest.setupAndRunEventTests();
-
-talkstest.init(baseURL);
-talkstest.setupAndRunTalksTests();
