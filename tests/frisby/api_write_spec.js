@@ -2,6 +2,7 @@
 // ./node_modules/.bin/jasmine-node . 
 var apitest  = require('./api_write');
 var eventstest = require('./api_write_events');
+var talkstest  = require('./api_write_talks');
 var datatest = require('./data');
 
 var baseURL;
@@ -18,3 +19,6 @@ apitest.testRegisterVerifiedUser();
 
 eventstest.init(baseURL);
 eventstest.setupAndRunEventTests();
+
+talkstest.init(baseURL);
+talkstest.setupAndRunTalksTests();
