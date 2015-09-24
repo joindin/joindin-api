@@ -6,6 +6,7 @@ class TalkCommentMapper extends ApiMapper {
             'rating' => 'rating',
             'comment' => 'comment',
             'user_display_name' => 'full_name',
+            'username' => 'username',
             'talk_title' => 'talk_title',
             'created_date' => 'date_made'
             );
@@ -17,6 +18,7 @@ class TalkCommentMapper extends ApiMapper {
             'rating' => 'rating',
             'comment' => 'comment',
             'user_display_name' => 'full_name',
+            'username' => 'username',
             'talk_title' => 'talk_title',
             'source' => 'source',
             'created_date' => 'date_made',
@@ -113,7 +115,7 @@ class TalkCommentMapper extends ApiMapper {
         $base = $this->_request->base;
         $version = $this->_request->version;
 
-        // add per-item links 
+        // add per-item links
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
                 if(true === $verbose) {
@@ -121,12 +123,12 @@ class TalkCommentMapper extends ApiMapper {
                 }
                 $list[$key]['uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
-                $list[$key]['talk_uri'] = $base . '/' . $version . '/talks/' 
+                $list[$key]['talk_uri'] = $base . '/' . $version . '/talks/'
                     . $row['talk_id'];
-                $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/talks/' 
+                $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/talks/'
                     . $row['talk_id'] . '/comments';
                 if($row['user_id']) {
-                    $list[$key]['user_uri'] = $base . '/' . $version . '/users/' 
+                    $list[$key]['user_uri'] = $base . '/' . $version . '/users/'
                         . $row['user_id'];
                 }
             }
@@ -139,7 +141,7 @@ class TalkCommentMapper extends ApiMapper {
     }
 
     protected function getBasicSQL() {
-        $sql = 'select tc.*, user.email, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
+        $sql = 'select tc.*, user.username, user.email, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
             . 'from talk_comments tc '
             . 'inner join talks t on t.ID = tc.talk_id '
             . 'inner join events e on t.event_id = e.ID '
