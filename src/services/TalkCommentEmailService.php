@@ -19,11 +19,25 @@ class TalkCommentEmailService extends EmailBaseService
     public function sendEmail()
     {
         $this->setSubject("New feedback on " . $this->talk['talk_title']);
+
+        $byLine = '';
+
+        // NOTE: All comments sent on web2 now seem to require login, is this
+        // condition required?
+        if(isset($this->comment['user_display_name'])) {
+            $byLine = ' by ' . $this->comment['user_display_name'];
+
+            if(isset($this->comment['username'])) {
+                $byLine .= ' (' . $this->comment['username'] . ')';
+            }
+        }
+
         $replacements = array(
             "title"   => $this->talk['talk_title'],
             "rating"  => $this->comment['rating'],
             "comment" => $this->comment['comment'],
             "url"     => $this->talk['website_uri'],
+            "byline"  => $byLine
         );
 
         $messageBody = $this->parseEmail("commentTalk.md", $replacements);
