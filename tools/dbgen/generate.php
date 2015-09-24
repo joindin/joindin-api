@@ -15,12 +15,12 @@
 //    define("COUNT_TALK_COMMENTS",    50);
 
 //    // Medium: enough for development purposes without stressing out your DB
-    define("COUNT_USERS",            25);
-    define("COUNT_EVENTS",           50);
+    define("COUNT_USERS",            50);
+    define("COUNT_EVENTS",          100);
     define("COUNT_EVENT_COMMENTS",  200);
-    define("COUNT_TRACKS",           75);
-    define("COUNT_TALKS",           200);
-    define("COUNT_TALK_COMMENTS",   500);
+    define("COUNT_TRACKS",          150);
+    define("COUNT_TALKS",           500);
+    define("COUNT_TALK_COMMENTS",  1000);
 
 //    // Heavy: simulates current production values I think
 //    define("COUNT_USERS",            200);
