@@ -19,7 +19,7 @@ class UserRegistrationEmailService extends EmailBaseService
         $this->setSubject('Welcome to joind.in');
 
         $replacements = array(
-            "token"   => $this->token,
+            "token"       => $this->token,
             "website_url" => $this->website_url,
         );
 
@@ -32,4 +32,3 @@ class UserRegistrationEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 }
-
