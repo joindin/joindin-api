@@ -1,31 +1,29 @@
 <?php
 
-$config =  array(
-    'mode' => 'development',
-
+$config = array(
+    'mode'        => 'development',
     // the URL of web2 website is used in links within emails
     'website_url' => 'https://m.joind.in',
-
-    'oauth' => array(
+    'oauth'       => array(
         'expirable_client_ids' => array(
             // some clients, (e.g. web2) do not hold onto their token after the
             // user logs out of the client, so we can expire their old tokens.
             'web2',
         ),
     ),
-    'email' => array(
-        'contact' => 'feedback@joind.in',
-        'from' => 'info@joind.in',
+    'email'       => array(
+        'contact'        => 'feedback@joind.in',
+        'from'           => 'info@joind.in',
         'forward_all_to' => false
     ),
-    'twitter' => array(
+    'twitter'     => array(
         // set up the key at https://apps.twitter.com/
         // configure the callback url as /user/twitter-access on web2
-        'consumer_key' => '',
+        'consumer_key'    => '',
         'consumer_secret' => ''
     ),
-    'features' => array(
-        'allow_auto_verify_users' => false,
+    'features'    => array(
+        'allow_auto_verify_users'   => false,
         'allow_auto_approve_events' => false,
     ),
 );
