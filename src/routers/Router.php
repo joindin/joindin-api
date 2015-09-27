@@ -32,9 +32,9 @@ abstract class Router
 
     /**
      * Gets the Route appropriate to the passed Request
-     * 
-     * @param Request $request  The Request to route
-     * 
+     *
+     * @param Request $request The Request to route
+     *
      * @return Route
      */
     abstract public function getRoute(Request $request);
