@@ -195,19 +195,14 @@ class UserMapper extends ApiMapper
                         $list[$key]['admin'] = $row['admin'];
                     }
                 }
-                $list[$key]['uri']                 = $base . '/' . $version . '/users/'
-                                                       . $row['ID'];
-                $list[$key]['verbose_uri']         = $base . '/' . $version . '/users/'
-                                                       . $row['ID'] . '?verbose=yes';
+                $list[$key]['uri']                 = $base . '/' . $version . '/users/' . $row['ID'];
+                $list[$key]['verbose_uri']         = $base . '/' . $version . '/users/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['website_uri']         = 'http://joind.in/user/view/' . $row['ID'];
-                $list[$key]['talks_uri']           = $base . '/' . $version . '/users/'
-                                                       . $row['ID'] . '/talks/';
-                $list[$key]['attended_events_uri'] = $base . '/' . $version . '/users/'
-                                                       . $row['ID'] . '/attended/';
-                $list[$key]['hosted_events_uri']   = $base . '/' . $version . '/users/'
-                                                       . $row['ID'] . '/hosted/';
-                $list[$key]['talk_comments_uri']   = $base . '/' . $version . '/users/'
-                                                       . $row['ID'] . '/talk_comments/';
+                $list[$key]['talks_uri']           = $base . '/' . $version . '/users/' . $row['ID'] . '/talks/';
+                $list[$key]['attended_events_uri'] = $base . '/' . $version . '/users/' . $row['ID'] . '/attended/';
+                $list[$key]['hosted_events_uri']   = $base . '/' . $version . '/users/' . $row['ID'] . '/hosted/';
+                $list[$key]['talk_comments_uri']   = $base . '/' . $version . '/users/' . $row['ID']
+                    . '/talk_comments/';
 
                 if ($verbose && isset($this->_request->user_id)) {
                     $list[$key]['can_edit'] = $canEdit;
@@ -235,7 +230,7 @@ class UserMapper extends ApiMapper
     public function createUser($user)
     {
         // Sanity check: ensure all mandatory fields are present.
-        $mandatory_fields          = array(
+        $mandatory_fields = array(
             'username',
             'full_name',
             'email',
@@ -482,7 +477,7 @@ class UserMapper extends ApiMapper
     public function editUser($user, $userId)
     {
         // Sanity check: ensure all mandatory fields are present.
-        $mandatory_fields          = array(
+        $mandatory_fields = array(
             'full_name',
             'email',
         );
