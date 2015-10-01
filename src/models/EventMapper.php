@@ -989,9 +989,10 @@ class EventMapper extends ApiMapper
      * Approve a pending event
      *
      * @param  integer $event_id
+     * @param  integer $user_id
      * @return boolean
      */
-    public function approve($event_id)
+    public function approve($event_id, $user_id)
     {
         $sql = "select ID from events where pending = 1 and active = 0 and ID = :event_id";
         $stmt = $this->_db->prepare($sql);
@@ -1002,9 +1003,9 @@ class EventMapper extends ApiMapper
             return false;
         }
 
-        $sql = "update events set pending = 0, active = 1 where ID = :event_id";
+        $sql = "update events set pending = 0, active = 1, reviewer_id = :user_id where ID = :event_id";
         $stmt = $this->_db->prepare($sql);
-        return $stmt->execute(["event_id" => $event_id]);
+        return $stmt->execute(["event_id" => $event_id, "user_id" => $user_id]);
     }
 
     /**
@@ -1013,9 +1014,10 @@ class EventMapper extends ApiMapper
      * Currently, this is done by deleting it
      *
      * @param  integer $event_id
+     * @param  integer $user_id
      * @return boolean
      */
-    public function reject($event_id)
+    public function reject($event_id, $user_id)
     {
         $sql = "select ID from events where pending = 1 and active = 0 and ID = :event_id";
         $stmt = $this->_db->prepare($sql);
@@ -1025,8 +1027,8 @@ class EventMapper extends ApiMapper
             return false;
         }
 
-        $sql = "update events set pending = 0, active = 0 where ID = :event_id";
+        $sql = "update events set pending = 0, active = 0, reviewer_id = :user_id where ID = :event_id";
         $stmt = $this->_db->prepare($sql);
-        return $stmt->execute(["event_id" => $event_id]);
+        return $stmt->execute(["event_id" => $event_id, "user_id" => $user_id]);
     }
 }
