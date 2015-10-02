@@ -476,7 +476,7 @@ class EventsController extends ApiController
             throw new Exception("You are not allowed to approve this event", 403);
         }
 
-        $result = $event_mapper->approve($event_id);
+        $result = $event_mapper->approve($event_id, $request->user_id);
         if (! $result) {
             throw new Exception("This event cannot be approved", 400);
         }
