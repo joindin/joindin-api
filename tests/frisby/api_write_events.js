@@ -2,6 +2,7 @@
 
 var frisby   = require('frisby');
 var datatest = require('./data');
+var talkstest  = require('./api_write_talks');
 var util     = require('util');
 
 var baseURL = '';
@@ -309,7 +310,7 @@ function testCreateApprovedEvent(access_token)
       if(res.statusCode == 201) {
         // We have an event, we can test it!
         var event_uri = res.headers.location;
-        testEventByUrl(event_uri);
+        testEventByUrl(access_token, event_uri);
         testEditEventFailsIfNotLoggedIn(event_uri);
         testEditEventFailsWithIncorrectData(access_token, event_uri)
         testEditEvent(access_token, res.headers.location);
@@ -318,13 +319,14 @@ function testCreateApprovedEvent(access_token)
     .toss();
 }
 
-function testEventByUrl(url) {
+function testEventByUrl(access_token, url) {
   frisby.create('Get event from URL')
     .get(url)
     .expectStatus(200)
     .expectJSONLength("events", 1)
     .afterJSON(function (data) {
       datatest.checkEventData(data.events[0]);
+      talkstest.runTalkTests(access_token, data.events[0].talks_uri);
     })
   .toss();
 }
