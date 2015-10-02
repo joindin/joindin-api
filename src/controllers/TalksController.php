@@ -117,13 +117,22 @@ class TalksController extends ApiController
                         $comment    = $comment_mapper->getCommentById($new_id);
                         $talk       = $talk_mapper->getTalkById($talk_id);
                         $speakers   = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
+
                         $recipients = array();
                         foreach ($speakers as $person) {
+                            if ($this->commentPosterEqualsRecepient($person, $data)) {
+                                continue;
+                            }
                             $recipients[] = $person['email'];
                         }
-                        $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
-                        $emailService->sendEmail();
+
                         $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
+
+                        if (count($recipients) > 0) {
+                            $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+                            $emailService->sendEmail();
+                        }
+
                         header("Location: " . $uri, true, 201);
                         exit;
                     } else {
@@ -283,5 +292,15 @@ class TalksController extends ApiController
             header("Location: " . $request->base . $request->path_info .'/' . $new_id, null, 201);
             $new_talk = $talk_mapper->getTalkById($new_id);
             return $new_talk;
+    }
+
+    /**
+     * @param array $person
+     * @param array $data
+     * @return bool
+     */
+    private function commentPosterEqualsRecepient($person, $data)
+    {
+        return $person['user_id'] == $data['user_id'];
     }
 }
