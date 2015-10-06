@@ -21,8 +21,6 @@ class TalkCommentEmailService extends EmailBaseService {
 
         $byLine = '';
 
-        // NOTE: All comments sent on web2 now seem to require login, is this
-        // condition required?
         if(isset($this->comment['user_display_name'])) {
             $byLine = ' by ' . $this->comment['user_display_name'];
 
