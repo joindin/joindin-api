@@ -48,7 +48,7 @@ class ApiRouter extends Router
         $k = array_keys($routers);
         rsort($k);
         $this->latestVersion = current($k);
-        $this->routers = $routers;
+        $this->routers       = $routers;
     }
 
     /**
@@ -67,7 +67,7 @@ class ApiRouter extends Router
     public function getRoute(Request $request)
     {
         $version = $request->getUrlElement(1);
-        if(!$version) {
+        if (! $version) {
             // empty version, set request to use the latest
             $request->version = $this->latestVersion;
         } else {
@@ -75,15 +75,16 @@ class ApiRouter extends Router
         }
 
         // now route on the original $version
-        if (isset($this->routers[$version])) {
-            $router = $this->routers[$version];
+        if (isset($this->routers[ $version ])) {
+            $router = $this->routers[ $version ];
+
             return $router->getRoute($request);
         }
 
         if (in_array(str_replace('v', '', $request->version), $this->oldVersions)) {
             throw new Exception("This API version is no longer supported. Please use {$this->latestVersion}");
         }
-        
+
         throw new Exception('API version must be specified', 404);
     }
 }
