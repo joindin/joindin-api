@@ -89,8 +89,8 @@ class Header
                 foreach (preg_split('/' . preg_quote($this->glue) . '(?=([^"]*"[^"]*")*[^"]*$)/', $values[$i]) as $v) {
                     $values[] = trim($v);
                 }
-                
-                
+                unset($values[$i]);
+
             }
         }
 
