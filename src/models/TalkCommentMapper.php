@@ -135,18 +135,14 @@ class TalkCommentMapper extends ApiMapper
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
                 if (true === $verbose) {
-                    $list[ $key ]['gravatar_hash'] = md5(strtolower($row['email']));
+                    $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
                 }
-                $list[ $key ]['uri']               = $base . '/' . $version . '/talk_comments/' . $row['ID'];
-                $list[ $key ]['verbose_uri']       = $base . '/' . $version . '/talk_comments/' .
-                                                     $row['ID'] . '?verbose=yes';
-                $list[ $key ]['talk_uri']          = $base . '/' . $version . '/talks/'
-                                                     . $row['talk_id'];
-                $list[ $key ]['talk_comments_uri'] = $base . '/' . $version . '/talks/'
-                                                     . $row['talk_id'] . '/comments';
+                $list[$key]['uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'];
+                $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
+                $list[$key]['talk_uri'] = $base . '/' . $version . '/talks/'. $row['talk_id'];
+                $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/talks/' . $row['talk_id'] . '/comments';
                 if ($row['user_id']) {
-                    $list[ $key ]['user_uri'] = $base . '/' . $version . '/users/'
-                                                . $row['user_id'];
+                    $list[$key]['user_uri'] = $base . '/' . $version . '/users/' . $row['user_id'];
                 }
             }
         }
