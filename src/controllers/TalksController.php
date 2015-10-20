@@ -120,7 +120,7 @@ class TalksController extends ApiController
 
                         $recipients = array();
                         foreach ($speakers as $person) {
-                            if ($this->commentPosterEqualsRecepient($person, $data)) {
+                            if ($this->commentPosterEqualsRecipient($person, $data)) {
                                 continue;
                             }
                             $recipients[] = $person['email'];
@@ -299,7 +299,7 @@ class TalksController extends ApiController
      * @param array $data
      * @return bool
      */
-    private function commentPosterEqualsRecepient($person, $data)
+    private function commentPosterEqualsRecipient($person, $data)
     {
         return $person['user_id'] == $data['user_id'];
     }
