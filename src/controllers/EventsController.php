@@ -248,12 +248,27 @@ class EventsController extends ApiController
 
             }
 
+            $event_mapper = new EventMapper($db, $request);
+
+            // Make sure they only have a maximum of $max_pending_events
+            // unapproved event submissions at any time
+            $max_pending_events = 3;
+            if (isset($this->config['limits']['max_pending_events'])) {
+                $max_pending_events = $this->config['limits']['max_pending_events'];
+            }
+
+            $current_pending = $event_mapper->getPendingEventsCountByUser($request->user_id);
+
+            if ($current_pending >= $max_pending_events) {
+                $suffix = $max_pending_events == 1 ? '' : 's';
+                $errors[] = sprintf('You may only have %d pending event%s at one time', $max_pending_events, $suffix);
+            }
+
             // How does it look?  With no errors, we can proceed
             if ($errors) {
                 throw new Exception(implode(". ", $errors), 400);
             } else {
                 $user_mapper  = new UserMapper($db, $request);
-                $event_mapper = new EventMapper($db, $request);
 
                 $event_owner           = $user_mapper->getUserById($request->user_id);
                 $event['contact_name'] = $event_owner['users'][0]['full_name'];
