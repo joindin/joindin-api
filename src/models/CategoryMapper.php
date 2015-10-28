@@ -2,6 +2,26 @@
 
 class CategoryMapper extends ApiMapper
 {
+    public function getDefaultFields()
+    {
+        $fields = array(
+            'title' => 'cat_title',
+            'description' => 'cat_desc',
+        );
+
+        return $fields;
+    }
+
+    public function getVerboseFields()
+    {
+        $fields = array(
+            'title' => 'cat_title',
+            'description' => 'cat_desc',
+        );
+
+        return $fields;
+    }
+
     public function getCategoryList($resultsperpage, $start = 0, $verbose = false)
     {
         $results = $this->getCategories($resultsperpage, $start);
@@ -72,25 +92,5 @@ class CategoryMapper extends ApiMapper
             'categories' => $list,
             'meta'      => $this->getPaginationLinks($list, $total)
         );
-    }
-
-    public function getDefaultFields()
-    {
-        $fields = array(
-            'title' => 'cat_title',
-            'description' => 'cat_desc',
-        );
-
-        return $fields;
-    }
-
-    public function getVerboseFields()
-    {
-        $fields = array(
-            'title' => 'cat_title',
-            'description' => 'cat_desc',
-        );
-
-        return $fields;
     }
 }

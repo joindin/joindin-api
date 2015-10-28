@@ -3,7 +3,7 @@ class CategoriesController extends ApiController
 {
     public function getAllCategories($request, $db)
     {
-        // verbosity - here for consistency as we don't have verbose language details to return at the moment
+        // verbosity - here for consistency as we don't have verbose category details to return at the moment
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
