@@ -180,6 +180,20 @@
     },
 
     {
+        "path": "/categories/?$",
+        "controller": "CategoriesController",
+        "action": "getAllCategories",
+        "verbs": ["GET"]
+    },
+
+    {
+        "path": "/categories(/[0-9]+)?/?$",
+        "controller": "CategoriesController",
+        "action": "getCategory",
+        "verbs": ["GET"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"
