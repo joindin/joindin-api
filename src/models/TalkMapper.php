@@ -151,11 +151,13 @@ class TalkMapper extends ApiMapper
     {
         $sql = $this->getBasicSQL();
         $sql .= ' and LOWER(t.talk_title) like :title';
+        $sql .= ' or t.stub = :stub';
         $sql .= ' order by t.date_given desc';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
         $data = array(
-            ':title' => "%" . strtolower($keyword) . "%"
+            ':title' => "%" . strtolower($keyword) . "%",
+            ':stub'  => $keyword
         );
 
         $stmt     = $this->_db->prepare($sql);
