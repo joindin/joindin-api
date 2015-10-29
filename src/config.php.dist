@@ -28,6 +28,9 @@ $config =  array(
         'allow_auto_verify_users' => false,
         'allow_auto_approve_events' => false,
     ),
+    'limits' => array(
+        'max_pending_events' => 3
+    )
 );
 
 // uncomment and add your akismet key here if you want to do spam checking

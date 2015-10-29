@@ -972,6 +972,28 @@ class EventMapper extends ApiMapper
         return $result['count'];
     }
 
+    /*
+     * How many events currently pending for a
+     * given user
+     *
+     * @param int $user_id The user ID to search for
+     * @return int The number of pending events
+     */
+    public function getPendingEventsCountByUser($user_id)
+    {
+        $sql = 'select count(*) as count '
+            . 'from events e '
+            . 'join user_admin ua ON e.ID=ua.rid '
+            . 'where e.pending = 1 AND ua.rtype="event" '
+            . 'AND ua.uid = :user_id ';
+
+        $stmt     = $this->_db->prepare($sql);
+        $response = $stmt->execute(array("user_id" => $user_id));
+        $result   = $stmt->fetch();
+
+        return $result['count'];
+    }
+
     /**
      * Add the tags to the given event
      *
