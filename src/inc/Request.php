@@ -57,17 +57,17 @@ class Request
 
     /**
      * A list of parameters provided from a Route
-     * 
-     * @var array 
+     *
+     * @var array
      */
     protected $routeParams = array();
 
     /**
      * Builds the request object
      *
-     * @param array|false   $config      The application configuration
-     * @param array         $server      The $_SERVER global, injected for testability
-     * @param bool          $parseParams Set to false to skip parsing parameters on
+     * @param array|false $config The application configuration
+     * @param array $server The $_SERVER global, injected for testability
+     * @param bool $parseParams Set to false to skip parsing parameters on
      *                                   construction
      */
     public function __construct($config, array $server, $parseParams = true)
@@ -80,7 +80,7 @@ class Request
 
         if (isset($server['PATH_INFO'])) {
             $this->setPathInfo($server['PATH_INFO']);
-        }else if (isset($server['REQUEST_URI'])) {
+        } elseif (isset($server['REQUEST_URI'])) {
             $this->setPathInfo(parse_url($server['REQUEST_URI'], PHP_URL_PATH));
         }
 
@@ -116,7 +116,7 @@ class Request
     {
         $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
-        
+
         if (array_key_exists('HTTP_FORWARDED', $_SERVER)) {
             $header = new Header('Forwarded', $_SERVER['HTTP_FORWARDED'], ';');
             $header->parseParams();
@@ -134,7 +134,7 @@ class Request
             $header = new Header('X-Forwarded-For', $_SERVER['HTTP_X_FORWARDED_FOR'], ',');
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
-            $ipAddress = count($elementArray) ? $elementArray[0] : null;
+            $ipAddress    = count($elementArray) ? $elementArray[0] : null;
         }
         $this->clientIP        = $ipAddress;
         $this->clientUserAgent = $userAgent;
@@ -142,7 +142,7 @@ class Request
 
     /**
      * Gets the priority-ordered list of output format choices
-     * 
+     *
      * @return array
      */
     public function getFormatChoices()
@@ -185,7 +185,7 @@ class Request
      * is provided and the parameter doesn't exist, the default value
      * will be returned instead
      *
-     * @param string $param   Parameter to retrieve
+     * @param string $param Parameter to retrieve
      * @param string $default Default to return if parameter doesn't exist
      *
      * @return string
@@ -205,13 +205,13 @@ class Request
      * a default is provided, the default value will be returned.
      *
      * @param integer $index Index to retrieve
-     * @param string  $default
+     * @param string $default
      *
      * @return string
      */
     public function getUrlElement($index, $default = '')
     {
-        $index   = (int)$index;
+        $index   = (int) $index;
         $element = $default;
 
         if (isset($this->url_elements[$index])) {
@@ -254,7 +254,7 @@ class Request
      */
     public function preferredContentTypeOutOf(array $formats = null)
     {
-        if (!$formats) {
+        if (! $formats) {
             $formats = $this->getFormatChoices();
         }
 
@@ -275,7 +275,7 @@ class Request
      */
     public function getView()
     {
-        if (!$this->view) {
+        if (! $this->view) {
             $format = $this->getParameter('format', $this->preferredContentTypeOutOf());
 
             switch ($format) {
@@ -314,7 +314,7 @@ class Request
      * Finds the authorized user from the oauth header and sets it into a
      * variable on the request.
      *
-     * @param PDO    $db          Database adapter (needed to put into OAuthModel if it's not set already)
+     * @param PDO $db Database adapter (needed to put into OAuthModel if it's not set already)
      * @param string $auth_header Authorization header to send into model
      *
      * @return bool
@@ -322,9 +322,9 @@ class Request
      */
     public function identifyUser($db, $auth_header)
     {
-        if(($this->getScheme() == "https://") || 
-            (isset($this->config['mode']) && $this->config['mode'] == "development")) {
-
+        if (($this->getScheme() == "https://") ||
+            (isset($this->config['mode']) && $this->config['mode'] == "development")
+        ) {
             // identify the user
             $oauth_pieces = explode(' ', $auth_header);
             if (count($oauth_pieces) <> 2) {
@@ -332,23 +332,24 @@ class Request
             }
 
             // token type must be either 'bearer' or 'oauth'
-            if (!in_array(strtolower($oauth_pieces[0]), ["bearer", 'oauth'])) {
+            if (! in_array(strtolower($oauth_pieces[0]), ["bearer", 'oauth'])) {
                 throw new InvalidArgumentException('Unknown Authorization Header Received', '400');
             }
-            $oauth_model   = $this->getOauthModel($db);
-            $user_id       = $oauth_model->verifyAccessToken($oauth_pieces[1]);
+            $oauth_model = $this->getOauthModel($db);
+            $user_id     = $oauth_model->verifyAccessToken($oauth_pieces[1]);
             $this->setUserId($user_id);
             $this->setAccessToken($oauth_pieces[1]);
 
             return true;
         }
+
         return false;
     }
 
     /**
      * What format/method of request is this?  Figure it out and grab the parameters
      *
-     * @param array $server     The $_SERVER global, injected for testability
+     * @param array $server The $_SERVER global, injected for testability
      *
      * @return boolean true
      *
@@ -364,20 +365,19 @@ class Request
             $this->paginationParameters = $parameters;
         }
 
-        if (!isset($this->paginationParameters['start'])) {
+        if (! isset($this->paginationParameters['start'])) {
             $this->paginationParameters['start'] = 0;
         }
-        if (!isset($this->paginationParameters['resultsperpage'])) {
+        if (! isset($this->paginationParameters['resultsperpage'])) {
             $this->paginationParameters['resultsperpage'] = 20;
         }
 
         // now how about PUT/POST bodies? These override what we already had
         if ($this->getVerb() == 'POST' || $this->getVerb() == 'PUT') {
             $body = $this->getRawBody();
-            if (
-                (isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] == "application/json")
+            if ((isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] == "application/json")
                 || (isset($server['HTTP_CONTENT_TYPE']) && $server['HTTP_CONTENT_TYPE'] == "application/json")
-			) {
+            ) {
                 $body_params = json_decode($body);
                 if ($body_params) {
                     foreach ($body_params as $param_name => $param_value) {
@@ -631,7 +631,7 @@ class Request
     {
         return $this->clientIP;
     }
-   
+
     /**
      * Retrieves the client's user agent
      *
