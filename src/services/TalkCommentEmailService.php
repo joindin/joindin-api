@@ -22,12 +22,12 @@ class TalkCommentEmailService extends EmailBaseService
 
         $byLine = '';
 
-        if(isset($this->comment['user_display_name'])) {
+        if (isset($this->comment['user_display_name'])) {
             $byLine = ' by ' . $this->comment['user_display_name'];
+        }
 
-            if(isset($this->comment['username'])) {
-                $byLine .= ' (' . $this->comment['username'] . ')';
-            }
+        if (empty($byLine) && isset($this->comment['username'])) {
+            $byLine = ' by' . $this->comment['username'];
         }
 
         $replacements = array(
