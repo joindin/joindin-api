@@ -1,144 +1,158 @@
 <?php
 
-class EventCommentMapper extends ApiMapper {
-    public function getDefaultFields() {
+class EventCommentMapper extends ApiMapper
+{
+    public function getDefaultFields()
+    {
         // warning, users added in build array
         $fields = array(
-            'rating' => 'rating',            
-            'comment' => 'comment',
+            'rating'       => 'rating',
+            'comment'      => 'comment',
             'created_date' => 'date_made'
-            );
+        );
+
         return $fields;
     }
 
-    public function getVerboseFields() {
+    public function getVerboseFields()
+    {
         $fields = array(
-            'rating' => 'rating',            
-            'comment' => 'comment',
-            'source' => 'source',
+            'rating'       => 'rating',
+            'comment'      => 'comment',
+            'source'       => 'source',
             'created_date' => 'date_made',
-            );
+        );
+
         return $fields;
     }
 
-    public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false) {
+    public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
+    {
         $sql = $this->getBasicSQL();
         $sql .= 'and event_id = :event_id order by date_made ';
         $sql .= $this->buildLimit($resultsperpage, $start);
-        $stmt = $this->_db->prepare($sql);
+        $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':event_id' => $event_id
-            ));
-        if($response) {
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        ));
+        if ($response) {
+            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
-            $retval = $this->transformResults($results, $verbose);
+            $retval           = $this->transformResults($results, $verbose);
+
             return $retval;
         }
+
         return false;
     }
 
-    public function getCommentById($comment_id, $verbose = false) {
+    public function getCommentById($comment_id, $verbose = false)
+    {
         $sql = $this->getBasicSQL();
         $sql .= 'and ec.ID = :comment_id ';
-        $stmt = $this->_db->prepare($sql);
+        $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':comment_id' => $comment_id
-            ));
-        if($response) {
+        ));
+        if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
-                $results['total'] = $this->getTotalCount($sql, array(':comment_id'=>$comment_id));
-                $retval = $this->transformResults($results, $verbose);
+                $results['total'] = $this->getTotalCount($sql, array(':comment_id' => $comment_id));
+                $retval           = $this->transformResults($results, $verbose);
+
                 return $retval;
             }
         }
+
         return false;
     }
 
-    public function transformResults($results, $verbose) {
+    public function transformResults($results, $verbose)
+    {
 
         $total = $results['total'];
         unset($results['total']);
 
-        $list = parent::transformResults($results, $verbose);
-        $base = $this->_request->base;
+        $list    = parent::transformResults($results, $verbose);
+        $base    = $this->_request->base;
         $version = $this->_request->version;
 
         if (is_array($list) && count($list)) {
-
             foreach ($results as $key => $row) {
-                if(true === $verbose) {
+                if (true === $verbose) {
                     $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
                 }
                 // figure out user
-                if($row['user_id']) {
+                if ($row['user_id']) {
                     $list[$key]['user_display_name'] = $row['full_name'];
-                    $list[$key]['user_uri'] = $base . '/' . $version . '/users/' 
-                        . $row['user_id'];
+                    $list[$key]['user_uri']          = $base . '/' . $version . '/users/'
+                                                         . $row['user_id'];
                 } else {
                     $list[$key]['user_display_name'] = $row['cname'];
                 }
 
                 // useful links
-                $list[$key]['comment_uri'] = $base . '/' . $version . '/event_comments/' 
-                    . $row['ID'];
-                $list[$key]['verbose_comment_uri'] = $base . '/' . $version . '/event_comments/' 
-                    . $row['ID'] . '?verbose=yes';
-                $list[$key]['event_uri'] = $base . '/' . $version . '/events/' 
-                    . $row['event_id'];
-                $list[$key]['event_comments_uri'] = $base . '/' . $version . '/events/' 
-                    . $row['event_id'] . '/comments';
+                $list[$key]['comment_uri']         = $base . '/' . $version . '/event_comments/'
+                                                       . $row['ID'];
+                $list[$key]['verbose_comment_uri'] = $base . '/' . $version . '/event_comments/'
+                                                       . $row['ID'] . '?verbose=yes';
+                $list[$key]['event_uri']           = $base . '/' . $version . '/events/'
+                                                       . $row['event_id'];
+                $list[$key]['event_comments_uri']  = $base . '/' . $version . '/events/'
+                                                       . $row['event_id'] . '/comments';
             }
 
         }
-        $retval = array();
+        $retval             = array();
         $retval['comments'] = $list;
-        $retval['meta'] = $this->getPaginationLinks($list, $total);
+        $retval['meta']     = $this->getPaginationLinks($list, $total);
 
         return $retval;
     }
 
-    protected function getBasicSQL() {
+    protected function getBasicSQL()
+    {
         $sql = 'select ec.*, user.email, user.full_name, e.event_tz_cont, e.event_tz_place '
-            . 'from event_comments ec '
-            . 'left join user on user.ID = ec.user_id '
-            . 'inner join events e on ec.event_id = e.ID '
-            . 'where ec.active = 1 ';
+               . 'from event_comments ec '
+               . 'left join user on user.ID = ec.user_id '
+               . 'inner join events e on ec.event_id = e.ID '
+               . 'where ec.active = 1 ';
+
         return $sql;
 
     }
 
-    public function save($data) {
+    public function save($data)
+    {
         // check for a duplicate first
         $dupe_sql = 'select ec.ID from event_comments ec '
-            . 'where event_id = :event_id and user_id = :user_id and comment = :comment';
+                    . 'where event_id = :event_id and user_id = :user_id and comment = :comment';
 
         $dupe_stmt = $this->_db->prepare($dupe_sql);
         $dupe_stmt->execute(array(
             ':event_id' => $data['event_id'],
-            ':comment' => $data['comment'],
-            ':user_id' => $data['user_id'],
+            ':comment'  => $data['comment'],
+            ':user_id'  => $data['user_id'],
         ));
 
         // only proceed if we didn't already find a row like this
-        if($dupe_stmt->fetch()) {
+        if ($dupe_stmt->fetch()) {
             throw new Exception("Duplicate comment");
         }
 
         $sql = 'insert into event_comments (event_id, rating, comment, user_id, cname, '
-            . 'source, date_made, active) '
-            . 'values (:event_id, :rating, :comment, :user_id, :cname, :source, UNIX_TIMESTAMP(), 1)';
+               . 'source, date_made, active) '
+               . 'values (:event_id, :rating, :comment, :user_id, :cname, :source, UNIX_TIMESTAMP(), 1)';
 
-        $stmt = $this->_db->prepare($sql);
+        $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':event_id' => $data['event_id'],
-            ':rating' => $data['rating'],            
-            ':comment' => $data['comment'],
-            ':cname' => $data['cname'],
-            ':user_id' => $data['user_id'],
-            ':source' => $data['source'],
-            ));
+            ':rating'   => $data['rating'],
+            ':comment'  => $data['comment'],
+            ':cname'    => $data['cname'],
+            ':user_id'  => $data['user_id'],
+            ':source'   => $data['source'],
+        ));
 
         $comment_id = $this->_db->lastInsertId();
 
@@ -148,23 +162,25 @@ class EventCommentMapper extends ApiMapper {
     /**
      * Has this user provided a rating for this event which is greater than zero?
      *
-     * @param  integer  $user_id
+     * @param  integer $user_id
+     *
      * @return boolean
      */
     public function hasUserRatedThisEvent($user_id, $event_id)
     {
         $sql = 'select ec.ID from event_comments ec '
-            . 'where event_id = :event_id and user_id = :user_id and rating > 0';
+               . 'where event_id = :event_id and user_id = :user_id and rating > 0';
 
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array(
             ':event_id' => $event_id,
-            ':user_id' => $user_id,
+            ':user_id'  => $user_id,
         ));
 
         if ($stmt->fetch()) {
             return true;
         }
+
         return false;
     }
 }
