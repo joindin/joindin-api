@@ -201,6 +201,7 @@ These are the only required fields:
  * ``end_date`` (PHP uses strtotime to parse this field, it's pretty tolerant)
  * ``tz_continent`` (e.g. "Europe", "America")
  * ``tz_place`` (e.g. "Amsterdam", "Chicago")
+ * ``location`` (e.g. "The Pub")
 
 You may also add any or all of these additional fields:
 
