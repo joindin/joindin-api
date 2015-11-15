@@ -447,7 +447,7 @@ class TalkMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $stmt->execute();
         $return = array();
-        foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $lang) {
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $lang) {
             $return[$lang['ID']] = $lang['cat_title'];
         }
 

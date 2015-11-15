@@ -216,7 +216,7 @@ class TalksController extends ApiController
         $errors = [];
 
         $talk['event_id'] = $this->getItemId($request);
-        if(empty($talk['event_id'])) {
+        if (empty($talk['event_id'])) {
             throw new Exception(
                 "POST expects a talk representation sent to a specific event URL",
                 400
@@ -227,13 +227,13 @@ class TalksController extends ApiController
         $talk_mapper = new TalkMapper($db, $request);
 
         $is_admin = $event_mapper->thisUserHasAdminOn($talk['event_id']);
-        if(!$is_admin) {
+        if (!$is_admin) {
             throw new Exception("You do not have permission to add talks to this event", 400);
         }
 
         // get the event so we can get the timezone info
         $list = $event_mapper->getEventById($talk['event_id'], true);
-        if(count($list['events']) == 0) {
+        if (count($list['events']) == 0) {
             throw new Exception('Event not found', 404);
         }
         $event = $list['events'][0];
@@ -242,7 +242,7 @@ class TalksController extends ApiController
             $request->getParameter('talk_title'),
             FILTER_SANITIZE_STRING
         );
-        if(empty($talk['title'])) {
+        if (empty($talk['title'])) {
             $errors[] = "The 'talk_title' field is required";
         }
 
@@ -250,7 +250,7 @@ class TalksController extends ApiController
             $request->getParameter('talk_description'),
             FILTER_SANITIZE_STRING
         );
-        if(empty($talk['description'])) {
+        if (empty($talk['description'])) {
             $errors[] = "The 'talk_description' field is required";
         }
 
@@ -273,7 +273,7 @@ class TalksController extends ApiController
             $request->getParameter('start_date'),
             FILTER_SANITIZE_STRING
         );
-        if(empty($start_date)) {
+        if (empty($start_date)) {
             $errors[] = "The 'start_date' field is required";
         }
         $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
@@ -283,7 +283,7 @@ class TalksController extends ApiController
             $request->getParameter('language'),
             FILTER_SANITIZE_STRING
         );
-        if(empty($talk['language'])) {
+        if (empty($talk['language'])) {
             // default to UK English
             $talk['language'] = 'English - UK';
         }
@@ -310,11 +310,11 @@ class TalksController extends ApiController
             FILTER_SANITIZE_URL
         );
 
-        $talk['speakers'] = array_map(function($speaker){
+        $talk['speakers'] = array_map(function ($speaker) {
             $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
             $speaker = trim($speaker);
             return $speaker;
-        },(array) $request->getParameter('speakers'));
+        }, (array) $request->getParameter('speakers'));
 
         $new_id = $talk_mapper->createTalk($talk);
 
