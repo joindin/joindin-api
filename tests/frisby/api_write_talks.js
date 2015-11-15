@@ -69,30 +69,13 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
         })
         .toss();
 
-    frisby.create('Create talk fails with missing type')
-        .post(
-        talks_uri,
-        {
-            'talk_title' : 'talk_title',
-            'talk_description' : 'talk-description',
-            'start_date' : (new Date()).toISOString()
-        },
-        {json : true, headers : {'Authorization' : 'oauth ' + access_token}}
-    )
-        .expectStatus(400)
-        .afterJSON(function (result) {
-            expect(result[0]).toContain("The \'type\' field is required");
-        })
-        .toss();
-
     frisby.create('Create talk works with minimum fields')
         .post(
             talks_uri,
             {
                 'talk_title' : 'talk_title',
                 'talk_description' : 'talk-description',
-                'start_date' : (new Date()).toISOString(),
-                'type' : 'Talk'
+                'start_date' : (new Date()).toISOString()
             },
             {json : true, headers : {'Authorization' : 'oauth ' + access_token}}
         )

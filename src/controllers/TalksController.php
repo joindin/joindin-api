@@ -255,14 +255,11 @@ class TalksController extends ApiController
         }
 
         $talk['type'] = filter_var(
-            $request->getParameter('type'),
+            $request->getParameter('type', 'Talk'),
             FILTER_SANITIZE_STRING
         );
-        if (empty($talk['type'])) {
-            $errors[] = "The 'type' field is required";
-        }
 
-        if ($talk['type'] && ! in_array($talk['type'], $talk_mapper->getCategories())) {
+        if (!in_array($talk['type'], $talk_mapper->getCategories())) {
             $errors[] = sprintf(
                 "The given talk type \"%s\" is unknown",
                 $talk['type']
