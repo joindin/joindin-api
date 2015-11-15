@@ -21,9 +21,8 @@
   <exec command="phpunit -c tests/phpunit.xml" logoutput="true" checkreturn="true" />
  </target>
 
- <target name="buildTasks" description="Run the phpmd, phpcs, phpdoc, phploc and lint tasks.">
+ <target name="buildTasks" description="Run the phpmd, phpcs, phploc and lint tasks.">
    <phingcall target="phpcs"/>
-   <phingcall target="phpdoc"/>
    <phingcall target="phplint"/>
  </target>
 
@@ -64,10 +63,6 @@
         </fileset>
     </phpcodesniffer>
 </target>
-
- <target name="phpdoc" description="Generate API documentation using PHPDocumentor">
-     <exec command="phpdoc -d ${apiv2source} -t ${basedir}/build/api/" logoutput="true" />
- </target>
 
  <target name="phplint" description="Run php -l over the fileset">
    <phplint haltonfailure="true">
