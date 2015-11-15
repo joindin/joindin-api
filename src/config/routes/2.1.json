@@ -194,6 +194,13 @@
     },
 
     {
+        "path": "/facebook/token",
+        "controller": "FacebookController",
+        "action": "logUserIn",
+        "verbs": ["POST"]
+    },
+
+    {
         "path": "/?$",
         "controller": "DefaultController",
         "action": "handle"
