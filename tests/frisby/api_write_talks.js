@@ -71,7 +71,7 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
 
     frisby.create('Create talk fails with missing type')
         .post(
-        baseURL + "/v2.1/events/" + eventId + "/talks",
+        talks_uri,
         {
             'talk_title' : 'talk_title',
             'talk_description' : 'talk-description',
