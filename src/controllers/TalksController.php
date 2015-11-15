@@ -311,7 +311,7 @@ class TalksController extends ApiController
         // Update the cache count for the number of talks at this event
         $event_mapper->cacheTalkCount($talk['event_id']);
 
-        $uri = $request->base . $request->path_info .'/' . $new_id;
+        $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
         header("Location: " . $uri, true, 201);
 
         $new_talk = $talk_mapper->getTalkById($new_id);
