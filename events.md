@@ -197,6 +197,7 @@ These are the only required fields:
 
  * ``name``
  * ``description``
+ * ``location`` (feel free to use "online" for virtual events)
  * ``start_date`` (PHP uses strtotime to parse this field, it's pretty tolerant)
  * ``end_date`` (PHP uses strtotime to parse this field, it's pretty tolerant)
  * ``tz_continent`` (e.g. "Europe", "America")
