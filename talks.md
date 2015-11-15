@@ -136,7 +136,7 @@ The following fields are understood:
      - Polish              
      - Finnish             
      - Brazilian Portuguese
-*  ``talk_type``: One of the following:
+*  ``type``: One of the following:
      - Talk *(default)*
      - Social event
      - Workshop
