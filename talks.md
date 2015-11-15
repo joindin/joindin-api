@@ -144,6 +144,8 @@ The following fields are understood:
      - Event related
 *  ``start_date``: The start date and time of the session in ISO format
 *  ``speakers``: An array of names of speakers (still an array if there is only one speaker)
+*  ``duration``: The length of the session in minutes (usually including breaks, so start_date plus duration gives end time)
+*  ``slides_link``: URL to the slides for this talk
 
 Example request/response:
 
