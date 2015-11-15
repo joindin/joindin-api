@@ -38,7 +38,7 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
   )
       .expectStatus(400)
       .afterJSON(function (result) {
-        expect(result[0]).toContain("The \'talk_title\' field is required");
+        expect(result[0]).toContain("The talk title field is required");
       })
       .toss();
 
@@ -50,7 +50,7 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
     )
         .expectStatus(400)
         .afterJSON(function (result) {
-            expect(result[0]).toContain("The \'talk_description\' field is required");
+            expect(result[0]).toContain("The talk description field is required");
         })
         .toss();
 
@@ -65,7 +65,7 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
     )
         .expectStatus(400)
         .afterJSON(function (result) {
-            expect(result[0]).toContain("The \'start_date\' field is required");
+            expect(result[0]).toContain("Please give the date and time of the talk");
         })
         .toss();
 

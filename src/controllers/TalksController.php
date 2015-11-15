@@ -212,9 +212,6 @@ class TalksController extends ApiController
             throw new Exception("You must be logged in to create data", 400);
         }
 
-        $talk = [];
-        $errors = [];
-
         $talk['event_id'] = $this->getItemId($request);
         if (empty($talk['event_id'])) {
             throw new Exception(
@@ -243,7 +240,7 @@ class TalksController extends ApiController
             FILTER_SANITIZE_STRING
         );
         if (empty($talk['title'])) {
-            $errors[] = "The 'talk_title' field is required";
+            throw new Exception("The talk title field is required", 400);
         }
 
         $talk['description'] = filter_var(
@@ -251,7 +248,7 @@ class TalksController extends ApiController
             FILTER_SANITIZE_STRING
         );
         if (empty($talk['description'])) {
-            $errors[] = "The 'talk_description' field is required";
+            throw new Exception("The talk description field is required", 400);
         }
 
         $talk['type'] = filter_var(
@@ -260,10 +257,7 @@ class TalksController extends ApiController
         );
 
         if (!in_array($talk['type'], $talk_mapper->getCategories())) {
-            $errors[] = sprintf(
-                "The given talk type \"%s\" is unknown",
-                $talk['type']
-            );
+            throw new Exception("The type '{$talk['type']}' is unknown", 400);
         }
 
         $start_date = filter_var(
@@ -271,7 +265,7 @@ class TalksController extends ApiController
             FILTER_SANITIZE_STRING
         );
         if (empty($start_date)) {
-            $errors[] = "The 'start_date' field is required";
+            throw new Exception("Please give the date and time of the talk", 400);
         }
         $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
         $talk['date'] = (new DateTime($start_date, $tz))->format('U');
@@ -287,11 +281,7 @@ class TalksController extends ApiController
         // When the language doesn't exist, the talk will not be found
         $language_mapper = new LanguageMapper($db, $request);
         if (! $language_mapper->isLanguageValid($talk['language'])) {
-            $errors[] = sprintf('The language "%s" is unknown', $talk['language']);
-        }
-
-        if ($errors) {
-            throw new Exception(implode('. ', $errors), 400);
+            throw new Exception("The language '{$talk['type']}' is unknown", 400);
         }
 
         $talk['duration'] = filter_var(
