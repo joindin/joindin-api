@@ -80,9 +80,6 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
             {json : true, headers : {'Authorization' : 'oauth ' + access_token}}
         )
         .expectStatus(201)
-        .expectHeaderContains('Location', talks_uri)
-        .after(function(err, res, result) {
-            talkURI = res.headers.location;
-        })
+        .expectHeaderContains('Location', '/talks/')
         .toss();
 }

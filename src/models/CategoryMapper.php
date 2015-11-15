@@ -93,4 +93,23 @@ class CategoryMapper extends ApiMapper
             'meta'      => $this->getPaginationLinks($list, $total)
         );
     }
+
+    /**
+     * Return a list of title against category ID
+     *
+     * @return array
+     */
+    public function getCategoriesLookupList()
+    {
+        $sql = "select ID, cat_title from categories";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute();
+
+        $list = array();
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $lang) {
+            $list[$lang['cat_title']] = $lang['ID'];
+        }
+
+        return $list;
+    }
 }

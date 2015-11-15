@@ -341,15 +341,34 @@ class TalkMapper extends ApiMapper
 
     }
 
-
-    public function save($data)
+    /**
+     * Save the given data for the first time.
+     *
+     * The data-array is expected to have the following keys:
+     *
+     * - event_id
+     * - title
+     * - description
+     * - slides_link
+     * - language (a value from the column lang:lang_name
+     * - date (a timestamp)
+     * - duration
+     * - speakers (an array of names)
+     * - category (a value from the column categories:title)
+     * - type_id (id of the talk's type)
+     *
+     * @param $data
+     *
+     * @return int
+     */
+    public function createTalk($data)
     {
         // TODO map from the field mappings in getVerboseFields()
         $sql = 'insert into talks (event_id, talk_title, talk_desc, '
-               . 'lang, date_given) '
+               . 'slides_link, lang, date_given, duration) '
                . 'values (:event_id, :talk_title, :talk_description, '
-               . '(select ID from lang where lang_name = :language), '
-               . ':date)';
+               . ':slides_link, (select ID from lang where lang_name = :language), '
+               . ':date, :duration)';
 
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
@@ -357,30 +376,56 @@ class TalkMapper extends ApiMapper
             ':talk_title'       => $data['title'],
             ':talk_description' => $data['description'],
             ':language'         => $data['language'],
-            ':date'             => $data['date']
+            ':date'             => $data['date'],
+            ':duration'         => $data['duration'],
+            ':slides_link'      => $data['slides_link'],
         ));
         $talk_id  = $this->_db->lastInsertId();
 
-        // set talk type
-        // TODO support more than just talks
-        $cat_sql  = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, 1)';
-        $cat_stmt = $this->_db->prepare($cat_sql);
-        $cat_stmt->execute(array(':talk_id' => $talk_id));
-
-        // save speakers
-        if (isset($data['speakers']) && is_array($data['speakers'])) {
-            foreach ($data['speakers'] as $speaker) {
-                $speaker_sql  = 'insert into talk_speaker (talk_id, speaker_name) values '
-                                . '(:talk_id, :speaker)';
-                $speaker_stmt = $this->_db->prepare($speaker_sql);
-                $speaker_stmt->execute(array(
-                    ':talk_id' => $talk_id,
-                    ':speaker' => $speaker
-                ));
-            }
+        if (0 == $talk_id) {
+            throw new Exception('There has been an error storing the talk');
         }
 
+        $this->setType($talk_id, $data['type_id']);
+
         return $talk_id;
+    }
+
+    /**
+     * Set the talk type for this talk
+     *
+     * @param int    $talk_id
+     * @param string $type_id
+     *
+     * @return boolean
+     */
+    public function setType($talk_id, $type_id)
+    {
+        $cat_sql  = 'select id from talk_cat where talk_id = :talk_id and cat_id = :type_id';
+        $cat_stmt = $this->_db->prepare($cat_sql);
+        $cat_stmt->execute(array(
+            ':talk_id' => $talk_id,
+            ':type_id'  => $type_id,
+        ));
+
+        if (count($cat_stmt->fetchAll()) > 0) {
+            return true;
+        }
+
+        // remove any other types set for this talk as we only support one type per talk
+        $cat_sql  = 'delete from talk_cat where talk_id = :talk_id';
+        $cat_stmt = $this->_db->prepare($cat_sql);
+        $cat_stmt->execute(array(
+            ':talk_id' => $talk_id,
+        ));
+
+        $cat_sql  = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, :type_id)';
+        $cat_stmt = $this->_db->prepare($cat_sql);
+
+        return $cat_stmt->execute(array(
+            ':talk_id'     => $talk_id,
+            ':type_id' => $type_id,
+        ));
     }
 
     /**

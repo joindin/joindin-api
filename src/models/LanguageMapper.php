@@ -97,4 +97,23 @@ class LanguageMapper extends ApiMapper
 
         return false;
     }
+
+    /**
+     * Check whether the given language is known to joindin
+     *
+     * @param string $language
+     *
+     * @return boolean
+     */
+    public function isLanguageValid($language)
+    {
+        $sql = 'select * from lang where lang_name = :language';
+
+        $stmt = $this->_db->prepare($sql);
+        if (! $stmt->execute(array(':language' => $language))) {
+            return false;
+        }
+
+        return count($stmt->fetchAll()) > 0;
+    }
 }
