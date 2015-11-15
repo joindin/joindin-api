@@ -355,6 +355,7 @@ class TalkMapper extends ApiMapper
      * - duration
      * - speakers (an array of names)
      * - category (a value from the column categories:title)
+     * - type_id (id of the talk's type)
      *
      * @param $data
      *
@@ -385,73 +386,46 @@ class TalkMapper extends ApiMapper
             throw new Exception('There has been an error storing the talk');
         }
 
-        $this->setCategory($talk_id, $data['type']);
+        $this->setType($talk_id, $data['type_id']);
 
         return $talk_id;
     }
 
     /**
-     * Set a given category for a given talk
+     * Set the talk type for this talk
      *
      * @param int    $talk_id
-     * @param string $category
+     * @param string $type_id
      *
-     * @todo Export to a new TalkCategoryMapper
      * @return boolean
      */
-    public function setCategory($talk_id, $category)
+    public function setType($talk_id, $type_id)
     {
-        $categories = $this->getCategories();
-        $cat_id = array_search($category, $categories);
-        if (false === $cat_id) {
-            return false;
-        }
-
-        $cat_sql  = 'select id from talk_cat where talk_id = :talk_id and cat_id = :cat_id';
+        $cat_sql  = 'select id from talk_cat where talk_id = :talk_id and cat_id = :type_id';
         $cat_stmt = $this->_db->prepare($cat_sql);
         $cat_stmt->execute(array(
             ':talk_id' => $talk_id,
-            ':cat_id'  => $cat_id,
+            ':type_id'  => $type_id,
         ));
 
         if (count($cat_stmt->fetchAll()) > 0) {
             return true;
         }
 
+        // remove any other types set for this talk as we only support one type per talk
         $cat_sql  = 'delete from talk_cat where talk_id = :talk_id';
         $cat_stmt = $this->_db->prepare($cat_sql);
-
-        // save category
         $cat_stmt->execute(array(
             ':talk_id' => $talk_id,
         ));
 
-        $cat_sql  = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, :category_id)';
+        $cat_sql  = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, :type_id)';
         $cat_stmt = $this->_db->prepare($cat_sql);
 
         return $cat_stmt->execute(array(
             ':talk_id'     => $talk_id,
-            ':category_id' => $cat_id,
+            ':type_id' => $type_id,
         ));
-    }
-
-    /**
-     * Return a list of categories that can be used
-     *
-     * @todo Export to a new TalkCategoryMapper
-     * @return array
-     */
-    public function getCategories()
-    {
-        $sql = "select * from categories";
-        $stmt = $this->_db->prepare($sql);
-        $stmt->execute();
-        $return = array();
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $lang) {
-            $return[$lang['ID']] = $lang['cat_title'];
-        }
-
-        return $return;
     }
 
     /**
