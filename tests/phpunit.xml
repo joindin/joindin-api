@@ -2,8 +2,8 @@
 
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         beStrictAboutTestsThatDoNotTestAnything="false"
-         checkForUnintentionallyCoveredCode="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         checkForUnintentionallyCoveredCode="false"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTestSize="true"
          bootstrap="./bootstrap.php"
