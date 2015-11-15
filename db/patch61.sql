@@ -9,4 +9,4 @@ CREATE TABLE `talk_link_types` (
   DEFAULT CHARSET = utf8;
 
 INSERT INTO patch_history
-SET patch_number = 60;
+SET patch_number = 61;
