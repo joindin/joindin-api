@@ -304,7 +304,7 @@ function testCreateApprovedEvent(access_token)
       },
       {json: true, headers: {json: true, 'Authorization' : 'Bearer ' + access_token, 'Content-type': 'application/json'}}
     )
-    .expectStatus(202) // Created as it is automatically approved
+    .expectStatus(201) // Created as it is automatically approved
     .expectHeaderContains("Location", baseURL + "/v2.1/events")
     .after(function(err, res, body) {
       if(res.statusCode == 201) {
