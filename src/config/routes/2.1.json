@@ -194,16 +194,16 @@
     },
 
     {
-        "path": "/categories/?$",
-        "controller": "CategoriesController",
-        "action": "getAllCategories",
+        "path": "/talk_types/?$",
+        "controller": "TalkTypesController",
+        "action": "getAllTalkTypes",
         "verbs": ["GET"]
     },
 
     {
-        "path": "/categories(/[0-9]+)?/?$",
-        "controller": "CategoriesController",
-        "action": "getCategory",
+        "path": "/talk_types(/[0-9]+)?/?$",
+        "controller": "TalkTypesController",
+        "action": "getTalkType",
         "verbs": ["GET"]
     },
 

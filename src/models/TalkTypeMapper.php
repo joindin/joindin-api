@@ -1,6 +1,6 @@
 <?php
 
-class CategoryMapper extends ApiMapper
+class TalkTypeMapper extends ApiMapper
 {
     public function getDefaultFields()
     {
@@ -22,25 +22,25 @@ class CategoryMapper extends ApiMapper
         return $fields;
     }
 
-    public function getCategoryList($resultsperpage, $start = 0, $verbose = false)
+    public function getTalkTypeList($resultsperpage, $start = 0, $verbose = false)
     {
-        $results = $this->getCategories($resultsperpage, $start);
+        $results = $this->getTalkTypes($resultsperpage, $start);
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
         return false;
     }
 
-    public function getCategoryById($categoryId, $verbose)
+    public function getTalkTypeById($talkTypeId, $verbose)
     {
-        $results = $this->getCategories(1, 0, array('ID' => (int) $categoryId));
+        $results = $this->getTalkTypes(1, 0, array('ID' => (int) $talkTypeId));
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
         return false;
     }
 
-    protected function getCategories($resultsperpage, $start, $params = array())
+    protected function getTalkTypes($resultsperpage, $start, $params = array())
     {
         $sql = 'select c.ID, c.cat_title, c.cat_desc ' .
                'from categories as c ';
@@ -84,23 +84,23 @@ class CategoryMapper extends ApiMapper
 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                $list[$key]['uri'] = $base . '/' . $version . '/categories/' . $row['ID'];
-                $list[$key]['verbose_uri'] = $base . '/' . $version . '/categories/' . $row['ID'] . '?verbose=yes';
+                $list[$key]['uri'] = $base . '/' . $version . '/talk_types/' . $row['ID'];
+                $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_types/' . $row['ID'] . '?verbose=yes';
             }
         }
 
         return array(
-            'categories' => $list,
+            'talk_types' => $list,
             'meta'      => $this->getPaginationLinks($list, $total)
         );
     }
 
     /**
-     * Return a list of title against category ID
+     * Return a list of title against talk type ID
      *
      * @return array
      */
-    public function getCategoriesLookupList()
+    public function getTalkTypesLookupList()
     {
         $sql = "select ID, cat_title from categories";
         $stmt = $this->_db->prepare($sql);
