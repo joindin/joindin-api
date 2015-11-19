@@ -109,4 +109,29 @@ class Event_commentsController extends ApiController
         header("Location: " . $uri, null, 201);
         exit;
     }
+
+    public function reportComment($request, $db)
+    {
+        // must be logged in to report a comment
+        if (! isset($request->user_id) || empty($request->user_id)) {
+            throw new Exception('You must log in to report a comment');
+        }
+
+        $comment_mapper = new EventCommentMapper($db, $request);
+
+        $commentId = $this->getItemId($request);
+        $commentInfo = $comment_mapper->getCommentInfo($commentId);
+        if (false === $commentInfo) {
+            throw new Exception('Comment not found', 404);
+        }
+        
+        $eventId = $commentInfo['event_id'];
+
+        $comment_mapper->userReportedComment($commentId, $request->user_id);
+
+        // send them to the comments collection
+        $uri = $request->base . '/' . $request->version . '/events/' . $eventId . "/comments";
+        header("Location: " . $uri, true, 202);
+        exit;
+    }
 }

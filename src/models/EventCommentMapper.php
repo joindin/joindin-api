@@ -100,6 +100,8 @@ class EventCommentMapper extends ApiMapper
                                                        . $row['event_id'];
                 $list[$key]['event_comments_uri']  = $base . '/' . $version . '/events/'
                                                        . $row['event_id'] . '/comments';
+                $list[$key]['reported_uri']        = $base . '/' . $version . '/event_comments/'
+                                                       . $row['ID'] . '/reported';
             }
 
         }
@@ -182,5 +184,52 @@ class EventCommentMapper extends ApiMapper
         }
 
         return false;
+    }
+
+    /**
+     * Get the event ID this event comment belongs to
+     *
+     * @param int $comment_id The comment in question
+     * @return array including event_id
+     */
+    public function getCommentInfo($comment_id)
+    {
+        $sql = "select ec.event_id
+            from event_comments ec
+            where ec.ID = :event_comment_id";
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(["event_comment_id" => $comment_id]);
+
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $row;
+        }
+
+        return false;
+    }
+
+    /**
+     * A comment has been reported.  Record the report and hide the comment
+     * pending moderation
+     *
+     * @param int $comment_id the comment that was reported
+     * @param int $user_id the user that reported it
+     */
+    public function userReportedComment($comment_id, $user_id)
+    {
+        $report_sql = "insert into reported_event_comments
+            set event_comment_id = :event_comment_id,
+            reporting_user_id = :user_id,
+            reporting_date = NOW()";
+
+        $report_stmt = $this->_db->prepare($report_sql);
+        $result = $report_stmt->execute([
+            "event_comment_id" => $comment_id,
+            "user_id" => $user_id]);
+
+        $hide_sql = "update event_comments
+            set active = 0 where ID = :event_comment_id";
+        $hide_stmt = $this->_db->prepare($hide_sql);
+        $result = $hide_stmt->execute(["event_comment_id" => $comment_id]);
     }
 }
