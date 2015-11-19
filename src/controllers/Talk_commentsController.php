@@ -28,6 +28,11 @@ class Talk_commentsController extends ApiController
 
     public function reportComment($request, $db)
     {
+        // must be logged in to report a comment
+        if (! isset($request->user_id) || empty($request->user_id)) {
+            throw new Exception('You must log in to report a comment');
+        }
+
         $comment_mapper = new TalkCommentMapper($db, $request);
 
         $commentId = $this->getItemId($request);
