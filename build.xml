@@ -39,8 +39,11 @@
  </target>
 
  <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
-  <phpcodesniffer standard="tools/codesniffer/JoindInPSR2/" verbosity="0">
+  <phpcodesniffer standard="tools/codesniffer/JoindInPSR2/" verbosity="0" haltonerror="true" haltonwarning="true">
    <fileset dir="${apiv2source}">
+       <patternset>
+           <include name="**/*.php"/>
+       </patternset>
    </fileset>
    <formatter type="checkstyle" outfile="${basedir}/build/logs/checkstyle.xml" />
   </phpcodesniffer>
@@ -49,6 +52,9 @@
  <target name="phpcs-human-summary" description="Generate human-readable Codesniffer output">
   <phpcodesniffer standard="tools/codesniffer/JoindInPSR2/">
    <fileset dir="${apiv2source}">
+       <patternset>
+           <include name="**/*.php"/>
+       </patternset>
    </fileset>
    <formatter type="summary" usefile="false" />
   </phpcodesniffer>
