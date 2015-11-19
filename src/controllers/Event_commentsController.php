@@ -116,6 +116,10 @@ class Event_commentsController extends ApiController
 
         $commentId = $this->getItemId($request);
         $commentInfo = $comment_mapper->getCommentInfo($commentId);
+        if (false === $commentInfo) {
+            throw new Exception('Comment not found', 404);
+        }
+        
         $eventId = $commentInfo['event_id'];
 
         $comment_mapper->userReportedComment($commentId, $request->user_id);

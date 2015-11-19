@@ -32,6 +32,10 @@ class Talk_commentsController extends ApiController
 
         $commentId = $this->getItemId($request);
         $commentInfo = $comment_mapper->getCommentInfo($commentId);
+        if (false === $commentInfo) {
+            throw new Exception('Comment not found', 404);
+        }
+        
         $eventId = $commentInfo['event_id']; // needed to check if user is event admin
         $talkId = $commentInfo['talk_id'];
 
