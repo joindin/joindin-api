@@ -26,7 +26,7 @@ class Talk_commentsController extends ApiController
         return false;
     }
 
-    public function reportcomment($request, $db)
+    public function reportComment($request, $db)
     {
         $comment_mapper = new TalkCommentMapper($db, $request);
 

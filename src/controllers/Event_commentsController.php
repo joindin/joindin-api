@@ -110,7 +110,7 @@ class Event_commentsController extends ApiController
         exit;
     }
 
-    public function reportcomment($request, $db)
+    public function reportComment($request, $db)
     {
         $comment_mapper = new EventCommentMapper($db, $request);
 
