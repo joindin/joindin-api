@@ -1,6 +1,8 @@
 <?php
 
+// @codingStandardsIgnoreStart
 class Talk_commentsController extends ApiController
+// @codingStandardsIgnoreEnd
 {
     public function getComments($request, $db)
     {

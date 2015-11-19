@@ -40,7 +40,8 @@ class CategoryMapper extends ApiMapper
         return false;
     }
 
-    protected function getCategories($resultsperpage, $start, $params = array()) {
+    protected function getCategories($resultsperpage, $start, $params = array())
+    {
         $sql = 'select c.ID, c.cat_title, c.cat_desc ' .
                'from categories as c ';
 
@@ -81,7 +82,7 @@ class CategoryMapper extends ApiMapper
         $base = $this->_request->base;
         $version = $this->_request->version;
 
-        if(is_array($list) && count($list)) {
+        if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
                 $list[$key]['uri'] = $base . '/' . $version . '/categories/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/categories/' . $row['ID'] . '?verbose=yes';

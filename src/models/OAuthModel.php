@@ -5,7 +5,9 @@ class OAuthModel
     /**
      * @var PDO
      */
+    // @codingStandardsIgnoreStart
     protected $_db;
+    // @codingStandardsIgnoreEnd
     protected $request;
 
     /**
