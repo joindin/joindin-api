@@ -14,6 +14,7 @@ function handle_exception($e)
     // pull the correct format before we bail
     global $request;
     $status_code = $e->getCode() ?: 400;
+    $status_code = !is_numeric($status_code) ?: 400;
     header("Status: " . $status_code, false, $status_code);
     $request->getView()->render(array($e->getMessage()));
 }
@@ -35,6 +36,7 @@ $ji_db = new PDO(
     $db['default']['username'],
     $db['default']['password']
 );
+$ji_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Set the correct charset for this connection
 $ji_db->query("SET NAMES 'utf8' COLLATE 'utf8_general_ci'");
