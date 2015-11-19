@@ -232,4 +232,52 @@ class TalkCommentMapper extends ApiMapper
 
         return false;
     }
+
+    /**
+     * Get the event and talk ID this talk comment belongs to
+     *
+     * @param int $comment_id The comment in question
+     * @return array Some info
+     */
+    public function getCommentInfo($comment_id)
+    {
+        $sql = "select t.event_id, tc.talk_id
+            from talk_comments tc
+            join talks t on t.ID = tc.talk_id
+            where tc.ID = :talk_comment_id";
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(["talk_comment_id" => $comment_id]);
+
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $row;
+        }
+
+        return false;
+    }
+
+    /**
+     * A comment has been reported.  Record the report and hide the comment
+     * pending moderation
+     *
+     * @param int $comment_id the comment that was reported
+     * @param int $user_id the user that reported it
+     */
+    public function userReportedComment($comment_id, $user_id)
+    {
+        $report_sql = "insert into reported_talk_comments
+            set talk_comment_id = :talk_comment_id,
+            reporting_user_id = :user_id,
+            reporting_date = NOW()";
+
+        $report_stmt = $this->_db->prepare($report_sql);
+        $result = $report_stmt->execute([
+            "talk_comment_id" => $comment_id,
+            "user_id" => $user_id]);
+
+        $hide_sql = "update talk_comments
+            set active = 0 where ID = :talk_comment_id";
+        $hide_stmt = $this->_db->prepare($hide_sql);
+        $result = $hide_stmt->execute(["talk_comment_id" => $comment_id]);
+    }
 }

@@ -124,6 +124,13 @@
     },
 
     {
+        "path": "/talk_comments(/[^/]+)*/reported?$",
+        "controller": "Talk_commentsController",
+        "action": "reportComment",
+        "verbs": ["POST"]
+    },
+
+    {
         "path": "/emails/verifications",
         "controller": "EmailsController",
         "action": "verifications",

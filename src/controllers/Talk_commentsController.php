@@ -25,4 +25,21 @@ class Talk_commentsController extends ApiController
 
         return false;
     }
+
+    public function reportcomment($request, $db)
+    {
+        $comment_mapper = new TalkCommentMapper($db, $request);
+
+        $commentId = $this->getItemId($request);
+        $commentInfo = $comment_mapper->getCommentInfo($commentId);
+        $eventId = $commentInfo['event_id']; // needed to check if user is event admin
+        $talkId = $commentInfo['talk_id'];
+
+        $comment_mapper->userReportedComment($commentId, $request->user_id);
+
+        // send them to the comments collection 
+        $uri = $request->base . '/' . $request->version . '/talks/' . $talkId . "/comments";
+        header("Location: " . $uri, true, 202);
+        exit;
+    }
 }
