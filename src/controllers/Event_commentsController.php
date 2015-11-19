@@ -120,10 +120,9 @@ class Event_commentsController extends ApiController
 
         $comment_mapper->userReportedComment($commentId, $request->user_id);
 
-        // send them to the comments collection 
+        // send them to the comments collection
         $uri = $request->base . '/' . $request->version . '/events/' . $eventId . "/comments";
         header("Location: " . $uri, true, 202);
         exit;
     }
-
 }
