@@ -89,12 +89,20 @@ class EventsController extends ApiController
                 }
 
                 if (isset($request->parameters['title'])) {
-                    $title           = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                    $title           = filter_var(
+                        $request->parameters['title'],
+                        FILTER_SANITIZE_STRING,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    );
                     $params["title"] = $title;
                 }
 
                 if (isset($request->parameters['stub'])) {
-                    $stub           = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                    $stub           = filter_var(
+                        $request->parameters['stub'],
+                        FILTER_SANITIZE_STRING,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    );
                     $params["stub"] = $stub;
                 }
 
@@ -105,7 +113,13 @@ class EventsController extends ApiController
                             $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                         }
                     } else {
-                        $tags = array(filter_var(trim($request->parameters['tags']), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+                        $tags = array(
+                            filter_var(
+                                trim($request->parameters['tags']),
+                                FILTER_SANITIZE_STRING,
+                                FILTER_FLAG_NO_ENCODE_QUOTES
+                            )
+                        );
                     }
                     $params["tags"] = $tags;
                 }
@@ -157,17 +171,29 @@ class EventsController extends ApiController
             $event  = array();
             $errors = array();
 
-            $event['name'] = filter_var($request->getParameter("name"), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $event['name'] = filter_var(
+                $request->getParameter("name"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($event['name'])) {
                 $errors[] = "'name' is a required field";
             }
 
-            $event['description'] = filter_var($request->getParameter("description"), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $event['description'] = filter_var(
+                $request->getParameter("description"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($event['description'])) {
                 $errors[] = "'description' is a required field";
             }
 
-            $event['location'] = filter_var($request->getParameter("location"), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $event['location'] = filter_var(
+                $request->getParameter("location"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($event['location'])) {
                 $errors[] = "'location' is a required field (for virtual events, 'online' works)";
             }
@@ -179,8 +205,16 @@ class EventsController extends ApiController
             } else {
                 // if the dates are okay, sort out timezones
 
-                $event['tz_continent'] = filter_var($request->getParameter("tz_continent"), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-                $event['tz_place']     = filter_var($request->getParameter("tz_place"), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                $event['tz_continent'] = filter_var(
+                    $request->getParameter("tz_continent"),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
+                $event['tz_place']     = filter_var(
+                    $request->getParameter("tz_place"),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
                 try {
                     // make the timezone, and read in times with respect to that
                     $tz                  = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
@@ -368,17 +402,29 @@ class EventsController extends ApiController
             $event  = array("event_id" => $event_id);
             $errors = array();
 
-            $event['name'] = filter_var($request->getParameter("name"), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $event['name'] = filter_var(
+                $request->getParameter("name"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($event['name'])) {
                 $errors[] = "'name' is a required field";
             }
 
-            $event['description'] = filter_var($request->getParameter("description"), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $event['description'] = filter_var(
+                $request->getParameter("description"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($event['description'])) {
                 $errors[] = "'description' is a required field";
             }
 
-            $event['location'] = filter_var($request->getParameter("location"), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            $event['location'] = filter_var(
+                $request->getParameter("location"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($event['location'])) {
                 $errors[] = "'location' is a required field (for virtual events, 'online' works)";
             }
@@ -389,8 +435,16 @@ class EventsController extends ApiController
                 $errors[] = "Both 'start_date' and 'end_date' must be supplied in a recognised format";
             } else {
                 // if the dates are okay, sort out timezones
-                $event['tz_continent'] = filter_var($request->getParameter("tz_continent"), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-                $event['tz_place']     = filter_var($request->getParameter("tz_place"), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                $event['tz_continent'] = filter_var(
+                    $request->getParameter("tz_continent"),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
+                $event['tz_place']     = filter_var(
+                    $request->getParameter("tz_place"),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
                 try {
                     // make the timezone, and read in times with respect to that
                     $tz                  = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);

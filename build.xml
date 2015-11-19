@@ -43,6 +43,8 @@
    <fileset dir="${apiv2source}">
        <patternset>
            <include name="**/*.php"/>
+           <exclude name="**/config.php" />
+           <exclude name="**/database.php" />
        </patternset>
    </fileset>
    <formatter type="checkstyle" outfile="${basedir}/build/logs/checkstyle.xml" />
@@ -54,6 +56,8 @@
    <fileset dir="${apiv2source}">
        <patternset>
            <include name="**/*.php"/>
+           <exclude name="**/config.php" />
+           <exclude name="**/database.php" />
        </patternset>
    </fileset>
    <formatter type="summary" usefile="false" />
@@ -65,7 +69,9 @@
         <fileset dir="${apiv2source}">
           <patternset>
               <include name="**/*.php"/>
-            </patternset>
+              <exclude name="**/config.php" />
+              <exclude name="**/database.php" />
+          </patternset>
         </fileset>
     </phpcodesniffer>
 </target>

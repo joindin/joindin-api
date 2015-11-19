@@ -1,4 +1,5 @@
 <?php
+// @codingStandardsIgnoreFile
 include '../inc/Autoloader.php';
 include '../inc/Request.php';
 include '../inc/Timezone.php';
@@ -8,12 +9,13 @@ if (!function_exists('apache_request_headers')) {
 }
 
 // Add exception handler
-function handle_exception($e) {
+function handle_exception($e)
+{
     // pull the correct format before we bail
     global $request;
     $status_code = $e->getCode() ?: 400;
     header("Status: " . $status_code, false, $status_code);
-	$request->getView()->render(array($e->getMessage()));
+    $request->getView()->render(array($e->getMessage()));
 }
 
 set_exception_handler('handle_exception');
@@ -21,16 +23,18 @@ set_exception_handler('handle_exception');
 // config setup
 define('BASEPATH', '.');
 include('../config.php');
-if($config['mode'] == "development") {
+if ($config['mode'] == "development") {
     ini_set("html_errors", 0);
 }
 
 // database setup
 include('../database.php');
-$ji_db = new PDO('mysql:host=' . $db['default']['hostname'] . 
+$ji_db = new PDO(
+    'mysql:host=' . $db['default']['hostname'] .
     ';dbname=' . $db['default']['database'],
     $db['default']['username'],
-    $db['default']['password']);
+    $db['default']['password']
+);
 
 // Set the correct charset for this connection
 $ji_db->query("SET NAMES 'utf8' COLLATE 'utf8_general_ci'");
@@ -58,7 +62,7 @@ $router = new ApiRouter($config, $routers, ['2']);
 $route = $router->getRoute($request);
 $return_data = $route->dispatch($request, $ji_db, $config);
 
-if(isset($request->user_id)) {
+if (isset($request->user_id)) {
     $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;
 }
 

@@ -103,7 +103,9 @@ class Timezone
      *
      * @return integer
      */
+    // @codingStandardsIgnoreStart
     public static function UnixtimeForTimeInTimezone(
+    // @codingStandardsIgnoreEnd
         $timezone,
         $year,
         $month,
