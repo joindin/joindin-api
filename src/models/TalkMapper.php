@@ -8,7 +8,7 @@ class TalkMapper extends ApiMapper
             'talk_title'              => 'talk_title',
             'url_friendly_talk_title' => 'url_friendly_talk_title',
             'talk_description'        => 'talk_desc',
-            'type'                    => 'category',
+            'type'                    => 'talk_type',
             'start_date'              => 'date_given',
             'duration'                => 'duration',
             'stub'                    => 'stub',
@@ -28,7 +28,7 @@ class TalkMapper extends ApiMapper
             'talk_title'              => 'talk_title',
             'url_friendly_talk_title' => 'url_friendly_talk_title',
             'talk_description'        => 'talk_desc',
-            'type'                    => 'category',
+            'type'                    => 'talk_type',
             'slides_link'             => 'slides_link',
             'language'                => 'lang_name',
             'start_date'              => 'date_given',
@@ -234,7 +234,7 @@ class TalkMapper extends ApiMapper
                . 'CASE WHEN (((t.date_given - 3600*24) < ' . mktime(0, 0, 0)
                . ') and (t.date_given + (3*30*3600*24)) > ' . mktime(0, 0, 0)
                . ') THEN 1 ELSE 0 END as comments_enabled, '
-               . 'c.cat_title as category '
+               . 'c.cat_title as talk_type '
                . 'from talks t '
                . 'inner join events e on e.ID = t.event_id '
                . 'inner join lang l on l.ID = t.lang '
@@ -354,7 +354,6 @@ class TalkMapper extends ApiMapper
      * - date (a timestamp)
      * - duration
      * - speakers (an array of names)
-     * - category (a value from the column categories:title)
      * - type_id (id of the talk's type)
      *
      * @param $data

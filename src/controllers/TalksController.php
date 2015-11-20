@@ -222,7 +222,7 @@ class TalksController extends ApiController
 
         $event_mapper = new EventMapper($db, $request);
         $talk_mapper = new TalkMapper($db, $request);
-        $category_mapper = new CategoryMapper($db, $request);
+        $talk_type_mapper = new TalkTypeMapper($db, $request);
 
         $is_admin = $event_mapper->thisUserHasAdminOn($talk['event_id']);
         if (!$is_admin) {
@@ -257,11 +257,11 @@ class TalksController extends ApiController
             FILTER_SANITIZE_STRING
         );
 
-        $categories = $category_mapper->getCategoriesLookupList();
-        if (! array_key_exists($talk['type'], $categories)) {
+        $talk_types = $talk_type_mapper->getTalkTypesLookupList();
+        if (! array_key_exists($talk['type'], $talk_types)) {
             throw new Exception("The type '{$talk['type']}' is unknown", 400);
         }
-        $talk['type_id'] = $categories[$talk['type']];
+        $talk['type_id'] = $talk_types[$talk['type']];
 
         $start_date = filter_var(
             $request->getParameter('start_date'),
