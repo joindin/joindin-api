@@ -27,6 +27,11 @@ class Event_commentsController extends ApiController
         return false;
     }
 
+    public function getReported()
+    {
+        //return reported event comments
+    }
+
     public function createComment($request, $db)
     {
         $comment             = array();
