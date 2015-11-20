@@ -86,3 +86,32 @@ The ``-v`` switch is there so that you see the whole response, which looks somet
 The ``Location`` header will point to the newly-created comment, and the status code of 201 indicates that all went well.  If anything does go wrong, you will get a 4xx status code response with a message indicating what the problem is.
 
 Duplicate comments produce a 400 with "Duplicate comment" in the body.  Spam comments return a 400 with the message "comment failed spam check".
+
+## Reporting a comment
+
+If a comment contains inappropriate content, a user can report it.  This can be done by sending a POST request to the ``reported_uri`` URL available in the comment resource.
+
+Example request/response:
+
+~~~~
+> POST /v2.1/event_comments/204/reported HTTP/1.1
+> User-Agent: curl/7.38.0
+> Host: api.dev.joind.in
+> Accept: */*
+> Authorization: Bearer 11260f116ecc0fc7
+> 
+< HTTP/1.1 202 Accepted
+< Date: Thu, 19 Nov 2015 17:27:42 GMT
+< Server: Apache/2.2.22 (Debian)
+< X-Powered-By: PHP/5.6.10-1~dotdeb+7.3
+< Location: http://api.dev.joind.in/v2.1/events/65/comments
+< Vary: Accept-Encoding
+< Content-Length: 0
+< Content-Type: text/html; charset=UTF-8
+< 
+~~~~
+
+This adds the comment to the list of reported comments and stops returning it in the collection (but the deletion can be undone by an admin when they moderate the comments).
+
+If successful, a 202 Accepted status will be returned along with a ``Location`` header pointing back to the comments collection that this reported comment was in.
+
