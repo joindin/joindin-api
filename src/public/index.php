@@ -14,7 +14,7 @@ function handle_exception($e)
     // pull the correct format before we bail
     global $request;
     $status_code = $e->getCode() ?: 400;
-    $status_code = !is_numeric($status_code) ?: 400;
+    $status_code = is_numeric($status_code) ? $status_code : 500;
     header("Status: " . $status_code, false, $status_code);
     $request->getView()->render(array($e->getMessage()));
 }
