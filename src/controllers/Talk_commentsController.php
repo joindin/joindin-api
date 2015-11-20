@@ -28,6 +28,11 @@ class Talk_commentsController extends ApiController
         return false;
     }
 
+    public function getReported()
+    {
+        //return reported talk comments
+    }
+
     public function reportComment($request, $db)
     {
         // must be logged in to report a comment
