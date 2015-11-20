@@ -110,7 +110,9 @@ class LanguageMapper extends ApiMapper
         $sql = 'select * from lang where lang_name = :language';
 
         $stmt = $this->_db->prepare($sql);
-        if (! $stmt->execute(array(':language' => $language))) {
+        try {
+            $stmt->execute(array(':language' => $language));
+        } catch (Exception $e) {
             return false;
         }
 

@@ -479,11 +479,13 @@ class TalkMapper extends ApiMapper
         $i = 0;
         while ($i < 5) {
             $stub   = substr(md5(mt_rand()), 3, 5);
-            $stored = $this->storeStub($stub, $talk_id);
-            if ($stored) {
+            try {
+                $stored = $this->storeStub($stub, $talk_id);
                 // only return a value if we actually stored one
                 $stored_stub = $stub;
                 break;
+            } catch (Exception $e) {
+                // failed to store - try again
             }
             $i ++;
         }
