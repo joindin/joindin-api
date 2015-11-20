@@ -95,7 +95,10 @@ class ApiMapper
             $sqlQuery
         );
         $stmtCount = $this->_db->prepare($countSql);
-        if (!$stmtCount->execute($data)) {
+
+        try {
+            $stmtCount->execute($data);
+        } catch (Exception $e) {
             return 0;
         }
 

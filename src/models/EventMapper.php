@@ -720,13 +720,16 @@ class EventMapper extends ApiMapper
             $sql = "update events set url_friendly_name = :inflected_name where ID = :event_id";
 
             $stmt   = $this->_db->prepare($sql);
-            $result = $stmt->execute(array(
-                "inflected_name" => $inflected_name,
-                "event_id"       => $event_id,
-            ));
 
-            if ($result) {
+            try {
+                $result = $stmt->execute(array(
+                    "inflected_name" => $inflected_name,
+                    "event_id"       => $event_id,
+                ));
+
                 return $inflected_name;
+            } catch (Exception $e) {
+                // failed - try again
             }
         }
 
@@ -840,14 +843,14 @@ class EventMapper extends ApiMapper
 
         $stmt = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
 
-        if (!$stmt->execute($items)) {
+        try {
+            $stmt->execute($items);
+        } catch (Exception $e) {
             throw new Exception(sprintf(
                 'executing "%s" resulted in an error: %s',
                 $stmt->queryString,
                 implode(' :: ', $stmt->errorInfo())
             ));
-
-            return false;
         }
 
         return $event_id;
