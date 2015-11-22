@@ -12,11 +12,16 @@ if (!function_exists('apache_request_headers')) {
 function handle_exception($e)
 {
     // pull the correct format before we bail
-    global $request;
+    global $request, $config;
     $status_code = $e->getCode() ?: 400;
     $status_code = is_numeric($status_code) ? $status_code : 500;
     header("Status: " . $status_code, false, $status_code);
-    $request->getView()->render(array($e->getMessage()));
+
+    $message = $e->getMessage();
+    if ($e instanceof PDOException && $config['mode'] !== "development") {
+        $message = "Database error";
+    }
+    $request->getView()->render(array($message));
 }
 
 set_exception_handler('handle_exception');
