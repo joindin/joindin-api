@@ -557,11 +557,15 @@ class TalkMapper extends ApiMapper
             where ID = :talk_id";
 
         $stmt   = $this->_db->prepare($sql);
-        $result = $stmt->execute(array(
-            "inflected_title" => $inflected_title,
-            "talk_id"         => $talk_id
-        ));
 
+        try {
+            $result = $stmt->execute(array(
+                "inflected_title" => $inflected_title,
+                "talk_id"         => $talk_id
+            ));
+        } catch (Exception $e) {
+            return false;
+        }
         return $result;
     }
 
