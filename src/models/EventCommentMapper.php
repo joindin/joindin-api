@@ -46,9 +46,9 @@ class EventCommentMapper extends ApiMapper
         return false;
     }
 
-    public function getCommentById($comment_id, $verbose = false)
+    public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
     {
-        $sql = $this->getBasicSQL();
+        $sql = $this->getBasicSQL($include_hidden);
         $sql .= 'and ec.ID = :comment_id ';
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
@@ -112,14 +112,17 @@ class EventCommentMapper extends ApiMapper
         return $retval;
     }
 
-    protected function getBasicSQL()
+    protected function getBasicSQL($include_hidden = false)
     {
         $sql = 'select ec.*, user.email, user.full_name, e.event_tz_cont, e.event_tz_place '
                . 'from event_comments ec '
                . 'left join user on user.ID = ec.user_id '
                . 'inner join events e on ec.event_id = e.ID '
-               . 'where ec.active = 1 ';
+               . 'where 1 ';
 
+        if (!$include_hidden) {
+            $sql .= 'and ec.active = 1 ';
+        }
         return $sql;
 
     }
