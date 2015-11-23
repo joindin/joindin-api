@@ -18,7 +18,7 @@ function handle_exception($e)
     header("Status: " . $status_code, false, $status_code);
 
     $message = $e->getMessage();
-    if ($e instanceof PDOException && $config['mode'] !== "development") {
+    if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
         $message = "Database error";
     }
     $request->getView()->render(array($message));
