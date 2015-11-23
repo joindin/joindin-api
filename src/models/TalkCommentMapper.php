@@ -103,9 +103,9 @@ class TalkCommentMapper extends ApiMapper
         return false;
     }
 
-    public function getCommentById($comment_id, $verbose = false)
+    public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
     {
-        $sql = $this->getBasicSQL();
+        $sql = $this->getBasicSQL($include_hidden);
         $sql .= ' and tc.ID = :comment_id ';
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
@@ -156,7 +156,12 @@ class TalkCommentMapper extends ApiMapper
         return $retval;
     }
 
-    protected function getBasicSQL()
+    /**
+     * Template SQL for all comment-fetching queries
+     *
+     * @param bool $include_hidden If set to true, will return inactive and private comments also
+     */
+    protected function getBasicSQL($include_hidden = false)
     {
         $sql = 'select tc.*, '
                . 'user.username, user.email, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
@@ -164,8 +169,11 @@ class TalkCommentMapper extends ApiMapper
                . 'inner join talks t on t.ID = tc.talk_id '
                . 'inner join events e on t.event_id = e.ID '
                . 'left join user on tc.user_id = user.ID '
-               . 'where tc.active = 1 '
-               . 'and tc.private <> 1 ';
+               . 'where 1 ';
+
+        if(!$include_hidden) {
+            $sql .= 'and tc.active = 1 and tc.private <> 1 ';
+        }
 
         return $sql;
     }
