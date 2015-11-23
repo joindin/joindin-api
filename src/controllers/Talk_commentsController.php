@@ -37,15 +37,24 @@ class Talk_commentsController extends ApiController
 
         $comment_mapper = new TalkCommentMapper($db, $request);
 
-        $commentId = $this->getItemId($request);
+        $commentId   = $this->getItemId($request);
         $commentInfo = $comment_mapper->getCommentInfo($commentId);
         if (false === $commentInfo) {
             throw new Exception('Comment not found', 404);
         }
 
-        $talkId = $commentInfo['talk_id'];
+        $talkId  = $commentInfo['talk_id'];
+        $eventId = $commentInfo['event_id'];
 
         $comment_mapper->userReportedComment($commentId, $request->user_id);
+
+        // notify event admins
+        $comment      = $comment_mapper->getCommentById($commentId, true, true);
+        $event_mapper = new EventMapper($db, $request);
+        $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
+
+        $emailService = new CommentReportedEmailService($this->config, $recipients, $comment);
+        $emailService->sendEmail();
 
         // send them to the comments collection
         $uri = $request->base . '/' . $request->version . '/talks/' . $talkId . "/comments";
