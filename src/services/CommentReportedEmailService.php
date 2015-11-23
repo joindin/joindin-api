@@ -48,4 +48,3 @@ class CommentReportedEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 }
-

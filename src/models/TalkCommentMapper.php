@@ -171,7 +171,7 @@ class TalkCommentMapper extends ApiMapper
                . 'left join user on tc.user_id = user.ID '
                . 'where 1 ';
 
-        if(!$include_hidden) {
+        if (!$include_hidden) {
             $sql .= 'and tc.active = 1 and tc.private <> 1 ';
         }
 
