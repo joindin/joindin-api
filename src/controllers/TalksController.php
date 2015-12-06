@@ -183,15 +183,27 @@ class TalksController extends ApiController
         }
     }
 
-    protected function getTalkById($db, $request, $talk_id, $verbose = false)
+    /**
+     * Get a single talk
+     *
+     * @param  PDO      $db
+     * @param  Request  $request
+     * @param  integer  $talk_id
+     * @param  boolean $verbose
+     *
+     * @throws Exception if the talk is not found
+     *
+     * @return TalkModelCollection
+     */
+    protected function getTalkById($db, $request, $talk_id)
     {
         $mapper = new TalkMapper($db, $request);
-        $list   = $mapper->getTalkById($talk_id, $verbose);
-        if (false === $list) {
+        $talk   = $mapper->getTalkById($talk_id);
+        if (false === $talk) {
             throw new Exception('Talk not found', 404);
         }
 
-        return $list;
+        return $talk;
     }
 
     /**
