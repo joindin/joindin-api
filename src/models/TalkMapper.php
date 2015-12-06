@@ -2,46 +2,52 @@
 
 class TalkMapper extends ApiMapper
 {
-    public function getDefaultFields()
+    /**
+     * Iterate through results from the database to ensure data consistency and
+     * add sub-resource data
+     *
+     * @param  array|false $results
+     * @return array
+     */
+    public function processResults($results)
     {
-        $fields = array(
-            'talk_title'              => 'talk_title',
-            'url_friendly_talk_title' => 'url_friendly_talk_title',
-            'talk_description'        => 'talk_desc',
-            'type'                    => 'talk_type',
-            'start_date'              => 'date_given',
-            'duration'                => 'duration',
-            'stub'                    => 'stub',
-            'average_rating'          => 'avg_rating',
-            'comments_enabled'        => 'comments_enabled',
-            'comment_count'           => 'comment_count',
-            'starred'                 => 'starred',
-            'starred_count'           => 'starred_count',
-        );
+        if (!is_array($results)) {
+            // $results isn't an array. This shouldn't happen as an exception
+            // should have been raised by PDO. However if it does, return an
+            // empty array.
+            return [];
+        }
 
-        return $fields;
-    }
+        if (count($results)) {
+            $base    = $this->_request->base;
+            $version = $this->_request->version;
+            foreach ($results as $key => $row) {
+                // generate and store an inflected talk title if there isn't one
+                if (empty($row['url_friendly_talk_title'])) {
+                    $results[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle(
+                        $row['talk_title'],
+                        $row['ID']
+                    );
+                }
 
-    public function getVerboseFields()
-    {
-        $fields = array(
-            'talk_title'              => 'talk_title',
-            'url_friendly_talk_title' => 'url_friendly_talk_title',
-            'talk_description'        => 'talk_desc',
-            'type'                    => 'talk_type',
-            'slides_link'             => 'slides_link',
-            'language'                => 'lang_name',
-            'start_date'              => 'date_given',
-            'duration'                => 'duration',
-            'stub'                    => 'stub',
-            'average_rating'          => 'avg_rating',
-            'comments_enabled'        => 'comments_enabled',
-            'comment_count'           => 'comment_count',
-            'starred'                 => 'starred',
-            'starred_count'           => 'starred_count',
-        );
+                // if the stub is empty, we need to generate one and store it
+                if (empty($row['stub'])) {
+                    $results[$key]['stub'] = $this->generateStub($row['ID']);
+                }
 
-        return $fields;
+                // did the logged in user star this talk?
+                if (isset($this->_request->user_id)) {
+                    $results[$key]['starred'] = $this->hasUserStarredTalk($row['ID'], $this->_request->user_id);
+                } else {
+                    $results[$key]['starred'] = false;
+                }
+
+                // add speakers & tracks
+                $results[$key]['speakers'] = $this->getSpeakers($row['ID']);
+                $results[$key]['tracks']   = $this->getTracks($row['ID']);
+            }
+        }
+        return $results;
     }
 
     public function getTalksByEventId($event_id, $resultsperpage, $start, $verbose = false)
@@ -56,69 +62,24 @@ class TalkMapper extends ApiMapper
             ':event_id' => $event_id
         ));
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
-            $retval           = $this->transformResults($results, $verbose);
-
-            return $retval;
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $total = $this->getTotalCount($sql, array(':event_id' => $event_id));
+            $results = $this->processResults($results);
+            
+            return new TalkModelCollection($results, $total);
         }
 
         return false;
     }
 
-    public function transformResults($results, $verbose)
-    {
+    /**
+     * Retrieve a single talk
+     *
+     * @param  integer  $talk_id
 
-        $total = $results['total'];
-        unset($results['total']);
-        $list    = parent::transformResults($results, $verbose);
-        $base    = $this->_request->base;
-        $version = $this->_request->version;
-
-        // loop again and add links specific to this item
-        if (is_array($list) && count($list)) {
-            foreach ($results as $key => $row) {
-                // generate and store an inflected talk title if there isn't one
-                if (empty($row['url_friendly_talk_title'])) {
-                    $list[$key]['url_friendly_talk_title'] = $this->generateInflectedTitle(
-                        $row['talk_title'],
-                        $row['ID']
-                    );
-                }
-
-                if (isset($this->_request->user_id)) {
-                    $list[$key]['starred'] = $this->hasUserStarredTalk($row['ID'], $this->_request->user_id);
-                } else {
-                    $list[$key]['starred'] = false;
-                }
-
-                // if the stub is empty, we need to generate one and store it
-                if (empty($row['stub'])) {
-                    $list[$key]['stub'] = $this->generateStub($row['ID']);
-                }
-                // add speakers
-                $list[$key]['speakers']             = $this->getSpeakers($row['ID']);
-                $list[$key]['tracks']               = $this->getTracks($row['ID']);
-                $list[$key]['uri']                  = $base . '/' . $version . '/talks/' . $row['ID'];
-                $list[$key]['verbose_uri']          = $base . '/' . $version . '/talks/' .
-                                                        $row['ID'] . '?verbose=yes';
-                $list[$key]['website_uri']          = 'http://joind.in/talk/view/' . $row['ID'];
-                $list[$key]['comments_uri']         = $base . '/' . $version . '/talks/' . $row['ID'] . '/comments';
-                $list[$key]['starred_uri']          = $base . '/' . $version . '/talks/' . $row['ID'] . '/starred';
-                $list[$key]['verbose_comments_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] .
-                                                        '/comments?verbose=yes';
-                $list[$key]['event_uri']            = $base . '/' . $version . '/events/' . $row['event_id'];
-            }
-        }
-
-        $retval          = array();
-        $retval['talks'] = $list;
-        $retval['meta']  = $this->getPaginationLinks($list, $total);
-
-        return $retval;
-    }
-
-    public function getTalkById($talk_id, $verbose = false)
+     * @return TalkModel|false
+     */
+    public function getTalkById($talk_id)
     {
         $sql = $this->getBasicSQL();
         $sql .= ' and t.ID = :talk_id';
@@ -127,10 +88,8 @@ class TalkMapper extends ApiMapper
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
-                $results['total'] = $this->getTotalCount($sql, array('talk_id' => $talk_id));
-                $retval           = $this->transformResults($results, $verbose);
-
-                return $retval;
+                $results = $this->processResults($results);
+                return new TalkModel($results[0]);
             }
         }
 
@@ -162,11 +121,11 @@ class TalkMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $results['total'] = $this->getTotalCount($sql, $data);
-            $retval           = $this->transformResults($results, $verbose);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $total = $this->getTotalCount($sql, $data);
 
-            return $retval;
+            $results = $this->processResults($results);
+            return new TalkModelCollection($results, $total);
         }
 
         return false;
@@ -332,11 +291,11 @@ class TalkMapper extends ApiMapper
             ':user_id' => $user_id
         ));
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $results['total'] = $this->getTotalCount($sql, array(':user_id' => $user_id));
-            $retval           = $this->transformResults($results, $verbose);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $total = $this->getTotalCount($sql, array(':user_id' => $user_id));
 
-            return $retval;
+            $results = $this->processResults($results);
+            return new TalkModelCollection($results, $total);
         }
 
         return false;
