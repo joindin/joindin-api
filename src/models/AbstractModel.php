@@ -63,7 +63,7 @@ abstract class AbstractModel
      */
     public function getOutputView(Request $request, $verbose = false)
     {
-        $item    = array();
+        $item = array();
 
         if ($verbose) {
             $fields = $this->getVerboseFields();
@@ -73,8 +73,22 @@ abstract class AbstractModel
 
         $fields = array_merge($fields, $this->getSubResources());
 
+        // special handling for dates
+        if ($this->event_tz_place != '' && $this->event_tz_cont != '') {
+            $tz = $this->event_tz_cont . '/' . $this->event_tz_place;
+        } else {
+            $tz = 'UTC';
+        }
+
         foreach ($fields as $output_name => $name) {
-            $item[ $output_name ] = $this->$name;
+            $value = $this->$name;
+
+            // override if it is a date
+            if (substr($output_name, - 5) == '_date' && ! empty($value)) {
+                $value = Timezone::formattedEventDatetimeFromUnixtime($value, $tz, 'c');
+            }
+
+            $item[$output_name] = $value;
         }
 
         return $item;
