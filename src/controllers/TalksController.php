@@ -27,15 +27,15 @@ class TalksController extends ApiController
             }
         } else {
             if ($talk_id) {
-                $list = $this->getTalkById($db, $request, $talk_id, $verbose);
-                if (false === $list) {
-                    throw new Exception('Talk not found', 404);
-                }
+                $talk = $this->getTalkById($db, $request, $talk_id);
+                $collection = new TalkModelCollection([$talk], 1);
+                $list = $collection->getOutputView($request, $verbose);
             } elseif (isset($request->parameters['title'])) {
                 $keyword = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
 
                 $mapper = new TalkMapper($db, $request);
-                $list   = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start, $verbose);
+                $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start, $verbose);
+                $list = $talks->getOutputView($request, $verbose);
             } else {
                 // listing makes no sense
                 throw new Exception('Generic talks listing not supported', 405);
@@ -314,8 +314,10 @@ class TalksController extends ApiController
         $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
         header("Location: " . $uri, true, 201);
 
-        $new_talk = $talk_mapper->getTalkById($new_id);
+        $new_talk = $this->getTalkById($db, $request, $new_id);
+        $collection = new TalkModelCollection([$new_talk], 1);
+        $list = $collection->getOutputView($request);
 
-        return $new_talk;
+        return $list;
     }
 }

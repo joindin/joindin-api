@@ -17,7 +17,8 @@ class EventsController extends ApiController
             switch ($request->url_elements[4]) {
                 case 'talks':
                     $talk_mapper = new TalkMapper($db, $request);
-                    $list        = $talk_mapper->getTalksByEventId($event_id, $resultsperpage, $start, $verbose);
+                    $talks = $talk_mapper->getTalksByEventId($event_id, $resultsperpage, $start, $verbose);
+                    $list = $talks->getOutputView($request, $verbose);
                     break;
                 case 'comments':
                     $event_comment_mapper = new EventCommentMapper($db, $request);
