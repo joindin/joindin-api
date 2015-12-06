@@ -167,8 +167,10 @@ class TalksController extends ApiController
             // delete the talk
             $talk_id     = $this->getItemId($request);
             $talk_mapper = new TalkMapper($db, $request);
-            $list        = $talk_mapper->getTalkById($talk_id);
-            if (false === $list) {
+            
+            // note: use the mapper's getTalkById as we don't want to throw a not found exception
+            $talk = $talk_mapper->getTalkById($talk_id);
+            if (false === $talk) {
                 // talk isn't there so it's as good as deleted
                 header("Content-Length: 0", null, 204);
                 exit; // no more content
