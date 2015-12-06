@@ -51,6 +51,9 @@ class TalksController extends ApiController
             throw new Exception("You must be logged in to create data", 400);
         }
         $talk_id = $this->getItemId($request);
+        
+        // Retrieve the talk. It if doesn't exist, then 404 with talk not found
+        $talk= $this->getTalkById($db, $request, $talk_id);
 
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
@@ -115,7 +118,6 @@ class TalksController extends ApiController
 
                     if ($new_id) {
                         $comment    = $comment_mapper->getCommentById($new_id);
-                        $talk       = $talk_mapper->getTalkById($talk_id);
                         $speakers   = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
                         $recipients = array();
                         foreach ($speakers as $person) {
