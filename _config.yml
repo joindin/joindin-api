@@ -1,4 +1,4 @@
 baseurl:     /joindin-api
-apiurl:      http://api.joind.in
+apiurl:      https://api.joind.in
 exclude: [src, build, tools]
 markdown: kramdown
