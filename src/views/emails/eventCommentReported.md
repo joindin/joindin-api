@@ -1,4 +1,4 @@
-A coment on your event has been reported.  It will be hidden until you moderate it; the details are below:
+A comment on your event has been reported.  It will be hidden until you moderate it; the details are below:
 
 **Event:** [name]
 
