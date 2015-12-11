@@ -130,6 +130,15 @@ class Event_commentsController extends ApiController
 
         $comment_mapper->userReportedComment($commentId, $request->user_id);
 
+        // notify event admins
+        $comment      = $comment_mapper->getCommentById($commentId, true, true);
+        $event_mapper = new EventMapper($db, $request);
+        $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
+        $event        = $event_mapper->getEventById($eventId, true, true);
+
+        $emailService = new EventCommentReportedEmailService($this->config, $recipients, $comment, $event);
+        $emailService->sendEmail();
+
         // send them to the comments collection
         $uri = $request->base . '/' . $request->version . '/events/' . $eventId . "/comments";
         header("Location: " . $uri, true, 202);
