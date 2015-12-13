@@ -869,6 +869,26 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Set the the filename set for this event
+     *
+     * @param  integer $event_id
+     * @param  string $icon_filename
+     */
+    public function setIconFilename($event_id, $icon_filename)
+    {
+        $sql  = "UPDATE events SET event_icon = :icon_filename WHERE ID = :event_id";
+        $stmt = $this->_db->prepare($sql);
+
+        try {
+            $result = $stmt->execute(['icon_filename' => $icon_filename, 'event_id' => $event_id]);
+        } catch (Exception $e) {
+            // @todo: logging goes here when we get it
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Add a user as an admin on an event
      */
     public function addUserAsHost($event_id, $user_id)

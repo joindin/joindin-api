@@ -12,6 +12,12 @@
         "verbs": ["GET"]
     },
     {
+        "path": "/events(/[\\d]+)/icon$",
+        "controller": "EventsController",
+        "action": "updateIconAction",
+        "verbs": ["PUT"]
+    },
+    {
         "path": "/events(/[^/]+)*/?$",
         "controller": "EventsController",
         "action": "getAction",
