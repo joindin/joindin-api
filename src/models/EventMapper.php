@@ -385,6 +385,9 @@ class EventMapper extends ApiMapper
                 $list[$key]['tags'] = $this->getTags($row['ID']);
                 $list[$key]['uri']           = $base . '/' . $version . '/events/' . $row['ID'];
                 $list[ $key ]['verbose_uri']   = $base . '/' . $version . '/events/' . $row['ID'] . '?verbose=yes';
+                if ($verbose && $this->thisUserHasAdminOn($row['ID'])) {
+                    $list[$key]['icon_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/icon';
+                }
                 $list[$key]['comments_uri']  = $base . '/' . $version . '/events/' . $row['ID'] . '/comments';
                 $list[$key]['talks_uri']     = $base . '/' . $version . '/events/' . $row['ID'] . '/talks';
                 $list[ $key]['tracks_uri']    = $base . '/' . $version . '/events/' . $row['ID'] . '/tracks';
