@@ -386,10 +386,10 @@ class EventMapper extends ApiMapper
                 if ($row['pending'] == 1 && $thisUserCanApproveEvents) {
                     $list[$key]['approval_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/approval';
                 }
-                $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
+                $list[$key]['website_uri'] = $this->website_base_uri . '/event/view/' . $row['ID'];
                 // handle the slug
                 if (!empty($row['event_stub'])) {
-                    $list[$key]['humane_website_uri'] = 'http://joind.in/event/' . $row['event_stub'];
+                    $list[$key]['humane_website_uri'] = $this->website_base_uri . '/event/' . $row['event_stub'];
                 }
 
                 if ($verbose) {
@@ -611,7 +611,7 @@ class EventMapper extends ApiMapper
     {
         // do we even have an authenticated user?
         if (isset($this->_request->user_id)) {
-            $user_mapper = new UserMapper($this->_db, $this->_request);
+            $user_mapper = new UserMapper($this->_db, $this->_request, $this->config['website_url']);
 
             // is user site admin?
             $is_site_admin = $user_mapper->isSiteAdmin($this->_request->user_id);
@@ -635,7 +635,7 @@ class EventMapper extends ApiMapper
     {
         // do we even have an authenticated user?
         if (isset($this->_request->user_id)) {
-            $user_mapper = new UserMapper($this->_db, $this->_request);
+            $user_mapper = new UserMapper($this->_db, $this->_request, $this->config['website_url']);
 
             // is user site admin?
             $is_site_admin = $user_mapper->isSiteAdmin($this->_request->user_id);
