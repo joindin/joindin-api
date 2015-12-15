@@ -7,7 +7,7 @@ class EmailsController extends ApiController
 {
     public function verifications($request, $db)
     {
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = new UserMapper($db, $request, $this->config['website_url']);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
         if (empty($email)) {
             throw new Exception("The email address must be supplied", 400);
@@ -31,7 +31,7 @@ class EmailsController extends ApiController
 
     public function usernameReminder($request, $db)
     {
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = new UserMapper($db, $request, $this->config['website_url']);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
         if (empty($email)) {
             throw new Exception("The email address must be supplied", 400);
@@ -53,7 +53,7 @@ class EmailsController extends ApiController
 
     public function passwordReset($request, $db)
     {
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = new UserMapper($db, $request, $this->config['website_url']);
         $username    = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);
         if (empty($username)) {
             throw new Exception("A username must be supplied", 400);

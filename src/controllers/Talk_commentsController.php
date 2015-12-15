@@ -50,7 +50,7 @@ class Talk_commentsController extends ApiController
 
         // notify event admins
         $comment      = $comment_mapper->getCommentById($commentId, true, true);
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = new EventMapper($db, $request, $this->config['website_url']);
         $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
 
         $emailService = new CommentReportedEmailService($this->config, $recipients, $comment);

@@ -595,7 +595,7 @@ class TalkMapper extends ApiMapper
     {
         // do we even have an authenticated user?
         if (isset($this->_request->user_id)) {
-            $user_mapper = new UserMapper($this->_db, $this->_request);
+            $user_mapper = new UserMapper($this->_db, $this->_request, $this->website_base_uri);
 
             // is user site admin?
             $is_site_admin = $user_mapper->isSiteAdmin($this->_request->user_id);
