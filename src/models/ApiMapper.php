@@ -2,15 +2,19 @@
 
 class ApiMapper
 {
+    protected $website_base_uri;
+    
     /**
      * Object constructor, sets up the db and some objects need request too
      *
-     * @param PDO $db The database connection handle
-     * @param Request $request The request object (optional not all objects need it)
+     * @param PDO $db                  The database connection handle
+     * @param Request $request         The request object (optional not all objects need it)
+     * @param string $website_base_uri The base URL of the main website for this instance of the API (optional)
      */
-    public function __construct(PDO $db, Request $request = null)
+    public function __construct(PDO $db, Request $request = null, $website_base_uri = 'https://joind.in')
     {
         $this->_db = $db;
+        $this->website_base_uri = $website_base_uri;
         if (isset($request)) {
             $this->_request = $request;
         }

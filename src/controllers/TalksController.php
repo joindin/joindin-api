@@ -220,7 +220,7 @@ class TalksController extends ApiController
             );
         }
 
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = new EventMapper($db, $request, $this->config['website_url']);
         $talk_mapper = new TalkMapper($db, $request);
         $talk_type_mapper = new TalkTypeMapper($db, $request);
 

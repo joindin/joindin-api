@@ -42,7 +42,7 @@ class Event_commentsController extends ApiController
         if (! isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to comment');
         }
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = new UserMapper($db, $request, $this->config['website_url']);
         $users       = $user_mapper->getUserById($request->user_id);
         $thisUser    = $users['users'][0];
 
@@ -84,7 +84,7 @@ class Event_commentsController extends ApiController
             }
         }
 
-        $event_mapper   = new EventMapper($db, $request);
+        $event_mapper   = new EventMapper($db, $request, $this->config['website_url']);
         $comment_mapper = new EventCommentMapper($db, $request);
 
         // should rating be allowed?
@@ -132,7 +132,7 @@ class Event_commentsController extends ApiController
 
         // notify event admins
         $comment      = $comment_mapper->getCommentById($commentId, true, true);
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = new EventMapper($db, $request, $this->config['website_url']);
         $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
         $event        = $event_mapper->getEventById($eventId, true, true);
 
