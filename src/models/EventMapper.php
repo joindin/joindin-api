@@ -392,6 +392,12 @@ class EventMapper extends ApiMapper
                     $list[$key]['humane_website_uri'] = $this->website_base_uri . '/event/' . $row['event_stub'];
                 }
 
+                // full uri to icon
+                $list[$key]['icon_uri'] = $this->website_base_uri . '/img/event_icons/none.png';
+                if ($row['event_icon']) {
+                    $list[$key]['icon_uri'] = $this->website_base_uri . '/inc/img/event_icons/' . $row['event_icon'];
+                }
+
                 if ($verbose) {
                     $list[$key]['all_talk_comments_uri'] = $base . '/' . $version . '/events/'
                                                            . $row['ID'] . '/talk_comments';
