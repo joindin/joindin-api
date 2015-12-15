@@ -40,11 +40,11 @@ class EventsController extends ApiController
                     );
                     break;
                 case 'attendees':
-                    $user_mapper = new UserMapper($db, $request);
+                    $user_mapper = new UserMapper($db, $request, $this->config['website_url']);
                     $list        = $user_mapper->getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose);
                     break;
                 case 'attending':
-                    $mapper = new EventMapper($db, $request);
+                    $mapper = new EventMapper($db, $request, $this->config['website_url']);
                     $list   = $mapper->getUserAttendance($event_id, $request->user_id);
                     break;
                 case 'tracks':
@@ -56,8 +56,8 @@ class EventsController extends ApiController
                     break;
             }
         } else {
-            $mapper           = new EventMapper($db, $request);
-            $user_mapper      = new UserMapper($db, $request);
+            $mapper           = new EventMapper($db, $request, $this->config['website_url']);
+            $user_mapper      = new UserMapper($db, $request, $this->config['website_url']);
             $isSiteAdmin      = $user_mapper->isSiteAdmin($request->user_id);
             $activeEventsOnly = $isSiteAdmin ? false : true;
 
@@ -80,7 +80,7 @@ class EventsController extends ApiController
                         if (! isset($request->user_id)) {
                             throw new Exception("You must be logged in to view pending events", 400);
                         }
-                        $user_mapper      = new UserMapper($db, $request);
+                        $user_mapper      = new UserMapper($db, $request, $this->config['website_url']);
                         $canApproveEvents = $user_mapper->isSiteAdmin($request->user_id);
                         if (! $canApproveEvents) {
                             throw new Exception("You don't have permission to view pending events", 403);
@@ -156,7 +156,7 @@ class EventsController extends ApiController
                     // the body of this request is completely irrelevant
                     // The logged in user *is* attending the event.  Use DELETE to unattend
                     $event_id     = $this->getItemId($request);
-                    $event_mapper = new EventMapper($db, $request);
+                    $event_mapper = new EventMapper($db, $request, $this->config['website_url']);
                     $event_mapper->setUserAttendance($event_id, $request->user_id);
                     header("Location: " . $request->base . $request->path_info, null, 201);
 
@@ -282,7 +282,7 @@ class EventsController extends ApiController
 
             }
 
-            $event_mapper = new EventMapper($db, $request);
+            $event_mapper = new EventMapper($db, $request, $this->config['website_url']);
 
             // Make sure they only have a maximum of $max_pending_events
             // unapproved event submissions at any time
@@ -302,7 +302,7 @@ class EventsController extends ApiController
             if ($errors) {
                 throw new Exception(implode(". ", $errors), 400);
             } else {
-                $user_mapper  = new UserMapper($db, $request);
+                $user_mapper  = new UserMapper($db, $request, $this->config['website_url']);
 
                 $event_owner           = $user_mapper->getUserById($request->user_id);
                 $event['contact_name'] = $event_owner['users'][0]['full_name'];
@@ -362,7 +362,7 @@ class EventsController extends ApiController
             switch ($request->url_elements[4]) {
                 case 'attending':
                     $event_id     = $this->getItemId($request);
-                    $event_mapper = new EventMapper($db, $request);
+                    $event_mapper = new EventMapper($db, $request, $this->config['website_url']);
                     $event_mapper->setUserNonAttendance($event_id, $request->user_id);
                     header("Location: " . $request->base . $request->path_info, null, 200);
 
@@ -385,7 +385,7 @@ class EventsController extends ApiController
         $event_id = $this->getItemId($request);
         if (! isset($request->url_elements[4])) {
             // Edit an Event
-            $event_mapper   = new EventMapper($db, $request);
+            $event_mapper   = new EventMapper($db, $request, $this->config['website_url']);
             $existing_event = $event_mapper->getEventById($event_id, true);
             if (! $existing_event) {
                 throw new Exception(sprintf(
@@ -539,7 +539,7 @@ class EventsController extends ApiController
         }
 
         $event_id     = $this->getItemId($request);
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = new EventMapper($db, $request, $this->config['website_url']);
 
         if (! $event_mapper->thisUserCanApproveEvents()) {
             throw new Exception("You are not allowed to approve this event", 403);
@@ -579,7 +579,7 @@ class EventsController extends ApiController
         }
 
         $event_id     = $this->getItemId($request);
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = new EventMapper($db, $request, $this->config['website_url']);
 
         if (! $event_mapper->thisUserCanApproveEvents()) {
             throw new Exception("You are not allowed to reject this event", 403);

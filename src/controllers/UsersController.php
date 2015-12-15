@@ -20,11 +20,11 @@ class UsersController extends ApiController
                     $list        = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose);
                     break;
                 case 'hosted':
-                    $event_mapper = new EventMapper($db, $request);
+                    $event_mapper = new EventMapper($db, $request, $this->config['website_url']);
                     $list         = $event_mapper->getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose);
                     break;
                 case 'attended':
-                    $event_mapper = new EventMapper($db, $request);
+                    $event_mapper = new EventMapper($db, $request, $this->config['website_url']);
                     $list         = $event_mapper->getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose);
                     break;
                 case 'talk_comments':
@@ -41,7 +41,7 @@ class UsersController extends ApiController
                     break;
             }
         } else {
-            $mapper = new UserMapper($db, $request);
+            $mapper = new UserMapper($db, $request, $this->config['website_url']);
             if ($user_id) {
                 $list = $mapper->getUserById($user_id, $verbose);
                 if (count($list['users']) == 0) {
@@ -69,7 +69,7 @@ class UsersController extends ApiController
         if (isset($request->url_elements[3])) {
             switch ($request->url_elements[3]) {
                 case 'verifications':
-                    $user_mapper = new UserMapper($db, $request);
+                    $user_mapper = new UserMapper($db, $request, $this->config['website_url']);
                     $token       = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
                     if (empty($token)) {
                         throw new Exception("Verification token must be supplied", 400);
@@ -91,7 +91,7 @@ class UsersController extends ApiController
             $user   = array();
             $errors = array();
 
-            $user_mapper = new UserMapper($db, $request);
+            $user_mapper = new UserMapper($db, $request, $this->config['website_url']);
 
             // Required Fields
             $user['username'] = filter_var(trim($request->getParameter("username")), FILTER_SANITIZE_STRING);
@@ -187,7 +187,7 @@ class UsersController extends ApiController
 
         $userId = $this->getItemId($request);
 
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = new UserMapper($db, $request, $this->config['website_url']);
         if ($user_mapper->thisUserHasAdminOn($userId)) {
             $oauthModel  = $request->getOauthModel($db);
             $accessToken = $request->getAccessToken();
@@ -280,7 +280,7 @@ class UsersController extends ApiController
             throw new Exception("New password must be supplied", 400);
         }
         // now check the password complies with our rules
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = new UserMapper($db, $request, $this->config['website_url']);
         $validity    = $user_mapper->checkPasswordValidity($password);
         if (true === $validity) {
             // OK, go ahead
