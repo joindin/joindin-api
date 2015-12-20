@@ -197,8 +197,7 @@ class UserMapper extends ApiMapper
                 }
                 $list[$key]['uri']                 = $base . '/' . $version . '/users/' . $row['ID'];
                 $list[$key]['verbose_uri']         = $base . '/' . $version . '/users/' . $row['ID'] . '?verbose=yes';
-                $list[$key]['website_uri']         = $this->_request->getConfigValue('website_url')
-                    . '/user/' . $row['username'];
+                $list[$key]['website_uri']         = $this->website_url . '/user/' . $row['username'];
                 $list[$key]['talks_uri']           = $base . '/' . $version . '/users/' . $row['ID'] . '/talks/';
                 $list[$key]['attended_events_uri'] = $base . '/' . $version . '/users/' . $row['ID'] . '/attended/';
                 $list[$key]['hosted_events_uri']   = $base . '/' . $version . '/users/' . $row['ID'] . '/hosted/';

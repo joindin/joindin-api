@@ -13,6 +13,7 @@ class ApiMapper
         $this->_db = $db;
         if (isset($request)) {
             $this->_request = $request;
+            $this->website_url = $request->getConfigValue('website_url');
         }
 
         return true;

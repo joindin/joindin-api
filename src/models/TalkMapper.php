@@ -102,8 +102,7 @@ class TalkMapper extends ApiMapper
                 $list[$key]['uri']                  = $base . '/' . $version . '/talks/' . $row['ID'];
                 $list[$key]['verbose_uri']          = $base . '/' . $version . '/talks/' .
                                                         $row['ID'] . '?verbose=yes';
-                $list[$key]['website_uri']          = $this->_request->getConfigValue('website_url')
-                    . '/talk/' . $row['stub'];
+                $list[$key]['website_uri']          = $this->website_url . '/talk/' . $row['stub'];
                 $list[$key]['comments_uri']         = $base . '/' . $version . '/talks/' . $row['ID'] . '/comments';
                 $list[$key]['starred_uri']          = $base . '/' . $version . '/talks/' . $row['ID'] . '/starred';
                 $list[$key]['verbose_comments_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] .
