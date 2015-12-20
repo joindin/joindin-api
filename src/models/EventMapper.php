@@ -386,10 +386,10 @@ class EventMapper extends ApiMapper
                 if ($row['pending'] == 1 && $thisUserCanApproveEvents) {
                     $list[$key]['approval_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/approval';
                 }
-                $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
+                $list[$key]['website_uri'] = $this->website_url . '/event/' . $row['url_friendly_name'];
                 // handle the slug
                 if (!empty($row['event_stub'])) {
-                    $list[$key]['humane_website_uri'] = 'http://joind.in/event/' . $row['event_stub'];
+                    $list[$key]['humane_website_uri'] = $this->website_url . '/e/' . $row['event_stub'];
                 }
 
                 if ($verbose) {
