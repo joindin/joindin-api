@@ -833,7 +833,7 @@ class EventMapper extends ApiMapper
             if (in_array($column_name, ['pending', 'active'])) {
                 continue;
             }
-            if (isset($event[$api_name])) {
+            if (array_key_exists($api_name, $event)) {
                 $pairs[]            = "$column_name = :$api_name";
                 $items[$api_name] = $event[$api_name];
             }
