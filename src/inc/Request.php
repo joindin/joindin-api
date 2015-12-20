@@ -641,4 +641,24 @@ class Request
     {
         return $this->clientUserAgent;
     }
+
+    /**
+     * Fetch a config value by named key.  If the value doesn't exist then
+     * return the default value
+     *
+     * @param string $param Parameter to retrieve
+     * @param string $default Default to return if parameter doesn't exist
+     *
+     * @return string
+     */
+    public function getConfigValue($key, $default = '')
+    {
+        $value = $default;
+        if (array_key_exists($key, $this->config)) {
+            $value = $this->config[$key];
+        }
+
+        return $value;
+    }
+
 }
