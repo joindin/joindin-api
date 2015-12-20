@@ -12,6 +12,7 @@ class EventSubmissionEmailService extends EmailBaseService
 
         // this email needs event info
         $this->event = $event;
+        $this->website_url = $config['website_url'];
 
         $this->count = $count;
     }
@@ -27,6 +28,7 @@ class EventSubmissionEmailService extends EmailBaseService
             "description"  => $this->event['description'],
             "date"         => $date->format('jS M, Y'),
             "contact_name" => $this->event['contact_name'],
+            "website_url"  => $this->website_url,
         );
 
         if ($this->count) {

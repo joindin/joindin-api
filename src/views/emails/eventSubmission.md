@@ -8,6 +8,6 @@ Please review a new event submission to joind.in:
 
 *Description:* [description]
 
-View all pending submissions here: [https://m.joind.in/event/pending](https://m.joind.in/event/pending)
+View all pending submissions here: [[website_url]/event/pending]([website_url]/event/pending)
 [count]
 
