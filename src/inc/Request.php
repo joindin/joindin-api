@@ -660,5 +660,4 @@ class Request
 
         return $value;
     }
-
 }
