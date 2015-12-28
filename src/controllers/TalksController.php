@@ -27,15 +27,15 @@ class TalksController extends ApiController
             }
         } else {
             if ($talk_id) {
-                $list = $this->getTalkById($db, $request, $talk_id, $verbose);
-                if (false === $list) {
-                    throw new Exception('Talk not found', 404);
-                }
+                $talk = $this->getTalkById($db, $request, $talk_id);
+                $collection = new TalkModelCollection([$talk], 1);
+                $list = $collection->getOutputView($request, $verbose);
             } elseif (isset($request->parameters['title'])) {
                 $keyword = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
 
                 $mapper = new TalkMapper($db, $request);
-                $list   = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start, $verbose);
+                $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
+                $list = $talks->getOutputView($request, $verbose);
             } else {
                 // listing makes no sense
                 throw new Exception('Generic talks listing not supported', 405);
@@ -51,6 +51,9 @@ class TalksController extends ApiController
             throw new Exception("You must be logged in to create data", 400);
         }
         $talk_id = $this->getItemId($request);
+        
+        // Retrieve the talk. It if doesn't exist, then 404 with talk not found
+        $talk= $this->getTalkById($db, $request, $talk_id);
 
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
@@ -115,7 +118,6 @@ class TalksController extends ApiController
 
                     if ($new_id) {
                         $comment    = $comment_mapper->getCommentById($new_id);
-                        $talk       = $talk_mapper->getTalkById($talk_id);
                         $speakers   = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
                         $recipients = array();
                         foreach ($speakers as $person) {
@@ -165,8 +167,10 @@ class TalksController extends ApiController
             // delete the talk
             $talk_id     = $this->getItemId($request);
             $talk_mapper = new TalkMapper($db, $request);
-            $list        = $talk_mapper->getTalkById($talk_id);
-            if (false === $list) {
+            
+            // note: use the mapper's getTalkById as we don't want to throw a not found exception
+            $talk = $talk_mapper->getTalkById($talk_id);
+            if (false === $talk) {
                 // talk isn't there so it's as good as deleted
                 header("Content-Length: 0", null, 204);
                 exit; // no more content
@@ -183,15 +187,27 @@ class TalksController extends ApiController
         }
     }
 
-    protected function getTalkById($db, $request, $talk_id, $verbose = false)
+    /**
+     * Get a single talk
+     *
+     * @param  PDO      $db
+     * @param  Request  $request
+     * @param  integer  $talk_id
+     * @param  boolean $verbose
+     *
+     * @throws Exception if the talk is not found
+     *
+     * @return TalkModelCollection
+     */
+    protected function getTalkById($db, $request, $talk_id)
     {
         $mapper = new TalkMapper($db, $request);
-        $list   = $mapper->getTalkById($talk_id, $verbose);
-        if (false === $list) {
+        $talk   = $mapper->getTalkById($talk_id);
+        if (false === $talk) {
             throw new Exception('Talk not found', 404);
         }
 
-        return $list;
+        return $talk;
     }
 
     /**
@@ -314,8 +330,10 @@ class TalksController extends ApiController
         $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
         header("Location: " . $uri, true, 201);
 
-        $new_talk = $talk_mapper->getTalkById($new_id);
+        $new_talk = $this->getTalkById($db, $request, $new_id);
+        $collection = new TalkModelCollection([$new_talk], 1);
+        $list = $collection->getOutputView($request);
 
-        return $new_talk;
+        return $list;
     }
 }

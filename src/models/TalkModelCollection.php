@@ -1,21 +1,27 @@
 <?php
 
 /**
- * Container for multiple TwitterRequestTokenModel objects, also handles
+ * Container for multiple TalkModel objects, also handles
  * collection metadata such as pagination
  */
-class TwitterRequestTokenModelCollection extends AbstractModelCollection
+class TalkModelCollection extends AbstractModelCollection
 {
+    protected $list = array();
+    protected $total;
+
     /**
      * Take arrays of data and create a collection of models; store metadata
      */
-    public function __construct(array $data, $total = 0)
+    public function __construct(array $data, $total)
     {
         $this->total = $total;
 
-        // hydrate the model objects
+        // hydrate the model objects if necessary and store to list
         foreach ($data as $item) {
-            $this->list[] = new TwitterRequestTokenModel($item);
+            if (!$item instanceof TalkModel) {
+                $item = new TalkModel($item);
+            }
+            $this->list[] = $item;
         }
     }
 
@@ -29,10 +35,9 @@ class TwitterRequestTokenModelCollection extends AbstractModelCollection
     public function getOutputView($request, $verbose = false)
     {
         // handle the collection first
-        $retval                           = array();
-        $retval['twitter_request_tokens'] = array();
+        $retval['talks'] = [];
         foreach ($this->list as $item) {
-            $retval['twitter_request_tokens'][] = $item->getOutputView($request, $verbose);
+            $retval['talks'][] = $item->getOutputView($request, $verbose);
         }
 
         // add other fields
@@ -40,4 +45,15 @@ class TwitterRequestTokenModelCollection extends AbstractModelCollection
 
         return $retval;
     }
+
+    /**
+     * Return the list of talks (internal representation)
+     *
+     * @return array
+     */
+    public function getTalks()
+    {
+        return $this->list;
+    }
+ 
 }
