@@ -34,7 +34,7 @@ class TalksController extends ApiController
                 $keyword = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
 
                 $mapper = new TalkMapper($db, $request);
-                $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start, $verbose);
+                $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
                 $list = $talks->getOutputView($request, $verbose);
             } else {
                 // listing makes no sense

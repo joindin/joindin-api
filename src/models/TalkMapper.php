@@ -50,7 +50,14 @@ class TalkMapper extends ApiMapper
         return $results;
     }
 
-    public function getTalksByEventId($event_id, $resultsperpage, $start, $verbose = false)
+    /**
+     * Get all the talks for this event
+     *
+     * @param int $event_id         The event to fetch talks for
+     * @param int $resultsperpage   How many results to return on each page
+     * @param int $start            Which result to start with
+     */
+    public function getTalksByEventId($event_id, $resultsperpage, $start)
     {
         $sql = $this->getBasicSQL();
         $sql .= ' and t.event_id = :event_id';
@@ -102,11 +109,10 @@ class TalkMapper extends ApiMapper
      * @param string $keyword
      * @param int $resultsperpage
      * @param int $start
-     * @param bool $verbose
      *
-     * @return array|bool Result array or false on failure
+     * @return TalkModelCollection|bool Result collection or false on failure
      */
-    public function getTalksByTitleSearch($keyword, $resultsperpage, $start, $verbose = false)
+    public function getTalksByTitleSearch($keyword, $resultsperpage, $start)
     {
         $sql = $this->getBasicSQL();
         $sql .= ' and LOWER(t.talk_title) like :title';
@@ -264,7 +270,7 @@ class TalkMapper extends ApiMapper
         return $retval;
     }
 
-    public function getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose = false)
+    public function getTalksBySpeaker($user_id, $resultsperpage, $start)
     {
         // based on getBasicSQL() but needs the speaker table joins
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '

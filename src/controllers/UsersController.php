@@ -17,7 +17,7 @@ class UsersController extends ApiController
             switch ($request->url_elements[4]) {
                 case 'talks':
                     $talk_mapper = new TalkMapper($db, $request);
-                    $talks       = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose);
+                    $talks       = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start);
                     $list        = $talks->getOutputView($request, $verbose);
                     break;
                 case 'hosted':
