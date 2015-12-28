@@ -143,7 +143,7 @@ class TalkMapper extends ApiMapper
      * @param int $talk_id the talk to check
      * @param int $user_id the user you're interested in
      *
-     * @return array
+     * @return array Containing "has_starred" set to true or false
      */
     public function getUserStarred($talk_id, $user_id)
     {
