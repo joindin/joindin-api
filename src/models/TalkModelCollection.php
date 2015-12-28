@@ -56,17 +56,4 @@ class TalkModelCollection extends AbstractModelCollection
         return $this->list;
     }
  
-    /**
-     * Return a single talk (internal representation)
-     *
-     * @return TalkModel|false
-     */
-    public function getTalk($index)
-    {
-        if (!isset($this->list[$index])) {
-            return false;
-        }
-
-        return $this->list[$index];
-    }
 }
