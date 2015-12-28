@@ -55,5 +55,4 @@ class TalkModelCollection extends AbstractModelCollection
     {
         return $this->list;
     }
- 
 }
