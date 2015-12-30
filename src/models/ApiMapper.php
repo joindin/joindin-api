@@ -71,6 +71,7 @@ class ApiMapper
             // special case, no limits
             $limit = '';
         } else {
+            $start = (int)$start;
             $limit = ' LIMIT ' . $start . ',' . $resultsperpage;
         }
 
