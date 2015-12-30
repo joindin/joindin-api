@@ -72,7 +72,7 @@ class EventsController extends ApiController
                 $params = array();
 
                 // collection type filter
-                $filters = array("hot", "upcoming", "past", "cfp", "pending");
+                $filters = array("hot", "upcoming", "past", "cfp", "pending", "all");
                 if (isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters)) {
                     $params["filter"] = $request->parameters['filter'];
 
