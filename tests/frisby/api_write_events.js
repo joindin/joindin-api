@@ -599,4 +599,17 @@ function testEventComments(access_token, url) {
       }
     })
     .toss();
+
+  frisby.create('Get reported event comments (event host)')
+    .get(url + '/comments/reported',
+      {json: true, headers: {'Authorization' : 'Bearer ' + access_token}})
+    .expectStatus(200)
+    .toss();
+
+  frisby.create('Get reported event comments (anon user)')
+    .get(url + '/comments/reported',
+      {json: true})
+    .expectStatus(401)
+    .toss();
+
 }
