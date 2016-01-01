@@ -13,7 +13,7 @@ abstract class AbstractModel
     }
 
     /**
-     * Retrieve a single element from the model or false if it doesn't exist
+     * Retrieve a single element from the model or null if it doesn't exist
      *
      * @param  string $field
      * @return mixed
@@ -24,7 +24,7 @@ abstract class AbstractModel
             return $this->data[ $field ];
         }
 
-        return false;
+        return null;
     }
 
     /**

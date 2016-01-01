@@ -130,23 +130,14 @@ class TalkCommentMapper extends ApiMapper
         $total = $results['total'];
         unset($results['total']);
         $list    = parent::transformResults($results, $verbose);
-        $base    = $this->_request->base;
-        $version = $this->_request->version;
 
         // add per-item links
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                if (true === $verbose) {
-                    $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
-                }
-                $list[$key]['uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'];
-                $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
-                $list[$key]['talk_uri'] = $base . '/' . $version . '/talks/'. $row['talk_id'];
-                $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/talks/' . $row['talk_id'] . '/comments';
-                $list[$key]['reported_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '/reported';
-                if ($row['user_id']) {
-                    $list[$key]['user_uri'] = $base . '/' . $version . '/users/' . $row['user_id'];
-                }
+                $list[$key] = array_merge(
+                    $list[$key],
+                    $this->formatOneComment($row, $verbose)
+                );
             }
         }
         $retval             = array();
@@ -154,6 +145,27 @@ class TalkCommentMapper extends ApiMapper
         $retval['meta']     = $this->getPaginationLinks($list, $total);
 
         return $retval;
+    }
+
+    protected function formatOneComment($row, $verbose)
+    {
+        $base    = $this->_request->base;
+        $version = $this->_request->version;
+
+        $result = []; // we're building up a value to return
+
+        if (true === $verbose) {
+            $result['gravatar_hash'] = md5(strtolower($row['email']));
+        }
+        $result['uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'];
+        $result['verbose_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
+        $result['talk_uri'] = $base . '/' . $version . '/talks/'. $row['talk_id'];
+        $result['talk_comments_uri'] = $base . '/' . $version . '/talks/' . $row['talk_id'] . '/comments';
+        $result['reported_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '/reported';
+        if ($row['user_id']) {
+            $result['user_uri'] = $base . '/' . $version . '/users/' . $row['user_id'];
+        }
+        return $result;
     }
 
     /**
@@ -288,5 +300,57 @@ class TalkCommentMapper extends ApiMapper
             set active = 0 where ID = :talk_comment_id";
         $hide_stmt = $this->_db->prepare($hide_sql);
         $result = $hide_stmt->execute(["talk_comment_id" => $comment_id]);
+    }
+
+    /**
+     * Get all the talk comments that have been reported for this event
+     *
+     * Includes verbose nested comment info
+     *
+     * @param $event_id int    The event whose comments should be returned
+     * @param $moderated bool  Whether to include comments that have been moderated
+     * @return array A list of the comments
+     */
+    public function getReportedCommentsByEventId($event_id, $moderated = false)
+    {
+        $sql = "select rc.reporting_user_id, rc.deciding_user_id, rc.decision,
+            rc.talk_comment_id, t.event_id, tc.talk_id,
+            ru.username as reporting_username,
+            du.username as deciding_username,
+            UNIX_TIMESTAMP(rc.reporting_date) as reporting_date,
+            UNIX_TIMESTAMP(rc.deciding_date) as deciding_date
+            from reported_talk_comments rc
+            join talk_comments tc on tc.ID = rc.talk_comment_id
+            join talks t on t.ID = tc.talk_id
+            left join user ru on ru.ID = rc.reporting_user_id
+            left join user du on du.ID = rc.deciding_user_id
+            where t.event_id = :event_id";
+
+        if (false === $moderated) {
+            $sql .= " and rc.decision is null";
+        }
+
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(['event_id' => $event_id]);
+
+        // need to also set the comment info
+        $list = [];
+        $total = 0;
+        $comment_sql = $this->getBasicSQL(true)
+            . " and tc.ID = :comment_id";
+        $comment_stmt = $this->_db->prepare($comment_sql);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $total++;
+            $comment_result = $comment_stmt->execute(['comment_id' => $row['talk_comment_id']]);
+            if ($comment_result && $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
+                // work around the existing transform logic
+                $comment_array = [$comment];
+                $comment_array = parent::transformResults($comment_array, true);
+                $item = current($comment_array);
+                $row['comment'] = array_merge($item, $this->formatOneComment($comment, true));
+            }
+            $list[] = new TalkCommentReportModel($row);
+        }
+        return new TalkCommentReportModelCollection($list, $total);
     }
 }

@@ -1,5 +1,17 @@
 [
     {
+        "path": "/events(/[^/]+)*/comments/reported",
+        "controller": "Event_commentsController",
+        "action": "getReported",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/events(/[\\d]+)/talk_comments/reported",
+        "controller": "Talk_commentsController",
+        "action": "getReported",
+        "verbs": ["GET"]
+    },
+    {
         "path": "/events(/[^/]+)*/?$",
         "controller": "EventsController",
         "action": "getAction",
@@ -47,7 +59,6 @@
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
-
     {
         "path": "/talks(/[^/]+)*/?$",
         "controller": "TalksController",

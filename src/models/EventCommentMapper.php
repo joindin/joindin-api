@@ -74,34 +74,13 @@ class EventCommentMapper extends ApiMapper
         unset($results['total']);
 
         $list    = parent::transformResults($results, $verbose);
-        $base    = $this->_request->base;
-        $version = $this->_request->version;
 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                if (true === $verbose) {
-                    $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
-                }
-                // figure out user
-                if ($row['user_id']) {
-                    $list[$key]['user_display_name'] = $row['full_name'];
-                    $list[$key]['user_uri']          = $base . '/' . $version . '/users/'
-                                                         . $row['user_id'];
-                } else {
-                    $list[$key]['user_display_name'] = $row['cname'];
-                }
-
-                // useful links
-                $list[$key]['comment_uri']         = $base . '/' . $version . '/event_comments/'
-                                                       . $row['ID'];
-                $list[$key]['verbose_comment_uri'] = $base . '/' . $version . '/event_comments/'
-                                                       . $row['ID'] . '?verbose=yes';
-                $list[$key]['event_uri']           = $base . '/' . $version . '/events/'
-                                                       . $row['event_id'];
-                $list[$key]['event_comments_uri']  = $base . '/' . $version . '/events/'
-                                                       . $row['event_id'] . '/comments';
-                $list[$key]['reported_uri']        = $base . '/' . $version . '/event_comments/'
-                                                       . $row['ID'] . '/reported';
+                $list[$key] = array_merge(
+                    $list[$key],
+                    $this->formatOneComment($row, $verbose)
+                );
             }
 
         }
@@ -110,6 +89,48 @@ class EventCommentMapper extends ApiMapper
         $retval['meta']     = $this->getPaginationLinks($list, $total);
 
         return $retval;
+    }
+
+    /**
+     * Add a way to just format one comment with its meta data etc
+     *
+     * This is used so we can nest comments inside other not-list settings
+     *
+     * @param array $row      The database row with the comment result
+     * @param array $verbose  The verbosity level
+     * @return array The extra fields to add to the existing data for this record
+     */
+    protected function formatOneComment($row, $verbose)
+    {
+        $base    = $this->_request->base;
+        $version = $this->_request->version;
+        $result  = []; // store formatted item here
+
+        if (true === $verbose) {
+            $result['gravatar_hash'] = md5(strtolower($row['email']));
+        }
+        // figure out user
+        if ($row['user_id']) {
+            $result['user_display_name'] = $row['full_name'];
+            $result['user_uri']          = $base . '/' . $version . '/users/'
+                                                    . $row['user_id'];
+        } else {
+            $result['user_display_name'] = $row['cname'];
+        }
+
+        // useful links
+        $result['comment_uri']         = $base . '/' . $version . '/event_comments/'
+                                                . $row['ID'];
+        $result['verbose_comment_uri'] = $base . '/' . $version . '/event_comments/'
+                                                . $row['ID'] . '?verbose=yes';
+        $result['event_uri']           = $base . '/' . $version . '/events/'
+                                                . $row['event_id'];
+        $result['event_comments_uri']  = $base . '/' . $version . '/events/'
+                                                . $row['event_id'] . '/comments';
+        $result['reported_uri']        = $base . '/' . $version . '/event_comments/'
+                                                . $row['ID'] . '/reported';
+
+        return $result;
     }
 
     protected function getBasicSQL($include_hidden = false)
@@ -234,5 +255,57 @@ class EventCommentMapper extends ApiMapper
             set active = 0 where ID = :event_comment_id";
         $hide_stmt = $this->_db->prepare($hide_sql);
         $result = $hide_stmt->execute(["event_comment_id" => $comment_id]);
+    }
+
+    /**
+     * Get all the comments that have been reported for this event
+     *
+     * Includes verbose nested comment info
+     *
+     * @param $event_id int    The event whose comments should be returned
+     * @param $moderated bool  Whether to include comments that have been moderated
+     * @return array A list of the comments
+     */
+    public function getReportedCommentsByEventId($event_id, $moderated = false)
+    {
+        $sql = "select rc.reporting_user_id, rc.deciding_user_id, rc.decision,
+            rc.event_comment_id, ec.event_id,
+            ru.username as reporting_username,
+            du.username as deciding_username,
+            UNIX_TIMESTAMP(rc.reporting_date) as reporting_date,
+            UNIX_TIMESTAMP(rc.deciding_date) as deciding_date
+            from reported_event_comments rc
+            join event_comments ec on ec.ID = rc.event_comment_id
+            left join user ru on ru.ID = rc.reporting_user_id
+            left join user du on du.ID = rc.deciding_user_id
+            where ec.event_id = :event_id";
+
+        if (false === $moderated) {
+            $sql .= " and rc.decision is null";
+        }
+
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(['event_id' => $event_id]);
+
+        // need to also set the comment info
+        $list = [];
+        $total = 0;
+        $comment_sql = $this->getBasicSQL(true)
+            . " and ec.ID = :comment_id";
+        $comment_stmt = $this->_db->prepare($comment_sql);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $total++;
+            $comment_result = $comment_stmt->execute(['comment_id' => $row['event_comment_id']]);
+            if ($comment_result && $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
+                // work around the existing transform logic
+                $comment_array = [$comment];
+                $comment_array = parent::transformResults($comment_array, true);
+                $item = current($comment_array);
+                $row['comment'] = array_merge($item, $this->formatOneComment($comment, true));
+            }
+            $list[] = new EventCommentReportModel($row);
+        }
+        return new EventCommentReportModelCollection($list, $total);
     }
 }
