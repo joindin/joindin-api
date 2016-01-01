@@ -313,11 +313,15 @@ class TalkCommentMapper extends ApiMapper
     {
         $sql = "select rc.reporting_user_id, rc.deciding_user_id, rc.decision,
             rc.talk_comment_id, t.event_id, tc.talk_id,
+            ru.username as reporting_username,
+            du.username as deciding_username,
             UNIX_TIMESTAMP(rc.reporting_date) as reporting_date,
             UNIX_TIMESTAMP(rc.deciding_date) as deciding_date
             from reported_talk_comments rc
             join talk_comments tc on tc.ID = rc.talk_comment_id
             join talks t on t.ID = tc.talk_id
+            left join user ru on ru.ID = rc.reporting_user_id
+            left join user du on du.ID = rc.deciding_user_id
             where t.event_id = :event_id";
 
         if (false === $moderated) {

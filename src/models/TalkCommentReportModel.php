@@ -18,6 +18,8 @@ class TalkCommentReportModel extends AbstractModel
             'reporting_date'          => 'reporting_date',
             'decision'                => 'decision',
             'deciding_date'           => 'deciding_date',
+            'reporting_user_username' => 'reporting_username',
+            'deciding_user_username'  => 'deciding_username',
         );
 
         return $fields;
@@ -65,7 +67,7 @@ class TalkCommentReportModel extends AbstractModel
 
         $item['reporting_user']       = $base . '/' . $version . '/users/' . $this->reporting_user_id;
         if(!empty($this->deciding_user_id)) {
-            $item['deciding_user']    = $base . '/' . $version . '/users/' . $this->deciding_user_id;
+            $item['deciding_user_uri']        = $base . '/' . $version . '/users/' . $this->deciding_user_id;
         }
         $item['event_uri']            = $base . '/' . $version . '/events/' . $this->event_id;
         $item['talk_uri']             = $base . '/' . $version . '/talks/' . $this->talk_id;

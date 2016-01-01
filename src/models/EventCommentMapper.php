@@ -268,10 +268,14 @@ class EventCommentMapper extends ApiMapper
     {
         $sql = "select rc.reporting_user_id, rc.deciding_user_id, rc.decision,
             rc.event_comment_id, ec.event_id,
+            ru.username as reporting_username,
+            du.username as deciding_username,
             UNIX_TIMESTAMP(rc.reporting_date) as reporting_date,
             UNIX_TIMESTAMP(rc.deciding_date) as deciding_date
             from reported_event_comments rc
             join event_comments ec on ec.ID = rc.event_comment_id
+            left join user ru on ru.ID = rc.reporting_user_id
+            left join user du on du.ID = rc.deciding_user_id
             where ec.event_id = :event_id";
 
         if (false === $moderated) {
