@@ -130,23 +130,12 @@ class TalkCommentMapper extends ApiMapper
         $total = $results['total'];
         unset($results['total']);
         $list    = parent::transformResults($results, $verbose);
-        $base    = $this->_request->base;
-        $version = $this->_request->version;
 
         // add per-item links
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                if (true === $verbose) {
-                    $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
-                }
-                $list[$key]['uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'];
-                $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
-                $list[$key]['talk_uri'] = $base . '/' . $version . '/talks/'. $row['talk_id'];
-                $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/talks/' . $row['talk_id'] . '/comments';
-                $list[$key]['reported_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '/reported';
-                if ($row['user_id']) {
-                    $list[$key]['user_uri'] = $base . '/' . $version . '/users/' . $row['user_id'];
-                }
+                $list[$key] = array_merge($list[$key],
+                    $this->formatOneComment($row, $verbose));
             }
         }
         $retval             = array();
@@ -154,6 +143,27 @@ class TalkCommentMapper extends ApiMapper
         $retval['meta']     = $this->getPaginationLinks($list, $total);
 
         return $retval;
+    }
+
+    protected function formatOneComment($row, $verbose)
+    {
+        $base    = $this->_request->base;
+        $version = $this->_request->version;
+
+        $result = []; // we're building up a value to return
+
+        if (true === $verbose) {
+            $result['gravatar_hash'] = md5(strtolower($row['email']));
+        }
+        $result['uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'];
+        $result['verbose_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
+        $result['talk_uri'] = $base . '/' . $version . '/talks/'. $row['talk_id'];
+        $result['talk_comments_uri'] = $base . '/' . $version . '/talks/' . $row['talk_id'] . '/comments';
+        $result['reported_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '/reported';
+        if ($row['user_id']) {
+            $result['user_uri'] = $base . '/' . $version . '/users/' . $row['user_id'];
+        }
+        return $result;
     }
 
     /**

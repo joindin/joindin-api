@@ -74,34 +74,11 @@ class EventCommentMapper extends ApiMapper
         unset($results['total']);
 
         $list    = parent::transformResults($results, $verbose);
-        $base    = $this->_request->base;
-        $version = $this->_request->version;
 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                if (true === $verbose) {
-                    $list[$key]['gravatar_hash'] = md5(strtolower($row['email']));
-                }
-                // figure out user
-                if ($row['user_id']) {
-                    $list[$key]['user_display_name'] = $row['full_name'];
-                    $list[$key]['user_uri']          = $base . '/' . $version . '/users/'
-                                                         . $row['user_id'];
-                } else {
-                    $list[$key]['user_display_name'] = $row['cname'];
-                }
-
-                // useful links
-                $list[$key]['comment_uri']         = $base . '/' . $version . '/event_comments/'
-                                                       . $row['ID'];
-                $list[$key]['verbose_comment_uri'] = $base . '/' . $version . '/event_comments/'
-                                                       . $row['ID'] . '?verbose=yes';
-                $list[$key]['event_uri']           = $base . '/' . $version . '/events/'
-                                                       . $row['event_id'];
-                $list[$key]['event_comments_uri']  = $base . '/' . $version . '/events/'
-                                                       . $row['event_id'] . '/comments';
-                $list[$key]['reported_uri']        = $base . '/' . $version . '/event_comments/'
-                                                       . $row['ID'] . '/reported';
+                $list[$key] = array_merge($list[$key],
+                    $this->formatOneComment($row, $verbose));
             }
 
         }
@@ -110,6 +87,48 @@ class EventCommentMapper extends ApiMapper
         $retval['meta']     = $this->getPaginationLinks($list, $total);
 
         return $retval;
+    }
+
+    /**
+     * Add a way to just format one comment with its meta data etc
+     *
+     * This is used so we can nest comments inside other not-list settings
+     *
+     * @param array $row      The database row with the comment result
+     * @param array $verbose  The verbosity level
+     * @return array The extra fields to add to the existing data for this record
+     */
+    protected function formatOneComment($row, $verbose)
+    {
+        $base    = $this->_request->base;
+        $version = $this->_request->version;
+        $result  = []; // store formatted item here
+
+        if (true === $verbose) {
+            $result['gravatar_hash'] = md5(strtolower($row['email']));
+        }
+        // figure out user
+        if ($row['user_id']) {
+            $result['user_display_name'] = $row['full_name'];
+            $result['user_uri']          = $base . '/' . $version . '/users/'
+                                                    . $row['user_id'];
+        } else {
+            $result['user_display_name'] = $row['cname'];
+        }
+
+        // useful links
+        $result['comment_uri']         = $base . '/' . $version . '/event_comments/'
+                                                . $row['ID'];
+        $result['verbose_comment_uri'] = $base . '/' . $version . '/event_comments/'
+                                                . $row['ID'] . '?verbose=yes';
+        $result['event_uri']           = $base . '/' . $version . '/events/'
+                                                . $row['event_id'];
+        $result['event_comments_uri']  = $base . '/' . $version . '/events/'
+                                                . $row['event_id'] . '/comments';
+        $result['reported_uri']        = $base . '/' . $version . '/event_comments/'
+                                                . $row['ID'] . '/reported';
+
+        return $result;
     }
 
     protected function getBasicSQL($include_hidden = false)
