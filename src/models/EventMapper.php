@@ -393,6 +393,12 @@ class EventMapper extends ApiMapper
                 }
 
                 if ($verbose) {
+                    if ($this->thisUserHasAdminOn($row['ID'])) {
+                        $list[$key]['reported_comments_uri'] = $base . '/' . $version . '/events/'
+                            . $row['ID'] . 'comments/reported';
+                        $list[$key]['reported_talk_comments_uri'] = $base . '/' . $version . '/events/'
+                            . $row['ID'] . '/talk_comments/reported';
+                    }
                     $list[$key]['all_talk_comments_uri'] = $base . '/' . $version . '/events/'
                                                            . $row['ID'] . '/talk_comments';
                     $list[ $key]['hosts']                 = $this->getHosts($row['ID']);
