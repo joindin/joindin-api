@@ -395,7 +395,7 @@ class EventMapper extends ApiMapper
                 if ($verbose) {
                     if ($this->thisUserHasAdminOn($row['ID'])) {
                         $list[$key]['reported_comments_uri'] = $base . '/' . $version . '/events/'
-                            . $row['ID'] . 'comments/reported';
+                            . $row['ID'] . '/comments/reported';
                         $list[$key]['reported_talk_comments_uri'] = $base . '/' . $version . '/events/'
                             . $row['ID'] . '/talk_comments/reported';
                     }
