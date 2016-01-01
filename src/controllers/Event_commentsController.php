@@ -27,9 +27,29 @@ class Event_commentsController extends ApiController
         return false;
     }
 
-    public function getReported()
+    public function getReported($request, $db)
     {
-        //return reported event comments
+        $event_id = $this->getItemId($request);
+        if(empty($event_id)) {
+            throw new UnexpectedValueException("Event not found", 404);
+        }
+
+        // verbosity
+        $verbose = $this->getVerbosity($request);
+
+        $event_mapper   = new EventMapper($db, $request);
+        $comment_mapper = new EventCommentMapper($db, $request);
+
+        if (! isset($request->user_id) || empty($request->user_id)) {
+            throw new Exception("You must log in to do that", 401);
+        }
+
+        if($event_mapper->thisUserHasAdminOn($event_id)) {
+            $list = $comment_mapper->getReportedCommentsByEventId($event_id);
+            return $list;
+        } else {
+            throw new Exception("You don't have permission to do that", 403);
+        }
     }
 
     public function createComment($request, $db)

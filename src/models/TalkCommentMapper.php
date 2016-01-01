@@ -299,4 +299,50 @@ class TalkCommentMapper extends ApiMapper
         $hide_stmt = $this->_db->prepare($hide_sql);
         $result = $hide_stmt->execute(["talk_comment_id" => $comment_id]);
     }
+
+    /**
+     * Get all the talk comments that have been reported for this event
+     *
+     * Includes verbose nested comment info
+     *
+     * @param $event_id int    The event whose comments should be returned
+     * @param $moderated bool  Whether to include comments that have been moderated
+     * @return array A list of the comments
+     */
+    public function getReportedCommentsByEventId($event_id, $moderated = false)
+    {
+        $sql = "select rc.*
+            from reported_talk_comments rc
+            join talk_comments tc on tc.ID = rc.talk_comment_id
+            join talks t on t.ID = tc.talk_id
+            where t.event_id = :event_id";
+
+        if (false === $moderated) {
+            $sql .= " and rc.decision is null";
+        }
+
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(['event_id' => $event_id]);
+
+        // need to also set the comment info
+        $list = [];
+        $total = 0;
+        $comment_sql = $this->getBasicSQL(true)
+            . " and tc.ID = :comment_id";
+        $comment_stmt = $this->_db->prepare($comment_sql);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $total++;
+            $comment_result = $comment_stmt->execute(['comment_id' => $row['talk_comment_id']]);
+            if ($comment_result && $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
+                // work around the existing transform logic
+                $comment_array = [$comment];
+                $comment_array = parent::transformResults($comment_array, true);
+                $item = current($comment_array);
+                $row['comment'] = array_merge($item, $this->formatOneComment($comment, true));
+            }
+            $list[] = $row;
+        }
+        return ['comments' => $list,
+            'meta' => $this->getPaginationLinks($list, $total)];
+    }
 }

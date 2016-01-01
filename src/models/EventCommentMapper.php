@@ -254,4 +254,46 @@ class EventCommentMapper extends ApiMapper
         $hide_stmt = $this->_db->prepare($hide_sql);
         $result = $hide_stmt->execute(["event_comment_id" => $comment_id]);
     }
+
+    /**
+     * Get all the comments that have been reported for this event
+     *
+     * Includes verbose nested comment info
+     *
+     * @param $event_id int    The event whose comments should be returned
+     * @param $moderated bool  Whether to include comments that have been moderated
+     * @return array A list of the comments
+     */
+    public function getReportedCommentsByEventId($event_id, $moderated = false)
+    {
+        $sql = "select rc.*
+            from reported_event_comments rc
+            join event_comments ec on ec.ID = rc.event_comment_id
+            where ec.event_id = :event_id";
+
+        if (false === $moderated) {
+            $sql .= " and rc.decision is null";
+        }
+
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(['event_id' => $event_id]);
+
+        // need to also set the comment info
+        $list = [];
+        $comment_sql = $this->getBasicSQL(true)
+            . " and ec.ID = :comment_id";
+        $comment_stmt = $this->_db->prepare($comment_sql);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $comment_result = $comment_stmt->execute(['comment_id' => $row['event_comment_id']]);
+            if ($comment_result && $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
+                // work around the existing transform logic
+                $comment_array = [$comment];
+                $comment_array = parent::transformResults($comment_array, true);
+                $item = current($comment_array);
+                $row['comment'] = array_merge($item, $this->formatOneComment($comment, true));
+            }
+            $list[] = $row;
+        }
+        return $list;
+    }
 }
