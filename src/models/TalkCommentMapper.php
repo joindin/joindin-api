@@ -134,8 +134,10 @@ class TalkCommentMapper extends ApiMapper
         // add per-item links
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                $list[$key] = array_merge($list[$key],
-                    $this->formatOneComment($row, $verbose));
+                $list[$key] = array_merge(
+                    $list[$key],
+                    $this->formatOneComment($row, $verbose)
+                );
             }
         }
         $retval             = array();

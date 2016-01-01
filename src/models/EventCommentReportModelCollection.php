@@ -45,4 +45,3 @@ class EventCommentReportModelCollection extends AbstractModelCollection
         return $retval;
     }
 }
-

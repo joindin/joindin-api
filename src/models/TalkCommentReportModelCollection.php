@@ -45,4 +45,3 @@ class TalkCommentReportModelCollection extends AbstractModelCollection
         return $retval;
     }
 }
-

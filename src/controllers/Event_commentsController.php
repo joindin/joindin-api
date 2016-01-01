@@ -30,7 +30,7 @@ class Event_commentsController extends ApiController
     public function getReported($request, $db)
     {
         $event_id = $this->getItemId($request);
-        if(empty($event_id)) {
+        if (empty($event_id)) {
             throw new UnexpectedValueException("Event not found", 404);
         }
 
@@ -44,7 +44,7 @@ class Event_commentsController extends ApiController
             throw new Exception("You must log in to do that", 401);
         }
 
-        if($event_mapper->thisUserHasAdminOn($event_id)) {
+        if ($event_mapper->thisUserHasAdminOn($event_id)) {
             $list = $comment_mapper->getReportedCommentsByEventId($event_id);
             return $list->getOutputView($request);
         } else {

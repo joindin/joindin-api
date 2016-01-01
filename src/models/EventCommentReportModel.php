@@ -66,7 +66,7 @@ class EventCommentReportModel extends AbstractModel
         $version = $request->version;
 
         $item['reporting_user_uri']       = $base . '/' . $version . '/users/' . $this->reporting_user_id;
-        if(!empty($this->deciding_user_id)) {
+        if (!empty($this->deciding_user_id)) {
             $item['deciding_user_uri']        = $base . '/' . $version . '/users/' . $this->deciding_user_id;
         }
         $item['event_uri']            = $base . '/' . $version . '/events/' . $this->event_id;
@@ -74,4 +74,3 @@ class EventCommentReportModel extends AbstractModel
         return $item;
     }
 }
-
