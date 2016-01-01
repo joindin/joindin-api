@@ -266,7 +266,10 @@ class EventCommentMapper extends ApiMapper
      */
     public function getReportedCommentsByEventId($event_id, $moderated = false)
     {
-        $sql = "select rc.*
+        $sql = "select rc.reporting_user_id, rc.deciding_user_id, rc.decision,
+            rc.event_comment_id, ec.event_id,
+            UNIX_TIMESTAMP(rc.reporting_date) as reporting_date,
+            UNIX_TIMESTAMP(rc.deciding_date) as deciding_date
             from reported_event_comments rc
             join event_comments ec on ec.ID = rc.event_comment_id
             where ec.event_id = :event_id";
@@ -280,10 +283,13 @@ class EventCommentMapper extends ApiMapper
 
         // need to also set the comment info
         $list = [];
+        $total = 0;
         $comment_sql = $this->getBasicSQL(true)
             . " and ec.ID = :comment_id";
         $comment_stmt = $this->_db->prepare($comment_sql);
+
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $total++;
             $comment_result = $comment_stmt->execute(['comment_id' => $row['event_comment_id']]);
             if ($comment_result && $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
                 // work around the existing transform logic
@@ -292,8 +298,8 @@ class EventCommentMapper extends ApiMapper
                 $item = current($comment_array);
                 $row['comment'] = array_merge($item, $this->formatOneComment($comment, true));
             }
-            $list[] = $row;
+            $list[] = new EventCommentReportModel($row);
         }
-        return $list;
+        return new EventCommentReportModelCollection($list, $total);
     }
 }

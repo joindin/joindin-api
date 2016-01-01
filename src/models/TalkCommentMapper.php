@@ -311,7 +311,10 @@ class TalkCommentMapper extends ApiMapper
      */
     public function getReportedCommentsByEventId($event_id, $moderated = false)
     {
-        $sql = "select rc.*
+        $sql = "select rc.reporting_user_id, rc.deciding_user_id, rc.decision,
+            rc.talk_comment_id, t.event_id, tc.talk_id,
+            UNIX_TIMESTAMP(rc.reporting_date) as reporting_date,
+            UNIX_TIMESTAMP(rc.deciding_date) as deciding_date
             from reported_talk_comments rc
             join talk_comments tc on tc.ID = rc.talk_comment_id
             join talks t on t.ID = tc.talk_id
@@ -340,9 +343,8 @@ class TalkCommentMapper extends ApiMapper
                 $item = current($comment_array);
                 $row['comment'] = array_merge($item, $this->formatOneComment($comment, true));
             }
-            $list[] = $row;
+            $list[] = new TalkCommentReportModel($row);
         }
-        return ['comments' => $list,
-            'meta' => $this->getPaginationLinks($list, $total)];
+        return new TalkCommentReportModelCollection($list, $total);
     }
 }

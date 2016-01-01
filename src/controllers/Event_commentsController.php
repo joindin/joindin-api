@@ -46,7 +46,7 @@ class Event_commentsController extends ApiController
 
         if($event_mapper->thisUserHasAdminOn($event_id)) {
             $list = $comment_mapper->getReportedCommentsByEventId($event_id);
-            return $list;
+            return $list->getOutputView($request);
         } else {
             throw new Exception("You don't have permission to do that", 403);
         }

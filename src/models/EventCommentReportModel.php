@@ -1,0 +1,75 @@
+<?php
+
+/**
+ * Object that represents a reported event comment
+ */
+class EventCommentReportModel extends AbstractModel
+{
+    /**
+     * Default fields in the output view
+     *
+     * format: [public facing name => database column]
+     *
+     * @return array
+     */
+    public function getDefaultFields()
+    {
+        $fields = array(
+            'reporting_date'          => 'reporting_date',
+            'decision'                => 'decision',
+            'deciding_date'           => 'deciding_date',
+        );
+
+        return $fields;
+    }
+
+    /**
+     * Default fields in the output view
+     *
+     * format: [public facing name => database column]
+     *
+     * @return array
+     */
+    public function getVerboseFields()
+    {
+        $fields = $this->getDefaultFields();
+
+        return $fields;
+    }
+
+    /**
+     * List of subresource keys that may be in the data set from the mapper
+     * but are not database columns that need to be in the output view
+     *
+     * format: [public facing name => field in $this->data]
+     *
+     * @return array
+     */
+    public function getSubResources()
+    {
+        return [
+            'comment'   => 'comment',
+        ];
+    }
+
+    /**
+     * Return this object with client-facing fields and hypermedia, ready for output
+     */
+    public function getOutputView(Request $request, $verbose = false)
+    {
+        $item = parent::getOutputView($request, $verbose);
+        
+        // add Hypermedia
+        $base    = $request->base;
+        $version = $request->version;
+
+        $item['reporting_user']       = $base . '/' . $version . '/users/' . $this->reporting_user_id;
+        if(!empty($this->deciding_user_id)) {
+            $item['deciding_user']        = $base . '/' . $version . '/users/' . $this->deciding_user_id;
+        }
+        $item['event_uri']            = $base . '/' . $version . '/events/' . $this->event_id;
+
+        return $item;
+    }
+}
+
