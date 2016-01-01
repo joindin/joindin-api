@@ -314,6 +314,7 @@ function testCreateApprovedEvent(access_token)
         testEditEventFailsIfNotLoggedIn(event_uri);
         testEditEventFailsWithIncorrectData(access_token, event_uri)
         testEditEvent(access_token, res.headers.location);
+        testEventComments(access_token, event_uri);
       }
     })
     .toss();
@@ -559,3 +560,43 @@ function testEditEvent(access_token, event_uri)
     .toss();
 }
 
+function testEventComments(access_token, url) {
+  frisby.create('Add event comments')
+    .post(
+      url + "/comments",
+      {
+        "comment": "Test event comment to tell you it was awesome",
+        "rating": 3
+      },
+      {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
+    )
+    .expectStatus(201)
+    .after(function(err, res, body) {
+      if(res.statusCode == 201) {
+        var comment_uri = res.headers.location;
+
+        frisby.create("Comment has reported_uri")
+          .get(comment_uri)
+          .expectStatus(200)
+          .afterJSON(function(comment) {
+            var report_uri = comment.comments[0].reported_uri;
+
+            frisby.create("Anon user can't report comment")
+              .post(report_uri, {}, {json: true})
+              .expectStatus(400)
+              .expectJSON(["You must log in to report a comment"])
+              .toss();
+
+            frisby.create("Logged in user can report comment")
+              .post(report_uri, {}, 
+                {headers: {'Authorization' : 'Bearer ' + access_token}}
+                )
+              .expectStatus(202)
+              .toss();
+
+          })
+          .toss()
+      }
+    })
+    .toss();
+}
