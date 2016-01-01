@@ -73,6 +73,7 @@
               <exclude name="**/database.php" />
           </patternset>
         </fileset>
+        <formatter type="full" usefile="false" />
     </phpcodesniffer>
 </target>
 
