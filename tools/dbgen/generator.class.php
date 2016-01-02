@@ -145,7 +145,7 @@ class DataGenerator {
     // Generate $count talks for random events
     protected function _generateTalks($count) {
         echo "TRUNCATE talks;\n";
-        echo "INSERT INTO talks (talk_title, speaker, slides_link, date_given, event_id, ID, talk_desc, active, owner_id, lang, duration) VALUES \n";
+        echo "INSERT INTO talks (talk_title, slides_link, date_given, event_id, ID, talk_desc, active, owner_id, lang, duration) VALUES \n";
 
         $first = true;
         for ($id=1; $id!=$count+1; $id++) {
@@ -179,7 +179,7 @@ class DataGenerator {
 
             if (! $first) echo ",\n";
 
-            printf ("('%s', NULL, '%s', %d, %d, %d, '%s', 1, NULL, %d, %d)",
+            printf ("('%s', '%s', %d, %d, %d, '%s', 1, NULL, %d, %d)",
                                    $talk->title, $talk->slides_link, $talk->date_given, $talk->event_id,
                                    $id, $talk->description, $talk->lang_id, $talk->duration);
 
