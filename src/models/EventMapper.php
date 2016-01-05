@@ -972,7 +972,7 @@ class EventMapper extends ApiMapper
     {
         $sql = 'select count(*) as count '
                . 'from events '
-               . 'where pending = 1 and private = 0';
+               . 'where pending = 1 and (events.private <> "y" OR events.private IS NULL)';
 
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute();
