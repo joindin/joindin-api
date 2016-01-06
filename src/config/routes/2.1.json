@@ -61,7 +61,7 @@
     },
     {
         "path": "/talks(/[^/]+)*/speakers/?$",
-        "controller": "Talk_speakersController",
+        "controller": "TalkSpeakersController",
         "action": "listSpeakersAction",
         "verbs": ["GET"]
     },
@@ -85,7 +85,7 @@
     },
     {
         "path": "/speakers(/[^/]+)*/?$",
-        "controller": "Talk_speakersController",
+        "controller": "TalkSpeakersController",
         "action": "getSpeakerAction",
         "verbs" : ["GET"]
     },

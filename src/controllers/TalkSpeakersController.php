@@ -1,6 +1,6 @@
 <?php
 
-class Talk_speakersController extends ApiController
+class TalkSpeakersController extends ApiController
 {
     /**
      * Get a list of Speakers for a given talk
@@ -24,8 +24,12 @@ class Talk_speakersController extends ApiController
 
         $talkSpeakerMapper = new TalkSpeakerMapper($db, $request);
 
-        $list = $talkSpeakerMapper->getSpeakersByTalkId($talk_id,
-            $resultsperpage, $start, $verbose);
+        $list = $talkSpeakerMapper->getSpeakersByTalkId(
+            $talk_id,
+            $resultsperpage,
+            $start,
+            $verbose
+        );
 
         return $list;
     }

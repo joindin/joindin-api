@@ -5,7 +5,8 @@ class TalkSpeakerMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function getDefaultFields() {
+    public function getDefaultFields()
+    {
         $fields = array(
             "username" => "speaker_name",
             "full_name" => "full_name",
@@ -17,7 +18,8 @@ class TalkSpeakerMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function getVerboseFields() {
+    public function getVerboseFields()
+    {
         $fields = array(
             "username" => "speaker_name",
             "full_name" => "full_name",
@@ -37,11 +39,12 @@ class TalkSpeakerMapper extends ApiMapper
 
         $base = $this->_request->base;
         $version = $this->_request->version;
-        if(is_array($list) && count($list)) {
-            foreach($results as $key => $row) {
+        if (is_array($list) && count($list)) {
+            foreach ($results as $key => $row) {
                 // add speakers
                 $list[$key]['uri'] = $base . '/' . $version . '/speakers/' . $row['speaker_id'] ;
-                $list[$key]['verbose_uri'] = $base . '/' . $version . '/speakers/' . $row['speaker_id'] . '?verbose=yes';
+                $list[$key]['verbose_uri'] = $base . '/' . $version . '/speakers/'
+                                           . $row['speaker_id'] . '?verbose=yes';
                 $list[$key]['talk_uri'] = $base . '/' . $version . '/talks/' . $row['talk_id'];
                 if (isset($row['user_id'])) {
                     $list[$key]['user_uri'] = $base . '/' . $version . '/users/' . $row['user_id'];
@@ -96,7 +99,8 @@ class TalkSpeakerMapper extends ApiMapper
      */
     protected function getUsers($resultsperpage, $start, $where = null, $order = null, $parameters = array())
     {
-        $sql = 'select speaker.ID as speaker_id, speaker.speaker_name, speaker.talk_id, user.ID as user_id, user.email, '
+        $sql = 'select speaker.ID as speaker_id, speaker.speaker_name, speaker.talk_id, '
+               . 'user.ID as user_id, user.email, '
                . 'user.full_name, user.twitter_username '
                . 'from talk_speaker as speaker '
                . 'left join user on (speaker.speaker_id = user.ID) '
