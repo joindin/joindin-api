@@ -379,7 +379,7 @@ class UserMapper extends ApiMapper
                               . "where user_id = :user_id";
 
                 $stmt = $this->_db->prepare($delete_sql);
-                $stmt->execute($verify_data);
+                $stmt->execute(['user_id' => $user_id]);
 
                 // verified
                 return true;
