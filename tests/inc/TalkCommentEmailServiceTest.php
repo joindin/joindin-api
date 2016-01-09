@@ -2,6 +2,8 @@
 
 namespace JoindinTest\Inc;
 
+use \TalkModel;
+
 require_once __DIR__ . '/../../src/services/TalkCommentEmailService.php';
 
 class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase {
@@ -14,7 +16,7 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase {
     public function createService() {
         $config = array("email" => array("from" => "test@joind.in"));
         $recipients = array("test@joind.in");
-        $talk = array("talks" => array(array("talk_title" => "sample talk")));
+        $talk = new TalkModel(array("talk_title" => "sample talk"));
         $comment = array("comments" => array(array("comment" => "test comment", "rating" => 3)));
 
         $service = new \TalkCommentEmailService($config, $recipients, $talk, $comment);
@@ -29,7 +31,7 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase {
     public function createServiceWithEmailRedirect() {
         $config = array("email" => array("from" => "test@joind.in", "forward_all_to" => "blackhole@joind.in"));
         $recipients = array("test@joind.in");
-        $talk = array("talks" => array(array("talk_title" => "sample talk")));
+        $talk = new TalkModel(array("talk_title" => "sample talk"));
         $comment = array("comments" => array(array("comment" => "test comment", "rating" => 3)));
 
         $service = new \TalkCommentEmailService($config, $recipients, $talk, $comment);
@@ -44,7 +46,7 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase {
     public function templateReplacements() {
         $config = array("email" => array("from" => "test@joind.in"));
         $recipients = array("test@joind.in");
-        $talk = array("talks" => array(array("talk_title" => "sample talk")));
+        $talk = new TalkModel(array("talk_title" => "sample talk"));
         $comment = array("comments" => array(array("comment" => "test comment", "rating" => 3)));
 
         $service = new \TalkCommentEmailService($config, $recipients, $talk, $comment);
@@ -74,7 +76,7 @@ Questions? Comments?  Get in touch: [feedback@joind.in](mailto:feedback@joind.in
         
         $config = array("email" => array("from" => "test@joind.in"));
         $recipients = array("test@joind.in");
-        $talk = array("talks" => array(array("talk_title" => "sample talk")));
+        $talk = new TalkModel(array("talk_title" => "sample talk"));
         $comment = array("comments" => array(array("comment" => "test comment", "rating" => 3)));
 
         $service = new \TalkCommentEmailService($config, $recipients, $talk, $comment);

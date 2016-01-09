@@ -1,14 +1,44 @@
 [
     {
+        "path": "/events(/[^/]+)*/comments/reported",
+        "controller": "Event_commentsController",
+        "action": "getReported",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/events(/[\\d]+)/talk_comments/reported",
+        "controller": "Talk_commentsController",
+        "action": "getReported",
+        "verbs": ["GET"]
+    },
+    {
         "path": "/events(/[^/]+)*/?$",
         "controller": "EventsController",
         "action": "getAction",
         "verbs": ["GET"]
     },
     {
+        "path": "/events/(\\d+)/approval$",
+        "controller": "EventsController",
+        "action": "approveAction",
+        "verbs": ["POST"]
+    },
+    {
+        "path": "/events/(\\d+)/approval$",
+        "controller": "EventsController",
+        "action": "rejectAction",
+        "verbs": ["DELETE"]
+    },
+    {
         "path": "/events(/[^/]+)*/comments",
         "controller": "Event_commentsController",
         "action": "createComment",
+        "verbs": ["POST"]
+    },
+    {
+        "path": "/events(/[\\d]+)/talks",
+        "controller": "TalksController",
+        "action": "createTalkAction",
         "verbs": ["POST"]
     },
     {
@@ -29,7 +59,6 @@
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
-
     {
         "path": "/talks(/[^/]+)*/?$",
         "controller": "TalksController",
@@ -52,7 +81,7 @@
     {
         "path": "/token(/[^/]+)*/?$",
         "controller": "TokenController",
-        "action": "handle",
+        "action": "postAction",
         "verbs": ["POST"]
     },
 
@@ -94,15 +123,29 @@
     {
         "path": "/event_comments(/[^/]+)*/?$",
         "controller": "Event_commentsController",
-        "action": "handle",
+        "action": "getComments",
         "verbs": ["GET"]
+    },
+
+    {
+        "path": "/event_comments(/[^/]+)*/reported?$",
+        "controller": "Event_commentsController",
+        "action": "reportComment",
+        "verbs": ["POST"]
     },
 
     {
         "path": "/talk_comments(/[^/]+)*/?$",
         "controller": "Talk_commentsController",
-        "action": "handle",
+        "action": "getComments",
         "verbs": ["GET"]
+    },
+
+    {
+        "path": "/talk_comments(/[^/]+)*/reported?$",
+        "controller": "Talk_commentsController",
+        "action": "reportComment",
+        "verbs": ["POST"]
     },
 
     {
@@ -158,6 +201,34 @@
         "controller": "LanguagesController",
         "action": "getLanguage",
         "verbs": ["GET"]
+    },
+
+    {
+        "path": "/contact",
+        "controller": "ContactController",
+        "action": "contact",
+        "verbs": ["POST"]
+    },
+
+    {
+        "path": "/talk_types/?$",
+        "controller": "TalkTypesController",
+        "action": "getAllTalkTypes",
+        "verbs": ["GET"]
+    },
+
+    {
+        "path": "/talk_types(/[0-9]+)?/?$",
+        "controller": "TalkTypesController",
+        "action": "getTalkType",
+        "verbs": ["GET"]
+    },
+
+    {
+        "path": "/facebook/token",
+        "controller": "FacebookController",
+        "action": "logUserIn",
+        "verbs": ["POST"]
     },
 
     {

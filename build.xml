@@ -21,9 +21,8 @@
   <exec command="phpunit -c tests/phpunit.xml" logoutput="true" checkreturn="true" />
  </target>
 
- <target name="buildTasks" description="Run the phpmd, phpcs, phpdoc, phploc and lint tasks.">
+ <target name="buildTasks" description="Run the phpmd, phpcs, phploc and lint tasks.">
    <phingcall target="phpcs"/>
-   <phingcall target="phpdoc"/>
    <phingcall target="phplint"/>
  </target>
 
@@ -40,34 +39,43 @@
  </target>
 
  <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
-  <phpcodesniffer standard="tools/codesniffer/JoindIn/" verbosity="0">
+  <phpcodesniffer standard="tools/codesniffer/JoindInPSR2/" verbosity="0" haltonerror="true" haltonwarning="true">
    <fileset dir="${apiv2source}">
+       <patternset>
+           <include name="**/*.php"/>
+           <exclude name="**/config.php" />
+           <exclude name="**/database.php" />
+       </patternset>
    </fileset>
    <formatter type="checkstyle" outfile="${basedir}/build/logs/checkstyle.xml" />
   </phpcodesniffer>
  </target>
 
  <target name="phpcs-human-summary" description="Generate human-readable Codesniffer output">
-  <phpcodesniffer standard="tools/codesniffer/JoindIn/">
+  <phpcodesniffer standard="tools/codesniffer/JoindInPSR2/">
    <fileset dir="${apiv2source}">
+       <patternset>
+           <include name="**/*.php"/>
+           <exclude name="**/config.php" />
+           <exclude name="**/database.php" />
+       </patternset>
    </fileset>
    <formatter type="summary" usefile="false" />
   </phpcodesniffer>
  </target>
  
 <target name="phpcs-human" description="Check codes style with PHP_CodeSniffer">
-    <phpcodesniffer standard="tools/codesniffer/JoindIn/">
+    <phpcodesniffer standard="tools/codesniffer/JoindInPSR2/">
         <fileset dir="${apiv2source}">
-            <patternset>
-                <include name="**/${filename}" />
-            </patternset>
+          <patternset>
+              <include name="**/*.php"/>
+              <exclude name="**/config.php" />
+              <exclude name="**/database.php" />
+          </patternset>
         </fileset>
+        <formatter type="full" usefile="false" />
     </phpcodesniffer>
 </target>
-
- <target name="phpdoc" description="Generate API documentation using PHPDocumentor">
-     <exec command="phpdoc -d ${apiv2source} -t ${basedir}/build/api/" logoutput="true" />
- </target>
 
  <target name="phplint" description="Run php -l over the fileset">
    <phplint haltonfailure="true">

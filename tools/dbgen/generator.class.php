@@ -600,11 +600,21 @@ class DataGenerator {
         echo "INSERT INTO `user` (`username`, `password`, `email`, `last_login`, `ID`, `verified`, `admin`, `full_name`, `active`, `twitter_username`, `request_code`) VALUES\n";
         echo "('imaadmin', '$password', 'ima@sampledomain.com', unix_timestamp(), 1, 1, 1, 'Ima Admin', 1, '', NULL)";
 
-        for ($id=2; $id <= $count+2; $id++) {
+        $usernames = array();
+        $id = 2;
+        while ($id < ($count+2)) {
             if ($id % 100 == 0) fwrite(STDERR, "USER ID: $id    (".(memory_get_usage(true)/1024)." Kb)        \r");
 
             // Generate and store user
             $user = $this->_genUser();
+            
+            // Ensure that we don't duplicate usernames as that column has a unique index on it
+            if (isset($usernames[$user->username])) {
+                continue;
+            }
+            $usernames[$user->username] = $user->username;
+            $id++;
+
             $user->id = $id;
             $this->_cacheStore('users', $id, $user);
 

@@ -30,7 +30,7 @@ class Timezone
      * and then
      *
      * @param integer $unixtime Unix timestamp to get DateTime object from
-     * @param string  $timezone Timezone for DateTime object - if blank, it will be
+     * @param string $timezone Timezone for DateTime object - if blank, it will be
      *                          UTC
      *
      * @return DateTime
@@ -49,6 +49,7 @@ class Timezone
 
         $datetime = new DateTime("@{$unixtime}");
         $datetime->setTimezone($tz);
+
         return $datetime;
     }
 
@@ -65,6 +66,7 @@ class Timezone
         $here    = new DateTimeZone(date_default_timezone_get());
         $hoffset = $here->getOffset(new DateTime("now", $here));
         $off     = (time() - $hoffset) + ($evt_offset * 3600);
+
         return $off;
     }
 
@@ -72,8 +74,8 @@ class Timezone
      * Returns a formatted version of getDatetimeFromUnixtime.
      *
      * @param integer $unixtime Unix time to format
-     * @param string  $timezone Timezone to set for timestamp
-     * @param string  $format   Format to return
+     * @param string $timezone Timezone to set for timestamp
+     * @param string $format Format to return
      *
      * @return string
      */
@@ -91,17 +93,19 @@ class Timezone
     /**
      * Returns a Unix timestamp for the given specific time in the given timezone
      *
-     * @param string  $timezone Timezone to use
-     * @param integer $year     Year to use
-     * @param integer $month    Month to use
-     * @param integer $day      Day to use
-     * @param integer $hour     Hour to use
-     * @param integer $minute   Minute to use
-     * @param integer $second   Second to use
+     * @param string $timezone Timezone to use
+     * @param integer $year Year to use
+     * @param integer $month Month to use
+     * @param integer $day Day to use
+     * @param integer $hour Hour to use
+     * @param integer $minute Minute to use
+     * @param integer $second Second to use
      *
      * @return integer
      */
+    // @codingStandardsIgnoreStart
     public static function UnixtimeForTimeInTimezone(
+    // @codingStandardsIgnoreEnd
         $timezone,
         $year,
         $month,
@@ -123,4 +127,3 @@ class Timezone
         return $unixTimestamp;
     }
 }
-

@@ -2,6 +2,7 @@
 
 var frisby   = require('frisby');
 var datatest = require('./data');
+var talkstest  = require('./api_write_talks');
 var util     = require('util');
 
 var baseURL = '';
@@ -304,27 +305,29 @@ function testCreateApprovedEvent(access_token)
       {json: true, headers: {json: true, 'Authorization' : 'Bearer ' + access_token, 'Content-type': 'application/json'}}
     )
     .expectStatus(201) // Created as it is automatically approved
-    .expectHeaderContains("Location", baseURL + "/v2.1/events/")
+    .expectHeaderContains("Location", baseURL + "/v2.1/events")
     .after(function(err, res, body) {
       if(res.statusCode == 201) {
         // We have an event, we can test it!
         var event_uri = res.headers.location;
-        testEventByUrl(event_uri);
+        testEventByUrl(access_token, event_uri);
         testEditEventFailsIfNotLoggedIn(event_uri);
         testEditEventFailsWithIncorrectData(access_token, event_uri)
         testEditEvent(access_token, res.headers.location);
+        testEventComments(access_token, event_uri);
       }
     })
     .toss();
 }
 
-function testEventByUrl(url) {
+function testEventByUrl(access_token, url) {
   frisby.create('Get event from URL')
     .get(url)
     .expectStatus(200)
     .expectJSONLength("events", 1)
     .afterJSON(function (data) {
       datatest.checkEventData(data.events[0]);
+      talkstest.runTalkTests(access_token, data.events[0].talks_uri);
     })
   .toss();
 }
@@ -557,3 +560,56 @@ function testEditEvent(access_token, event_uri)
     .toss();
 }
 
+function testEventComments(access_token, url) {
+  frisby.create('Add event comments')
+    .post(
+      url + "/comments",
+      {
+        "comment": "Test event comment to tell you it was awesome",
+        "rating": 3
+      },
+      {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
+    )
+    .expectStatus(201)
+    .after(function(err, res, body) {
+      if(res.statusCode == 201) {
+        var comment_uri = res.headers.location;
+
+        frisby.create("Comment has reported_uri")
+          .get(comment_uri)
+          .expectStatus(200)
+          .afterJSON(function(comment) {
+            var report_uri = comment.comments[0].reported_uri;
+
+            frisby.create("Anon user can't report comment")
+              .post(report_uri, {}, {json: true})
+              .expectStatus(400)
+              .expectJSON(["You must log in to report a comment"])
+              .toss();
+
+            frisby.create("Logged in user can report comment")
+              .post(report_uri, {}, 
+                {headers: {'Authorization' : 'Bearer ' + access_token}}
+                )
+              .expectStatus(202)
+              .toss();
+
+          })
+          .toss()
+      }
+    })
+    .toss();
+
+  frisby.create('Get reported event comments (event host)')
+    .get(url + '/comments/reported',
+      {json: true, headers: {'Authorization' : 'Bearer ' + access_token}})
+    .expectStatus(200)
+    .toss();
+
+  frisby.create('Get reported event comments (anon user)')
+    .get(url + '/comments/reported',
+      {json: true})
+    .expectStatus(401)
+    .toss();
+
+}

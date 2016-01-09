@@ -10,7 +10,7 @@ class UserUsernameReminderEmailService extends EmailBaseService
         // set up the common stuff first
         parent::__construct($config, $recipients);
 
-        $this->user       = $user;
+        $this->user        = $user;
         $this->website_url = $config['website_url'];
     }
 
@@ -33,5 +33,3 @@ class UserUsernameReminderEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 }
-
-

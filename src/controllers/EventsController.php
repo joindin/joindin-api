@@ -1,66 +1,70 @@
 <?php
 
-class EventsController extends ApiController {
-    public function handle(Request $request, $db) {
-        // only GET is implemented so far
-        if($request->getVerb() == 'GET') {
-            return $this->getAction($request, $db);
-        } elseif ($request->getVerb() == 'POST') {
-            return $this->postAction($request, $db);
-        } elseif ($request->getVerb() == 'DELETE') {
-            return $this->deleteAction($request, $db);
-        } elseif ($request->getVerb() == 'PUT') {
-            return $this->putAction($request, $db);
-        }
-        return false;
-    }
-
-	public function getAction($request, $db) {
+class EventsController extends ApiController
+{
+    public function getAction($request, $db)
+    {
         $event_id = $this->getItemId($request);
 
         // verbosity
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start = $this->getStart($request);
+        $start          = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
-        if(isset($request->url_elements[4])) {
-            switch($request->url_elements[4]) {
+        if (isset($request->url_elements[4])) {
+            switch ($request->url_elements[4]) {
                 case 'talks':
-                            $talk_mapper = new TalkMapper($db, $request);
-                            $list = $talk_mapper->getTalksByEventId($event_id, $resultsperpage, $start, $verbose);
-                            break;
+                    $talk_mapper = new TalkMapper($db, $request);
+                    $talks = $talk_mapper->getTalksByEventId($event_id, $resultsperpage, $start);
+                    $list = $talks->getOutputView($request, $verbose);
+                    break;
                 case 'comments':
-                            $event_comment_mapper = new EventCommentMapper($db, $request);
-                            $list = $event_comment_mapper->getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose);
-                            break;
+                    $event_comment_mapper = new EventCommentMapper($db, $request);
+                    $list                 = $event_comment_mapper->getEventCommentsByEventId(
+                        $event_id,
+                        $resultsperpage,
+                        $start,
+                        $verbose
+                    );
+                    break;
                 case 'talk_comments':
-                            $sort = $this->getSort($request);
-                            $talk_comment_mapper = new TalkCommentMapper($db, $request);
-                            $list = $talk_comment_mapper->getCommentsByEventId($event_id, $resultsperpage, $start, $verbose, $sort);
-                            break;
+                    $sort                = $this->getSort($request);
+                    $talk_comment_mapper = new TalkCommentMapper($db, $request);
+                    $list                = $talk_comment_mapper->getCommentsByEventId(
+                        $event_id,
+                        $resultsperpage,
+                        $start,
+                        $verbose,
+                        $sort
+                    );
+                    break;
                 case 'attendees':
-                            $user_mapper= new UserMapper($db, $request);
-                            $list = $user_mapper->getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose);
-                            break;
+                    $user_mapper = new UserMapper($db, $request);
+                    $list        = $user_mapper->getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose);
+                    break;
                 case 'attending':
-                            $mapper = new EventMapper($db, $request);
-                            $list = $mapper->getUserAttendance($event_id, $request->user_id);
-                            break;
+                    $mapper = new EventMapper($db, $request);
+                    $list   = $mapper->getUserAttendance($event_id, $request->user_id);
+                    break;
                 case 'tracks':
-                            $mapper = new TrackMapper($db, $request);
-                            $list = $mapper->getTracksByEventId($event_id, $resultsperpage, $start, $verbose);
-                            break;
+                    $mapper = new TrackMapper($db, $request);
+                    $list   = $mapper->getTracksByEventId($event_id, $resultsperpage, $start, $verbose);
+                    break;
                 default:
-                            throw new InvalidArgumentException('Unknown Subrequest', 404);
-                            break;
+                    throw new InvalidArgumentException('Unknown Subrequest', 404);
+                    break;
             }
         } else {
-            $mapper = new EventMapper($db, $request);
-            if($event_id) {
-                $list = $mapper->getEventById($event_id, $verbose);
-                if(count($list['events']) == 0) {
+            $mapper           = new EventMapper($db, $request);
+            $user_mapper      = new UserMapper($db, $request);
+            $isSiteAdmin      = $user_mapper->isSiteAdmin($request->user_id);
+            $activeEventsOnly = $isSiteAdmin ? false : true;
+
+            if ($event_id) {
+                $list = $mapper->getEventById($event_id, $verbose, $activeEventsOnly);
+                if (count($list['events']) == 0) {
                     throw new Exception('Event not found', 404);
                 }
             } else {
@@ -68,43 +72,69 @@ class EventsController extends ApiController {
                 $params = array();
 
                 // collection type filter
-                $filters = array("hot", "upcoming", "past", "cfp");
-                if(isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters)) {
+                $filters = array("hot", "upcoming", "past", "cfp", "pending");
+                if (isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters)) {
                     $params["filter"] = $request->parameters['filter'];
+
+                    // for pending events we need a logged in user with the correct permissions
+                    if ($params["filter"] == 'pending') {
+                        if (! isset($request->user_id)) {
+                            throw new Exception("You must be logged in to view pending events", 400);
+                        }
+                        $user_mapper      = new UserMapper($db, $request);
+                        $canApproveEvents = $user_mapper->isSiteAdmin($request->user_id);
+                        if (! $canApproveEvents) {
+                            throw new Exception("You don't have permission to view pending events", 403);
+                        }
+                    }
                 }
 
-                if(isset($request->parameters['title'])) {
-                    $title = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
+                if (isset($request->parameters['title'])) {
+                    $title           = filter_var(
+                        $request->parameters['title'],
+                        FILTER_SANITIZE_STRING,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    );
                     $params["title"] = $title;
                 }
 
-                if(isset($request->parameters['stub'])) {
-                    $stub = filter_var($request->parameters['stub'], FILTER_SANITIZE_STRING);
+                if (isset($request->parameters['stub'])) {
+                    $stub           = filter_var(
+                        $request->parameters['stub'],
+                        FILTER_SANITIZE_STRING,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    );
                     $params["stub"] = $stub;
                 }
-                    
-                if(isset($request->parameters['tags'])) {
+
+                if (isset($request->parameters['tags'])) {
                     // if it isn't an array, make it one
-                    if(is_array($request->parameters['tags'])) {
-                        foreach($request->parameters['tags'] as $t) {
-                            $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING);
+                    if (is_array($request->parameters['tags'])) {
+                        foreach ($request->parameters['tags'] as $t) {
+                            $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                         }
                     } else {
-                        $tags = array(filter_var(trim($request->parameters['tags']), FILTER_SANITIZE_STRING));
+                        $tags = array(
+                            filter_var(
+                                trim($request->parameters['tags']),
+                                FILTER_SANITIZE_STRING,
+                                FILTER_FLAG_NO_ENCODE_QUOTES
+                            )
+                        );
                     }
                     $params["tags"] = $tags;
                 }
 
-                if(isset($request->parameters['startdate'])) {
+                if (isset($request->parameters['startdate'])) {
                     $start_datetime = new DateTime($request->parameters['startdate']);
-                    if($start_datetime) {
+                    if ($start_datetime) {
                         $params["startdate"] = $start_datetime->format("U");
                     }
                 }
 
-                if(isset($request->parameters['enddate'])) {
+                if (isset($request->parameters['enddate'])) {
                     $end_datetime = new DateTime($request->parameters['enddate']);
-                    if($end_datetime) {
+                    if ($end_datetime) {
                         $params["enddate"] = $end_datetime->format("U");
                     }
                 }
@@ -114,109 +144,24 @@ class EventsController extends ApiController {
         }
 
         return $list;
-	}
+    }
 
-    public function postAction($request, $db) {
-        if(!isset($request->user_id)) {
+    public function postAction($request, $db)
+    {
+        if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 400);
         }
-        if(isset($request->url_elements[4])) {
-            switch($request->url_elements[4]) {
+        if (isset($request->url_elements[4])) {
+            switch ($request->url_elements[4]) {
                 case 'attending':
                     // the body of this request is completely irrelevant
                     // The logged in user *is* attending the event.  Use DELETE to unattend
-                    $event_id = $this->getItemId($request);
+                    $event_id     = $this->getItemId($request);
                     $event_mapper = new EventMapper($db, $request);
                     $event_mapper->setUserAttendance($event_id, $request->user_id);
-                    header("Location: " . $request->base . $request->path_info, NULL, 201);
+                    header("Location: " . $request->base . $request->path_info, null, 201);
+
                     return;
-                case 'talks':
-                    $talk['event_id'] = $this->getItemId($request);
-                    if(empty($talk['event_id'])) {
-                        throw new Exception(
-                            "POST expects a talk representation sent to a specific event URL",
-                            400
-                        );
-                    }
-
-                    $event_mapper = new EventMapper($db, $request);
-                    $is_admin = $event_mapper->thisUserHasAdminOn($talk['event_id']);
-                    if(!$is_admin) {
-                        throw new Exception("You do not have permission to add talks to this event", 400);
-                    }
-
-                    // get the event so we can get the timezone info
-                    $list = $event_mapper->getEventById($talk['event_id'], true);
-                    if(count($list['events']) == 0) {
-                        throw new Exception('Event not found', 404);
-                    }
-                    $event = $list['events'][0];
-
-                    $talk['title'] = filter_var(
-                        $request->getParameter('talk_title'),
-                        FILTER_SANITIZE_STRING
-                    );
-                    if(empty($talk['title'])) {
-                        throw new Exception("The talk title field is required", 400);
-                    }
-
-                    $talk['description'] = filter_var(
-                        $request->getParameter('talk_description'),
-                        FILTER_SANITIZE_STRING
-                    );
-                    if(empty($talk['description'])) {
-                        throw new Exception("The talk description field is required", 400);
-                    }
-
-                    $talk_types = array("Talk", "Social event", "Keynote", "Workshop", "Event related");
-                    if($request->getParameter("talk_type") && in_array($request->getParameter("talk_type"), $talk_types)) {
-                        $talk['talk_type'] = $request->getParameter("talk_type");
-                    } else {
-                        $talk['talk_type'] = "Talk";
-                    }
-
-                    $talk['language'] = filter_var($request->getParameter('language'), FILTER_SANITIZE_STRING);
-                    if(empty($talk['language'])) {
-                        // default to UK English
-                        $talk['language'] = 'English - UK';
-                    }
-
-                    $start_date = $request->getParameter('start_date');
-                    if(empty($start_date)) {
-                        throw new Exception("Please give the date and time of the talk", 400);
-                    }
-                    $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
-                    $start_date = new DateTime($request->getParameter("start_date"), $tz);
-                    $talk['date'] = $start_date->format('U');
-
-                    $speakers = $request->getParameter('speakers');
-                    if(is_array($speakers)) {
-                        foreach($speakers as $speaker) {
-                            $talk['speakers'][] = filter_var($speaker, FILTER_SANITIZE_STRING);
-                        }
-                    }
-
-                    $talk_mapper = new TalkMapper($db, $request);
-                    $new_id = $talk['id'] = $talk_mapper->save($talk);
-
-                    try {
-                        // Write talk to search index
-
-                        $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
-                        $searchSrv->write('talks', $talk);
-                    } catch(Exception $e) {
-                        // We can always do a full reindex later if ES isn't playing ball, so don't
-                        // fail the entire process just because of search index.
-
-                        // Notify admins that this may be necessary
-                    }
-
-                    // Update the cache count for the number of talks at this event
-                    $event_mapper->cacheTalkCount($talk['event_id']);
-
-                    header("Location: " . $request->base . $request->path_info .'/' . $new_id, NULL, 201);
-                    $new_talk = $talk_mapper->getTalkById($new_id);
-                    return $new_talk;
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
             }
@@ -224,105 +169,152 @@ class EventsController extends ApiController {
             // Create a new event, pending unless user has privs
 
             // incoming data
-            $event = array();
+            $event  = array();
             $errors = array();
 
-            $event['name'] = filter_var($request->getParameter("name"), FILTER_SANITIZE_STRING);
-            if(empty($event['name'])) {
+            $event['name'] = filter_var(
+                $request->getParameter("name"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
+            if (empty($event['name'])) {
                 $errors[] = "'name' is a required field";
             }
 
-            $event['description'] = filter_var($request->getParameter("description"), FILTER_SANITIZE_STRING);
-            if(empty($event['description'])) {
+            $event['description'] = filter_var(
+                $request->getParameter("description"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
+            if (empty($event['description'])) {
                 $errors[] = "'description' is a required field";
             }
 
-            $event['location']  = filter_var($request->getParameter("location"), FILTER_SANITIZE_STRING);
+            $event['location'] = filter_var(
+                $request->getParameter("location"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($event['location'])) {
                 $errors[] = "'location' is a required field (for virtual events, 'online' works)";
             }
 
             $start_date = strtotime($request->getParameter("start_date"));
-            $end_date = strtotime($request->getParameter("end_date"));
-            if(!$start_date || !$end_date) {
+            $end_date   = strtotime($request->getParameter("end_date"));
+            if (! $start_date || ! $end_date) {
                 $errors[] = "Both 'start_date' and 'end_date' must be supplied in a recognised format";
             } else {
                 // if the dates are okay, sort out timezones
 
-                $event['tz_continent'] = filter_var($request->getParameter("tz_continent"), FILTER_SANITIZE_STRING);
-                $event['tz_place'] = filter_var($request->getParameter("tz_place"), FILTER_SANITIZE_STRING);
+                $event['tz_continent'] = filter_var(
+                    $request->getParameter("tz_continent"),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
+                $event['tz_place']     = filter_var(
+                    $request->getParameter("tz_place"),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
                 try {
                     // make the timezone, and read in times with respect to that
-                    $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
-                    $start_date = new DateTime($request->getParameter("start_date"), $tz);
-                    $end_date = new DateTime($request->getParameter("end_date"), $tz);
+                    $tz                  = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+                    $start_date          = new DateTime($request->getParameter("start_date"), $tz);
+                    $end_date            = new DateTime($request->getParameter("end_date"), $tz);
                     $event['start_date'] = $start_date->format('U');
-                    $event['end_date'] = $end_date->format('U');
-                } catch(Exception $e) {
+                    $event['end_date']   = $end_date->format('U');
+                } catch (Exception $e) {
                     // the time zone isn't right
-                    $errors[] = "The fields 'tz_continent' and 'tz_place' must be supplied and valid (e.g. Europe and London)";
+                    $errors[] = "The fields 'tz_continent' and 'tz_place' must be supplied and valid ".
+                                "(e.g. Europe and London)";
                 }
             }
 
             // optional fields - only check if we have no errors as we may need
             // access to $tz.
-            if (!$errors) {
-                $href  = filter_var($request->getParameter("href"), FILTER_VALIDATE_URL);
-                if($href) {
+            if (! $errors) {
+                $href = filter_var($request->getParameter("href"), FILTER_VALIDATE_URL);
+                if ($href) {
                     $event['href'] = $href;
                 }
                 $cfp_url = filter_var($request->getParameter("cfp_url"), FILTER_VALIDATE_URL);
-                if($cfp_url) {
+                if ($cfp_url) {
                     $event['cfp_url'] = $cfp_url;
                 }
                 $cfp_start_date = strtotime($request->getParameter("cfp_start_date"));
                 if ($cfp_start_date) {
-                    $cfp_start_date = new DateTime($request->getParameter("cfp_start_date"), $tz);
+                    $cfp_start_date          = new DateTime($request->getParameter("cfp_start_date"), $tz);
                     $event['cfp_start_date'] = $cfp_start_date->format('U');
                 }
                 $cfp_end_date = strtotime($request->getParameter("cfp_end_date"));
                 if ($cfp_end_date) {
-                    $cfp_end_date = new DateTime($request->getParameter("cfp_end_date"), $tz);
+                    $cfp_end_date          = new DateTime($request->getParameter("cfp_end_date"), $tz);
                     $event['cfp_end_date'] = $cfp_end_date->format('U');
                 }
-                $latitude  = filter_var($request->getParameter("latitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $latitude = filter_var(
+                    $request->getParameter("latitude"),
+                    FILTER_SANITIZE_NUMBER_FLOAT,
+                    FILTER_FLAG_ALLOW_FRACTION
+                );
                 if ($latitude) {
                     $event['latitude'] = $latitude;
                 }
-                $longitude  = filter_var($request->getParameter("longitude"), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $longitude = filter_var(
+                    $request->getParameter("longitude"),
+                    FILTER_SANITIZE_NUMBER_FLOAT,
+                    FILTER_FLAG_ALLOW_FRACTION
+                );
                 if ($longitude) {
                     $event['longitude'] = $longitude;
                 }
                 $incoming_tag_list = $request->getParameter('tags');
-                if(is_array($incoming_tag_list)) {
-                    $tags = array_map(function($tag){
-                        $tag = filter_var($tag, FILTER_SANITIZE_STRING);
-                        $tag = trim($tag);
-                        $tag = strtolower($tag);
-                        return $tag;
-                    }, $incoming_tag_list);
+                if (is_array($incoming_tag_list)) {
+                    $tags = array_map(
+                        function ($tag) {
+                            $tag = filter_var($tag, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                            $tag = trim($tag);
+                            $tag = strtolower($tag);
+
+                            return $tag;
+                        },
+                        $incoming_tag_list
+                    );
                 }
 
             }
 
+            $event_mapper = new EventMapper($db, $request);
+
+            // Make sure they only have a maximum of $max_pending_events
+            // unapproved event submissions at any time
+            $max_pending_events = 3;
+            if (isset($this->config['limits']['max_pending_events'])) {
+                $max_pending_events = $this->config['limits']['max_pending_events'];
+            }
+
+            $current_pending = $event_mapper->getPendingEventsCountByUser($request->user_id);
+
+            if ($current_pending >= $max_pending_events) {
+                $suffix = $max_pending_events == 1 ? '' : 's';
+                $errors[] = sprintf('You may only have %d pending event%s at one time', $max_pending_events, $suffix);
+            }
+
             // How does it look?  With no errors, we can proceed
-            if($errors) {
+            if ($errors) {
                 throw new Exception(implode(". ", $errors), 400);
             } else {
-                $user_mapper= new UserMapper($db, $request);
-                $event_mapper = new EventMapper($db, $request);
+                $user_mapper  = new UserMapper($db, $request);
 
-                $event_owner = $user_mapper->getUserById($request->user_id);
+                $event_owner           = $user_mapper->getUserById($request->user_id);
                 $event['contact_name'] = $event_owner['users'][0]['full_name'];
-
 
                 // When a site admin creates an event, we want to approve it immediately
                 $approveEventOnCreation = $user_mapper->isSiteAdmin($request->user_id);
 
                 // Do we want to automatically approve when testing?
                 if (isset($this->config['features']['allow_auto_approve_events'])
-                    && $this->config['features']['allow_auto_approve_events']) {
-
+                    && $this->config['features']['allow_auto_approve_events']
+                ) {
                     if ($request->getParameter("auto_approve_event") == "true") {
                         // The test suite sends this extra field, if we got
                         // this far then this platform supports this
@@ -345,7 +337,7 @@ class EventsController extends ApiController {
                     }
 
                     // redirect to event listing
-                    header("Location: " . $request->base . $request->path_info . '/' . $event_id, NULL, 201);
+                    header("Location: " . $request->base . $request->path_info . '/' . $event_id, null, 201);
                 } else {
                     // NOTE: Don't write to the search index if we're not approving yet
                     
@@ -353,7 +345,7 @@ class EventsController extends ApiController {
 
 
                     // set status to accepted; a pending event won't be visible
-                    header("Location: " . $request->base . $request->path_info, NULL, 202);
+                    header("Location: " . $request->base . $request->path_info, null, 202);
                 }
 
                 // now set the current user as host and attending
@@ -364,10 +356,10 @@ class EventsController extends ApiController {
                 }
 
                 // Send an email if we didn't auto-approve
-                if (!$user_mapper->isSiteAdmin($request->user_id)) {
-                    $event = $event_mapper->getPendingEventById($event_id, true);
-                    $count = $event_mapper->getPendingEventsCount();
-                    $recipients = $user_mapper->getSiteAdminEmails();
+                if (! $user_mapper->isSiteAdmin($request->user_id)) {
+                    $event        = $event_mapper->getPendingEventById($event_id, true);
+                    $count        = $event_mapper->getPendingEventsCount();
+                    $recipients   = $user_mapper->getSiteAdminEmails();
                     $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
                     $emailService->sendEmail();
                 }
@@ -376,17 +368,19 @@ class EventsController extends ApiController {
         }
     }
 
-    public function deleteAction($request, $db) {
-        if(!isset($request->user_id)) {
+    public function deleteAction($request, $db)
+    {
+        if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", 400);
         }
-        if(isset($request->url_elements[4])) {
-            switch($request->url_elements[4]) {
+        if (isset($request->url_elements[4])) {
+            switch ($request->url_elements[4]) {
                 case 'attending':
-                    $event_id = $this->getItemId($request);
+                    $event_id     = $this->getItemId($request);
                     $event_mapper = new EventMapper($db, $request);
                     $event_mapper->setUserNonAttendance($event_id, $request->user_id);
-                    header("Location: " . $request->base . $request->path_info, NULL, 200);
+                    header("Location: " . $request->base . $request->path_info, null, 200);
+
                     return;
                     break;
                 default:
@@ -405,9 +399,8 @@ class EventsController extends ApiController {
 
         $event_id = $this->getItemId($request);
         if (! isset($request->url_elements[4])) {
-
             // Edit an Event
-            $event_mapper = new EventMapper($db, $request);
+            $event_mapper   = new EventMapper($db, $request);
             $existing_event = $event_mapper->getEventById($event_id, true);
             if (! $existing_event) {
                 throw new Exception(sprintf(
@@ -416,47 +409,68 @@ class EventsController extends ApiController {
                 ));
             }
 
-            if (! $event_mapper->thisUserHasAdminOn($event_id)) {
+            if (!$event_mapper->thisUserHasAdminOn($event_id)) {
                 throw new Exception('You are not an host for this event', 403);
             }
 
-            // initialise a new set of fields to save 
-            $event = array("event_id" => $event_id);
+            // initialise a new set of fields to save
+            $event  = array("event_id" => $event_id);
             $errors = array();
 
-            $event['name'] = filter_var($request->getParameter("name"), FILTER_SANITIZE_STRING);
-            if(empty($event['name'])) {
+            $event['name'] = filter_var(
+                $request->getParameter("name"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
+            if (empty($event['name'])) {
                 $errors[] = "'name' is a required field";
             }
 
-            $event['description'] = filter_var($request->getParameter("description"), FILTER_SANITIZE_STRING);
-            if(empty($event['description'])) {
+            $event['description'] = filter_var(
+                $request->getParameter("description"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
+            if (empty($event['description'])) {
                 $errors[] = "'description' is a required field";
             }
 
-            $event['location']  = filter_var($request->getParameter("location"), FILTER_SANITIZE_STRING);
+            $event['location'] = filter_var(
+                $request->getParameter("location"),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($event['location'])) {
                 $errors[] = "'location' is a required field (for virtual events, 'online' works)";
             }
 
             $start_date = strtotime($request->getParameter("start_date"));
-            $end_date = strtotime($request->getParameter("end_date"));
-            if(!$start_date || !$end_date) {
+            $end_date   = strtotime($request->getParameter("end_date"));
+            if (! $start_date || ! $end_date) {
                 $errors[] = "Both 'start_date' and 'end_date' must be supplied in a recognised format";
             } else {
                 // if the dates are okay, sort out timezones
-                $event['tz_continent'] = filter_var($request->getParameter("tz_continent"), FILTER_SANITIZE_STRING);
-                $event['tz_place'] = filter_var($request->getParameter("tz_place"), FILTER_SANITIZE_STRING);
+                $event['tz_continent'] = filter_var(
+                    $request->getParameter("tz_continent"),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
+                $event['tz_place']     = filter_var(
+                    $request->getParameter("tz_place"),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
                 try {
                     // make the timezone, and read in times with respect to that
-                    $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
-                    $start_date = new DateTime($request->getParameter("start_date"), $tz);
-                    $end_date   = new DateTime($request->getParameter("end_date"), $tz);
+                    $tz                  = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+                    $start_date          = new DateTime($request->getParameter("start_date"), $tz);
+                    $end_date            = new DateTime($request->getParameter("end_date"), $tz);
                     $event['start_date'] = $start_date->format('U');
-                    $event['end_date'] = $end_date->format('U');
-                } catch(Exception $e) {
+                    $event['end_date']   = $end_date->format('U');
+                } catch (Exception $e) {
                     // the time zone isn't right
-                    $errors[] = "The fields 'tz_continent' and 'tz_place' must be supplied and valid (e.g. Europe and London)";
+                    $errors[] = "The fields 'tz_continent' and 'tz_place' must be supplied and valid ".
+                                "(e.g. Europe and London)";
                 }
             }
             // How does it look?  With no errors, we can proceed
@@ -467,45 +481,49 @@ class EventsController extends ApiController {
             // optional fields - only check if we have no errors as we may need $tz
             // also only update supplied fields - but DO allow saving empty ones
             $href = $request->getParameter("href", false); // returns false if the value was not supplied
-            if(false !== $href) {
+            if (false !== $href) {
                 // we got a value, filter and save it
                 $event['href'] = filter_var($href, FILTER_VALIDATE_URL);
             }
-            $cfp_url = $request->getParameter("cfp_url", false); 
-            if(false !== $cfp_url) {
+            $cfp_url = $request->getParameter("cfp_url", false);
+            if (false !== $cfp_url) {
                 // we got a value, filter and save it
                 $event['cfp_url'] = filter_var($cfp_url, FILTER_VALIDATE_URL);
             }
             $cfp_start_date = $request->getParameter("cfp_start_date", false);
             if (false !== $cfp_start_date && strtotime($cfp_start_date)) {
-                $cfp_start_date = new DateTime($cfp_start_date, $tz);
+                $cfp_start_date          = new DateTime($cfp_start_date, $tz);
                 $event['cfp_start_date'] = $cfp_start_date->format('U');
             }
             $cfp_end_date = $request->getParameter("cfp_end_date", false);
             if (false !== $cfp_end_date && strtotime($cfp_end_date)) {
-                $cfp_end_date = new DateTime($cfp_end_date, $tz);
+                $cfp_end_date          = new DateTime($cfp_end_date, $tz);
                 $event['cfp_end_date'] = $cfp_end_date->format('U');
             }
-            $latitude = $request->getParameter("latitude", false); 
+            $latitude = $request->getParameter("latitude", false);
             if (false !== $latitude) {
-                $latitude  = filter_var($latitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                if($latitude) {
+                $latitude = filter_var($latitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                if ($latitude) {
                     $event['latitude'] = $latitude;
                 }
             }
-            $longitude = $request->getParameter("longitude", false); 
+            $longitude = $request->getParameter("longitude", false);
             if (false !== $longitude) {
-                $longitude  = filter_var($longitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $longitude          = filter_var($longitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 $event['longitude'] = $longitude;
             }
             $incoming_tag_list = $request->getParameter('tags');
-            if(is_array($incoming_tag_list)) {
-                $tags = array_map(function($tag){
-                    $tag = filter_var($tag, FILTER_SANITIZE_STRING);
-                    $tag = trim($tag);
-                    $tag = strtolower($tag);
-                    return $tag;
-                }, $incoming_tag_list);
+            if (is_array($incoming_tag_list)) {
+                $tags = array_map(
+                    function ($tag) {
+                        $tag = filter_var($tag, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                        $tag = trim($tag);
+                        $tag = strtolower($tag);
+
+                        return $tag;
+                    },
+                    $incoming_tag_list
+                );
             }
 
             $event_mapper->editEvent($event, $event_id);
@@ -531,8 +549,82 @@ class EventsController extends ApiController {
                 $event_mapper->setTags($event_id, $tags);
             }
 
-            header("Location: " . $request->base . $request->path_info, NULL, 204);
+            header("Location: " . $request->base . $request->path_info, null, 204);
             exit;
         }
+    }
+
+    /**
+     * Approve a pending event by POSTing to /events/{id}/approval
+     *
+     * The body of this request is completely irrelevant, simply POSTing to this
+     * endpoint is all that's needed to approve an pending event
+     *
+     * @param  Request $request
+     * @param  PDO $db
+     *
+     * @return void
+     */
+    public function approveAction($request, $db)
+    {
+        if (! isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 400);
+        }
+
+        $event_id     = $this->getItemId($request);
+        $event_mapper = new EventMapper($db, $request);
+
+        if (! $event_mapper->thisUserCanApproveEvents()) {
+            throw new Exception("You are not allowed to approve this event", 403);
+        }
+
+        $result = $event_mapper->approve($event_id, $request->user_id);
+        if (! $result) {
+            throw new Exception("This event cannot be approved", 400);
+        }
+
+        if ($result) {
+            // Send a notification email as we have approved
+            $event        = $event_mapper->getEventById($event_id, true)['events'][0];
+            $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
+            $emailService = new EventApprovedEmailService($this->config, $recipients, $event);
+            $emailService->sendEmail();
+        }
+
+        $location = $request->base . '/' . $request->version . '/events/' . $event_id;
+        header('Location: ' . $location, null, 204);
+
+        return;
+    }
+
+    /**
+     * Reject a pending event by DELETEing to /events/{id}/approval
+     *
+     * @param Request $request
+     * @param PDO $db
+     *
+     * @return void
+     */
+    public function rejectAction($request, $db)
+    {
+        if (! isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 400);
+        }
+
+        $event_id     = $this->getItemId($request);
+        $event_mapper = new EventMapper($db, $request);
+
+        if (! $event_mapper->thisUserCanApproveEvents()) {
+            throw new Exception("You are not allowed to reject this event", 403);
+        }
+
+        $result = $event_mapper->reject($event_id, $request->user_id);
+        if (! $result) {
+            throw new Exception("This event cannot be rejected", 400);
+        }
+
+        header("Content-Length: 0", null, 204);
+
+        return;
     }
 }

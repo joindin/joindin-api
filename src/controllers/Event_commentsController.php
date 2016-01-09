@@ -1,75 +1,97 @@
 <?php
-
-class Event_commentsController extends ApiController {
-    public function handle(Request $request, $db) {
-        // only GET is implemented so far
-        if($request->getVerb() == 'GET') {
-            return $this->getAction($request, $db);
-        }
-        return false;
-    }
-
-	public function getAction($request, $db) {
+// @codingStandardsIgnoreStart
+class Event_commentsController extends ApiController
+// @codingStandardsIgnoreEnd
+{
+    public function getComments($request, $db)
+    {
         $comment_id = $this->getItemId($request);
 
         // verbosity
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start = $this->getStart($request);
+        $start          = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = new EventCommentMapper($db, $request);
-        if($comment_id) {
+        if ($comment_id) {
             $list = $mapper->getCommentById($comment_id, $verbose);
-            if(false === $list) {
+            if (false === $list) {
                 throw new Exception('Comment not found', 404);
             }
+
             return $list;
-        } 
+        }
 
         return false;
-	}
+    }
 
-    public function createComment($request, $db) {
-        $comment = array();
+    public function getReported($request, $db)
+    {
+        $event_id = $this->getItemId($request);
+        if (empty($event_id)) {
+            throw new UnexpectedValueException("Event not found", 404);
+        }
+
+        // verbosity
+        $verbose = $this->getVerbosity($request);
+
+        $event_mapper   = new EventMapper($db, $request);
+        $comment_mapper = new EventCommentMapper($db, $request);
+
+        if (! isset($request->user_id) || empty($request->user_id)) {
+            throw new Exception("You must log in to do that", 401);
+        }
+
+        if ($event_mapper->thisUserHasAdminOn($event_id)) {
+            $list = $comment_mapper->getReportedCommentsByEventId($event_id);
+            return $list->getOutputView($request);
+        } else {
+            throw new Exception("You don't have permission to do that", 403);
+        }
+    }
+
+    public function createComment($request, $db)
+    {
+        $comment             = array();
         $comment['event_id'] = $this->getItemId($request);
-        if(empty($comment['event_id'])) {
+        if (empty($comment['event_id'])) {
             throw new Exception(
                 "POST expects a comment representation sent to a specific event URL",
                 400
             );
         }
-                            
+
         // no anonymous comments over the API
-        if(!isset($request->user_id) || empty($request->user_id)) {
+        if (! isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to comment');
         }
         $user_mapper = new UserMapper($db, $request);
-        $users = $user_mapper->getUserById($request->user_id);
-        $thisUser = $users['users'][0];
+        $users       = $user_mapper->getUserById($request->user_id);
+        $thisUser    = $users['users'][0];
 
         $rating = $request->getParameter('rating', false);
-        if(false === $rating) {
+        if (false === $rating) {
             throw new Exception('The field "rating" is required', 400);
         } elseif (false === is_numeric($rating) || $rating > 5) {
             throw new Exception('The field "rating" must be a number (1-5)', 400);
         }
 
         $commentText = $request->getParameter('comment');
-        if(empty($commentText)) {
+        if (empty($commentText)) {
             throw new Exception('The field "comment" is required', 400);
         }
 
         // Get the API key reference to save against the comment
-        $oauth_model = $request->getOauthModel($db);
+        $oauth_model   = $request->getOauthModel($db);
         $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
         $comment['user_id'] = $request->user_id;
         $comment['comment'] = $commentText;
-        $comment['rating'] = $rating;                    
-        $comment['cname'] = $thisUser['full_name'];
-        $comment['source'] = $consumer_name;
+        $comment['rating']  = $rating;
+        $comment['cname']   = $thisUser['full_name'];
+        $comment['source']  = $consumer_name;
 
         // run it by akismet if we have it
         if (isset($this->config['akismet']['apiKey'], $this->config['akismet']['blog'])) {
@@ -77,17 +99,17 @@ class Event_commentsController extends ApiController {
                 $this->config['akismet']['apiKey'],
                 $this->config['akismet']['blog']
             );
-            $isValid = $spamCheckService->isCommentAcceptable(
+            $isValid          = $spamCheckService->isCommentAcceptable(
                 $comment,
                 $request->getClientIP(),
                 $request->getClientUserAgent()
             );
-            if (!$isValid) {
+            if (! $isValid) {
                 throw new Exception("Comment failed spam check", 400);
             }
         }
 
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper   = new EventMapper($db, $request);
         $comment_mapper = new EventCommentMapper($db, $request);
 
         // should rating be allowed?
@@ -110,7 +132,41 @@ class Event_commentsController extends ApiController {
         $event_mapper->cacheCommentCount($comment['event_id']);
 
         $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
-        header("Location: " . $uri, NULL, 201);
+        header("Location: " . $uri, null, 201);
+        exit;
+    }
+
+    public function reportComment($request, $db)
+    {
+        // must be logged in to report a comment
+        if (! isset($request->user_id) || empty($request->user_id)) {
+            throw new Exception('You must log in to report a comment');
+        }
+
+        $comment_mapper = new EventCommentMapper($db, $request);
+
+        $commentId = $this->getItemId($request);
+        $commentInfo = $comment_mapper->getCommentInfo($commentId);
+        if (false === $commentInfo) {
+            throw new Exception('Comment not found', 404);
+        }
+        
+        $eventId = $commentInfo['event_id'];
+
+        $comment_mapper->userReportedComment($commentId, $request->user_id);
+
+        // notify event admins
+        $comment      = $comment_mapper->getCommentById($commentId, true, true);
+        $event_mapper = new EventMapper($db, $request);
+        $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
+        $event        = $event_mapper->getEventById($eventId, true, true);
+
+        $emailService = new EventCommentReportedEmailService($this->config, $recipients, $comment, $event);
+        $emailService->sendEmail();
+
+        // send them to the comments collection
+        $uri = $request->base . '/' . $request->version . '/events/' . $eventId . "/comments";
+        header("Location: " . $uri, true, 202);
         exit;
     }
 }

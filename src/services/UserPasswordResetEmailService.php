@@ -35,6 +35,3 @@ class UserPasswordResetEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 }
-
-
-
