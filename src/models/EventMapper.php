@@ -166,8 +166,9 @@ class EventMapper extends ApiMapper
                     $where .= sprintf(
                         ' AND events.event_cfp_url IS NOT NULL' .
                         ' AND events.event_cfp_end >= %1$d' .
-                        ' AND events.event_cfp_start <= %1$s',
-                        mktime(0, 0, 0)
+                        ' AND events.event_cfp_start <= %2$s',
+                        mktime(0, 0, 0),
+                        mktime(0, 0, 0) + (7 * 86400)
                     );
                     $order .= 'events.event_start';
                     break;
