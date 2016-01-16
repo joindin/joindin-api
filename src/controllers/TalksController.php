@@ -123,7 +123,7 @@ class TalksController extends ApiController
                         foreach ($speakers as $person) {
                             $recipients[] = $person['email'];
                         }
-                        $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+                        $emailService = new TalkCommentEmailService($this->config, $recipients, $request, $talk, $comment);
                         $emailService->sendEmail();
                         $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
                         header("Location: " . $uri, true, 201);
