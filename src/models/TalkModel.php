@@ -78,7 +78,7 @@ class TalkModel extends AbstractModel
 
         $item['uri']                  = $base . '/' . $version . '/talks/' . $this->ID;
         $item['verbose_uri']          = $base . '/' . $version . '/talks/' . $this->ID . '?verbose=yes';
-        $item['website_uri']          = 'http://joind.in/talk/view/' . $this->ID;
+        $item['website_uri']          = $this->getWebsiteUrl($request->getConfigValue('website_url'));
         $item['starred_uri']          = $base . '/' . $version . '/talks/' . $this->ID . '/starred';
         $item['comments_uri']         = $base . '/' . $version . '/talks/' . $this->ID . '/comments';
         $item['verbose_comments_uri'] = $base . '/' . $version . '/talks/' . $this->ID
@@ -86,5 +86,13 @@ class TalkModel extends AbstractModel
         $item['event_uri']            = $base . '/' . $version . '/events/' . $this->event_id;
 
         return $item;
+    }
+
+    /**
+     * Get the website URL of a specific talk just from this object and
+     * the website base (can come from Request or from config)
+     */
+    public function getWebsiteUrl($website_url) {
+        return $website_url . "/talk/" . $this->stub;
     }
 }
