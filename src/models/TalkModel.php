@@ -89,9 +89,11 @@ class TalkModel extends AbstractModel
     }
 
     /**
-     * Get the website URL of a specific talk just from this object and
-     * the website base (can come from Request or from config)
-     */
+     * Get the URL on the website of this talk
+     *
+     * @param $website_url string The URL to the main website (e.g. http://joind.in or http://test.joind.in)
+     * @return string The link to the talk on the web (e.g. http://web2.dev.joind.in/talk/ed89b)
+     **/
     public function getWebsiteUrl($website_url)
     {
         return $website_url . "/talk/" . $this->stub;
