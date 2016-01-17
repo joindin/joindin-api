@@ -476,11 +476,14 @@ class EventsController extends ApiController
                 // we got a value, filter and save it
                 $event['cfp_url'] = filter_var($cfp_url, FILTER_VALIDATE_URL);
             }
+
+            $event['cfp_start_date'] = null;
             $cfp_start_date = $request->getParameter("cfp_start_date", false);
             if (false !== $cfp_start_date && strtotime($cfp_start_date)) {
                 $cfp_start_date          = new DateTime($cfp_start_date, $tz);
                 $event['cfp_start_date'] = $cfp_start_date->format('U');
             }
+            $event['cfp_end_date'] = null;
             $cfp_end_date = $request->getParameter("cfp_end_date", false);
             if (false !== $cfp_end_date && strtotime($cfp_end_date)) {
                 $cfp_end_date          = new DateTime($cfp_end_date, $tz);
