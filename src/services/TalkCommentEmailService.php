@@ -8,13 +8,9 @@ class TalkCommentEmailService extends EmailBaseService
     protected $talk;
 
     protected $comment;
+    protected $config;
 
-    /**
-     * @var Request
-     */
-    private $request;
-
-    public function __construct($config, $recipients, Request $request, TalkModel $talk, $comment)
+    public function __construct($config, $recipients, TalkModel $talk, $comment)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
@@ -22,7 +18,7 @@ class TalkCommentEmailService extends EmailBaseService
         // this email needs talk and comment info
         $this->talk    = $talk;
         $this->comment = $comment['comments'][0];
-        $this->request = $request;
+        $this->config  = $config;
     }
 
     public function sendEmail()
@@ -39,13 +35,11 @@ class TalkCommentEmailService extends EmailBaseService
             $byLine = ' by' . $this->comment['username'];
         }
 
-        $outputView = $this->talk->getOutputView($this->request);
-
         $replacements = array(
             "title"   => $this->talk->talk_title,
             "rating"  => $this->comment['rating'],
             "comment" => $this->comment['comment'],
-            "url"     => $outputView['website_uri'],
+            "url"     => $this->talk->getWebsiteUrl($this->config['website_url']),
             "byline"  => $byLine
         );
 
