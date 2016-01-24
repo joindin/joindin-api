@@ -385,6 +385,9 @@ class EventMapper extends ApiMapper
                 $list[$key]['tags'] = $this->getTags($row['ID']);
                 $list[$key]['uri']           = $base . '/' . $version . '/events/' . $row['ID'];
                 $list[ $key ]['verbose_uri']   = $base . '/' . $version . '/events/' . $row['ID'] . '?verbose=yes';
+                if ($verbose && $this->thisUserHasAdminOn($row['ID'])) {
+                    $list[$key]['icon_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/icon';
+                }
                 $list[$key]['comments_uri']  = $base . '/' . $version . '/events/' . $row['ID'] . '/comments';
                 $list[$key]['talks_uri']     = $base . '/' . $version . '/events/' . $row['ID'] . '/talks';
                 $list[ $key]['tracks_uri']    = $base . '/' . $version . '/events/' . $row['ID'] . '/tracks';
@@ -866,6 +869,26 @@ class EventMapper extends ApiMapper
         }
 
         return $event_id;
+    }
+
+    /**
+     * Set the the filename set for this event
+     *
+     * @param  integer $event_id
+     * @param  string $icon_filename
+     */
+    public function setIconFilename($event_id, $icon_filename)
+    {
+        $sql  = "UPDATE events SET event_icon = :icon_filename WHERE ID = :event_id";
+        $stmt = $this->_db->prepare($sql);
+
+        try {
+            $result = $stmt->execute(['icon_filename' => $icon_filename, 'event_id' => $event_id]);
+        } catch (Exception $e) {
+            // @todo: logging goes here when we get it
+            return false;
+        }
+        return true;
     }
 
     /**

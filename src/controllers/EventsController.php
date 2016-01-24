@@ -526,6 +526,40 @@ class EventsController extends ApiController
     }
 
     /**
+     * Set a new icon for an event by posting to the event's icon subresource
+     *
+     * Ensure that the icon file is an image and is square. If the image is greater than 1440px, then
+     * resize to 1440px.
+     *
+     * @param  Request $request
+     * @param  PDO $db
+     */
+    public function updateIconAction($request, $db)
+    {
+        if (! isset($request->user_id)) {
+            throw new Exception('You must be logged in to edit data', 400);
+        }
+
+        $event_id = $this->getItemId($request);
+
+        $imageData = $request->getParameter('image');
+        $type = $request->getParameter('type');
+        if (!$imageData) {
+            throw new Exception('Missing image parameter', 400);
+        }
+        if (!$type) {
+            throw new Exception('Missing type parameter', 400);
+        }
+
+        // Store to disk and into database record
+        $icon = new EventIconModel(new EventMapper($db, $request), $this->config['event_icon_path']);
+        $icon->createFromData($type, $imageData, $event_id);
+
+        http_response_code(204);
+        exit;
+    }
+
+    /**
      * Approve a pending event by POSTing to /events/{id}/approval
      *
      * The body of this request is completely irrelevant, simply POSTing to this
