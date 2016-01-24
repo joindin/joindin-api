@@ -551,68 +551,9 @@ class EventsController extends ApiController
             throw new Exception('Missing type parameter', 400);
         }
 
-        // is this a valid image file?
-        $imageData = base64_decode($imageData);
-        $image = @imagecreatefromstring($imageData);
-        if ($image === false) {
-            throw new Exception('Unrecognised image', 400);
-        }
-
-        // is it square?
-        $width = imagesx($image);
-        $height = imagesy($image);
-
-        if ($width !== $height) {
-            imagedestroy($image);
-            throw new Exception('Image is not square', 400);
-        }
-
-        // determine filename and path
-        switch ($type) {
-            case 'image/png':
-                $filename = "event-logo-$event_id.png";
-                break;
-
-            default:
-                // jpeg
-                $filename = "event-logo-$event_id.jpg";
-        }
-        $path = $this->config['event_icon_path'] . $filename;
-
-        // Resize image
-        $newLogoWidth = 1440;
-        if ($width < $newLogoWidth) {
-            // image is too small to resize - just save it to avoid degradation
-            file_put_contents($path, $imageData);
-            imagedestroy($image);
-        } else {
-            // resize and save
-            $newLogo = imagecreatetruecolor($newLogoWidth, $newLogoWidth);
-            imagecopyresampled($newLogo, $image, 0, 0, 0, 0, $newLogoWidth, $newLogoWidth, $width, $width);
-
-            // save
-            switch ($type) {
-                case 'image/png':
-                    $saved = imagepng($newLogo, $path, 0);
-                    break;
-
-                default:
-                    // jpeg
-                    $saved = imagejpeg($newLogo, $path, 90);
-            }
-            imagedestroy($newLogo);
-            imagedestroy($image);
-            if (!$saved) {
-                throw new Exception('Failed to save image', 400);
-            }
-        }
-
-        // save filename to event record in database
-        $event_mapper = new EventMapper($db, $request);
-        $saved = $event_mapper->setIconFilename($event_id, $filename);
-        if (!$saved) {
-            throw new Exception('Failed to update event with icon information', 400);
-        }
+        // Store to disk and into database record
+        $icon = new EventIconModel(new EventMapper($db, $request), $this->config['event_icon_path']);
+        $icon->createFromData($type, $imageData, $event_id);
 
         http_response_code(204);
         exit;
