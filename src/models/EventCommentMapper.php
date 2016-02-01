@@ -308,4 +308,37 @@ class EventCommentMapper extends ApiMapper
         }
         return new EventCommentReportModelCollection($list, $total);
     }
+
+    /**
+     * A comment has been moderated.  Record the decision and if the decision
+     * is 'denied' then set the comment back to active.
+     *
+     * @param string $decision the decision: 'approved' or 'denied'
+     * @param int $comment_id the comment that was reported
+     * @param int $user_id the user that reported it
+     */
+    public function moderateReportedComment($decision, $comment_id, $user_id)
+    {
+        if (in_array($decision, ['approved', 'denied'])) {
+            // record the decision
+            $sql = 'update reported_event_comments set 
+                        decision = :decision,
+                        deciding_user_id = :user_id,
+                        deciding_date = NOW()
+                    where event_comment_id = :comment_id';
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute([
+                'decision' => $decision,
+                'user_id' => $user_id,
+                'comment_id' => $comment_id,
+            ]);
+
+            if ($decision == 'denied') {
+                // the report is denied, therefore make the comment active again
+                $show_sql = "update event_comments set active = 1 where ID = :comment_id";
+                $show_stmt = $this->_db->prepare($show_sql);
+                $show_stmt->execute(["comment_id" => $comment_id]);
+            }
+        }
+    }
 }

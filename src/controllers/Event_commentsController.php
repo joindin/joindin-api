@@ -169,4 +169,49 @@ class Event_commentsController extends ApiController
         header("Location: " . $uri, true, 202);
         exit;
     }
+
+    /**
+     * Moderate a reported comment.
+     *
+     * This action is performed by a user that has administrative rights to the
+     * event that this comment is for. The user provides a decision on the
+     * report. That is, the user can approve the report which means that the
+     * comment remains hidden from view or the user can deny the report which
+     * means that the comment is viewable again.
+     *
+     * @param Request $request the request
+     * @param PDO $db the database adapter
+     */
+    public function moderateReportedComment($request, $db)
+    {
+        // must be logged in
+        if (! isset($request->user_id) || empty($request->user_id)) {
+            throw new Exception('You must log in to moderate a comment');
+        }
+
+        $comment_mapper = new EventCommentMapper($db, $request);
+
+        $commentId = $this->getItemId($request);
+        $commentInfo = $comment_mapper->getCommentInfo($commentId);
+        if (false === $commentInfo) {
+            throw new Exception('Comment not found', 404);
+        }
+
+        $event_mapper = new EventMapper($db, $request);
+        $event_id = $commentInfo['event_id'];
+        if (false == $event_mapper->thisUserHasAdminOn($event_id)) {
+            throw new Exception("You don't have permission to do that", 403);
+        }
+
+        $decision = $request->getParameter('decision');
+        if (!in_array($decision, ['approved', 'denied'])) {
+            throw new Exception('Unexpected decision', 400);
+        }
+
+        $comment_mapper->moderateReportedComment($decision, $commentId, $request->user_id);
+
+        $uri = $request->base  . '/' . $request->version . '/events/' . $event_id . "/comments";
+        header("Location: $uri", true, 204);
+        exit;
+    }
 }
