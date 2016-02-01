@@ -156,6 +156,13 @@
     },
 
     {
+        "path": "/talk_comments(/[^/]+)*/reported?$",
+        "controller": "Talk_commentsController",
+        "action": "moderateReportedComment",
+        "verbs": ["PUT"]
+    },
+
+    {
         "path": "/emails/verifications",
         "controller": "EmailsController",
         "action": "verifications",
