@@ -11,6 +11,8 @@ API documentation, examples and other information about the API for <http://join
 
 Joind.in's API follows a RESTful style, is available in JSON and HTML formats (so point your browser at <http://api.joind.in>), and uses OAuth2 for authentication where this is needed; all of the data publicly visible on the site is available via the API without authentication.
 
+We are happy for you to make whatever use of the API you wish (bear in mind we run everything from a single donated server so please implement some caching on your side and be considerate of the traffic levels you send to us). Please mention the source of your data, but do not use "joind.in" in your project name or imply that the joind.in project endorses your project.
+
 ## Global Parameters
 
 There are a few parameters supported on every request:
