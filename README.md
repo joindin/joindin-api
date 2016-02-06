@@ -22,6 +22,9 @@ Go to http://api.joind.in and click around!
 
 There's more documentation here: http://joindin.github.io/joindin-api/ - it's powered by the content of the ``gh-pages`` branch on this repo, patches very welcome there also!
 
+We are happy for you to make whatever use of the API you wish (bear in mind we run everything from a single donated server so please implement some caching on your side and be considerate of the traffic levels you send to us). Please mention the source of your data, but do not use "joind.in" in your project name or imply that the joind.in project endorses your project.
+
+
 ## Tools and Tests
 
 ### API Tests
