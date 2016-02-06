@@ -233,12 +233,7 @@ class EventMapper extends ApiMapper
         if (array_key_exists("filter", $params) && $params['filter'] == 'all' && $start === null) {
             // How many events are there up to "now"?
             $this_sql = $sql . $where . ' and (events.event_start <' . (mktime(0, 0, 0)) . ')';
-            $number_previous_events = $this->getTotalCount($this_sql, $data);
-            
-            // move $start to the $resultsperpage boundary so that the client's
-            // pagination works as they expect
-            $page = floor($number_previous_events / $resultsperpage);
-            $start = $page * $resultsperpage;
+            $start = $this->getTotalCount($this_sql, $data);
 
             // store back into paginationParameters so that meta is correct
             $this->_request->paginationParameters['start'] = $start;
