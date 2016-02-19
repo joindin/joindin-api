@@ -763,7 +763,7 @@ class EventMapper extends ApiMapper
     {
 
         // Sanity check: ensure all mandatory fields are present.
-        $mandatory_fields          = array(
+        $mandatory_fields          = [
             'name',
             'description',
             'start_date',
@@ -771,10 +771,15 @@ class EventMapper extends ApiMapper
             'tz_continent',
             'tz_place',
             'contact_name',
-        );
+        ];
+
         $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($event));
         if (!$contains_mandatory_fields) {
             throw new Exception("Missing mandatory fields");
+        }
+
+        if (strtotime($event['start_date']) > strtotime($event['end_date'])){
+            throw new Exception("Start Date must be before End Date");
         }
 
         $sql = "insert into events set ";
