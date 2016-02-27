@@ -1127,4 +1127,57 @@ class EventMapper extends ApiMapper
         return $images;
     }
 
+    /**
+     * Remove all image records for this event
+     *
+     * Used when we are uploading new images
+     * @param int $event_id the event to add an image to
+     * @return bool whether the record was saved
+     */
+    public function removeImages($event_id)
+    {
+        $sql = 'delete from event_images'
+            . ' where event_id = :event_id';
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id));
+
+        return $result;
+    }
+
+    /**
+     * Add a database record regarding a new image file
+     *
+     * For legacy reasons, we'll add a "small" image to the events table also
+     *
+     * @param int $event_id the event to add an image to
+     * @param string $filename the filename we saved the image as (the rest of 
+     *      the URL is hardcoded here for now because images don't work the 
+     *      same way on dev as they do on live)
+     * @param int $width the width of the image
+     * @param int $height the height of the image
+     * @param string $type Freeform field for what sort of image it is, "orig" and "small" are our starter set
+     * @return bool whether the record was saved
+     */
+    public function saveNewImage($event_id, $filename, $width, $height, $type)
+    {
+        $sql = 'insert into event_images set '
+            . 'event_id = :event_id, width = :width, height = :height, '
+            . 'url = :url, type = :type';
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute([
+            "event_id" => $event_id,
+            "type" => $type,
+            "width" => $width,
+            "height" => $height,
+            "url" => "https://joind.in/inc/img/event_icons/" . $filename,
+        ]);
+
+        // for small images, update the old table too
+        if ($type == "small") {
+            $legacy_sql = 'update events set event_icon = :filename where ID = :event_id';
+            $legacy_stmt = $this->_db->prepare($legacy_sql);
+            $legacy_stmt->execute(["event_id" => $event_id, "filename" => $filename]);
+        }
+        return $result;
+    }
 }

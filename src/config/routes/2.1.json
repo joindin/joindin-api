@@ -36,6 +36,18 @@
         "verbs": ["POST"]
     },
     {
+        "path": "/events(/[\\d]+)/images",
+        "controller": "EventImagesController",
+        "action": "createImage",
+        "verbs": ["POST"]
+    },
+    {
+        "path": "/events(/[\\d]+)/images",
+        "controller": "EventImagesController",
+        "action": "deleteImage",
+        "verbs": ["DELETE"]
+    },
+    {
         "path": "/events(/[\\d]+)/talks",
         "controller": "TalksController",
         "action": "createTalkAction",
