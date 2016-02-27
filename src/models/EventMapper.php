@@ -382,13 +382,15 @@ class EventMapper extends ApiMapper
                 if ($verbose) {
                     $list[$key]['talk_comments_count'] = $this->getTalkCommentCount($row['ID']);
                 }
-                $list[$key]['tags'] = $this->getTags($row['ID']);
+                $list[$key]['images']        = $this->getImages($row['ID']);
+                $list[$key]['tags']          = $this->getTags($row['ID']);
                 $list[$key]['uri']           = $base . '/' . $version . '/events/' . $row['ID'];
-                $list[ $key ]['verbose_uri']   = $base . '/' . $version . '/events/' . $row['ID'] . '?verbose=yes';
+                $list[ $key ]['verbose_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['comments_uri']  = $base . '/' . $version . '/events/' . $row['ID'] . '/comments';
                 $list[$key]['talks_uri']     = $base . '/' . $version . '/events/' . $row['ID'] . '/talks';
-                $list[ $key]['tracks_uri']    = $base . '/' . $version . '/events/' . $row['ID'] . '/tracks';
+                $list[ $key]['tracks_uri']   = $base . '/' . $version . '/events/' . $row['ID'] . '/tracks';
                 $list[$key]['attending_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/attending';
+
                 if ($row['pending'] == 1 && $thisUserCanApproveEvents) {
                     $list[$key]['approval_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/approval';
                 }
@@ -1105,4 +1107,24 @@ class EventMapper extends ApiMapper
 
         return $stmt->execute(["event_id" => $event_id, "reviewing_user_id" => $reviewing_user_id]);
     }
+
+    /**
+     * Fetch the available images for this event
+     *
+     * @param int $event_id
+     *
+     * @return array The images including metadata
+     */
+    protected function getImages($event_id)
+    {
+        $image_sql = 'select i.type, i.url, i.width, i.height'
+                    . ' from event_images i '
+                    . ' where i.event_id = :event_id';
+        $image_stmt = $this->_db->prepare($image_sql);
+        $image_stmt->execute(array("event_id" => $event_id));
+        $images  = $image_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $images;
+    }
+
 }
