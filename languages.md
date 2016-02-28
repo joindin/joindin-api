@@ -7,7 +7,7 @@ title: Joind.in API Documentation
 
 It is possible to fetch a read-only list of languages, or a single language
 
-## Language Format
+## Format
 
 ~~~~
 languages:
@@ -22,18 +22,18 @@ meta:
     this_page: http://api.dev.joind.in/v2.1/languages?start=0&resultsperpage=20
 ~~~~
 
-## Talk Comment Verbose Format
+## Verbose Format
 
 Is exactly the same as the ordinary format.
 
-## Language Data Fields
+## Data Fields
 
 The fields available for talk comments:
 
 *  ``code``: Language shortcode (non-standard)
 *  ``name``: Name, e.g. "Polish"
 
-## Talk Comment Hypermedia
+## Hypermedia
 
 *  ``uri``: Where to find this individual record
 *  ``verbose_uri``: Where to find a more detailed representation of this record
