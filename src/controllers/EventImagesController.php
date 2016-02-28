@@ -10,6 +10,12 @@ class EventImagesController extends ApiController
 
         $event_id = $this->getItemId($request);
 
+        $event_mapper = new EventMapper($db, $request);
+
+        if(!$event_mapper->thisUserHasAdminOn($event_id)) {
+            throw new Exception("You don't have permission to do that", 403);
+        }
+
         if (!isset($_FILES['image'])) {
             throw new Exception("Image was not supplied", 400);
         }
@@ -46,7 +52,6 @@ class EventImagesController extends ApiController
         }
 
         // remove old images; record that we saved the file (this is the orig size)
-        $event_mapper = new EventMapper($db, $request);
         $event_mapper->removeImages($event_id);
         $event_mapper->saveNewImage($event_id, $savedFilename, $width, $height, "orig");
 
