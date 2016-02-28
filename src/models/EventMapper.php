@@ -1124,7 +1124,14 @@ class EventMapper extends ApiMapper
         $image_stmt->execute(array("event_id" => $event_id));
         $images  = $image_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $images;
+        // add named keys so we can easily refer to these results
+        $collection = [];
+        if($images && is_array($images)) {
+            foreach($images as $row) {
+                $collection[$row['type']] = $row;
+            }
+        }
+        return $collection;
     }
 
     /**
