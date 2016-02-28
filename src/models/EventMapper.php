@@ -390,6 +390,7 @@ class EventMapper extends ApiMapper
                 $list[$key]['talks_uri']     = $base . '/' . $version . '/events/' . $row['ID'] . '/talks';
                 $list[ $key]['tracks_uri']   = $base . '/' . $version . '/events/' . $row['ID'] . '/tracks';
                 $list[$key]['attending_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/attending';
+                $list[$key]['images_uri']    = $base . '/' . $version . '/events/' . $row['ID'] . '/images';
 
                 if ($row['pending'] == 1 && $thisUserCanApproveEvents) {
                     $list[$key]['approval_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/approval';
