@@ -99,7 +99,7 @@ class EventImagesController extends ApiController
         }
     }
 
-    public function createImage($request, $db)
+    public function deleteImage($request, $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 400);
@@ -111,5 +111,6 @@ class EventImagesController extends ApiController
 
         $location = $request->base . '/' . $request->version . '/events/' . $event_id;
         header('Location: ' . $location, null, 204);
+        exit;
     }
 }

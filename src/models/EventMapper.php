@@ -1169,7 +1169,7 @@ class EventMapper extends ApiMapper
             "type" => $type,
             "width" => $width,
             "height" => $height,
-            "url" => "https://joind.in/inc/img/event_icons/" . $filename,
+            "url" => $this->website_url . "/inc/img/event_icons/" . $filename,
         ]);
 
         // for small images, update the old table too
