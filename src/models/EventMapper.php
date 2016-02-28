@@ -1127,8 +1127,8 @@ class EventMapper extends ApiMapper
 
         // add named keys so we can easily refer to these results
         $collection = [];
-        if($images && is_array($images)) {
-            foreach($images as $row) {
+        if ($images && is_array($images)) {
+            foreach ($images as $row) {
                 $collection[$row['type']] = $row;
             }
         }
@@ -1158,8 +1158,8 @@ class EventMapper extends ApiMapper
      * For legacy reasons, we'll add a "small" image to the events table also
      *
      * @param int $event_id the event to add an image to
-     * @param string $filename the filename we saved the image as (the rest of 
-     *      the URL is hardcoded here for now because images don't work the 
+     * @param string $filename the filename we saved the image as (the rest of
+     *      the URL is hardcoded here for now because images don't work the
      *      same way on dev as they do on live)
      * @param int $width the width of the image
      * @param int $height the height of the image

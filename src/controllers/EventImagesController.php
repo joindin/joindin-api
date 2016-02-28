@@ -12,7 +12,7 @@ class EventImagesController extends ApiController
 
         $event_mapper = new EventMapper($db, $request);
 
-        if(!$event_mapper->thisUserHasAdminOn($event_id)) {
+        if (!$event_mapper->thisUserHasAdminOn($event_id)) {
             throw new Exception("You don't have permission to do that", 403);
         }
 
