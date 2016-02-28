@@ -319,3 +319,20 @@ And to update it, an example command and the resulting output:
 < Content-Type: text/html
 < 
 ~~~~
+
+
+## Setting the event icon
+
+To set the event icon you should `PUT` to the `icon` sub resource of the event, such as `event/12/icon`. The image must be square and if it is larger than 1440px, it will be resized.
+
+There are two required fields:
+
+* `image` base64 encoded string of the image contents
+* `type` mime-type of image (e.g. image/jpeg or image/png)
+
+Here’s an example:
+
+<pre class="embedcurl">curl -X "PUT" "http://api.dev.joind.in/v2.1/events/12/icon" -H "Content-Type: application/json" -H "Authorization: Bearer f3c62e0ff9d80811" -H "Accept: application/json" -d '{"type": "image/jpeg", "image": "{base 64 encoded image string}"}'
+</pre>
+
+Upon success, a `204` response is returned.
