@@ -12,6 +12,12 @@ class EventImagesController extends ApiController
 
         $event_mapper = new EventMapper($db, $request);
 
+        // ensure event exists
+        $existing_event = $event_mapper->getEventById($event_id, false, true);
+        if ($existing_event['meta']['count'] == 0) {
+            throw new Exception('There is no event with ID ' . $event_id);
+        }
+
         if (!$event_mapper->thisUserHasAdminOn($event_id)) {
             throw new Exception("You don't have permission to do that", 403);
         }
