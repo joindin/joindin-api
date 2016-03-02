@@ -35,6 +35,11 @@ class EventImagesController extends ApiController
 
         list($width, $height, $filetype) = getimagesize($uploaded_name);
 
+        // must be gif, jpg or png
+        if (!in_array($filetype, [IMAGETYPE_JPEG, IMAGETYPE_GIF, IMAGETYPE_PNG], true)) {
+            throw new Exception("Supplied image must be a PNG, JPG or GIF", 400);
+        }
+
         // must be square
         if ($width != $height) {
             throw new Exception("Supplied image must be square", 400);
