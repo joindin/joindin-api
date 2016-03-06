@@ -29,6 +29,7 @@ We currently support the following parameters for filtering events:
    - ``hot``: the "hot" events; these are soon/recent events, with priority given to events with the most attendees.  Usually the default view.
    - ``upcoming``: future events, sorted by date with the soonest first
    - ``past``: past events, sorted by date with the most recent first
+   - ``all``: all events, sorted by date from past to future, and defaulting to the page starting with the first future record
    - ``cfps``: events that currently have open CfPs
 
 *  ``title``: Search for an event by title (partial match, e.g."Benelux" will find "PHP Benelux Conference 2014")
@@ -37,7 +38,7 @@ We currently support the following parameters for filtering events:
 *  ``startdate``: Search for events on or after this date (should be fairly flexible about what date format you give it)
 *  ``enddate``: Search for events before this date (should be fairly flexible about what date format you give it)
 
-You can supply as many of these as you wish; the filters will combine for the most part.
+You can supply as many of these as you wish; the filters will combine for the most part.  By default, the ``/events/`` collection returns all events sorted by date descending.
 
 ## Event Format
 
