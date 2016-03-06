@@ -60,16 +60,16 @@ events:
         event_comments_count: 2
         tracks_count: 1
         talks_count: 5
-        icon: square5-small.png
+        icon: icon-3-small.png
         images:
             orig:
                 type: orig
-                url: http://joind.in/inc/img/event_icons/square5-orig.png
+                url: http://joind.in/inc/img/event_icons/icon-3-orig.png
                 width: 650
                 height: 650
             small:
                 type: small
-                url: http://joind.in/inc/img/event_icons/square5-small.png
+                url: http://joind.in/inc/img/event_icons/icon-3-small.png
                 width: 140
                 height: 140
         tags:
@@ -100,7 +100,7 @@ events:
         description: Aliquam vulputate vulputate lobortis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque elementum placerat lectus, sit amet dictum urna euismod quis. Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo.
         stub: D125
         href: http://devconf.example.org
-        icon: square5-small.png
+        icon: icon-3-small.png
         latitude: 32.4976260000000000
         longitude: -86.3685450000000000
         tz_continent: Europe
@@ -120,12 +120,12 @@ events:
         images:
             orig:
                 type: orig
-                url: http://joind.in/inc/img/event_icons/square5-orig.png
+                url: http://joind.in/inc/img/event_icons/icon-3-orig.png
                 width: 650
                 height: 650
             small:
                 type: small
-                url: http://joind.in/inc/img/event_icons/square5-small.png
+                url: http://joind.in/inc/img/event_icons/icon-3-small.png
                 width: 140
                 height: 140
         tags:
