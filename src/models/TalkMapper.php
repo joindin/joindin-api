@@ -236,6 +236,7 @@ class TalkMapper extends ApiMapper
                 } else {
                     $entry['speaker_name'] = $person['speaker_name'];
                 }
+                $entry['uri'] = $base . '/' . $version . '/speakers/' . $person['ID'];
                 $retval[] = $entry;
             }
         }
