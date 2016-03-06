@@ -60,7 +60,18 @@ events:
         event_comments_count: 2
         tracks_count: 1
         talks_count: 5
-        icon:
+        icon: icon-3-small.png
+        images:
+            orig:
+                type: orig
+                url: http://joind.in/inc/img/event_icons/icon-3-orig.png
+                width: 650
+                height: 650
+            small:
+                type: small
+                url: http://joind.in/inc/img/event_icons/icon-3-small.png
+                width: 140
+                height: 140
         tags:
         uri: {{ site.apiurl }}/v2.1/events/3
         verbose_uri: {{ site.apiurl }}/v2.1/events/3?verbose=yes
@@ -89,7 +100,7 @@ events:
         description: Aliquam vulputate vulputate lobortis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque elementum placerat lectus, sit amet dictum urna euismod quis. Suspendisse mattis suscipit ante, nec consectetur magna aliquet non. Vivamus gravida, dolor ut porta bibendum, mauris ligula condimentum est, id facilisis ante massa a justo.
         stub: D125
         href: http://devconf.example.org
-        icon:
+        icon: icon-3-small.png
         latitude: 32.4976260000000000
         longitude: -86.3685450000000000
         tz_continent: Europe
@@ -106,6 +117,17 @@ events:
         cfp_end_date: 2014-01-04T01:00:00+01:00
         cfp_url: http://devconf.example.org/cfp
         talk_comments_count: 12
+        images:
+            orig:
+                type: orig
+                url: http://joind.in/inc/img/event_icons/icon-3-orig.png
+                width: 650
+                height: 650
+            small:
+                type: small
+                url: http://joind.in/inc/img/event_icons/icon-3-small.png
+                width: 140
+                height: 140
         tags:
         uri: http://api.joindin.local/v2.1/events/3
         verbose_uri: http://api.joindin.local/v2.1/events/3?verbose=yes
@@ -144,7 +166,7 @@ meta:
 *  ``description``: Some information about the event
 *  ``stub``: A short, unique identifier for this event.  Used by the website to make a quicklink
 *  ``href``: URL for the event's own website
-*  ``icon``: URL for this event's logo or icon used on the joind.in site
+*  ``icon``: URL for this event's logo or icon used on the joind.in site. Note that this is a legacy field and that you should use the ``images`` collection in preference.
 *  ``latitude``: Where the event geographically is
 *  ``longitude``:  Where the event geographically is
 *  ``tz_continent``: Continent part of the timezone identifier
@@ -160,7 +182,8 @@ meta:
 *  ``cfp_start_date``: When the call for papers will begin, in ISO format
 *  ``cfp_end_date``: When the call for papers will end, in ISO format
 *  ``cfp_url``: The URL for finding out more about the call for papers
-*  ``talk_comments_count``: Calculated field showing how many comments were made across all the sessions at the event.
+*  ``talk_comments_count``: Calculated field showing how many comments were made across all the sessions at the event
+*  ``images``: An array of images, each with metadata about type and size and including a full URL
 *  ``tags``: An array of tags applied to this event to facilitate finding similar events
 *  ``website_uri``: Where to find the website joind.in page for this event
 *  ``website_humane_uri``: Where to find the website joind.in page for this event, using the quicklink if there is one (depends whether the event has a stub)
@@ -177,6 +200,7 @@ There are links to other useful places in the API.  These are:
 *  ``comments_uri``: The *event* comments on this event (talk comments are separate).  *See also* [event comments]({{ site.baseurl }}/event_comments.html).
 *  ``talks_uri``:  All the talks and other sessions delivered at this event.  *See also* [talks]({{ site.baseurl }}/talks.html).
 *  ``attending_uri``: POST/DELETE to this URI as an authenticated user to indictate that you are/aren't attending (current attending status is in the ``attending`` field).
+*  ``images_uri``: POST/DELETE to this URI as an event admin to update or remove the images associated with this event.
 *  ``all_talkcomments_uri``: All the comments from all of the talks at this event, in order of date with the newest comments first. *See also* [talk comments]({{ site.baseurl }}).
 *  ``attendees_uri``: A list of all users marked as attending this event.  *See also* [users]({{ site.baseurl}}/users.html).
 
@@ -319,3 +343,23 @@ And to update it, an example command and the resulting output:
 < Content-Type: text/html
 < 
 ~~~~
+
+## Handling Event Images
+
+We now offer a selection of image sizes - the "small" size is 140px square and is useful for most cases but where a larger image was uploaded, we also have the original.  These are available as nested data in the `images` field of the event resource.  This section deals with updating and removing the images.
+
+### Replacing the Event Image
+
+To replace the image, you will need to make a POST request to the URL in the `images_url` field of the event resource.  Since we're specifically handling a file, this endpoint does not accept JSON; instead you should send a multipart form request (as if you were sending a file upload from a web form).  The field should be called 'image', and no other fields are supported here (although you should authenticate and send your desired `Accept` headers as normal).
+
+<pre class="embedcurl"> curl -v -X POST -H "Authorization: Bearer f3c62e0ff9d80811" http://api.dev.joind.in/v2.1/events/33/images -F image=@Pictures/square.png
+</pre>
+
+If successful, a 201 status code will be returned, and you will be redirected to the event resource via a `Location` header.  Otherwise, an appropriate error status code and message will be returned.
+
+**NOTE::  Images must be square, min 140px and max 1440px in size**
+
+### Removing the Event Image
+
+To remove the event image, send a `DELETE` request to the `images_url` endpoint.  This will remove all current event images.
+
