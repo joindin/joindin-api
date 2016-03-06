@@ -366,7 +366,7 @@ class Request
         }
 
         if (! isset($this->paginationParameters['start'])) {
-            $this->paginationParameters['start'] = 0;
+            $this->paginationParameters['start'] = null;
         }
         if (! isset($this->paginationParameters['resultsperpage'])) {
             $this->paginationParameters['resultsperpage'] = 20;

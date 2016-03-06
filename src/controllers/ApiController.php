@@ -39,7 +39,7 @@ abstract class ApiController
 
     public function getStart($request)
     {
-        return (int) $request->paginationParameters['start'];
+        return $request->paginationParameters['start'];
 
     }
 

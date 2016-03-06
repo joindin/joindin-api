@@ -151,6 +151,9 @@ class EventMapper extends ApiMapper
         }
         if (array_key_exists("filter", $params)) {
             switch ($params['filter']) {
+                case "all": // current and popular events
+                    $order .= 'events.event_start';
+                    break;
                 case "hot": // current and popular events
                     $order .= "score - ((comment_count + attendee_count + 1) / 5)";
                     break;
@@ -230,6 +233,18 @@ class EventMapper extends ApiMapper
             $data["enddate"] = $params["enddate"];
         }
 
+        // If the "all" filter is selected and a start parameter isn't provided, then
+        // we need to calculate it such that the results returned include the first
+        // upcoming event. This allows client to go backwards and forwards from here.
+        if (array_key_exists("filter", $params) && $params['filter'] == 'all' && $start === null) {
+            // How many events are there up to "now"?
+            $this_sql = $sql . $where . ' and (events.event_start <' . (mktime(0, 0, 0)) . ')';
+            $start = $this->getTotalCount($this_sql, $data);
+
+            // store back into paginationParameters so that meta is correct
+            $this->_request->paginationParameters['start'] = $start;
+        }
+ 
         // now add all that where clause
         $sql .= $where;
 
