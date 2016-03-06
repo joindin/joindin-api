@@ -135,6 +135,13 @@
     },
 
     {
+        "path": "/event_comments(/[^/]+)*/reported?$",
+        "controller": "Event_commentsController",
+        "action": "moderateReportedComment",
+        "verbs": ["PUT"]
+    },
+
+    {
         "path": "/talk_comments(/[^/]+)*/?$",
         "controller": "Talk_commentsController",
         "action": "getComments",
@@ -146,6 +153,13 @@
         "controller": "Talk_commentsController",
         "action": "reportComment",
         "verbs": ["POST"]
+    },
+
+    {
+        "path": "/talk_comments(/[^/]+)*/reported?$",
+        "controller": "Talk_commentsController",
+        "action": "moderateReportedComment",
+        "verbs": ["PUT"]
     },
 
     {
