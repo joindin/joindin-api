@@ -166,7 +166,7 @@ meta:
 *  ``description``: Some information about the event
 *  ``stub``: A short, unique identifier for this event.  Used by the website to make a quicklink
 *  ``href``: URL for the event's own website
-*  ``icon``: URL for this event's logo or icon used on the joind.in site
+*  ``icon``: URL for this event's logo or icon used on the joind.in site. Note that this is a legacy field and that you should use the ``images`` collection in preference.
 *  ``latitude``: Where the event geographically is
 *  ``longitude``:  Where the event geographically is
 *  ``tz_continent``: Continent part of the timezone identifier
