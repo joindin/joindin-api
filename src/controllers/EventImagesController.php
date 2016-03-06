@@ -36,7 +36,7 @@ class EventImagesController extends ApiController
         list($width, $height, $filetype) = getimagesize($uploaded_name);
 
         // must be gif, jpg or png
-        if (!in_array($filetype, [IMAGETYPE_JPEG, IMAGETYPE_GIF, IMAGETYPE_PNG], true)) {
+        if (!in_array($filetype, [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG], true)) {
             throw new Exception("Supplied image must be a PNG, JPG or GIF", 400);
         }
 
@@ -53,28 +53,31 @@ class EventImagesController extends ApiController
             throw new Exception("Supplied image must be no more than 1440px square", 400);
         }
 
-        // save the file
-        $filename = $_FILES['image']['name'];
+        // save the file - overwrite current one if there is one
+        $extensions[IMAGETYPE_GIF] = '.gif';
+        $extensions[IMAGETYPE_JPEG] = '.jpg';
+        $extensions[IMAGETYPE_PNG] = '.png';
+        $saved_filename = 'icon-' . $event_id . '-orig' . $extensions[$filetype];
         $event_image_path = $request->getConfigValue('event_image_path');
-        $savedFilename = $this->moveFile($uploaded_name, $filename, $event_image_path);
+        $result = move_uploaded_file($uploaded_name, $event_image_path . $saved_filename);
 
-        if (false === $savedFilename) {
+        if (false === $result) {
             throw new Exception("The file could not be saved");
         }
 
-        // remove old images; record that we saved the file (this is the orig size)
+        // remove old images from database table and record that we saved the file (this is the orig size)
         $event_mapper->removeImages($event_id);
-        $event_mapper->saveNewImage($event_id, $savedFilename, $width, $height, "orig");
+        $event_mapper->saveNewImage($event_id, $saved_filename, $width, $height, "orig");
 
         // small is 140px square
-        $orig_image = imagecreatefromstring(file_get_contents($event_image_path . $savedFilename));
+        $orig_image = imagecreatefromstring(file_get_contents($event_image_path . $saved_filename));
         $small_width = 140;
         $small_height = 140;
 
         $small_image = imagecreatetruecolor($small_width, $small_height);
         imagecopyresampled($small_image, $orig_image, 0, 0, 0, 0, $small_width, $small_height, $width, $height);
 
-        $small_filename = str_replace('orig', 'small', $savedFilename);
+        $small_filename = str_replace('orig', 'small', $saved_filename);
 
         if ($filetype == IMG_JPG) {
             imagejpeg($small_image, $event_image_path . $small_filename);
@@ -88,31 +91,6 @@ class EventImagesController extends ApiController
 
         $location = $request->base . '/' . $request->version . '/events/' . $event_id;
         header('Location: ' . $location, null, 201);
-    }
-
-    protected function moveFile($uploaded_name, $filename, $path)
-    {
-        $filename_pieces = explode(".", $filename);
-        $newfilename = $filename_pieces[0] . "-orig." . $filename_pieces[1];
-
-        // check if the file exists before moving
-        if (!file_exists($path . $newfilename)) {
-            move_uploaded_file($uploaded_name, $path . $newfilename);
-            return $newfilename;
-        } else {
-            // we need to avoid a collision
-            // try appending numbers but give up after 10
-            for ($i = 0; $i < 10; $i++) {
-                $newfilename = $filename_pieces[0] . $i . "-orig." . $filename_pieces[1];
-
-                if (!file_exists($path . $newfilename)) {
-                    move_uploaded_file($uploaded_name, $path . $newfilename);
-                    return $newfilename;
-                }
-            }
-            // at this point, we have given up
-            return false;
-        }
     }
 
     public function deleteImage($request, $db)
