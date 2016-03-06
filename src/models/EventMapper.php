@@ -397,13 +397,16 @@ class EventMapper extends ApiMapper
                 if ($verbose) {
                     $list[$key]['talk_comments_count'] = $this->getTalkCommentCount($row['ID']);
                 }
-                $list[$key]['tags'] = $this->getTags($row['ID']);
+                $list[$key]['images']        = $this->getImages($row['ID']);
+                $list[$key]['tags']          = $this->getTags($row['ID']);
                 $list[$key]['uri']           = $base . '/' . $version . '/events/' . $row['ID'];
-                $list[ $key ]['verbose_uri']   = $base . '/' . $version . '/events/' . $row['ID'] . '?verbose=yes';
+                $list[ $key ]['verbose_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['comments_uri']  = $base . '/' . $version . '/events/' . $row['ID'] . '/comments';
                 $list[$key]['talks_uri']     = $base . '/' . $version . '/events/' . $row['ID'] . '/talks';
-                $list[ $key]['tracks_uri']    = $base . '/' . $version . '/events/' . $row['ID'] . '/tracks';
+                $list[ $key]['tracks_uri']   = $base . '/' . $version . '/events/' . $row['ID'] . '/tracks';
                 $list[$key]['attending_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/attending';
+                $list[$key]['images_uri']    = $base . '/' . $version . '/events/' . $row['ID'] . '/images';
+
                 if ($row['pending'] == 1 && $thisUserCanApproveEvents) {
                     $list[$key]['approval_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/approval';
                 }
@@ -1119,5 +1122,85 @@ class EventMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
 
         return $stmt->execute(["event_id" => $event_id, "reviewing_user_id" => $reviewing_user_id]);
+    }
+
+    /**
+     * Fetch the available images for this event
+     *
+     * @param int $event_id
+     *
+     * @return array The images including metadata
+     */
+    protected function getImages($event_id)
+    {
+        $image_sql = 'select i.type, i.url, i.width, i.height'
+                    . ' from event_images i '
+                    . ' where i.event_id = :event_id';
+        $image_stmt = $this->_db->prepare($image_sql);
+        $image_stmt->execute(array("event_id" => $event_id));
+        $images  = $image_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // add named keys so we can easily refer to these results
+        $collection = [];
+        if ($images && is_array($images)) {
+            foreach ($images as $row) {
+                $collection[$row['type']] = $row;
+            }
+        }
+        return $collection;
+    }
+
+    /**
+     * Remove all image records for this event
+     *
+     * Used when we are uploading new images
+     * @param int $event_id the event to add an image to
+     * @return bool whether the record was saved
+     */
+    public function removeImages($event_id)
+    {
+        $sql = 'delete from event_images'
+            . ' where event_id = :event_id';
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(array("event_id" => $event_id));
+
+        return $result;
+    }
+
+    /**
+     * Add a database record regarding a new image file
+     *
+     * For legacy reasons, we'll add a "small" image to the events table also
+     *
+     * @param int $event_id the event to add an image to
+     * @param string $filename the filename we saved the image as (the rest of
+     *      the URL is hardcoded here for now because images don't work the
+     *      same way on dev as they do on live)
+     * @param int $width the width of the image
+     * @param int $height the height of the image
+     * @param string $type Freeform field for what sort of image it is, "orig" and "small" are our starter set
+     * @return bool whether the record was saved
+     */
+    public function saveNewImage($event_id, $filename, $width, $height, $type)
+    {
+        $sql = 'insert into event_images set '
+            . 'event_id = :event_id, width = :width, height = :height, '
+            . 'url = :url, type = :type';
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute([
+            "event_id" => $event_id,
+            "type" => $type,
+            "width" => $width,
+            "height" => $height,
+            "url" => $this->website_url . "/inc/img/event_icons/" . $filename,
+        ]);
+
+        // for small images, update the old table too
+        if ($type == "small") {
+            $legacy_sql = 'update events set event_icon = :filename where ID = :event_id';
+            $legacy_stmt = $this->_db->prepare($legacy_sql);
+            $legacy_stmt->execute(["event_id" => $event_id, "filename" => $filename]);
+        }
+        return $result;
     }
 }
