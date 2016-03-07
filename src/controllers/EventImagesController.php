@@ -59,7 +59,11 @@ class EventImagesController extends ApiController
         $extensions[IMAGETYPE_PNG] = '.png';
         $saved_filename = 'icon-' . $event_id . '-orig' . $extensions[$filetype];
         $event_image_path = $request->getConfigValue('event_image_path');
+        set_error_handler(function ($severity, $message, $file, $line) {
+            throw new ErrorException($message, 500, $severity, $file, $line);
+        });
         $result = move_uploaded_file($uploaded_name, $event_image_path . $saved_filename);
+        restore_error_handler();
 
         if (false === $result) {
             throw new Exception("The file could not be saved");
