@@ -289,6 +289,12 @@ class TalksController extends ApiController
         $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
         $talk['date'] = (new DateTime($start_date, $tz))->format('U');
 
+        $event_start_date = (new DateTime($event['start_date']))->format('U');
+        $event_end_date = (new DateTime($event['end_date']))->add(new DateInterval('P1D'))->format('U');
+        if ($talk['date'] < $event_start_date || $talk['date'] >= $event_end_date) {
+            throw new Exception("The talk must be held between the start and end date of the event", 400);
+        }
+
         $talk['language'] = filter_var(
             $request->getParameter('language'),
             FILTER_SANITIZE_STRING
