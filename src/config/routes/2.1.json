@@ -103,6 +103,12 @@
         "action": "getAction",
         "verbs": ["GET"]
     },
+    {
+        "path": "/tracks(/[\\d]+)/?$",
+        "controller": "TracksController",
+        "action": "editTrack",
+        "verbs": ["PUT"]
+    },
 
     {
         "path": "/users/passwords$",
