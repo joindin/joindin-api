@@ -353,6 +353,10 @@ class TalkMapper extends ApiMapper
 
         $this->setType($talk_id, $data['type_id']);
 
+        if (isset($data['speakers'])) {
+            $this->addSpeakersToTalk($talk_id, $data['speakers']);
+        }
+
         return $talk_id;
     }
 
@@ -391,6 +395,40 @@ class TalkMapper extends ApiMapper
             ':talk_id'     => $talk_id,
             ':type_id' => $type_id,
         ));
+    }
+
+    /**
+     * Add speakers to this talk
+     *
+     * @note each speaker can be display name
+     *
+     * @param  int   $talk_id
+     * @param  array $speakers
+     */
+    public function addSpeakersToTalk($talk_id, array $speakers)
+    {
+        // get the current speakers
+        $sql = 'select ts.speaker_name, ts.speaker_name as val from talk_speaker ts where ts.talk_id = :talk_id';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(['talk_id' => $talk_id]);
+        $current_speakers = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+        // remove speakers that are already attached to the talk
+        $new_speakers = array_diff($speakers, $current_speakers);
+
+        // add the speakers that aren't already attached to the talk
+        $sql = "insert into talk_speaker
+                    (talk_id, speaker_name, status)
+                values
+                    (:talk_id, :speaker_name, NULL)";
+        $stmt = $this->_db->prepare($sql);
+        foreach ($new_speakers as $name) {
+            $params = [
+                'talk_id' => $talk_id,
+                'speaker_name' => $name,
+            ];
+            $stmt->execute($params);
+        }
     }
 
     /**
