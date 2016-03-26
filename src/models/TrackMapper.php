@@ -100,4 +100,105 @@ class TrackMapper extends ApiMapper
 
         return $sql;
     }
+
+    /**
+     * Edit event track
+     *
+     * @param  array $data
+     * @param  int   $track_id
+     * @return int
+     */
+    public function editEventTrack($data, $track_id)
+    {
+        // Sanity check: ensure all mandatory fields are present.
+        $mandatory_fields = [
+            'track_name',
+            'track_description',
+        ];
+        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($data));
+        if (!$contains_mandatory_fields) {
+            throw new Exception("Missing mandatory fields");
+        }
+
+        $sql = "UPDATE event_track SET %s WHERE ID = :track_id";
+
+        // get the list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+        $items  = array();
+
+        foreach ($fields as $api_name => $column_name) {
+            // We don't change any activation stuff here!!
+            if (in_array($column_name, ['pending', 'active'])) {
+                continue;
+            }
+            if (array_key_exists($api_name, $data)) {
+                $pairs[] = "$column_name = :$api_name";
+                $items[$api_name] = $data[$api_name];
+            }
+        }
+
+        $items['track_id'] = $track_id;
+
+        $stmt = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
+
+        try {
+            $stmt->execute($items);
+        } catch (Exception $e) {
+            throw new Exception(sprintf(
+                'executing "%s" resulted in an error: %s',
+                $stmt->queryString,
+                implode(' :: ', $stmt->errorInfo())
+            ));
+        }
+
+        return $track_id;
+    }
+
+    /**
+     * Delete track and talk associations
+     *
+     * @param  int $track_id
+     */
+    public function deleteEventTrack($track_id)
+    {
+        // delete talk associations
+        $sql = "delete from event_track where ID = :track_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(['track_id' => $track_id]);
+
+        // delete track
+        $sql = "delete from talk_track where track_id = :track_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(['track_id' => $track_id]);
+    }
+
+    /**
+     * Add a talk to a track
+     *
+     * @param int $track_id
+     * @param int $talk_id
+     *
+     * @return int
+     */
+    public function addTalkToTrack($track_id, $talk_id)
+    {
+        $params = [
+            'track_id' => $track_id,
+            'talk_id' => $talk_id,
+        ];
+        // is this link in the database already?
+        $sql = 'select ID from talk_track where track_id = :track_id and talk_id = :talk_id';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute($params);
+        $talk_track_id = $stmt->fetchColumn();
+        if ($talk_track_id === false) {
+            // insert new row as not in database
+            $sql = 'insert into talk_track (track_id, talk_id) values (:track_id, :talk_id)';
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute($params);
+        
+            $talk_track_id = $this->_db->lastInsertId();
+        }
+        return $talk_track_id;
+    }
 }

@@ -103,6 +103,24 @@
         "action": "getAction",
         "verbs": ["GET"]
     },
+    {
+        "path": "/tracks(/[\\d]+)/?$",
+        "controller": "TracksController",
+        "action": "editTrack",
+        "verbs": ["PUT"]
+    },
+    {
+        "path": "/tracks(/[\\d]+)/?$",
+        "controller": "TracksController",
+        "action": "deleteTrack",
+        "verbs": ["DELETE"]
+    },
+    {
+        "path": "/tracks(/[\\d]+)$",
+        "controller": "TracksController",
+        "action": "addTalkToTrack",
+        "verbs": ["POST"]
+    },
 
     {
         "path": "/users/passwords$",
