@@ -153,4 +153,22 @@ class TrackMapper extends ApiMapper
 
         return $track_id;
     }
+
+    /**
+     * Delete track and talk associations
+     *
+     * @param  int $track_id
+     */
+    public function deleteEventTrack($track_id)
+    {
+        // delete talk associations
+        $sql = "delete from event_track where ID = :track_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(['track_id' => $track_id]);
+
+        // delete track
+        $sql = "delete from talk_track where track_id = :track_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(['track_id' => $track_id]);
+    }
 }

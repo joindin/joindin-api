@@ -109,6 +109,12 @@
         "action": "editTrack",
         "verbs": ["PUT"]
     },
+    {
+        "path": "/tracks(/[\\d]+)/?$",
+        "controller": "TracksController",
+        "action": "deleteTrack",
+        "verbs": ["DELETE"]
+    },
 
     {
         "path": "/users/passwords$",
