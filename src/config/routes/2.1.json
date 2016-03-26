@@ -115,6 +115,12 @@
         "action": "deleteTrack",
         "verbs": ["DELETE"]
     },
+    {
+        "path": "/tracks(/[\\d]+)$",
+        "controller": "TracksController",
+        "action": "addTalkToTrack",
+        "verbs": ["POST"]
+    },
 
     {
         "path": "/users/passwords$",
