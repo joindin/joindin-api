@@ -184,3 +184,16 @@ Example request/response:
 Other fields are not yet supported.  Editing of events via the API is not yet supported.
 
 
+## Adding a Talk to a Track
+
+To add a talk to a track, the user needs to be authenticated and be either a site admin or a host of the event. You should send a POST request to the URL in the `uri` field of the track belonging to the same event as the talk, with the body containing the `talk_uri` field.
+
+Curl example:
+
+<pre class="embedcurl">curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" {{ site.apiurl }}/v2.1/tracks/3 --data '{"talk_uri": "{{ site.apiurl }}/v2.1/talks/76"}'
+</pre>
+
+If successful, a 201 Created status will be returned along with a Location header pointing back to the talk's URL.
+
+
+
