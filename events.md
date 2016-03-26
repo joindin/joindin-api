@@ -78,6 +78,7 @@ events:
         verbose_uri: {{ site.apiurl }}/v2.1/events/3?verbose=yes
         comments_uri: {{ site.apiurl }}/v2.1/events/3/comments
         talks_uri: {{ site.apiurl }}/v2.1/events/3/talks
+        tracks_uri: {{ site.apiurl }}/v2.1/events/3/tracks
         attending_uri: {{ site.apiurl }}/v2.1/events/3/attending
         website_uri: http://joind.in/event/view/3
         humane_website_uri: http://joind.in/event/D125
@@ -134,6 +135,7 @@ events:
         verbose_uri: http://api.joindin.local/v2.1/events/3?verbose=yes
         comments_uri: http://api.joindin.local/v2.1/events/3/comments
         talks_uri: http://api.joindin.local/v2.1/events/3/talks
+        tracks_uri: {{ site.apiurl }}/v2.1/events/3/tracks
         attending_uri: http://api.joindin.local/v2.1/events/3/attending
         website_uri: http://joind.in/event/view/3
         humane_website_uri: http://joind.in/event/D125
@@ -364,3 +366,64 @@ If successful, a 201 status code will be returned, and you will be redirected to
 
 To remove the event image, send a `DELETE` request to the `images_url` endpoint.  This will remove all current event images.
 
+
+## Event Tracks
+
+Each event may have a number tracks to which talks can be assigned. The list of tracks for this event can be found by issuing a GET request to the URL in the `tracks_uri` field.
+
+An example set of tracks is (using sample data):
+
+~~~~
+tracks:
+    0:
+        track_name: Track 1
+        track_description: Aliquam vulputate vulputate lobortis.
+        talks_count: 3
+        uri: {{ site.apiurl }}/v2.1/tracks/9
+        verbose_uri: {{ site.apiurl }}/v2.1/tracks/9?verbose=yes
+        event_uri: {{ site.apiurl }}/v2.1/events/3
+    1:
+        track_name: Track 2
+        track_description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        talks_count: 1
+        uri: {{ site.apiurl }}/v2.1/tracks/10
+        verbose_uri: {{ site.apiurl }}/v2.1/tracks/10?verbose=yes
+        event_uri: {{ site.apiurl }}/v2.1/events/3
+meta:
+    count: 2
+    total: 2
+    this_page: http://api.dev.joind.in/v2.1/events/3/tracks?resultsperpage=20
+~~~~
+
+### Adding a new track
+
+To create a new track for an event, the user needs to be authenticated and be either a site admin or a host of the event. You should send a POST request to the URL in the `tracks_uri` field of the event resource containing both `track_name` and `track_description` fields.
+
+Curl example:
+
+<pre class="embedcurl">curl -v -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" {{ site.apiurl }}/v2.1/events/3/tracks --data '{"track_name": "Track 3", "track_description": "Curabitur a purus ut leo condimentum mattis id eu enim."}'
+</pre>
+
+If successful, a 201 Created status will be returned along with a Location header pointing to the new track's URL.
+
+### Editing a track
+
+To edit a track for an event, the user needs to be authenticated and be either a site admin or a host of the event. You should send a PUT request to the URL in the track's `uri` field containing both `track_name` and `track_description` fields.
+
+Curl example:
+
+<pre class="embedcurl">curl -v -X PUT -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" {{ site.apiurl }}/v2.1/tracks/9 --data '{"track_name": "Track One", "track_description": "Aliquam vulputate vulputate lobortis."}'
+</pre>
+
+If successful, a 204 Accepted status will be returned along with a Location header pointing to the track's URL.
+
+### Deleting a track
+
+To delete an event's track, the user needs to be authenticated and be either a site admin or a host of the event. You should send a DELETE request to the URL in the track's `uri` field with no body.
+
+Curl example:
+
+<pre class="embedcurl">curl -v -X DELETE -H "Accept: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" {{ site.apiurl }}/v2.1/tracks/9
+</pre>
+
+If successful, a 204 Accepted status will be returned.
