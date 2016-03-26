@@ -336,4 +336,123 @@ class TalksController extends ApiController
 
         return $list;
     }
+   
+    /**
+     * Edit a talk
+     *
+     * Edit talk after being called via the URL "/talks/[talkId]"
+     *
+     * @param Request $request
+     * @param PDO     $db
+     *
+     * @throws Exception
+     * @return array|bool
+     */
+    public function editTalk(Request $request, PDO $db)
+    {
+        if (!isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 400);
+        }
+
+        $talk_id = $this->getItemId($request);
+
+        $event_mapper = new EventMapper($db, $request);
+        $talk_mapper = new TalkMapper($db, $request);
+        $talk_type_mapper = new TalkTypeMapper($db, $request);
+
+        $talk = $talk_mapper->getTalkById($talk_id);
+        if (!$talk) {
+            throw new Exception("Talk not found", 404);
+        }
+
+        $is_admin = $event_mapper->thisUserHasAdminOn($talk->event_id);
+        if (!$is_admin) {
+            throw new Exception("You do not have permission to add talks to this event", 400);
+        }
+
+        // get the event so we can get the timezone info
+        $list = $event_mapper->getEventById($talk->event_id, true);
+        if (count($list['events']) == 0) {
+            throw new Exception('Event not found', 404);
+        }
+        $event = $list['events'][0];
+
+        $data['title'] = filter_var(
+            $request->getParameter('talk_title'),
+            FILTER_SANITIZE_STRING
+        );
+        if (empty($data['title'])) {
+            throw new Exception("The talk title field is required", 400);
+        }
+
+        $data['description'] = filter_var(
+            $request->getParameter('talk_description'),
+            FILTER_SANITIZE_STRING
+        );
+        if (empty($data['description'])) {
+            throw new Exception("The talk description field is required", 400);
+        }
+
+        $data['type'] = filter_var(
+            $request->getParameter('type', 'Talk'),
+            FILTER_SANITIZE_STRING
+        );
+
+        $talk_types = $talk_type_mapper->getTalkTypesLookupList();
+        if (! array_key_exists($data['type'], $talk_types)) {
+            throw new Exception("The type '{$data['type']}' is unknown", 400);
+        }
+        $data['type_id'] = $talk_types[$data['type']];
+
+        $start_date = filter_var(
+            $request->getParameter('start_date'),
+            FILTER_SANITIZE_STRING
+        );
+        if (empty($start_date)) {
+            throw new Exception("Please give the date and time of the talk", 400);
+        }
+        $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+        $data['date'] = (new DateTime($start_date, $tz))->format('U');
+
+        $event_start_date = (new DateTime($event['start_date']))->format('U');
+        $event_end_date = (new DateTime($event['end_date']))->add(new DateInterval('P1D'))->format('U');
+        if ($data['date'] < $event_start_date || $data['date'] >= $event_end_date) {
+            throw new Exception("The talk must be held between the start and end date of the event", 400);
+        }
+
+        $data['language'] = filter_var(
+            $request->getParameter('language'),
+            FILTER_SANITIZE_STRING
+        );
+        if (empty($data['language'])) {
+            // default to UK English
+            $data['language'] = 'English - UK';
+        }
+
+        $data['duration'] = filter_var(
+            $request->getParameter('duration'),
+            FILTER_SANITIZE_NUMBER_INT
+        );
+        if (empty($data['duration'])) {
+            $data['duration'] = 60;
+        }
+
+        $data['slides_link'] = filter_var(
+            $request->getParameter('slides_link'),
+            FILTER_SANITIZE_URL
+        );
+
+        $data['speakers'] = array_map(function ($speaker) {
+            $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
+            $speaker = trim($speaker);
+            return $speaker;
+        }, (array) $request->getParameter('speakers'));
+
+
+        // edit talk
+        $talk_mapper->editTalk($data, $talk_id);
+
+        header("Location: " . $request->base . $request->path_info, null, 204);
+        exit;
+    }
 }

@@ -354,10 +354,75 @@ class TalkMapper extends ApiMapper
         $this->setType($talk_id, $data['type_id']);
 
         if (isset($data['speakers'])) {
-            $this->addSpeakersToTalk($talk_id, $data['speakers']);
+            $this->updateSpeakersOnTalk($talk_id, $data['speakers']);
         }
 
         return $talk_id;
+    }
+
+    /**
+     * Edit a talk
+     *
+     * The data-array is expected to have the following keys:
+     *
+     * - title
+     * - description
+     * - slides_link
+     * - language (a value from the column lang:lang_name
+     * - date (a timestamp)
+     * - duration
+     * - speakers (an array of names)
+     * - type_id (id of the talk's type)
+     *
+     * @param $data
+     *
+     */
+    public function editTalk($data, $talk_id)
+    {
+        $sql = "UPDATE talks SET %s, url_friendly_talk_title = null WHERE ID = :talk_id";
+
+        // get the list of columns => data key-name
+        $fields = [
+            'event_id'    => 'event_id',
+            'title'       => 'talk_title',
+            'description' => 'talk_desc',
+            'date'        => 'date_given',
+            'duration'    => 'duration',
+            'slides_link' => 'slides_link',
+        ];
+        $items = [];
+        $pairs = [];
+        foreach ($fields as $api_name => $column_name) {
+            if (array_key_exists($api_name, $data)) {
+                $pairs[] = "$column_name = :$api_name";
+                $items[$api_name] = $data[$api_name];
+            }
+        }
+        // language is special as we need to select the ID from lang
+        $pairs[] = 'lang = (select ID from lang where lang_name = :language)';
+        $items['language'] = $data['language'];
+
+        // add talk_id for where clause
+        $items['talk_id'] = $talk_id;
+
+        $stmt = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
+        try {
+            $stmt->execute($items);
+        } catch (Exception $e) {
+            throw new Exception(sprintf(
+                'executing "%s" resulted in an error: %s',
+                $stmt->queryString,
+                $e->getMessage()
+            ));
+        }
+
+        if (array_key_exists('type_id', $data)) {
+            $this->setType($talk_id, $data['type_id']);
+        }
+
+        if (isset($data['speakers'])) {
+            $this->updateSpeakersOnTalk($talk_id, $data['speakers']);
+        }
     }
 
     /**
@@ -398,14 +463,18 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * Add speakers to this talk
+     * Update speakers on this talk.
      *
-     * @note each speaker can be display name
+     * Add any new speakers not on the list
+     * Remove any speakers already attached the talk that are not in this list
+     * Leave the other speakers alone as they may already have claimed their talk
+     *
+     * @note $speakers contains the display name for each speaker
      *
      * @param  int   $talk_id
      * @param  array $speakers
      */
-    public function addSpeakersToTalk($talk_id, array $speakers)
+    public function updateSpeakersOnTalk($talk_id, array $speakers)
     {
         // get the current speakers
         $sql = 'select ts.speaker_name, ts.speaker_name as val from talk_speaker ts where ts.talk_id = :talk_id';
@@ -413,16 +482,29 @@ class TalkMapper extends ApiMapper
         $stmt->execute(['talk_id' => $talk_id]);
         $current_speakers = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
-        // remove speakers that are already attached to the talk
-        $new_speakers = array_diff($speakers, $current_speakers);
-
         // add the speakers that aren't already attached to the talk
+        $new_speakers = array_diff($speakers, $current_speakers);
         $sql = "insert into talk_speaker
                     (talk_id, speaker_name, status)
                 values
                     (:talk_id, :speaker_name, NULL)";
         $stmt = $this->_db->prepare($sql);
         foreach ($new_speakers as $name) {
+            $params = [
+                'talk_id' => $talk_id,
+                'speaker_name' => $name,
+            ];
+            $stmt->execute($params);
+        }
+
+        // remove speakers that are currently attached to the talk, but not
+        // in the list provided
+        $speakers_to_delete = array_diff($current_speakers, $speakers);
+        $sql = "delete from talk_speaker WHERE
+                    talk_id = :talk_id
+                    and speaker_name = :speaker_name";
+        $stmt = $this->_db->prepare($sql);
+        foreach ($speakers_to_delete as $name) {
             $params = [
                 'talk_id' => $talk_id,
                 'speaker_name' => $name,
