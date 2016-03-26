@@ -18,6 +18,12 @@
         "verbs": ["GET"]
     },
     {
+        "path": "/events/(\\d+)/tracks$",
+        "controller": "EventsController",
+        "action": "createTrack",
+        "verbs": ["POST"]
+    },
+    {
         "path": "/events/(\\d+)/approval$",
         "controller": "EventsController",
         "action": "approveAction",

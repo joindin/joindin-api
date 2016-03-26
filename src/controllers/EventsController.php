@@ -526,6 +526,65 @@ class EventsController extends ApiController
     }
 
     /**
+     * Create track
+     *
+     * @param  Request $request
+     * @param  PDO $db
+     *
+     * @return void
+     */
+    public function createTrack($request, $db)
+    {
+        $track = array();
+        $event_id = $this->getItemId($request);
+        $track['event_id']= $event_id;
+        if (empty($track['event_id'])) {
+            throw new Exception(
+                "POST expects a track representation sent to a specific event URL",
+                400
+            );
+        }
+
+        $event_mapper = new EventMapper($db, $request);
+        $events = $event_mapper->getEventById($event_id, true);
+        if (!$events || $events['meta']['count'] == 0) {
+            throw new Exception("Associated event not found", 404);
+        }
+        if (!$event_mapper->thisUserHasAdminOn($event_id)) {
+            throw new Exception('You do not have permission to edit this track', 403);
+        }
+
+        // validate fields
+        $errors = [];
+        $track['track_name'] = filter_var(
+            $request->getParameter("track_name"),
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
+        if (empty($track['track_name'])) {
+            $errors[] = "'track_name' is a required field";
+        }
+        $track['track_description'] = filter_var(
+            $request->getParameter("track_description"),
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
+        if (empty($track['track_description'])) {
+            $errors[] = "'track_description' is a required field";
+        }
+        if ($errors) {
+            throw new Exception(implode(". ", $errors), 400);
+        }
+
+        $track_mapper = new TrackMapper($db, $request);
+        $track_id = $track_mapper->createEventTrack($track, $event_id);
+
+        $uri = $request->base  . '/' . $request->version . '/tracks/' . $track_id;
+        header("Location: " . $uri, null, 201);
+        exit;
+    }
+
+    /**
      * Approve a pending event by POSTing to /events/{id}/approval
      *
      * The body of this request is completely irrelevant, simply POSTing to this
