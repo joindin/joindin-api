@@ -259,9 +259,11 @@ class TalkMapper extends ApiMapper
             foreach ($tracks as $track) {
                 // Make the track_uri
                 $track_uri = $base . '/' . $version . '/tracks/' . $track['ID'];
+                $remove_track_uri = $base . '/' . $version . '/talks/' . $talk_id . '/tracks/' . $track['ID'];
                 $retval[]  = array(
                     'track_name' => $track['track_name'],
-                    'track_uri'  => $track_uri,
+                    'track_uri' => $track_uri,
+                    'remove_track_uri' => $remove_track_uri,
                 );
             }
         }
@@ -619,6 +621,24 @@ class TalkMapper extends ApiMapper
             $talk_track_id = $this->_db->lastInsertId();
         }
         return $talk_track_id;
+    }
+
+    /**
+     * Remove talk from a track
+     *
+     * @param  int $talk_id
+     * @param  int $track_id
+     */
+    public function removeTrackFromTalk($talk_id, $track_id)
+    {
+        $params = [
+            'track_id' => $track_id,
+            'talk_id' => $talk_id,
+        ];
+
+        $sql = 'delete from talk_track where track_id = :track_id and talk_id = :talk_id';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute($params);
     }
 
     public function delete($talk_id)

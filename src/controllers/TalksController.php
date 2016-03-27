@@ -240,6 +240,52 @@ class TalksController extends ApiController
     }
 
     /**
+     * Remove a track from a talk by DELETEing to /talks/123/tracks/456
+     *
+     * @param PDO $db
+     * @param Request $request
+     */
+    public function removeTrackFromTalk(Request $request, PDO $db)
+    {
+        if (!isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 400);
+        }
+
+        $talk_id = $this->getItemId($request);
+        $track_id = $request->url_elements[5];
+
+        $talk_mapper = new TalkMapper($db, $request);
+        $talk = $talk_mapper->getTalkById($talk_id);
+        if (!$talk) {
+            throw new Exception("Talk not found", 404);
+        }
+
+        $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
+        $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
+        if (!($is_admin || $is_speaker)) {
+            throw new Exception("You do not have permission to remove this talk from this track", 400);
+        }
+
+        // is this track on this event?
+        $event_mapper = new EventMapper($db, $request);
+        $track_events = $event_mapper->getEventByTrackId($track_id, true, false, false);
+        if (!$track_events || !$track_events[0]['ID']) {
+            throw new Exception("Associated event not found", 400);
+        }
+        $track_event_id = $track_events[0]['ID'];
+        if ($talk->event_id != $track_event_id) {
+            throw new Exception("This talk cannot be added to this track", 400);
+        }
+
+        // delete track from talk
+        $talk_mapper->removeTrackFromTalk($talk_id, $track_id);
+
+        $uri = $request->base . '/' . $request->version . '/talks/' . $talk_id;
+        header('Location: ' . $uri, null, 204);
+        exit;
+    }
+
+    /**
      * Get a single talk
      *
      * @param  PDO      $db

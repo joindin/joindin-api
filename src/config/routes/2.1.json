@@ -84,6 +84,12 @@
         "verbs": ["POST"]
     },
     {
+        "path": "/talks(/[\\d]+)/tracks(/[\\d]+)$",
+        "controller": "TalksController",
+        "action": "removeTrackFromTalk",
+        "verbs": ["DELETE"]
+    },
+    {
         "path": "/talks(/[^/]+)*/?$",
         "controller": "TalksController",
         "action": "postAction",
