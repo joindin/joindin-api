@@ -78,6 +78,12 @@
         "verbs": ["GET"]
     },
     {
+        "path": "/talks(/[\\d]+)/tracks$",
+        "controller": "TalksController",
+        "action": "addTrackToTalk",
+        "verbs": ["POST"]
+    },
+    {
         "path": "/talks(/[^/]+)*/?$",
         "controller": "TalksController",
         "action": "postAction",
