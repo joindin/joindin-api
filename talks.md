@@ -181,6 +181,37 @@ Example request/response:
 ~~~~
 
 
-Other fields are not yet supported.  Editing of events via the API is not yet supported.
+## Editing a Talk
+
+To edit a talk, the user needs to be authenticated and be either a site admin, a host of the event or an approved speaker of the talk. You should send a PUT request to the URL in the talk's `uri` field containing the same fields as for creating a talk.
+
+Curl example:
+
+<pre class="embedcurl">curl -v -X PUT -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" {{ site.apiurl }}/v2.1/talks/76 --data '{"talk_title":"Interesting Talk", "talk_description": "This talk is about interesting things", "start_date": "2013-11-24 14:00", "duration": "60", "slides_link": "", "type": "Talk", "language": "English - UK", "speakers": ["Jeffrey Montgomery"]}'
+</pre>
+
+~~~~
+> PUT /v2.1/talks/12 HTTP/1.1
+> Host: api.dev.joind.in
+> User-Agent: curl/7.43.0
+> Content-Type: application/json
+> Accept: application/json
+> Authorization: Bearer f9b4f1a9b30bdc0d
+> Content-Length: 245
+>
+* upload completely sent off: 245 out of 245 bytes
+< HTTP/1.1 204 No Content
+< Date: Sun, 27 Mar 2016 08:41:20 GMT
+< Server: Apache/2.2.22 (Debian)
+< Location: http://api.dev.joind.in/v2.1/talks/12
+< Vary: Accept-Encoding
+< Content-Length: 0
+< Content-Type: text/html; charset=UTF-8
+<
+~~~~
+
+If successful, a 204 Accepted status will be returned along with a Location header pointing to the talk's URL.
+
+Note that the list of speakers must be complete. Any speakers attached to the talk that are not in the `speakers` array will be removed from the talk.
 
 
