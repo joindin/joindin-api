@@ -283,7 +283,6 @@ class TalksController extends ApiController
 
         $talk_id = $this->getItemId($request);
 
-        $event_mapper = new EventMapper($db, $request);
         $talk_mapper = new TalkMapper($db, $request);
 
         $talk = $talk_mapper->getTalkById($talk_id);
@@ -291,9 +290,10 @@ class TalksController extends ApiController
             throw new Exception("Talk not found", 404);
         }
 
-        $is_admin = $event_mapper->thisUserHasAdminOn($talk->event_id);
-        if (!$is_admin) {
-            throw new Exception("You do not have permission to add talks to this event", 400);
+        $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
+        $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
+        if (!($is_admin || $is_speaker)) {
+            throw new Exception("You do not have permission to update this talk", 400);
         }
 
         // retrieve the talk data from the request
