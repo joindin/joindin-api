@@ -189,6 +189,12 @@
     },
 
     {
+        "path": "/search[/]*?$",
+        "controller": "SearchController",
+        "action": "handle",
+        "verbs": ["GET","POST"]
+    },
+    {
         "path": "/emails/reminders/password",
         "controller": "EmailsController",
         "action": "passwordReset",

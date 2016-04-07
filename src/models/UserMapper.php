@@ -17,6 +17,7 @@ class UserMapper extends ApiMapper
     public function getDefaultFields()
     {
         $fields = array(
+            "id"               => "ID",
             "username"         => "username",
             "full_name"        => "full_name",
             "twitter_username" => "twitter_username"
@@ -35,6 +36,7 @@ class UserMapper extends ApiMapper
     public function getVerboseFields()
     {
         $fields = array(
+            "id"               => "ID",
             "username"         => "username",
             "full_name"        => "full_name",
             "twitter_username" => "twitter_username",
@@ -54,6 +56,30 @@ class UserMapper extends ApiMapper
 
         return false;
 
+    }
+
+    public function getUsersByIds($user_ids, $verbose = false) 
+    {
+        $usersIn = [];
+
+        // Validate
+        foreach($user_ids as $user_id) {
+            if(ctype_digit((string)$user_id)) {
+                $usersIn[] = $user_id;
+            }
+        }
+
+        // Shouldn't get an empty array [] is falsey
+        if(!$usersIn) {
+            return false;
+        }
+
+        $results = $this->getUsers(1000000, 0, 'user.ID IN (' . implode(',', $usersIn) . ')', null);
+        if ($results) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
     }
 
     public function getUserByUsername($username, $verbose = false)

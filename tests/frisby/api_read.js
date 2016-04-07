@@ -213,7 +213,7 @@ function testSearchEventsByTitle() {
 			expect(response).toContainJsonTypes({"events":Array});
 
 			// expect at least some serch results
-			expect(response.events.length).toBeGreaterThan(1);
+			expect(response.events.length).toBeGreaterThan(0);
 
 			for(var i in response.events) {
 				datatest.checkEventData(response.events[i]);

@@ -17,6 +17,7 @@ class EventMapper extends ApiMapper
     public function getDefaultFields()
     {
         $fields = array(
+            'id'                   => 'ID',
             'name'                 => 'event_name',
             'url_friendly_name'    => 'url_friendly_name',
             'start_date'           => 'event_start',
@@ -49,6 +50,7 @@ class EventMapper extends ApiMapper
     public function getVerboseFields()
     {
         $fields = array(
+            'id'                   => 'ID',
             'name'                 => 'event_name',
             'url_friendly_name'    => 'url_friendly_name',
             'start_date'           => 'event_start',
@@ -100,6 +102,57 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Fetch the details for multiple events
+     * 
+     * @param array $event_id events.ID value
+     * @param boolean $verbose used to determine how many fields are needed
+     * 
+     * @return array the event detail
+     */
+    public function getEventsByIds(array $event_ids, $verbose = false) 
+    {
+        $results = $this->getEvents(count($event_ids), 0, array("event_id" => $event_ids));
+        if ($results) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+    /**
+     * Fetch the relevant event fora given talk ID
+     *
+     * @param int $talkId The talk we want the event for
+     * @param boolean $verbose, used to determine the fields to return
+     *
+     * @return array The event
+     */
+    public function getEventByTalkId($talkId, $verbose = false) 
+    {
+        if(!$talkId || !ctype_digit((string)$talkId)) {
+            throw new Exception('Missing valid talk ID');
+        }
+
+        // First get the event ID from talks
+        $sql = 'SELECT event_id
+                FROM talks
+                WHERE ID = ?
+                LIMIT 1';
+
+         
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([$talkId]);
+        if ($response) {
+            $eventId = $stmt->fetchColumn();
+
+            // Load the event using the standard mechanism
+            return $this->getEventById($eventId, $verbose);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Internal function called by other event-fetching code, with changeable SQL
      *
      * @param int $resultsperpage how many records to return
@@ -138,11 +191,25 @@ class EventMapper extends ApiMapper
                 left join tags on tags.ID = tags_events.tag_id ";
         }
 
-        $sql .= ' where (events.private <> "y" OR events.private IS NULL) ';
+        if(array_key_exists("event_id", $params)) {
+            // Check whether the requester is after one or multiplle event IDs returned
+            if(is_array($params['event_id'])) {
+                if(!$params['event_id']) {
+                    // No event IDs passed
+                    throw new Exception("Missing event ID values");
+                }
 
-        if (array_key_exists("event_id", $params)) {
-            $where .= "and events.ID = :event_id ";
-            $data["event_id"] = $params["event_id"];
+                $whereIdToken = [];
+                foreach(array_values($params['event_id']) as $pIndex => $pValue) {
+                    $whereIdToken[] = ':event_id_'.$pIndex;
+                    $data['event_id_'.$pIndex] = $pValue;
+                }
+                
+                $where .= sprintf('and events.ID IN (%s)', implode(',', $whereIdToken));
+            } else {
+                $where .= "and events.ID = :event_id ";
+                $data["event_id"] = $params["event_id"];
+            }
         }
 
         $active = true;

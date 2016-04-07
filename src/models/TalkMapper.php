@@ -103,6 +103,40 @@ class TalkMapper extends ApiMapper
     }
 
     /**
+     * Return talk set by requested array of IDs
+     *
+     * @param array $ids The requested talks IDs
+     * @param bool $verbose
+     *
+     * @return array
+     */
+    public function getTalksByIds(array $ids, $verbose = false) {
+        $sql = $this->getBasicSQL();
+        $sql .= ' and t.ID IN (%s)';
+
+        $data = [];
+        $whereIn = [];
+        foreach(array_values($ids) as $key => $value) {
+            $whereIn[] = ':talk_id_' . $key;
+            $data['talk_id_' . $key] = $value;
+        }
+
+        $sql = sprintf($sql, implode(',',$whereIn));
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute($data);
+        if($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($results) {
+                $results['total'] = $this->getTotalCount($sql, $data);
+                $retval = $this->transformResults($results, $verbose);
+                return $retval;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Search talks by title
      *
      * @param string $keyword

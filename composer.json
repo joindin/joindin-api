@@ -3,6 +3,7 @@
     "require" : {
         "swiftmailer/swiftmailer": "v5.0.3",
         "michelf/php-markdown": "1.4.0",
+	    "elasticsearch/elasticsearch": "~1.0",
         "guzzlehttp/oauth-subscriber": "0.1.*"
     }
 }

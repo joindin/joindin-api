@@ -323,12 +323,26 @@ class EventsController extends ApiController
                 }
 
                 if ($approveEventOnCreation) {
-                    $event_id = $event_mapper->createEvent($event, true);
+                    $event_id = $event['id'] = $event_mapper->createEvent($event, true);
+
+                    try {
+                        // Write the event to search index
+                        $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
+                        $searchSrv->write('events', $event);
+                    } catch(Exception $e) {
+                        // We can always do a full reindex later if ES isn't playing ball, so don't
+                        // fail the entire process just because of search index.
+    
+                        // Notify admins that this may be necessary
+                    }
 
                     // redirect to event listing
                     header("Location: " . $request->base . $request->path_info . '/' . $event_id, null, 201);
                 } else {
+                    // NOTE: Don't write to the search index if we're not approving yet
+                    
                     $event_id = $event_mapper->createEvent($event);
+
 
                     // set status to accepted; a pending event won't be visible
                     header("Location: " . $request->base . $request->path_info, null, 202);
@@ -516,6 +530,24 @@ class EventsController extends ApiController
             }
 
             $event_mapper->editEvent($event, $event_id);
+
+            // NOTE - When getting the existing event, the WHERE clause explicitly
+            // makes sure the the event is active and not pending. Just index.
+
+            try {
+                // Write event to search index
+                $searchEvt = array_merge($existing_event, $event);
+                $searchEvt['id'] = $event_id;
+                $searchSrv = new SearchService(new \Elasticsearch\Client(), 'ji-index');
+                $searchSrv->write('events', $searchEvt);
+            } catch(Exception $e) {
+                // We can always do a full reindex later if ES isn't playing ball, so don't
+                // fail the entire process just because of search index.
+
+                // Notify admins that this may be necessary
+            }
+
+
             if (isset($tags)) {
                 $event_mapper->setTags($event_id, $tags);
             }
