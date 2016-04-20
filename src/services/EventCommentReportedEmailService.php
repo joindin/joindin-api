@@ -59,6 +59,7 @@ class EventCommentReportedEmailService extends EmailBaseService
 
     private function linkToReportedCommentsForEvent($name)
     {
-        return '<a href="' . $this->website_url . '/event/' . strtolower($name) . '/reported-comments' . '">' . $this->event['name'] . '</a>';
+        return '<a href="' . $this->website_url . '/event/' . strtolower($name) 
+                . '/reported-comments' . '">' . $this->event['name'] . '</a>';
     }
 }
