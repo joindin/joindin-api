@@ -42,10 +42,11 @@ class EventCommentReportedEmailService extends EmailBaseService
         }
 
         $replacements = array(
-            "name"    => $this->linkToReportedCommentsForEvent($this->event['name']),
+            "name"    => $this->event['name'],
             "rating"  => $rating,
             "comment" => $this->comment['comment'],
-            "byline"  => $byLine
+            "byline"  => $byLine,
+            "link"    => $this->linkToReportedCommentsForEvent($this->event['name'])
         );
 
         $messageBody = $this->parseEmail("eventCommentReported.md", $replacements);
@@ -59,8 +60,8 @@ class EventCommentReportedEmailService extends EmailBaseService
 
     private function linkToReportedCommentsForEvent($name)
     {
-          return '<a href="' . $this->website_url
+        return '<' . $this->website_url
                 . '/event/' . strtolower($name)
-                . '/reported-comments' . '">' . $this->event['name'] . '</a>';
+                . '/reported-comments' . '>';
     }
 }
