@@ -179,6 +179,24 @@ function testCreateEventFailsWithIncorrectData(access_token)
     })
     .toss();
 
+  frisby.create('Create event fails with start date greater than end')
+    .post(
+      baseURL + "/v2.1/events",
+      {
+        "name" : "Frisby test event",
+        "description" : "Test description",
+        "location" : "here",
+        "start_date" : "2015-02-01",
+        "end_date" : "2015-01-01"
+      },
+      {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
+    )
+    .expectStatus(400)
+    .afterJSON(function(result) {
+      expect(result[0]).toContain("The event start date must be before its end date");
+    })
+    .toss();
+
   frisby.create('Create event fails with missing tx_continent')
     .post(
       baseURL + "/v2.1/events",
