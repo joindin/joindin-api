@@ -31,3 +31,5 @@ BEGIN
 
 	RETURN rating_out;
 END;
+
+INSERT INTO patch_history SET patch_number = 66;
