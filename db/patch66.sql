@@ -1,7 +1,6 @@
 -- Drop the function if it exists
 DROP FUNCTION IF EXISTS get_talk_rating;
 
-
 -- Create get_talk_rating function that takes into account ratings that should not be added (speaker ratings, private)
 -- + IFNULL() fix for making sure this works on non-claimed talks (jthijssen)
 -- + Not using ratings=0, since they didn't rate at all (jthijssen)
@@ -32,4 +31,5 @@ BEGIN
 	RETURN rating_out;
 END;
 
+-- Patch counter
 INSERT INTO patch_history SET patch_number = 66;
