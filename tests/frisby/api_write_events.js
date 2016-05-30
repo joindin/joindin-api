@@ -315,6 +315,7 @@ function testCreateApprovedEvent(access_token)
         testEditEventFailsWithIncorrectData(access_token, event_uri)
         testEditEvent(access_token, res.headers.location);
         testEventComments(access_token, event_uri);
+        testEventTracks(access_token, event_uri);
       }
     })
     .toss();
@@ -613,3 +614,93 @@ function testEventComments(access_token, url) {
     .toss();
 
 }
+
+
+
+function testEventTracks(access_token, url) {
+  var track_name = "Main track";
+
+  frisby.create('Track name required')
+    .post(
+      url + "/tracks",
+      {
+        "track_description": "The big room upstairs"
+      },
+      {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
+    )
+    .expectStatus(400)
+    .toss();
+
+  frisby.create('Add a track')
+    .post(
+      url + "/tracks",
+      {
+        "track_name": track_name,
+        "track_description": "The big room upstairs"
+      },
+      {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
+    )
+    .expectStatus(201)
+    .after(function(err, res, body) {
+      if(res.statusCode == 201) {
+        var track_uri = res.headers.location;
+
+        frisby.create("Track was created")
+          .get(track_uri)
+          .expectStatus(200)
+          .expectBodyContains(track_name)
+          .toss()
+
+        frisby.create("Edit track requires data")
+          .put(
+              track_uri,
+              {},
+              {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
+          )
+          .expectStatus(400)
+          .toss()
+
+        frisby.create("Edit track")
+          .put(
+              track_uri,
+              {
+                "track_name": "Track 1",
+                "track_description": "The big room upstairs"
+              },
+              {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
+          )
+          .expectStatus(204)
+          .after(function(err, res, body) {
+            frisby.create("Track was updated")
+              .get(track_uri)
+              .expectStatus(200)
+              .expectBodyContains("Track 1")
+              .after(function(err, res, body) {
+                frisby.create("Anon user can't delete track")
+                  .delete(
+                      track_uri,
+                      {},
+                      {json: true}
+                  )
+                  .expectStatus(403)
+                  .after(function(err, res, body) {
+                    frisby.create("Delete track")
+                      .delete(
+                          track_uri,
+                          {},
+                          {json: true, headers: {'Authorization' : 'Bearer ' + access_token}}
+                      )
+                      .expectStatus(204)
+                      .toss()
+                  })
+                  .toss()
+              })
+              .toss()
+          })
+          .toss()
+      }
+    })
+    .toss();
+}
+
+

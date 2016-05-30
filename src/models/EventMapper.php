@@ -100,6 +100,32 @@ class EventMapper extends ApiMapper
     }
 
     /**
+     * Find an event from its track id
+     *
+     * Optionally return the non-transformed data.
+     *
+     * @param int  $track_id
+     * @param bool $verbose
+     * @param bool $activeEventsOnly
+     * @param bool $transform
+     *
+     * @return array the event detail
+     */
+    public function getEventByTrackId($track_id, $verbose = false, $activeEventsOnly = true, $transform = true)
+    {
+        $results = $this->getEvents(1, 0, array("track_id" => $track_id, 'active' => $activeEventsOnly));
+        if (!$results) {
+            return false;
+        }
+        
+        if ($transform) {
+            return $this->transformResults($results, $verbose);
+        }
+
+        return $results;
+    }
+
+    /**
      * Internal function called by other event-fetching code, with changeable SQL
      *
      * @param int $resultsperpage how many records to return
@@ -136,6 +162,11 @@ class EventMapper extends ApiMapper
         if (array_key_exists("tags", $params)) {
             $sql .= "left join tags_events on tags_events.event_id = events.ID 
                 left join tags on tags.ID = tags_events.tag_id ";
+        }
+
+        if (array_key_exists("track_id", $params)) {
+            $sql .= "right join event_track on event_track.event_id = events.ID and event_track.ID = :track_id";
+            $data['track_id'] = $params['track_id'];
         }
 
         $sql .= ' where (events.private <> "y" OR events.private IS NULL) ';
