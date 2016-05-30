@@ -415,7 +415,7 @@ Curl example:
 <pre class="embedcurl">curl -v -X PUT -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" {{ site.apiurl }}/v2.1/tracks/9 --data '{"track_name": "Track One", "track_description": "Aliquam vulputate vulputate lobortis."}'
 </pre>
 
-If successful, a 204 Accepted status will be returned along with a Location header pointing to the track's URL.
+If successful, a 204 No Content status will be returned along with a Location header pointing to the track's URL.
 
 ### Deleting a track
 
@@ -426,4 +426,4 @@ Curl example:
 <pre class="embedcurl">curl -v -X DELETE -H "Accept: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" {{ site.apiurl }}/v2.1/tracks/9
 </pre>
 
-If successful, a 204 Accepted status will be returned.
+If successful, a 204 No Content status will be returned.
