@@ -90,6 +90,56 @@ class TrackMapper extends ApiMapper
         return false;
     }
 
+    public function createEventTrack($data, $event_id)
+    {
+        // Sanity check: ensure all mandatory fields are present.
+        $mandatory_fields = [
+            'track_name',
+            'track_description',
+        ];
+        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($data));
+        if (!$contains_mandatory_fields) {
+            throw new Exception("Missing mandatory fields");
+        }
+
+        // get the list of column to API field name for all valid fields
+        $fields = $this->getVerboseFields();
+        $items  = array();
+        foreach ($fields as $api_name => $column_name) {
+            // Ignore calculated fields
+            if (in_array($column_name, ['talks_count'])) {
+                continue;
+            }
+            if (array_key_exists($api_name, $data)) {
+                $column_names[] = $column_name;
+                $placeholders[] = ':' . $api_name;
+                $data_values[$api_name] = $data[$api_name];
+            }
+        }
+
+        // we also need to store the event_id
+        $column_names[] = 'event_id';
+        $placeholders[] = ':event_id';
+        $data_values['event_id'] = $event_id;
+
+        // insert row
+        $sql = 'insert into event_track (' . implode(', ', $column_names) . ') ';
+        $sql .= 'values (' . implode(', ', $placeholders) . ')';
+        $stmt = $this->_db->prepare($sql);
+        try {
+            $stmt->execute($data_values);
+        } catch (Exception $e) {
+            throw new Exception(sprintf(
+                "executing '%s' resulted in an error: %s.",
+                $stmt->queryString,
+                $e->getMessage()
+            ));
+        }
+
+        $track_id = $this->_db->lastInsertId();
+        return $track_id;
+    }
+
     public function getBasicSQL()
     {
         $sql = 'select t.*, '
