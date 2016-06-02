@@ -203,7 +203,7 @@ class EventsController extends ApiController
             $end_date   = strtotime($request->getParameter("end_date"));
             if (! $start_date || ! $end_date) {
                 $errors[] = "Both 'start_date' and 'end_date' must be supplied in a recognised format";
-            } else if ( $start_date > $end_date ) {
+            } elseif ($start_date > $end_date) {
                 $errors[] = "The event start date must be before its end date";
             } else {
                 // if the dates are okay, sort out timezones
@@ -436,7 +436,7 @@ class EventsController extends ApiController
             $end_date   = strtotime($request->getParameter("end_date"));
             if (! $start_date || ! $end_date) {
                 $errors[] = "Both 'start_date' and 'end_date' must be supplied in a recognised format";
-            } else if ( $start_date > $end_date ) {
+            } elseif ($start_date > $end_date) {
                 $errors[] = "The event start date must be before its end date";
             } else {
                 // if the dates are okay, sort out timezones
