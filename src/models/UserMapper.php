@@ -642,4 +642,14 @@ class UserMapper extends ApiMapper
 
         return false;
     }
+
+
+    public function delete($user_id)
+    {
+        $sql  = "delete from user where ID = :user_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("user_id" => $user_id));
+
+        return true;
+    }
 }
