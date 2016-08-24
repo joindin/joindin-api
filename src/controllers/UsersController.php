@@ -308,7 +308,7 @@ class UsersController extends ApiController
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", 400);
         }
-        // delete the talk
+        // delete the user
         $user_id     = $this->getItemId($request);
         $user_mapper = new UserMapper($db, $request);
 
