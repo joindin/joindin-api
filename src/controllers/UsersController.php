@@ -299,19 +299,14 @@ class UsersController extends ApiController
 
     }
 
-
-
     public function deleteUser($request, $db)
     {
-
-
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", 400);
         }
         // delete the user
         $user_id     = $this->getItemId($request);
         $user_mapper = new UserMapper($db, $request);
-
 
         $is_admin = $user_mapper->thisUserHasAdminOn($user_id);
         if (! $is_admin) {
@@ -321,15 +316,8 @@ class UsersController extends ApiController
         if ($user_mapper->delete($user_id)){
             header("Content-Length: 0", null, 204);
             exit; // no more content            
-        }else{
-            throw new Exception("There was a problem trying to delete the user", 400);           
         }
-
-
-
-
         
-
-
+        throw new Exception("There was a problem trying to delete the user", 400);           
     }
 }
