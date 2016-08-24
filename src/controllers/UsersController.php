@@ -301,7 +301,7 @@ class UsersController extends ApiController
 
 
 
-    public function deleteAction($request, $db)
+    public function deleteUser($request, $db)
     {
 
 
@@ -312,22 +312,24 @@ class UsersController extends ApiController
         $user_id     = $this->getItemId($request);
         $user_mapper = new UserMapper($db, $request);
 
-        // note: use the mapper's getUserById as we don't want to throw a not found exception
-        $user = $user_mapper->getUserById($user_id);
-        if (false === $user) {
-            // user isn't there so it's as good as deleted
-            header("Content-Length: 0", null, 204);
-            exit; // no more content
-        }
 
         $is_admin = $user_mapper->thisUserHasAdminOn($user_id);
         if (! $is_admin) {
             throw new Exception("You do not have permission to do that", 400);
         }
+        
+        if ($user_mapper->delete($user_id)){
+            header("Content-Length: 0", null, 204);
+            exit; // no more content            
+        }else{
+            throw new Exception("There was a problem trying to delete the user", 400);           
+        }
 
-        $user_mapper->delete($user_id);
-        header("Content-Length: 0", null, 204);
-        exit; // no more content
+
+
+
+        
+
 
     }
 }

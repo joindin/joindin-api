@@ -146,7 +146,7 @@
     {
         "path": "/users(/[^/]+)*/?$",
         "controller": "UsersController",
-        "action": "deleteAction",
+        "action": "deleteUser",
         "verbs": ["DELETE"]
     },
 
