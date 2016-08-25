@@ -313,7 +313,7 @@ class UsersController extends ApiController
             throw new Exception("You do not have permission to do that", 400);
         }
         
-        if (!$user_mapper->delete($user_id)){
+        if (! $user_mapper->delete($user_id)){
             throw new Exception("There was a problem trying to delete the user", 400);
         }
 
