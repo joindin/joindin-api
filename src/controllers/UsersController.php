@@ -182,8 +182,8 @@ class UsersController extends ApiController
      */
     public function updateUser(Request $request, $db)
     {
-        if (false === ($request->getUserId())) {
-            throw new Exception("You must be logged in to change a user account", 400);
+        if (false == ($request->getUserId())) {
+            throw new Exception("You must be logged in to change a user account", 401);
         }
 
         $userId = $this->getItemId($request);
