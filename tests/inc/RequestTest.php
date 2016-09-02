@@ -305,7 +305,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
                     'CONTENT_TYPE'      => 'application/json',
                   ];
         /* @var $request \Request */
-        $request = $this->getMock('\Request', array('getRawBody'), array(array(), $server));
+        $request = $this->getMockBuilder('\Request')
+            ->setMethods(array('getRawBody'))
+            ->setConstructorArgs([[], $server])
+            ->getMock();
         $request->expects($this->once())
             ->method('getRawBody')
             ->will($this->returnValue($body));
@@ -468,7 +471,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         // Please see below for explanation of why we're mocking a "mock" PDO
         // class
-        $db      = $this->getMock(
+        $db      = $this->createMock(
             '\JoindinTest\Inc\mockPDO',
             array('getAvailableDrivers')
         );
@@ -504,7 +507,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function setOauthModelMethodIsFluent()
     {
         /* @var $mockOauth \OAuthModel */
-        $mockOauth = $this->getMock('OAuthModel', array(), array(), '', false);
+        $mockOauth = $this->createMock('OAuthModel', array(), array(), '', false);
         $request   = new \Request($this->config, []);
 
         $this->assertSame($request, $request->setOauthModel($mockOauth));
@@ -521,7 +524,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function setOauthModelAllowsSettingOfOauthModel()
     {
         /* @var $mockOauth \OAuthModel */
-        $mockOauth = $this->getMock('OAuthModel', array(), array(), '', false);
+        $mockOauth = $this->createMock('OAuthModel', array(), array(), '', false);
         $request   = new \Request($this->config, []);
         $request->setOauthModel($mockOauth);
 
@@ -539,7 +542,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function identifyUserWithOauthTokenTypeSetsUserIdForValidHeader()
     {
         $request   = new \Request($this->config, ['HTTPS' => 'on']);
-        $mockOauth = $this->getMock('OAuthModel', array(), array(), '', false);
+        $mockOauth = $this->createMock('OAuthModel', array(), array(), '', false);
         $mockOauth->expects($this->once())
             ->method('verifyAccessToken')
             ->with('authPart')
@@ -564,7 +567,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function identifyUserWithBearerTokenTypeSetsUserIdForValidHeader()
     {
         $request   = new \Request($this->config, ['HTTPS' => 'on']);
-        $mockOauth = $this->getMock('OAuthModel', array(), array(), '', false);
+        $mockOauth = $this->createMock('OAuthModel', array(), array(), '', false);
         $mockOauth->expects($this->once())
             ->method('verifyAccessToken')
             ->with('authPart')
