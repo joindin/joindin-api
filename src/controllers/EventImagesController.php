@@ -5,7 +5,7 @@ class EventImagesController extends ApiController
     public function createImage($request, $db)
     {
         if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 401);
         }
 
         $event_id = $this->getItemId($request);
@@ -96,7 +96,7 @@ class EventImagesController extends ApiController
     public function deleteImage($request, $db)
     {
         if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 401);
         }
 
         $event_id = $this->getItemId($request);
