@@ -754,8 +754,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase
                 'parameters' => array(),
                 'expectedClass' => 'HtmlView',
                 'accepts' => 'text/html,applicaton/json',
-                'view' => null,
-                'skip' => true // Currently we're not applying Accept correctly
+                'view' => new \HtmlView(),
+//                'skip' => true // Currently we're not applying Accept correctly
+// Can @choult check what's the reason for the skip?
             ),
             array( // #8
                 'parameters' => array('format' => 'html'),
