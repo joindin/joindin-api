@@ -41,16 +41,11 @@ class ApiMapper
                 // special handling for dates
                 if (substr($key, - 5) == '_date' && ! empty($row[ $value ])) {
                     if ($row['event_tz_place'] != '' && $row['event_tz_cont'] != '') {
-                        $tz = $row['event_tz_cont'] . '/' . $row['event_tz_place'];
+                        $tz = new DateTimeZone($row['event_tz_cont'] . '/' . $row['event_tz_place']);
                     } else {
-                        $tz = 'UTC';
+                        $tz = new DateTimeZone('UTC');
                     }
-                    $entry[ $key ] =
-                        Timezone::formattedEventDatetimeFromUnixtime(
-                            $row[ $value ],
-                            $tz,
-                            'c'
-                        );
+                    $entry[ $key ] = (new DateTime($row[$value], $tz))->format('c');
                 } else {
                     if (array_key_exists($value, $row)) {
                         $entry[$key] = $row[$value];
