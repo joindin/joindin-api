@@ -293,7 +293,7 @@ class TalksController extends ApiController
         $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
         $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
         if (!($is_admin || $is_speaker)) {
-            throw new Exception("You do not have permission to update this talk", 400);
+            throw new Exception("You do not have permission to update this talk", 403);
         }
 
         // retrieve the talk data from the request
