@@ -220,7 +220,7 @@ class TalksController extends ApiController
      * @param PDO     $db
      *
      * @throws Exception
-     * @return array|bool
+     * @return void
      */
     public function createTalkAction(Request $request, PDO $db)
     {
@@ -273,7 +273,7 @@ class TalksController extends ApiController
      * @param PDO     $db
      *
      * @throws Exception
-     * @return array|bool
+     * @return void
      */
     public function editTalk(Request $request, PDO $db)
     {

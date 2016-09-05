@@ -376,6 +376,7 @@ class TalkMapper extends ApiMapper
      *
      * @param $data
      *
+     * @return void
      */
     public function editTalk($data, $talk_id)
     {
@@ -473,6 +474,8 @@ class TalkMapper extends ApiMapper
      *
      * @param  int   $talk_id
      * @param  array $speakers
+     *
+     * @return void
      */
     public function updateSpeakersOnTalk($talk_id, array $speakers)
     {
