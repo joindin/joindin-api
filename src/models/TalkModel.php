@@ -80,6 +80,7 @@ class TalkModel extends AbstractModel
         $item['verbose_uri']          = $base . '/' . $version . '/talks/' . $this->ID . '?verbose=yes';
         $item['website_uri']          = $this->getWebsiteUrl($request->getConfigValue('website_url'));
         $item['starred_uri']          = $base . '/' . $version . '/talks/' . $this->ID . '/starred';
+        $item['tracks_uri']           = $base . '/' . $version . '/talks/' . $this->ID . '/tracks';
         $item['comments_uri']         = $base . '/' . $version . '/talks/' . $this->ID . '/comments';
         $item['verbose_comments_uri'] = $base . '/' . $version . '/talks/' . $this->ID
                                         . '/comments?verbose=yes';

@@ -259,9 +259,11 @@ class TalkMapper extends ApiMapper
             foreach ($tracks as $track) {
                 // Make the track_uri
                 $track_uri = $base . '/' . $version . '/tracks/' . $track['ID'];
+                $remove_track_uri = $base . '/' . $version . '/talks/' . $talk_id . '/tracks/' . $track['ID'];
                 $retval[]  = array(
                     'track_name' => $track['track_name'],
-                    'track_uri'  => $track_uri,
+                    'track_uri' => $track_uri,
+                    'remove_track_uri' => $remove_track_uri,
                 );
             }
         }
@@ -625,6 +627,56 @@ class TalkMapper extends ApiMapper
         }
 
         return false;
+    }
+
+    /**
+     * Add talk to track
+     *
+     * @param int $talk_id
+     * @param int $track_id
+     *
+     * @return int
+     */
+    public function addTalkToTrack($talk_id, $track_id)
+    {
+        $params = [
+            'track_id' => $track_id,
+            'talk_id' => $talk_id,
+        ];
+
+        // is this link in the database already?
+        $sql = 'select ID from talk_track where track_id = :track_id and talk_id = :talk_id';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute($params);
+        $talk_track_id = $stmt->fetchColumn();
+        
+        if ($talk_track_id === false) {
+            // insert new row as not in database
+            $sql = 'insert into talk_track (track_id, talk_id) values (:track_id, :talk_id)';
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute($params);
+        
+            $talk_track_id = $this->_db->lastInsertId();
+        }
+        return $talk_track_id;
+    }
+
+    /**
+     * Remove talk from a track
+     *
+     * @param  int $talk_id
+     * @param  int $track_id
+     */
+    public function removeTrackFromTalk($talk_id, $track_id)
+    {
+        $params = [
+            'track_id' => $track_id,
+            'talk_id' => $talk_id,
+        ];
+
+        $sql = 'delete from talk_track where track_id = :track_id and talk_id = :talk_id';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute($params);
     }
 
     public function delete($talk_id)
