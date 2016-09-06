@@ -318,7 +318,7 @@ class TalksController extends ApiController
      * @param PDO     $db
      *
      * @throws Exception
-     * @return array|bool
+     * @return void
      */
     public function createTalkAction(Request $request, PDO $db)
     {
@@ -326,8 +326,8 @@ class TalksController extends ApiController
             throw new Exception("You must be logged in to create data", 400);
         }
 
-        $talk['event_id'] = $this->getItemId($request);
-        if (empty($talk['event_id'])) {
+        $event_id = $this->getItemId($request);
+        if (empty($event_id)) {
             throw new Exception(
                 "POST expects a talk representation sent to a specific event URL",
                 400
@@ -336,19 +336,96 @@ class TalksController extends ApiController
 
         $event_mapper = new EventMapper($db, $request);
         $talk_mapper = new TalkMapper($db, $request);
-        $talk_type_mapper = new TalkTypeMapper($db, $request);
 
-        $is_admin = $event_mapper->thisUserHasAdminOn($talk['event_id']);
+        $is_admin = $event_mapper->thisUserHasAdminOn($event_id);
         if (!$is_admin) {
             throw new Exception("You do not have permission to add talks to this event", 400);
         }
 
-        // get the event so we can get the timezone info
-        $list = $event_mapper->getEventById($talk['event_id'], true);
+        // retrieve the talk data from the request
+        $talk = $this->getTalkDataFromRequest($db, $request, $event_id);
+        $talk['event_id'] = $event_id;
+
+        // create the talk
+        $new_id = $talk_mapper->createTalk($talk);
+
+        // Update the cache count for the number of talks at this event
+        $event_mapper->cacheTalkCount($event_id);
+
+        $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
+        header("Location: " . $uri, true, 201);
+
+        $new_talk = $this->getTalkById($db, $request, $new_id);
+        $collection = new TalkModelCollection([$new_talk], 1);
+        $list = $collection->getOutputView($request);
+
+        return $list;
+    }
+   
+    /**
+     * Edit a talk
+     *
+     * Edit talk after being called via the URL "/talks/[talkId]"
+     *
+     * @param Request $request
+     * @param PDO     $db
+     *
+     * @throws Exception
+     * @return void
+     */
+    public function editTalk(Request $request, PDO $db)
+    {
+        if (!isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 400);
+        }
+
+        $talk_id = $this->getItemId($request);
+
+        $talk_mapper = new TalkMapper($db, $request);
+
+        $talk = $talk_mapper->getTalkById($talk_id);
+        if (!$talk) {
+            throw new Exception("Talk not found", 404);
+        }
+
+        $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
+        $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
+        if (!($is_admin || $is_speaker)) {
+            throw new Exception("You do not have permission to update this talk", 403);
+        }
+
+        // retrieve the talk data from the request
+        $data = $this->getTalkDataFromRequest($db, $request, $talk->event_id);
+
+        // edit the talk
+        $talk_mapper->editTalk($data, $talk_id);
+
+        header("Location: " . $request->base . $request->path_info, null, 204);
+        exit;
+    }
+
+    /**
+     * Read the talk fields from the request body and validate and return an
+     * array ready for saving to the database.
+     *
+     * This is common for createTalk() and editTalk().
+     *
+     * @param  PDO     $db
+     * @param  Request $request
+     * @param  int     $event_id
+     *
+     * @return array
+     */
+    protected function getTalkDataFromRequest(PDO $db, Request $request, $event_id)
+    {
+        // get the event so we can get the timezone info & it
+        $event_mapper = new EventMapper($db, $request);
+        $list = $event_mapper->getEventById($event_id, true);
         if (count($list['events']) == 0) {
             throw new Exception('Event not found', 404);
         }
         $event = $list['events'][0];
+
 
         $talk['title'] = filter_var(
             $request->getParameter('talk_title'),
@@ -371,6 +448,7 @@ class TalksController extends ApiController
             FILTER_SANITIZE_STRING
         );
 
+        $talk_type_mapper = new TalkTypeMapper($db, $request);
         $talk_types = $talk_type_mapper->getTalkTypesLookupList();
         if (! array_key_exists($talk['type'], $talk_types)) {
             throw new Exception("The type '{$talk['type']}' is unknown", 400);
@@ -426,18 +504,6 @@ class TalksController extends ApiController
             return $speaker;
         }, (array) $request->getParameter('speakers'));
 
-        $new_id = $talk_mapper->createTalk($talk);
-
-        // Update the cache count for the number of talks at this event
-        $event_mapper->cacheTalkCount($talk['event_id']);
-
-        $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
-        header("Location: " . $uri, true, 201);
-
-        $new_talk = $this->getTalkById($db, $request, $new_id);
-        $collection = new TalkModelCollection([$new_talk], 1);
-        $list = $collection->getOutputView($request);
-
-        return $list;
+        return $talk;
     }
 }

@@ -77,6 +77,13 @@
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
+
+    {
+        "path": "/talks(/[\\d]+)$",
+        "controller": "TalksController",
+        "action": "editTalk",
+        "verbs": ["PUT"]
+    },
     {
         "path": "/talks(/[^/]+)*/?$",
         "controller": "TalksController",
