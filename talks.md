@@ -33,6 +33,7 @@ talks:
             0:
                 track_name: Track 1
                 track_uri: {{ site.apiurl }}/v2.1/tracks/3
+                remove_track_uri: {{ site.apiurl }}/v2.1/talks/76/tracks/3
         uri: {{ site.apiurl }}/v2.1/talks/76
         verbose_uri: {{ site.apiurl }}/v2.1/talks/76?verbose=yes
         website_uri: http://joind.in/talk/view/76
@@ -40,6 +41,7 @@ talks:
         verbose_comments_uri: {{ site.apiurl }}/v2.1/talks/76/comments?verbose=yes
         event_uri: {{ site.apiurl }}/v2.1/events/3
         starred_uri: {{ site.apiurl }}/v2.1/talks/76/starred
+        tracks_uri: {{ site.apiurl }}/v2.1/talks/76/tracks
 meta:
     count: 1
     this_page: {{ site.apiurl }}/v2.1/talks/76?start=0&resultsperpage=20
@@ -73,6 +75,7 @@ talks:
             0:
                 track_name: Track 1
                 track_uri: {{ site.apiurl }}/v2.1/tracks/3
+                remove_track_uri: {{ site.apiurl }}/v2.1/talks/76/tracks/3
         uri: http://api.joindin.local/v2.1/talks/76
         verbose_uri: http://api.joindin.local/v2.1/talks/76?verbose=yes
         website_uri: http://joind.in/talk/view/76
@@ -80,6 +83,7 @@ talks:
         verbose_comments_uri: http://api.joindin.local/v2.1/talks/76/comments?verbose=yes
         event_uri: http://api.joindin.local/v2.1/events/3
         starred_uri: {{ site.apiurl }}/v2.1/talks/76/starred
+        tracks_uri: {{ site.apiurl }}/v2.1/talks/76/tracks
 meta:
     count: 1
     this_page: http://api.joindin.local/v2.1/talks/76?verbose=yes&start=0&resultsperpage=20
@@ -104,7 +108,7 @@ The following fields can be found in a talk record, they are described below:
 *  ``starred``: If the user is authenticated, boolean value indicating whether the user has starred this talk or not.  For unauthenticated users, this field will always be false.
 *  ``starred_count``: Calculated field showing how many times this talk has been starred.
 *  ``speakers``: An array of the speakers giving the session.  If the speaker has claimed the talk, this includes a speaker_uri which points to their user record.  *See also* [users]({{ site.baseurl}}/users.html)
-*  ``tracks``: An array of the tracks that this talk is in, if any.  Shows track labels and a URI for each track.
+*  ``tracks``: An array of the tracks that this talk is in, if any.  Shows track labels and a URI for each track. Send a DELETE to the `remove_tracks_uri` to remove this talk from that track.
 *  ``website_uri``: The page for this talk on the main joind.in website
 
 ## Talk Hypermedia
@@ -117,6 +121,7 @@ The following links are available in the talk data format:
 *  ``verbose_comments_uri``: A collection of talk comments on this talk, returned in verbose format and chronological order, oldest first.   *See also* [talk comments]({{ site.baseurl }}/talk_comments.html) 
 *  ``event_uri``:  Where to find the event that this talk was given at.
 *  ``starred_uri``: POST/DELETE to this URI as an authenticated user to update this talk's starred status.  You could use this field to indicate favourited talks, planned attendance or similar (current starred status is in the ``starred`` field).
+*  ``tracks_uri``: POST to this URI as an authenticated user to add this talk to a track.
 
 ## Creating New Talks
 
@@ -176,7 +181,7 @@ Example request/response:
 < Connection: close
 < Content-Type: application/json; charset=utf8
 < 
-{"talks":[{"talk_title":"Middling Talk","url_friendly_talk_title":"middling-talk-2","talk_description":"This talk is about things and aims to inform the audience","type":"Talk","start_date":"2014-06-27T00:00:00+02:00","duration":0,"stub":"72560","average_rating":0,"comments_enabled":1,"comment_count":0,"starred":false,"starred_count":0,"speakers":[],"tracks":[],"uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207","verbose_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207?verbose=yes","website_uri":"http:\/\/joind.in\/talk\/view\/207","comments_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207\/comments","starred_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207\/starred","verbose_comments_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207\/comments?verbose=yes","event_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/events\/14"}],"meta":{"count":1,"total":1,"this_page":"http:\/\/api.dev.joind.in:8080\/v2.1\/events\/14\/talks?start=0&resultsperpage=20","user_uri":"http:\/\/api.dev.joind.in:80* Closing connection 0
+{"talks":[{"talk_title":"Middling Talk","url_friendly_talk_title":"middling-talk-2","talk_description":"This talk is about things and aims to inform the audience","type":"Talk","start_date":"2014-06-27T00:00:00+02:00","duration":0,"stub":"72560","average_rating":0,"comments_enabled":1,"comment_count":0,"starred":false,"starred_count":0,"speakers":[],"tracks":[],"uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207","verbose_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207?verbose=yes","website_uri":"http:\/\/joind.in\/talk\/view\/207","comments_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207\/comments","starred_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207\/starred","tracks_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207\/tracks","verbose_comments_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/talks\/207\/comments?verbose=yes","event_uri":"http:\/\/api.dev.joind.in:8080\/v2.1\/events\/14"}],"meta":{"count":1,"total":1,"this_page":"http:\/\/api.dev.joind.in:8080\/v2.1\/events\/14\/talks?start=0&resultsperpage=20","user_uri":"http:\/\/api.dev.joind.in:80* Closing connection 0
 80\/v2.1\/users\/2"}}
 ~~~~
 
@@ -214,4 +219,25 @@ If successful, a 204 Accepted status will be returned along with a Location head
 
 Note that the list of speakers must be complete. Any speakers attached to the talk that are not in the `speakers` array will be removed from the talk.
 
+## Adding a Talk to a Track
+
+To add a track to a talk, the user needs to be authenticated and be either a site admin, a host of the event or an approved speaker of the talk. You should send a POST request to the URL in the `tracks_uri` field of the event, with the body containing the `track_uri` field. The `track_uri` must be attached to the same event as the talk.
+
+Curl example:
+
+<pre class="embedcurl">curl -v -X POST -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" --data '{"track_uri": "{{ site.apiurl }}/v2.1/tracks/3"}' {{ site.apiurl }}/v2.1/talks/76/tracks
+</pre>
+
+If successful, a 201 Created status will be returned along with a Location header pointing back to the talk's URL.
+
+## Removing a Talk from a Track
+
+To remove a track from a talk, the user needs to be authenticated and be either a site admin, a host of the event or an approved speaker of the talk. You should send a DELETE request to the URL in the `remove_track_uri` field of the track listed in the tracks array of the talk representation.
+
+Curl example:
+
+<pre class="embedcurl">curl -v -X DELETE -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer f9b4f1a9b30bdc0d" {{ site.apiurl }}/v2.1/talks/76/tracks/3
+</pre>
+
+If successful, a 204 No Content status will be returned along with a Location header pointing back to the talk's URL.
 
