@@ -4,7 +4,7 @@ $config =  array(
     'mode' => 'development',
 
     // the URL of web2 website is used in links within emails
-    'website_url' => 'https://joind.in',
+    'website_url' => 'http://dev.joind.in',
 
     'oauth' => array(
         'expirable_client_ids' => array(
@@ -13,7 +13,7 @@ $config =  array(
             'web2',
         ),
     ),
-    'event_image_path' => __DIR__ . '/../../joind.in/src/inc/img/event_icons/',
+    'event_image_path' => __DIR__ . '/../../joindin-web2/web/inc/img/event_icons/',
     'email' => array(
         'contact' => 'feedback@joind.in',
         'from' => 'info@joind.in',
