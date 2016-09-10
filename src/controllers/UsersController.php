@@ -299,14 +299,19 @@ class UsersController extends ApiController
 
     }
 
-    public function deleteUser($request, $db)
+    public function deleteUser($request, $db, $user_mapper = false)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", 400);
         }
         // delete the user
         $user_id     = $this->getItemId($request);
-        $user_mapper = new UserMapper($db, $request);
+
+        //Add ability to pass $user_mapper in, to allow for a unit test,
+        //Without breaking backwards compatibility
+        if (!$user_mapper) {
+            $user_mapper = new UserMapper($db, $request);
+        }
         $is_admin = $user_mapper->thisUserHasAdminOn($user_id);
         if (! $is_admin) {
             throw new Exception("You do not have permission to do that", 400);
@@ -315,6 +320,9 @@ class UsersController extends ApiController
         if (! $user_mapper->delete($user_id)){
             throw new Exception("There was a problem trying to delete the user", 400);
         }
+        //If we are unit testing, then we can't exit or send headers!
+        if (defined('UNIT_TEST')) return true;
+
         header("Content-Length: 0", null, 204);
         exit; // no more content
 
