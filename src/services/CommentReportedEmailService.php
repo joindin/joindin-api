@@ -5,13 +5,16 @@ class CommentReportedEmailService extends EmailBaseService
 
     protected $comment;
 
-    public function __construct($config, $recipients, $comment)
+    public function __construct($config, $recipients, $comment, $event=false)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
 
         // this email needs comment info
         $this->comment = $comment['comments'][0];
+        $this->website_url = $config['website_url'];
+        $this->event = $event;
+
     }
 
     public function sendEmail()
@@ -36,7 +39,8 @@ class CommentReportedEmailService extends EmailBaseService
             "title"   => $this->comment['talk_title'],
             "rating"  => $this->comment['rating'],
             "comment" => $this->comment['comment'],
-            "byline"  => $byLine
+            "byline"  => $byLine,
+            "link"    => $this->linkToReportedCommentsForEvent()
         );
 
         $messageBody = $this->parseEmail("commentReported.md", $replacements);
@@ -46,5 +50,18 @@ class CommentReportedEmailService extends EmailBaseService
         $this->setHtmlBody($messageHTML);
 
         $this->dispatchEmail();
+    }
+
+    private function linkToReportedCommentsForEvent()
+    {
+        /*
+         * As far as I can tell, this Service is only used in one place, but just in case,
+         * let's allow backward compatibility with the old class signature
+         */
+        return $this->event ? '[' . $this->website_url
+        . '/event/' . $this->event['url_friendly_name']
+        . '/reported-comments' . '](' . $this->website_url
+        . '/event/' . $this->event['url_friendly_name']
+        . '/reported-comments' . ')' : '';
     }
 }
