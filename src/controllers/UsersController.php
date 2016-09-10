@@ -302,7 +302,7 @@ class UsersController extends ApiController
     public function deleteUser($request, $db, $user_mapper = false)
     {
         if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 400);
+            throw new Exception("You must be logged in to delete data", 401);
         }
         // delete the user
         $user_id     = $this->getItemId($request);
@@ -314,7 +314,7 @@ class UsersController extends ApiController
         }
         $is_admin = $user_mapper->thisUserHasAdminOn($user_id);
         if (! $is_admin) {
-            throw new Exception("You do not have permission to do that", 400);
+            throw new Exception("You do not have permission to do that", 403);
         }
 
         if (! $user_mapper->delete($user_id)){
