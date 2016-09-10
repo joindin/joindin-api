@@ -13,7 +13,7 @@ class CommentReportedEmailService extends EmailBaseService
         // this email needs comment info
         $this->comment = $comment['comments'][0];
         $this->website_url = $config['website_url'];
-        $this->event = $event;
+        $this->event = ($event) ? $event['events'][0] : false;
 
     }
 
