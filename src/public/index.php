@@ -17,6 +17,10 @@ function handle_exception($e)
     $status_code = is_numeric($status_code) ? $status_code : 500;
     header("Status: " . $status_code, false, $status_code);
 
+    if ($status_code === 401) {
+        header('WWW-Authenticate: Bearer realm="api.joind.in"');
+    }
+
     $message = $e->getMessage();
     if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
         $message = "Database error";

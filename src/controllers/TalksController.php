@@ -48,7 +48,7 @@ class TalksController extends ApiController
     public function postAction($request, $db)
     {
         if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 401);
         }
         $talk_id = $this->getItemId($request);
         
@@ -150,7 +150,7 @@ class TalksController extends ApiController
     public function deleteAction($request, $db)
     {
         if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 400);
+            throw new Exception("You must be logged in to delete data", 401);
         }
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
@@ -323,7 +323,7 @@ class TalksController extends ApiController
     public function createTalkAction(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 401);
         }
 
         $event_id = $this->getItemId($request);
