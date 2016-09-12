@@ -302,6 +302,7 @@ class UsersController extends ApiController
 
     }
 
+
     public function deleteUser($request, $db)
     {
         if (! isset($request->user_id)) {
@@ -311,6 +312,7 @@ class UsersController extends ApiController
         $user_id     = $this->getItemId($request);
 
         $user_mapper = $this->getUserMapper($db, $request);
+
         $is_admin = $user_mapper->thisUserHasAdminOn($user_id);
         if (! $is_admin) {
             throw new Exception("You do not have permission to do that", 403);

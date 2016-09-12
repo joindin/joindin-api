@@ -56,8 +56,8 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
 
         $usersController->setUserMapper($userMapper);
-
         $usersController->deleteUser($request, $db);
+
     }
 
     /**
@@ -94,8 +94,8 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
 
         $usersController->setUserMapper($userMapper);
-
         $usersController->deleteUser($request, $db);
+
     }
 
 
@@ -130,8 +130,8 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $usersController->setUserMapper($userMapper);
-
         $this->assertTrue($usersController->deleteUser($request, $db));
+
     }
 
 }
