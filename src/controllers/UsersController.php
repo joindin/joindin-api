@@ -2,6 +2,9 @@
 
 class UsersController extends ApiController
 {
+
+    protected $user_mapper;
+
     public function getAction($request, $db)
     {
         $user_id = $this->getItemId($request);
@@ -299,7 +302,7 @@ class UsersController extends ApiController
 
     }
 
-    public function deleteUser($request, $db, $user_mapper = false)
+    public function deleteUser($request, $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", 401);
@@ -307,11 +310,7 @@ class UsersController extends ApiController
         // delete the user
         $user_id     = $this->getItemId($request);
 
-        //Add ability to pass $user_mapper in, to allow for a unit test,
-        //Without breaking backwards compatibility
-        if (!$user_mapper) {
-            $user_mapper = new UserMapper($db, $request);
-        }
+        $user_mapper = $this->getUserMapper($db, $request);
         $is_admin = $user_mapper->thisUserHasAdminOn($user_id);
         if (! $is_admin) {
             throw new Exception("You do not have permission to do that", 403);
@@ -326,6 +325,18 @@ class UsersController extends ApiController
         header("Content-Length: 0", null, 204);
         exit; // no more content
 
+    }
+
+    public function setUserMapper(UserMapper $user_mapper){
+        $this->user_mapper = $user_mapper;
+    }
+
+    public function getUserMapper($db, $request){
+        if (! $this->user_mapper){
+            $this->user_mapper = new UserMapper($db, $request);
+        }
+
+        return $this->user_mapper;
     }
 
 }

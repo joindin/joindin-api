@@ -55,8 +55,9 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->method('thisUserHasAdminOn')
             ->will($this->returnValue(false));
 
+        $usersController->setUserMapper($userMapper);
 
-        $usersController->deleteUser($request, $db, $userMapper);
+        $usersController->deleteUser($request, $db);
     }
 
     /**
@@ -92,8 +93,9 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->method('delete')
             ->will($this->returnValue(false));
 
+        $usersController->setUserMapper($userMapper);
 
-        $usersController->deleteUser($request, $db, $userMapper);
+        $usersController->deleteUser($request, $db);
     }
 
 
@@ -127,8 +129,9 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->method('delete')
             ->will($this->returnValue(true));
 
+        $usersController->setUserMapper($userMapper);
 
-        $this->assertTrue($usersController->deleteUser($request, $db, $userMapper));
+        $this->assertTrue($usersController->deleteUser($request, $db));
     }
 
 }
