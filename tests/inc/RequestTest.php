@@ -889,6 +889,47 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new \Request($this->config, $server);
         $this->assertEquals('/v2/one/two', $request->getPathInfo());
     }
+
+    /**
+     * @dataProvider clientIpProvider
+     */
+    public function testGettingClientIp($header)
+    {
+        $_SERVER = array_merge($header, $_SERVER);
+        $request = new \Request($this->config, []);
+        $this->assertEquals('192.168.1.1', $request->getClientIP());
+    }
+
+    public function clientIpProvider()
+    {
+            return [
+                    'remote_addr' => [['REMOTE_ADDR' => '192.168.1.1']],
+                    'x-forwarded-for' => [['HTTP_X_FORWARDED_FOR' => '192.168.1.1']],
+                    'http-forwarded' => [['HTTP_FORWARDED' => 'for=192.168.1.1, for=198.51.100.17']],
+                ];
+    }
+
+    /** @dataProvider gettingClientUserAgentProvider */
+    public function testGettingClientUserAgent($header, $userAgent)
+    {
+        $_SERVER = array_merge($header, $_SERVER);
+        $request = new \Request($this->config, []);
+        $this->assertEquals($userAgent, $request->getClientUserAgent());
+    }
+
+    public function gettingClientUserAgentProvider()
+    {
+        return [
+            [['HTTP_USER_AGENT' => 'Foo'], 'Foo']
+        ];
+    }
+
+    public function testGettingConfigValues()
+    {
+        $request = new \Request(['Foo'=> 'Bar'], []);
+        $this->assertEquals('Bar', $request->getConfigValue('Foo'));
+        $this->assertEquals('Foo', $request->getConfigValue('Bar', 'Foo'));
+    }
 }
 
 /**
