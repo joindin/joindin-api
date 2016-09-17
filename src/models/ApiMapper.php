@@ -45,7 +45,7 @@ class ApiMapper
                     } else {
                         $tz = new DateTimeZone('UTC');
                     }
-                    $entry[ $key ] = (new DateTime($row[$value], $tz))->format('c');
+                    $entry[ $key ] = (new DateTime('@' . $row[$value], $tz))->format('c');
                 } else {
                     if (array_key_exists($value, $row)) {
                         $entry[$key] = $row[$value];

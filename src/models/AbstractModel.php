@@ -85,7 +85,7 @@ abstract class AbstractModel
 
             // override if it is a date
             if (substr($output_name, - 5) == '_date' && ! empty($value)) {
-                $value = (new DateTime($value, $tz))->format('c');
+                $value = (new DateTime('@' . $value, $tz))->format('c');
             }
 
             $item[$output_name] = $value;
