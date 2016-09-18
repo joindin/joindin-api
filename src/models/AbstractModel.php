@@ -75,9 +75,9 @@ abstract class AbstractModel
 
         // special handling for dates
         if ($this->event_tz_place != '' && $this->event_tz_cont != '') {
-            $tz = $this->event_tz_cont . '/' . $this->event_tz_place;
+            $tz = new DateTimeZone($this->event_tz_cont . '/' . $this->event_tz_place);
         } else {
-            $tz = 'UTC';
+            $tz = new DateTimeZone('UTC');
         }
 
         foreach ($fields as $output_name => $name) {
@@ -85,7 +85,7 @@ abstract class AbstractModel
 
             // override if it is a date
             if (substr($output_name, - 5) == '_date' && ! empty($value)) {
-                $value = Timezone::formattedEventDatetimeFromUnixtime($value, $tz, 'c');
+                $value = (new DateTime('@' . $value))->setTimezone($tz)->format('c');
             }
 
             $item[$output_name] = $value;
