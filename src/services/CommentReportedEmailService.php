@@ -5,7 +5,7 @@ class CommentReportedEmailService extends EmailBaseService
 
     protected $comment;
 
-    public function __construct($config, $recipients, $comment, $event=false)
+    public function __construct($config, $recipients, $comment, $event = false)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
