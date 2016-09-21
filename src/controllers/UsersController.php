@@ -329,12 +329,14 @@ class UsersController extends ApiController
 
     }
 
-    public function setUserMapper(UserMapper $user_mapper){
+    public function setUserMapper(UserMapper $user_mapper)
+    {
         $this->user_mapper = $user_mapper;
     }
 
-    public function getUserMapper($db, $request){
-        if (! $this->user_mapper){
+    public function getUserMapper($db, $request)
+    {
+        if (! $this->user_mapper) {
             $this->user_mapper = new UserMapper($db, $request);
         }
 
