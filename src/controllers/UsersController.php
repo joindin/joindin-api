@@ -318,11 +318,13 @@ class UsersController extends ApiController
             throw new Exception("You do not have permission to do that", 403);
         }
 
-        if (! $user_mapper->delete($user_id)){
+        if (! $user_mapper->delete($user_id)) {
             throw new Exception("There was a problem trying to delete the user", 400);
         }
         //If we are unit testing, then we can't exit or send headers!
-        if (defined('UNIT_TEST')) return true;
+        if (defined('UNIT_TEST')) {
+            return true;
+        }
 
         header("Content-Length: 0", null, 204);
         exit; // no more content
@@ -342,5 +344,4 @@ class UsersController extends ApiController
 
         return $this->user_mapper;
     }
-
 }
