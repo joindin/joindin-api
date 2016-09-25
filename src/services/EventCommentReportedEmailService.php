@@ -5,6 +5,7 @@ class EventCommentReportedEmailService extends EmailBaseService
 
     protected $comment;
     protected $event;
+    protected $website_url;
 
     public function __construct($config, $recipients, $comment, $event)
     {
@@ -14,6 +15,7 @@ class EventCommentReportedEmailService extends EmailBaseService
         // this email needs comment info
         $this->comment = $comment['comments'][0];
         $this->event = $event['events'][0];
+        $this->website_url = $config['website_url'];
     }
 
     public function sendEmail()
@@ -40,10 +42,11 @@ class EventCommentReportedEmailService extends EmailBaseService
         }
 
         $replacements = array(
-            "name"   => $this->event['name'],
+            "name"    => $this->event['name'],
             "rating"  => $rating,
             "comment" => $this->comment['comment'],
-            "byline"  => $byLine
+            "byline"  => $byLine,
+            "link"    => $this->linkToReportedCommentsForEvent()
         );
 
         $messageBody = $this->parseEmail("eventCommentReported.md", $replacements);
@@ -53,5 +56,14 @@ class EventCommentReportedEmailService extends EmailBaseService
         $this->setHtmlBody($messageHTML);
 
         $this->dispatchEmail();
+    }
+
+    private function linkToReportedCommentsForEvent()
+    {
+        return '[' . $this->website_url
+            . '/event/' . $this->event['url_friendly_name']
+            . '/reported-comments' . '](' . $this->website_url
+            . '/event/' . $this->event['url_friendly_name']
+            . '/reported-comments' . ')';
     }
 }

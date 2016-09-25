@@ -74,8 +74,9 @@ class Talk_commentsController extends ApiController
         $comment      = $comment_mapper->getCommentById($commentId, true, true);
         $event_mapper = new EventMapper($db, $request);
         $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
+        $event        = $event_mapper->getEventById($eventId, true, true);
 
-        $emailService = new CommentReportedEmailService($this->config, $recipients, $comment);
+        $emailService = new CommentReportedEmailService($this->config, $recipients, $comment, $event);
         $emailService->sendEmail();
 
         // send them to the comments collection
