@@ -25,6 +25,7 @@ class TracksController extends ApiController
 
     public function editTrack($request, $db)
     {
+        // Should we not check for login?
         $track_id = $this->getItemId($request);
 
         $track_mapper = new TrackMapper($db, $request);
@@ -74,6 +75,7 @@ class TracksController extends ApiController
 
     public function deleteTrack($request, $db)
     {
+        // Should we not check for login?
         $track_id = $this->getItemId($request);
 
         $track_mapper = new TrackMapper($db, $request);

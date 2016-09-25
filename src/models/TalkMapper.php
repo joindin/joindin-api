@@ -72,7 +72,7 @@ class TalkMapper extends ApiMapper
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $total = $this->getTotalCount($sql, array(':event_id' => $event_id));
             $results = $this->processResults($results);
-            
+
             return new TalkModelCollection($results, $total);
         }
 
@@ -697,7 +697,7 @@ class TalkMapper extends ApiMapper
                     . ' from user_admin a '
                     . ' inner join user u on u.ID = a.uid '
                     . ' inner join talks t on t.event_id = rid '
-                    . ' where rtype="event" and rcode!="pending"'
+                    . ' where rtype="event" and (rcode!="pending" OR rcode is null)'
                     . ' AND u.ID = :user_id'
                     . ' AND t.ID = :talk_id';
             $stmt = $this->_db->prepare($sql);
@@ -734,13 +734,13 @@ class TalkMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $stmt->execute($params);
         $talk_track_id = $stmt->fetchColumn();
-        
+
         if ($talk_track_id === false) {
             // insert new row as not in database
             $sql = 'insert into talk_track (track_id, talk_id) values (:track_id, :talk_id)';
             $stmt = $this->_db->prepare($sql);
             $stmt->execute($params);
-        
+
             $talk_track_id = $this->_db->lastInsertId();
         }
         return $talk_track_id;

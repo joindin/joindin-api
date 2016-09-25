@@ -54,7 +54,7 @@ class Talk_commentsController extends ApiController
     {
         // must be logged in to report a comment
         if (! isset($request->user_id) || empty($request->user_id)) {
-            throw new Exception('You must log in to report a comment');
+            throw new Exception('You must log in to report a comment', 401);
         }
 
         $comment_mapper = new TalkCommentMapper($db, $request);
@@ -101,7 +101,7 @@ class Talk_commentsController extends ApiController
     {
         // must be logged in
         if (! isset($request->user_id) || empty($request->user_id)) {
-            throw new Exception('You must log in to moderate a comment');
+            throw new Exception('You must log in to moderate a comment', 401);
         }
 
         $comment_mapper = new TalkCommentMapper($db, $request);

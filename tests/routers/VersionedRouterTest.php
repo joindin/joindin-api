@@ -149,11 +149,8 @@ class VersionedRouterTest extends PHPUnit_Framework_TestCase
      */
     public function testGetRoute($version, array $rules, $url, $method, $expectedController, $expectedAction, array $routeParams = array(), $expectedExceptionCode = false)
     {
-        $router = $this->getMock('VersionedRouter', ['getLegacyRoute'], [$version, [], $rules]);
-        $router->expects($this->any())
-               ->method('getLegacyRoute')
-               ->will($this->returnValue('fallen back'));
         $request = new Request([], ['REQUEST_URI' => $url, 'REQUEST_METHOD' => $method]);
+        $router = new VersionedRouter($version, [], $rules);
         try {
             $route = $router->getRoute($request);
         } catch (Exception $ex) {

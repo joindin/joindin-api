@@ -149,7 +149,7 @@ class EventsController extends ApiController
     public function postAction($request, $db)
     {
         if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 401);
         }
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
@@ -359,7 +359,7 @@ class EventsController extends ApiController
     public function deleteAction($request, $db)
     {
         if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 400);
+            throw new Exception("You must be logged in to delete data", 401);
         }
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
@@ -382,7 +382,7 @@ class EventsController extends ApiController
     public function putAction($request, $db)
     {
         if (! isset($request->user_id)) {
-            throw new Exception('You must be logged in to edit data', 400);
+            throw new Exception('You must be logged in to edit data', 401);
         }
 
         $event_id = $this->getItemId($request);
@@ -539,6 +539,7 @@ class EventsController extends ApiController
      */
     public function createTrack($request, $db)
     {
+        // Should we not check for a login?
         $track = array();
         $event_id = $this->getItemId($request);
         $track['event_id']= $event_id;
@@ -602,7 +603,7 @@ class EventsController extends ApiController
     public function approveAction($request, $db)
     {
         if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 401);
         }
 
         $event_id     = $this->getItemId($request);
@@ -642,7 +643,7 @@ class EventsController extends ApiController
     public function rejectAction($request, $db)
     {
         if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 401);
         }
 
         $event_id     = $this->getItemId($request);
