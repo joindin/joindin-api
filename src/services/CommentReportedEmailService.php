@@ -58,10 +58,14 @@ class CommentReportedEmailService extends EmailBaseService
          * As far as I can tell, this Service is only used in one place, but just in case,
          * let's allow backward compatibility with the old class signature
          */
-        return $this->event ? '[' . $this->website_url
-        . '/event/' . $this->event['url_friendly_name']
-        . '/reported-comments' . '](' . $this->website_url
-        . '/event/' . $this->event['url_friendly_name']
-        . '/reported-comments' . ')' : '';
+        if (!$this->event) {
+            return '';
+        }
+
+        return '[' . $this->website_url
+            . '/event/' . $this->event['url_friendly_name']
+            . '/reported-comments' . '](' . $this->website_url
+            . '/event/' . $this->event['url_friendly_name']
+            . '/reported-comments' . ')';
     }
 }
