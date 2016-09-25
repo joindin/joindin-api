@@ -475,7 +475,7 @@ function testEditEventFailsWithIncorrectData(access_token, event_uri)
 
   frisby.create('Edit event fails with start date greater than end')
     .put(
-      event_uri
+      event_uri,
       {
         "name" : "Frisby test event",
         "description" : "Test description",
