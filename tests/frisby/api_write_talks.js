@@ -25,7 +25,7 @@ function testCreateTalkFailsIfNotLoggedIn(talks_uri)
     .afterJSON(function(result) {
       expect(result[0]).toContain("You must be logged in");
     })
-    .expectStatus(400) // fails as no user token
+    .expectStatus(401) // fails as no user token
     .toss();
 }
 
