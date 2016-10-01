@@ -1,5 +1,7 @@
 A coment on your event has been reported.  It will be hidden until you moderate it; the details are below:
 
+**Event:** [eventName]
+
 **Talk Title:** [title]
 
 **Rating:** [rating] [byline]
