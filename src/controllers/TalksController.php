@@ -506,4 +506,60 @@ class TalksController extends ApiController
 
         return $talk;
     }
+
+    public function getSpeakersForTalk(Request $request, PDO $db)
+    {
+        $talk_id = $this->getItemId($request);
+        $talk = $this->getTalkById($db, $request, $talk_id);
+        $collection = new TalkModelCollection([$talk], 1);
+        return $collection->getTalks()[0]->speakers;
+
+
+    }
+
+    public function linkUserToTalk(Request $request, PDO $db)
+    {
+        //We must be logged in
+        if (!isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 400);
+        }
+
+        $talk_id = $this->getItemId($request);
+        $talk_mapper = new TalkMapper($db, $request);
+        $talk = $talk_mapper->getTalkById($talk_id);
+        if (!$talk) {
+            throw new Exception("Talk not found", 404);
+        }
+
+        $user_id = $request->user_id;
+        $user_mapper = new UserMapper($db,$request);
+        $user = $user_mapper->getUserById($user_id)['users'][0];
+
+        $data = $this->getLinkUserDataFromRequest($request);
+
+        if ($data['display_name'] == '' || $data['username'] == ''){
+            throw new Exception("You must provide a display name and a username",400);
+        }
+
+        //Is the speaker this user?
+        if ($data['username'] === $user['username']){
+            echo "Speaker";
+        }elseif($talk_mapper->thisUserHasAdminOn($talk_id)){
+            echo "Event Admin";
+        }else{
+            throw new Exception("You must be the speaker or event admin to link a user to a talk", 400);
+        }
+
+
+    }
+
+    protected function getLinkUserDataFromRequest(Request $request)
+    {
+        $talk = [];
+        $talk['display_name'] = trim($request->getParameter('display_name',''));
+        $talk['username'] = trim($request->getParameter('username',''));
+
+        return $talk;
+
+    }
 }
