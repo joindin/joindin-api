@@ -85,6 +85,7 @@ class TalkModel extends AbstractModel
         $item['verbose_comments_uri'] = $base . '/' . $version . '/talks/' . $this->ID
                                         . '/comments?verbose=yes';
         $item['event_uri']            = $base . '/' . $version . '/events/' . $this->event_id;
+        $item['speakers_uri']          = $base . '/' . $version . '/talks/' . $this->ID . '/speakers';
 
         return $item;
     }
