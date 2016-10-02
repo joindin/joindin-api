@@ -71,10 +71,14 @@ class EventImagesController extends ApiController
 
         // small is 140px square
         $orig_image = imagecreatefromstring(file_get_contents($event_image_path . $saved_filename));
+        imagealphablending($orig_image, false);
+        imagesavealpha($orig_image, true);
         $small_width = 140;
         $small_height = 140;
 
         $small_image = imagecreatetruecolor($small_width, $small_height);
+        imagealphablending($small_image, false);
+        imagesavealpha($small_image, true);
         imagecopyresampled($small_image, $orig_image, 0, 0, 0, 0, $small_width, $small_height, $width, $height);
 
         $small_filename = str_replace('orig', 'small', $saved_filename);
