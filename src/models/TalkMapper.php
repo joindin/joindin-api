@@ -772,4 +772,16 @@ class TalkMapper extends ApiMapper
 
         return true;
     }
+
+    public function getSpeakerFromTalk($talk_id,$display_name)
+    {
+        $speaker_sql  = 'select ts.* from talk_speaker ts '
+            . 'where ts.talk_id = :talk_id and ts.speaker_name = :display_name';
+        $speaker_stmt = $this->_db->prepare($speaker_sql);
+        $speaker_stmt->execute(array("talk_id" => $talk_id, "display_name" => $display_name));
+        $speakers = $speaker_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return count($speakers) > 0 ? $speakers[0] : false;
+
+    }
 }
