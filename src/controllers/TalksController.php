@@ -51,7 +51,7 @@ class TalksController extends ApiController
             throw new Exception("You must be logged in to create data", 401);
         }
         $talk_id = $this->getItemId($request);
-        
+
         // Retrieve the talk. It if doesn't exist, then 404 with talk not found
         $talk= $this->getTalkById($db, $request, $talk_id);
 
@@ -167,7 +167,7 @@ class TalksController extends ApiController
             // delete the talk
             $talk_id     = $this->getItemId($request);
             $talk_mapper = new TalkMapper($db, $request);
-            
+
             // note: use the mapper's getTalkById as we don't want to throw a not found exception
             $talk = $talk_mapper->getTalkById($talk_id);
             if (false === $talk) {
@@ -361,7 +361,7 @@ class TalksController extends ApiController
 
         return $list;
     }
-   
+
     /**
      * Edit a talk
      *
@@ -532,7 +532,7 @@ class TalksController extends ApiController
         }
 
         $user_id = $request->user_id;
-        $user_mapper = new UserMapper($db,$request);
+        $user_mapper = new UserMapper($db, $request);
         $user = $user_mapper->getUserById($user_id)['users'][0];
 
         $data = $this->getLinkUserDataFromRequest($request);
@@ -541,16 +541,36 @@ class TalksController extends ApiController
             throw new Exception("You must provide a display name and a username",400);
         }
 
+        //Get the speaker record based on the display name - check if this is already claimed,
+        // and otherwise ID becaomes the claim_id
+
+        $claim = $talk_mapper->getSpeakerFromTalk($talk_id,$data['display_name']);
+
+        if (! $claim){
+            throw new Exception("No speaker matching that name found", 400);
+        }
+
+        if ($claim && $claim['speaker_id'] != null){
+            throw new Exception("Talk already claimed", 400);
+        }
+
+        $pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
+
         //Is the speaker this user?
         if ($data['username'] === $user['username']){
-            echo "Speaker";
+            $pending_talk_claim_mapper->claimTalkAsSpeaker($talk_id,$user_id,$claim['ID']);
         }elseif($talk_mapper->thisUserHasAdminOn($talk_id)){
-            echo "Event Admin";
+            $speaker_id = $user_mapper->getUserIdFromUsername($data['username']);
+            if (! $speaker_id){
+                throw new Exception("Specified user not found");
+            }
+            $pending_talk_claim_mapper->assignTalkAsHost($talk_id,$speaker_id,$claim['ID'],$user_id);
         }else{
             throw new Exception("You must be the speaker or event admin to link a user to a talk", 400);
         }
 
-
+        header("Location: " . $request->base . $request->path_info, null, 204);
+        exit;
     }
 
     protected function getLinkUserDataFromRequest(Request $request)
