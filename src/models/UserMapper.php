@@ -677,10 +677,8 @@ class UserMapper extends ApiMapper
             $stmt->execute(array("user_id" => $user_id));
 
             return true;
-
-        } catch (Exception $e){
+        } catch (Exception $e) {
             return false;
         }
     }
-
 }
