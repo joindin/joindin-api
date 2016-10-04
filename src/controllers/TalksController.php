@@ -521,7 +521,7 @@ class TalksController extends ApiController
     {
         //We must be logged in
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 401);
         }
 
         $talk_id = $this->getItemId($request);
@@ -547,11 +547,11 @@ class TalksController extends ApiController
         $claim = $talk_mapper->getSpeakerFromTalk($talk_id, $data['display_name']);
 
         if (! $claim) {
-            throw new Exception("No speaker matching that name found", 400);
+            throw new Exception("No speaker matching that name found", 422);
         }
 
         if ($claim && $claim['speaker_id'] != null) {
-            throw new Exception("Talk already claimed", 400);
+            throw new Exception("Talk already claimed", 422);
         }
 
         $pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
@@ -563,12 +563,12 @@ class TalksController extends ApiController
         } elseif ($talk_mapper->thisUserHasAdminOn($talk_id)) {
             $speaker_id = $user_mapper->getUserIdFromUsername($data['username']);
             if (! $speaker_id) {
-                throw new Exception("Specified user not found");
+                throw new Exception("Specified user not found", 404);
             }
             $pending_talk_claim_mapper->assignTalkAsHost($talk_id, $speaker_id, $claim['ID'], $user_id);
             //We need to send an email to the speaker asking for confirmation
         } else {
-            throw new Exception("You must be the speaker or event admin to link a user to a talk", 400);
+            throw new Exception("You must be the speaker or event admin to link a user to a talk", 401);
         }
 
         header("Location: " . $request->base . $request->path_info, null, 204);
