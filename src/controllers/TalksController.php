@@ -514,11 +514,10 @@ class TalksController extends ApiController
     {
         $talk_id = $this->getItemId($request);
         $talk = $this->getTalkById($db, $request, $talk_id);
-        $collection = new TalkModelCollection([$talk], 1);
-        return $collection->getTalks()[0]->speakers;
+        return $talk->speakers;
     }
 
-    public function linkUserToTalk(Request $request, PDO $db)
+    public function setSpeakerForTalk(Request $request, PDO $db)
     {
         //We must be logged in
         if (!isset($request->user_id)) {

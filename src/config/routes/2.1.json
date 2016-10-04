@@ -86,7 +86,7 @@
     {
         "path": "/talks(/[\\d]+)/speakers/?$",
         "controller": "TalksController",
-        "action": "linkUserToTalk",
+        "action": "setSpeakerForTalk",
         "verbs": ["POST"]
     },
     {
