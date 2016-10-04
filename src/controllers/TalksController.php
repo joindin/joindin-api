@@ -519,7 +519,6 @@ class TalksController extends ApiController
 
     public function setSpeakerForTalk(Request $request, PDO $db)
     {
-        //We must be logged in
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);
         }
@@ -537,7 +536,7 @@ class TalksController extends ApiController
 
         $data = $this->getLinkUserDataFromRequest($request);
 
-        if ($data['display_name'] == '' || $data['username'] == '') {
+        if ($data['display_name'] === '' || $data['username'] === '') {
             throw new Exception("You must provide a display name and a username", 400);
         }
 
@@ -546,11 +545,9 @@ class TalksController extends ApiController
 
         $claim = $talk_mapper->getSpeakerFromTalk($talk_id, $data['display_name']);
 
-        if (! $claim) {
+        if ($claim === false) {
             throw new Exception("No speaker matching that name found", 422);
-        }
-
-        if ($claim && $claim['speaker_id'] != null) {
+        } elseif ($claim['speaker_id'] != null) {
             throw new Exception("Talk already claimed", 422);
         }
 
@@ -575,7 +572,7 @@ class TalksController extends ApiController
         exit;
     }
 
-    protected function getLinkUserDataFromRequest(Request $request)
+    private function getLinkUserDataFromRequest(Request $request)
     {
         $talk = [];
         $talk['display_name'] = trim($request->getParameter('display_name', ''));

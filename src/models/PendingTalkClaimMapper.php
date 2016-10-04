@@ -16,10 +16,10 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        $fields = [
             "talk_id"           => "username",
             "speaker_id"        => "full_name",
-        );
+        ];
 
         return $fields;
     }
@@ -33,14 +33,14 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        $fields = array(
+        $fields = [
             "talk_id"           => "username",
             "speaker_id"        => "full_name",
             "date_added"        => "date_added",
             "claim_id"          => "claim_id",
             "user_approved_at"  => "user_approved_at",
             "host_approved_at"  => "host_approved_at",
-        );
+        ];
 
         return $fields;
     }
@@ -63,12 +63,12 @@ class PendingTalkClaimMapper extends ApiMapper
                  ';
         $stmt = $this->_db->prepare($sql);
         return $stmt->execute(
-            array(
+            [
                 'talk_id'       => $talk_id,
                 'submitted_by'  => $speaker_id,
                 'speaker_id'    => $speaker_id,
                 'claim_id'      => $claim_id
-            )
+            ]
         );
     }
 
@@ -91,12 +91,12 @@ class PendingTalkClaimMapper extends ApiMapper
                  ';
         $stmt = $this->_db->prepare($sql);
         return $stmt->execute(
-            array(
+            [
                 'talk_id'       => $talk_id,
                 'submitted_by'  => $user_id,
                 'speaker_id'    => $speaker_id,
                 'claim_id'      => $claim_id
-            )
+            ]
         );
     }
 }
