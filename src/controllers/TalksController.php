@@ -503,7 +503,8 @@ class TalksController extends ApiController
                 $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
                 $speaker = trim($speaker);
                 return $speaker;
-            }, (array) $request->getParameter('speakers')
+            },
+            (array) $request->getParameter('speakers')
         );
 
         return $talk;
@@ -538,7 +539,7 @@ class TalksController extends ApiController
         $data = $this->getLinkUserDataFromRequest($request);
 
         if ($data['display_name'] == '' || $data['username'] == '') {
-            throw new Exception("You must provide a display name and a username",400);
+            throw new Exception("You must provide a display name and a username", 400);
         }
 
         //Get the speaker record based on the display name - check if this is already claimed,
