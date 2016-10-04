@@ -498,11 +498,13 @@ class TalksController extends ApiController
             FILTER_SANITIZE_URL
         );
 
-        $talk['speakers'] = array_map(function ($speaker) {
-            $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
-            $speaker = trim($speaker);
-            return $speaker;
-        }, (array) $request->getParameter('speakers'));
+        $talk['speakers'] = array_map(
+            function ($speaker) {
+                $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
+                $speaker = trim($speaker);
+                return $speaker;
+            }, (array) $request->getParameter('speakers')
+        );
 
         return $talk;
     }
@@ -513,8 +515,6 @@ class TalksController extends ApiController
         $talk = $this->getTalkById($db, $request, $talk_id);
         $collection = new TalkModelCollection([$talk], 1);
         return $collection->getTalks()[0]->speakers;
-
-
     }
 
     public function linkUserToTalk(Request $request, PDO $db)
@@ -527,7 +527,7 @@ class TalksController extends ApiController
         $talk_id = $this->getItemId($request);
         $talk_mapper = new TalkMapper($db, $request);
         $talk = $talk_mapper->getTalkById($talk_id);
-        if (!$talk) {
+        if (! $talk) {
             throw new Exception("Talk not found", 404);
         }
 
@@ -537,35 +537,37 @@ class TalksController extends ApiController
 
         $data = $this->getLinkUserDataFromRequest($request);
 
-        if ($data['display_name'] == '' || $data['username'] == ''){
+        if ($data['display_name'] == '' || $data['username'] == '') {
             throw new Exception("You must provide a display name and a username",400);
         }
 
         //Get the speaker record based on the display name - check if this is already claimed,
-        // and otherwise ID becaomes the claim_id
+        //otherwise ID becomes the claim_id
 
-        $claim = $talk_mapper->getSpeakerFromTalk($talk_id,$data['display_name']);
+        $claim = $talk_mapper->getSpeakerFromTalk($talk_id, $data['display_name']);
 
-        if (! $claim){
+        if (! $claim) {
             throw new Exception("No speaker matching that name found", 400);
         }
 
-        if ($claim && $claim['speaker_id'] != null){
+        if ($claim && $claim['speaker_id'] != null) {
             throw new Exception("Talk already claimed", 400);
         }
 
         $pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
 
         //Is the speaker this user?
-        if ($data['username'] === $user['username']){
-            $pending_talk_claim_mapper->claimTalkAsSpeaker($talk_id,$user_id,$claim['ID']);
-        }elseif($talk_mapper->thisUserHasAdminOn($talk_id)){
+        if ($data['username'] === $user['username']) {
+            $pending_talk_claim_mapper->claimTalkAsSpeaker($talk_id, $user_id, $claim['ID']);
+            //We need to send an email to the host asking for confirmation
+        } elseif ($talk_mapper->thisUserHasAdminOn($talk_id)) {
             $speaker_id = $user_mapper->getUserIdFromUsername($data['username']);
-            if (! $speaker_id){
+            if (! $speaker_id) {
                 throw new Exception("Specified user not found");
             }
-            $pending_talk_claim_mapper->assignTalkAsHost($talk_id,$speaker_id,$claim['ID'],$user_id);
-        }else{
+            $pending_talk_claim_mapper->assignTalkAsHost($talk_id, $speaker_id, $claim['ID'], $user_id);
+            //We need to send an email to the speaker asking for confirmation
+        } else {
             throw new Exception("You must be the speaker or event admin to link a user to a talk", 400);
         }
 
@@ -576,10 +578,8 @@ class TalksController extends ApiController
     protected function getLinkUserDataFromRequest(Request $request)
     {
         $talk = [];
-        $talk['display_name'] = trim($request->getParameter('display_name',''));
-        $talk['username'] = trim($request->getParameter('username',''));
-
+        $talk['display_name'] = trim($request->getParameter('display_name', ''));
+        $talk['username'] = trim($request->getParameter('username', ''));
         return $talk;
-
     }
 }
