@@ -539,7 +539,11 @@ class EventsController extends ApiController
      */
     public function createTrack($request, $db)
     {
-        // Should we not check for a login?
+        // Check for login
+        if (! isset($request->user_id)) {
+            throw new Exception("You must be logged in to create track", 401);
+        }
+
         $track = array();
         $event_id = $this->getItemId($request);
         $track['event_id']= $event_id;
