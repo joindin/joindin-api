@@ -718,7 +718,7 @@ function testEventTracks(access_token, url) {
                       {},
                       {json: true}
                   )
-                  .expectStatus(403)
+                  .expectStatus(401)
                   .after(function(err, res, body) {
                     frisby.create("Delete track")
                       .delete(
