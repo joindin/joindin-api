@@ -646,6 +646,13 @@ class UserMapper extends ApiMapper
     public function delete($user_id)
     {
         try {
+            $this->_db->beginTransaction();
+        } catch (Exception $e) {
+            // An Exception is thrown when a transaction is currently open or the
+            // underlying database doesn't understand transactions. Shouldn't happen
+            // but to be on the safe side.
+        }
+        try {
             // Delete the user
             $sql = "delete from user where ID = :user_id";
             $stmt = $this->_db->prepare($sql);
@@ -676,8 +683,12 @@ class UserMapper extends ApiMapper
             $stmt = $this->_db->prepare($sql);
             $stmt->execute(array("user_id" => $user_id));
 
+            $this->_db->commit();
+
             return true;
         } catch (Exception $e) {
+
+            $this->_db->rollBack();
             return false;
         }
     }
