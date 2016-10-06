@@ -163,6 +163,13 @@
     },
 
     {
+        "path": "/users(/[^/]+)*/?$",
+        "controller": "UsersController",
+        "action": "deleteUser",
+        "verbs": ["DELETE"]
+    },
+
+    {
         "path": "/users(/[0-9]+)/?$",
         "controller": "UsersController",
         "action": "updateUser",
