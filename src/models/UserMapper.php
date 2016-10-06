@@ -687,7 +687,6 @@ class UserMapper extends ApiMapper
 
             return true;
         } catch (Exception $e) {
-
             $this->_db->rollBack();
             return false;
         }
