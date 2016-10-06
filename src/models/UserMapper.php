@@ -642,4 +642,43 @@ class UserMapper extends ApiMapper
 
         return false;
     }
+
+    public function delete($user_id)
+    {
+        try {
+            // Delete the user
+            $sql = "delete from user where ID = :user_id";
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute(array("user_id" => $user_id));
+
+            // Unassign any talks
+            $sql = "update talk_speaker SET speaker_id = 0, status = NULL WHERE speaker_id = :speaker_id";
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute(array("speaker_id" => $user_id));
+
+            // Remove any pending talk claims
+            $sql = "delete from pending_talk_claims where speaker_id = :speaker_id";
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute(array("speaker_id" => $user_id));
+
+            // Anonymise any comments
+            $sql = "update talk_comments SET user_id = 0 WHERE user_id = :user_id";
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute(array("user_id" => $user_id));
+
+            // Remove any starred talks
+            $sql = "delete from user_talk_star where uid = :user_id";
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute(array("user_id" => $user_id));
+
+            // Remove user attendence
+            $sql = "delete from user_attend where uid = :user_id";
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute(array("user_id" => $user_id));
+
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 }
