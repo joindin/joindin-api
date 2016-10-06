@@ -524,14 +524,14 @@ class TalksController extends ApiController
         }
 
         $talk_id = $this->getItemId($request);
-        $talk_mapper = new TalkMapper($db, $request);
+        $talk_mapper = $this->getTalkMapper($db, $request);
         $talk = $talk_mapper->getTalkById($talk_id);
         if (! $talk) {
             throw new Exception("Talk not found", 404);
         }
 
         $user_id = $request->user_id;
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = $this->getUserMapper($db, $request);
         $user = $user_mapper->getUserById($user_id)['users'][0];
 
         $data = $this->getLinkUserDataFromRequest($request);
@@ -551,7 +551,7 @@ class TalksController extends ApiController
             throw new Exception("Talk already claimed", 422);
         }
 
-        $pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
+        $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
 
         //Is the speaker this user?
         if ($data['username'] === $user['username']) {
@@ -568,6 +568,11 @@ class TalksController extends ApiController
             throw new Exception("You must be the speaker or event admin to link a user to a talk", 401);
         }
 
+        //If we are unit testing, then we can't exit or send headers!
+        if (defined('UNIT_TEST')) {
+            return true;
+        }
+
         header("Location: " . $request->base . $request->path_info, null, 204);
         exit;
     }
@@ -578,5 +583,47 @@ class TalksController extends ApiController
         $talk['display_name'] = trim($request->getParameter('display_name', ''));
         $talk['username'] = trim($request->getParameter('username', ''));
         return $talk;
+    }
+
+    public function setTalkMapper(TalkMapper $talk_mapper)
+    {
+        $this->talk_mapper = $talk_mapper;
+    }
+
+    public function getTalkMapper($db, $request)
+    {
+        if (! isset($this->talk_mapper)) {
+            $this->talk_mapper = new TalkMapper($db, $request);
+        }
+
+        return $this->talk_mapper;
+    }
+
+    public function setUserMapper(UserMapper $user_mapper)
+    {
+        $this->user_mapper = $user_mapper;
+    }
+
+    public function getUserMapper($db, $request)
+    {
+        if (! isset($this->user_mapper)) {
+            $this->user_mapper = new UserMapper($db, $request);
+        }
+
+        return $this->user_mapper;
+    }
+
+    public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper)
+    {
+        $this->pending_talk_claim_mapper = $pending_talk_claim_mapper;
+    }
+
+    public function getPendingTalkClaimMapper($db, $request)
+    {
+        if (! isset($this->pending_talk_claim_mapper)) {
+            $this->pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
+        }
+
+        return $this->pending_talk_claim_mapper;
     }
 }
