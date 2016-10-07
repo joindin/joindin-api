@@ -51,7 +51,7 @@ class TalksController extends ApiController
             throw new Exception("You must be logged in to create data", 401);
         }
         $talk_id = $this->getItemId($request);
-        
+
         // Retrieve the talk. It if doesn't exist, then 404 with talk not found
         $talk= $this->getTalkById($db, $request, $talk_id);
 
@@ -167,7 +167,7 @@ class TalksController extends ApiController
             // delete the talk
             $talk_id     = $this->getItemId($request);
             $talk_mapper = new TalkMapper($db, $request);
-            
+
             // note: use the mapper's getTalkById as we don't want to throw a not found exception
             $talk = $talk_mapper->getTalkById($talk_id);
             if (false === $talk) {
@@ -361,7 +361,7 @@ class TalksController extends ApiController
 
         return $list;
     }
-   
+
     /**
      * Edit a talk
      *
@@ -498,12 +498,132 @@ class TalksController extends ApiController
             FILTER_SANITIZE_URL
         );
 
-        $talk['speakers'] = array_map(function ($speaker) {
-            $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
-            $speaker = trim($speaker);
-            return $speaker;
-        }, (array) $request->getParameter('speakers'));
+        $talk['speakers'] = array_map(
+            function ($speaker) {
+                $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
+                $speaker = trim($speaker);
+                return $speaker;
+            },
+            (array) $request->getParameter('speakers')
+        );
 
         return $talk;
+    }
+
+    public function getSpeakersForTalk(Request $request, PDO $db)
+    {
+        $talk_id = $this->getItemId($request);
+        $talk = $this->getTalkById($db, $request, $talk_id);
+        return $talk->speakers;
+    }
+
+    public function setSpeakerForTalk(Request $request, PDO $db)
+    {
+        if (!isset($request->user_id)) {
+            throw new Exception("You must be logged in to create data", 401);
+        }
+
+        $talk_id = $this->getItemId($request);
+        $talk_mapper = $this->getTalkMapper($db, $request);
+        $talk = $talk_mapper->getTalkById($talk_id);
+        if (! $talk) {
+            throw new Exception("Talk not found", 404);
+        }
+
+        $user_id = $request->user_id;
+        $user_mapper = $this->getUserMapper($db, $request);
+        $user = $user_mapper->getUserById($user_id)['users'][0];
+
+        $data = $this->getLinkUserDataFromRequest($request);
+
+        if ($data['display_name'] === '' || $data['username'] === '') {
+            throw new Exception("You must provide a display name and a username", 400);
+        }
+
+        //Get the speaker record based on the display name - check if this is already claimed,
+        //otherwise ID becomes the claim_id
+
+        $claim = $talk_mapper->getSpeakerFromTalk($talk_id, $data['display_name']);
+
+        if ($claim === false) {
+            throw new Exception("No speaker matching that name found", 422);
+        } elseif ($claim['speaker_id'] != null) {
+            throw new Exception("Talk already claimed", 422);
+        }
+
+        $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
+
+        //Is the speaker this user?
+        if ($data['username'] === $user['username']) {
+            $pending_talk_claim_mapper->claimTalkAsSpeaker($talk_id, $user_id, $claim['ID']);
+            //We need to send an email to the host asking for confirmation
+        } elseif ($talk_mapper->thisUserHasAdminOn($talk_id)) {
+            $speaker_id = $user_mapper->getUserIdFromUsername($data['username']);
+            if (! $speaker_id) {
+                throw new Exception("Specified user not found", 404);
+            }
+            $pending_talk_claim_mapper->assignTalkAsHost($talk_id, $speaker_id, $claim['ID'], $user_id);
+            //We need to send an email to the speaker asking for confirmation
+        } else {
+            throw new Exception("You must be the speaker or event admin to link a user to a talk", 401);
+        }
+
+        //If we are unit testing, then we can't exit or send headers!
+        if (defined('UNIT_TEST')) {
+            return true;
+        }
+
+        header("Location: " . $request->base . $request->path_info, null, 204);
+        exit;
+    }
+
+    private function getLinkUserDataFromRequest(Request $request)
+    {
+        $talk = [];
+        $talk['display_name'] = trim($request->getParameter('display_name', ''));
+        $talk['username'] = trim($request->getParameter('username', ''));
+        return $talk;
+    }
+
+    public function setTalkMapper(TalkMapper $talk_mapper)
+    {
+        $this->talk_mapper = $talk_mapper;
+    }
+
+    public function getTalkMapper($db, $request)
+    {
+        if (! isset($this->talk_mapper)) {
+            $this->talk_mapper = new TalkMapper($db, $request);
+        }
+
+        return $this->talk_mapper;
+    }
+
+    public function setUserMapper(UserMapper $user_mapper)
+    {
+        $this->user_mapper = $user_mapper;
+    }
+
+    public function getUserMapper($db, $request)
+    {
+        if (! isset($this->user_mapper)) {
+            $this->user_mapper = new UserMapper($db, $request);
+        }
+
+        return $this->user_mapper;
+    }
+
+    public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper)
+    {
+        $this->pending_talk_claim_mapper = $pending_talk_claim_mapper;
+    }
+
+    public function getPendingTalkClaimMapper($db, $request)
+    {
+        if (! isset($this->pending_talk_claim_mapper)) {
+            $this->pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
+        }
+
+        return $this->pending_talk_claim_mapper;
     }
 }

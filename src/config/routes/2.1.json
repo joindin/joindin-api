@@ -77,7 +77,18 @@
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
-
+    {
+        "path": "/talks(/[\\d]+)/speakers/?$",
+        "controller": "TalksController",
+        "action": "getSpeakersForTalk",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks(/[\\d]+)/speakers/?$",
+        "controller": "TalksController",
+        "action": "setSpeakerForTalk",
+        "verbs": ["POST"]
+    },
     {
         "path": "/talks(/[\\d]+)$",
         "controller": "TalksController",
