@@ -551,21 +551,49 @@ class TalksController extends ApiController
             throw new Exception("Talk already claimed", 422);
         }
 
-        $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
+        $speaker_id = $user_mapper->getUserIdFromUsername($data['username']);
+        if (! $speaker_id) {
+            throw new Exception("Specified user not found", 404);
+        }
 
-        //Is the speaker this user?
-        if ($data['username'] === $user['username']) {
-            $pending_talk_claim_mapper->claimTalkAsSpeaker($talk_id, $user_id, $claim['ID']);
-            //We need to send an email to the host asking for confirmation
-        } elseif ($talk_mapper->thisUserHasAdminOn($talk_id)) {
-            $speaker_id = $user_mapper->getUserIdFromUsername($data['username']);
-            if (! $speaker_id) {
-                throw new Exception("Specified user not found", 404);
+        $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
+        $claim_exists = $pending_talk_claim_mapper->claimExists($talk_id,$speaker_id,$claim['ID']);
+        if ($claim_exists === false) {
+            //This is a new claim
+            //Is the speaker this user?
+            if ($data['username'] === $user['username']) {
+                $pending_talk_claim_mapper->claimTalkAsSpeaker($talk_id, $user_id, $claim['ID']);
+                //We need to send an email to the host asking for confirmation
+            } elseif ($talk_mapper->thisUserHasAdminOn($talk_id)) {
+                $pending_talk_claim_mapper->assignTalkAsHost($talk_id, $speaker_id, $claim['ID'], $user_id);
+                //We need to send an email to the speaker asking for confirmation
+            } else {
+                throw new Exception("You must be the speaker or event admin to link a user to a talk", 401);
             }
-            $pending_talk_claim_mapper->assignTalkAsHost($talk_id, $speaker_id, $claim['ID'], $user_id);
-            //We need to send an email to the speaker asking for confirmation
-        } else {
-            throw new Exception("You must be the speaker or event admin to link a user to a talk", 401);
+        } elseif ($claim_exists === PendingTalkClaimMapper::SPEAKER_CLAIM) {
+            //The host needs to approve
+            if ($talk_mapper->thisUserHasAdminOn($talk_id)) {
+                if ($pending_talk_claim_mapper->approveClaimAsHost($talk_id, $speaker_id, $claim['ID'])) {
+                    if (! $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id)) {
+                        throw new Exception("There was a problem assigning the talk", 500);
+                    }
+                }
+                //We need to send an email to the speaker asking for confirmation
+            } else {
+                throw new Exception("You must be an event admin to approve this claim", 401);
+            }
+
+        } elseif ($claim_exists === PendingTalkClaimMapper::HOST_ASSIGN) {
+            //The speaker needs to approve
+            if ($data['username'] === $user['username']) {
+                if ($pending_talk_claim_mapper->approveAssignmentAsSpeaker($talk_id, $user_id, $claim['ID'])) {
+                    if (! $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id)) {
+                        throw new Exception("There was a problem assigning the talk", 500);
+                    }
+                }
+            }else{
+                throw new Exception("You must be the talk speaker to approve this assignment", 401);
+            }
         }
 
         //If we are unit testing, then we can't exit or send headers!
