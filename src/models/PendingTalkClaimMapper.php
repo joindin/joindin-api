@@ -104,7 +104,7 @@ class PendingTalkClaimMapper extends ApiMapper
     }
 
 
-    public function claimExists($talk_id,$speaker_id,$claim_id)
+    public function claimExists($talk_id, $speaker_id, $claim_id)
     {
 
         $sql = 'select * from pending_talk_claims WHERE 
@@ -177,5 +177,5 @@ class PendingTalkClaimMapper extends ApiMapper
         );
 
         return $response;
-    }    
+    }
 }
