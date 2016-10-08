@@ -630,7 +630,7 @@ class TalksController extends ApiController
     public function removeSpeakerFromTalk(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to delete data", 400);
         }
 
         $talk_id = $this->getItemId($request);
@@ -640,6 +640,11 @@ class TalksController extends ApiController
         $talk = $talk_mapper->getTalkById($talk_id);
         if (!$talk) {
             throw new Exception("Talk not found", 404);
+        }
+
+        $speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $speaker_id);
+        if (!$speaker) {
+            throw new Exception("Provided user is not a speaker on this talk", 400);
         }
 
         $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
