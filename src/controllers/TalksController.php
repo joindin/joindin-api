@@ -557,7 +557,7 @@ class TalksController extends ApiController
         }
 
         $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
-        $claim_exists = $pending_talk_claim_mapper->claimExists($talk_id,$speaker_id,$claim['ID']);
+        $claim_exists = $pending_talk_claim_mapper->claimExists($talk_id, $speaker_id, $claim['ID']);
         if ($claim_exists === false) {
             //This is a new claim
             //Is the speaker this user?
@@ -577,6 +577,8 @@ class TalksController extends ApiController
                     if (! $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id)) {
                         throw new Exception("There was a problem assigning the talk", 500);
                     }
+                }else{
+                    throw new Exception("There was a problem assigning the talk", 500);
                 }
                 //We need to send an email to the speaker asking for confirmation
             } else {
@@ -590,6 +592,8 @@ class TalksController extends ApiController
                     if (! $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id)) {
                         throw new Exception("There was a problem assigning the talk", 500);
                     }
+                }else{
+                    throw new Exception("There was a problem assigning the talk", 500);
                 }
             }else{
                 throw new Exception("You must be the talk speaker to approve this assignment", 401);
