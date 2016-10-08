@@ -577,7 +577,7 @@ class TalksController extends ApiController
                     if (! $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id)) {
                         throw new Exception("There was a problem assigning the talk", 500);
                     }
-                }else{
+                } else {
                     throw new Exception("There was a problem assigning the talk", 500);
                 }
                 //We need to send an email to the speaker asking for confirmation
@@ -592,10 +592,10 @@ class TalksController extends ApiController
                     if (! $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id)) {
                         throw new Exception("There was a problem assigning the talk", 500);
                     }
-                }else{
+                } else {
                     throw new Exception("There was a problem assigning the talk", 500);
                 }
-            }else{
+            } else {
                 throw new Exception("You must be the talk speaker to approve this assignment", 401);
             }
         }
