@@ -789,7 +789,7 @@ class TalkMapper extends ApiMapper
     {
         $params = [
             'talk_id' => $talk_id,
-            'speaker' => $speaker_id,
+            'speaker_id' => $speaker_id,
         ];
 
         $sql = 'update talk_speaker set speaker_id = null where talk_id = :talk_id and speaker_id = :speaker_id';
