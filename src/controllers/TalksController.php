@@ -644,13 +644,13 @@ class TalksController extends ApiController
 
         $speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $speaker_id);
         if (!$speaker) {
-            throw new Exception("Provided user is not a speaker on this talk", 400);
+            throw new Exception("Provided user is not a speaker on this talk", 404);
         }
 
         $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
         $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
         if (!($is_admin || $is_speaker)) {
-            throw new Exception("You do not have permission to remove this speaker from this talk", 400);
+            throw new Exception("You do not have permission to remove this speaker from this talk", 403);
         }
 
         // delete speaker from talk
