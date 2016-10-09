@@ -654,7 +654,7 @@ class TalksController extends ApiController
         }
 
         // delete speaker from talk
-        $talk_mapper->removeSpeakerFromTalk($talk_id, $speaker_id);
+        $talk_mapper->removeApprovedSpeakerFromTalk($talk_id, $speaker_id);
 
         $uri = $request->base . '/' . $request->version . '/talks/' . $talk_id;
         header('Location: ' . $uri, null, 204);

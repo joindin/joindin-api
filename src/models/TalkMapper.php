@@ -785,7 +785,7 @@ class TalkMapper extends ApiMapper
 
     }
 
-    public function removeSpeakerFromTalk($talk_id, $speaker_id)
+    public function removeApprovedSpeakerFromTalk($talk_id, $speaker_id)
     {
         $params = [
             'talk_id' => $talk_id,
