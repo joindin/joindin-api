@@ -120,12 +120,17 @@
         "verbs": ["POST"]
     },
     {
+        "path": "/talks(/[\\d]+)/speakers(/[\\d]+)$",
+        "controller": "TalksController",
+        "action": "removeApprovedSpeakerFromTalk",
+        "verbs": ["DELETE"]
+    },
+    {
         "path": "/talks(/[^/]+)*/?$",
         "controller": "TalksController",
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
-
     {
         "path": "/token(/[^/]+)*/?$",
         "controller": "TokenController",

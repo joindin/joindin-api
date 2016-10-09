@@ -784,4 +784,16 @@ class TalkMapper extends ApiMapper
         return count($speakers) > 0 ? $speakers[0] : false;
 
     }
+
+    public function removeApprovedSpeakerFromTalk($talk_id, $speaker_id)
+    {
+        $params = [
+            'talk_id' => $talk_id,
+            'speaker_id' => $speaker_id,
+        ];
+
+        $sql = 'update talk_speaker set speaker_id = null where talk_id = :talk_id and speaker_id = :speaker_id';
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute($params);
+    }
 }
