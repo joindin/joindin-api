@@ -627,7 +627,7 @@ class TalksController extends ApiController
         return $this->pending_talk_claim_mapper;
     }
 
-    public function removeSpeakerFromTalk(Request $request, PDO $db)
+    public function removeApprovedSpeakerFromTalk(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", 401);

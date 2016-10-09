@@ -122,7 +122,7 @@
     {
         "path": "/talks(/[\\d]+)/speaker(/[\\d]+)$",
         "controller": "TalksController",
-        "action": "removeSpeakerFromTalk",
+        "action": "removeApprovedSpeakerFromTalk",
         "verbs": ["DELETE"]
     },
     {
