@@ -120,7 +120,7 @@
         "verbs": ["POST"]
     },
     {
-        "path": "/talks(/[\\d]+)/speaker(/[\\d]+)$",
+        "path": "/talks(/[\\d]+)/speakers(/[\\d]+)$",
         "controller": "TalksController",
         "action": "removeApprovedSpeakerFromTalk",
         "verbs": ["DELETE"]
