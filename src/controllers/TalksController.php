@@ -630,7 +630,7 @@ class TalksController extends ApiController
     public function removeSpeakerFromTalk(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 400);
+            throw new Exception("You must be logged in to delete data", 401);
         }
 
         $talk_id = $this->getItemId($request);
