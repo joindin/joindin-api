@@ -639,7 +639,7 @@ function testEventComments(access_token, url) {
 
   frisby.create('Get reported event comments (event host)')
     .get(url + '/comments/reported',
-      {json: true, headers: {'Authorization' : 'Bearer ' + access_token}})
+      {headers: {'Authorization' : 'Bearer ' + access_token}})
     .expectStatus(200)
     .toss();
 
