@@ -353,7 +353,8 @@ class TalksController extends ApiController
         $event_mapper->cacheTalkCount($event_id);
 
         $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
-        header("Location: " . $uri, true, 201);
+        $request->getView()->setResponseCode(201);
+        $request->getView()->setHeader('Location', $uri);
 
         $new_talk = $this->getTalkById($db, $request, $new_id);
         $collection = new TalkModelCollection([$new_talk], 1);
