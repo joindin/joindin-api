@@ -14,10 +14,10 @@ function handle_exception($e)
     global $request, $config;
     $status_code = $e->getCode() ?: 400;
     $status_code = is_numeric($status_code) ? $status_code : 500;
-    header("Status: " . $status_code, false, $status_code);
+    $request->getView()->setResponseCode($status_code);
 
     if ($status_code === 401) {
-        header('WWW-Authenticate: Bearer realm="api.joind.in"');
+        $request->getView()->setHeader('WWW-Authenticate', 'Bearer realm="api.joind.in');
     }
 
     $message = $e->getMessage();
