@@ -72,7 +72,7 @@ $router = new ApiRouter($config, $routers, ['2']);
 $route = $router->getRoute($request);
 $return_data = $route->dispatch($request, $ji_db, $config);
 
-if (isset($request->user_id)) {
+if ($return_data && isset($request->user_id)) {
     $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;
 }
 
