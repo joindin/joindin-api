@@ -1,6 +1,6 @@
 <?php
 
-abstract class ApiView
+class ApiView
 {
     protected $headers = [];
 
@@ -56,5 +56,8 @@ abstract class ApiView
         return true;
     }
 
-    abstract public function buildOutput($content);
+    public function buildOutput($content)
+    {
+        return null;
+    }
 }
