@@ -131,7 +131,7 @@ class PendingTalkClaimMapper extends ApiMapper
         }
         return false;
     }
-    
+
     public function approveAssignmentAsSpeaker($talk_id, $speaker_id, $claim_id)
     {
         $sql = 'update pending_talk_claims SET user_approved_at = NOW() WHERE 
@@ -167,5 +167,4 @@ class PendingTalkClaimMapper extends ApiMapper
         );
         return $response;
     }
-
 }
