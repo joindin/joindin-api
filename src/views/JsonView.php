@@ -4,10 +4,9 @@ class JsonView extends ApiView
 {
     public function render($content)
     {
-        header('Content-Type: application/json; charset=utf8');
-        echo $this->buildOutput($content);
+        $this->setHeader('Content-Type', 'application/json; charset=utf8');
 
-        return true;
+        return parent::render($content);
     }
 
     /**

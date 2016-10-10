@@ -9,10 +9,13 @@ class JsonPView extends JsonView
 
     public function render($content)
     {
-        header('Content-Type: text/javascript; charset=utf8');
-        $retval = $this->_callback . '(' . $this->buildOutput($content) . ');';
-        echo $retval;
+        $this->setHeader('Content-Type', 'text/javascript; charset=utf8');
 
-        return true;
+        return parent::render($content);
+    }
+
+    public function buildOutput($content)
+    {
+        return $this->_callback . '(' . parent::buildOutput($content) . ');';
     }
 }

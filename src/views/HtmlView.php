@@ -11,6 +11,13 @@
  */
 class HtmlView extends ApiView
 {
+
+    public function render($content)
+    {
+        $this->setHeader('Content-Type', 'text/html; charset=utf8');
+
+        return parent::render($content);
+    }
     /**
      * Render the view
      *
@@ -18,11 +25,10 @@ class HtmlView extends ApiView
      *
      * @return bool
      */
-    public function render($content)
+    public function buildOutput($content)
     {
         $content = $this->addCount($content);
 
-        header('Content-Type: text/html; charset=utf8');
         $this->layoutStart();
         if (is_array($content)) {
             $this->printArray($content);

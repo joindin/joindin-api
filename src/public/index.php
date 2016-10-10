@@ -14,10 +14,10 @@ function handle_exception($e)
     global $request, $config;
     $status_code = $e->getCode() ?: 400;
     $status_code = is_numeric($status_code) ? $status_code : 500;
-    header("Status: " . $status_code, false, $status_code);
+    $request->getView()->setResponseCode($status_code);
 
     if ($status_code === 401) {
-        header('WWW-Authenticate: Bearer realm="api.joind.in"');
+        $request->getView()->setHeader('WWW-Authenticate', 'Bearer realm="api.joind.in');
     }
 
     $message = $e->getMessage();
@@ -72,7 +72,7 @@ $router = new ApiRouter($config, $routers, ['2']);
 $route = $router->getRoute($request);
 $return_data = $route->dispatch($request, $ji_db, $config);
 
-if (isset($request->user_id)) {
+if ($return_data && isset($request->user_id)) {
     $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;
 }
 
