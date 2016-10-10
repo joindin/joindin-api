@@ -240,7 +240,21 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
+        $user_mapper
+            ->expects($this->once())
+            ->method('getUserIdFromUsername')
+            ->will($this->returnValue(6));
         $talks_controller->setUserMapper($user_mapper);
+
+        $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('claimExists')
+            ->will($this->returnValue(false));
+
+        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -278,10 +292,6 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
                     ]
                 )
             );
-        $talk_mapper
-            ->expects($this->once())
-            ->method('thisUserHasAdminOn')
-            ->will($this->returnValue(true));
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
@@ -290,6 +300,8 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
             ->method('getUserIdFromUsername')
             ->will($this->returnValue(false));
         $talks_controller->setUserMapper($user_mapper);
+
+
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -327,12 +339,20 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
+        $user_mapper
+            ->expects($this->once())
+            ->method('getUserIdFromUsername')
+            ->will($this->returnValue(2));
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
             ->setConstructorArgs(array($db,$request))
             ->getMock();
-        
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('claimExists')
+            ->will($this->returnValue(false));
+
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimTalkAsSpeaker')
@@ -389,7 +409,10 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
             ->setConstructorArgs(array($db,$request))
             ->getMock();
-
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('claimExists')
+            ->will($this->returnValue(false));
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('assignTalkAsHost')
@@ -400,6 +423,246 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * Ensures that if the setSpeakerForTalk method is called by the same user who made the claim
+     * then an exception is thrown
+     *
+     * @test
+     * @expectedException        \Exception
+     * @expectedExceptionMessage You must be an event admin to approve this claim
+     */
+    public function testApproveAssignmentAsUserWhoClaimedThrowsException()
+    {
+        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request->user_id = 2;
+        $request->parameters = [
+            'username'      => 'janebloggs',
+            'display_name'  => 'Jane Bloggs'
+        ];
+
+        $talks_controller = new \TalksController();
+        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+        $talk_mapper
+            ->expects($this->once())
+            ->method('getSpeakerFromTalk')
+            ->will(
+                $this->returnValue(
+                    [
+                        'speaker_id'  => null,
+                        'ID'          => 1
+                    ]
+                )
+            );
+        $talks_controller->setTalkMapper($talk_mapper);
+
+        $user_mapper = $this->createUserMapper($db, $request);
+        $user_mapper
+            ->expects($this->once())
+            ->method('getUserIdFromUsername')
+            ->will($this->returnValue(2));
+        $talk_mapper
+            ->expects($this->once())
+            ->method('thisUserHasAdminOn')
+            ->will($this->returnValue(false));
+        $talks_controller->setUserMapper($user_mapper);
+
+        $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('claimExists')
+            ->will($this->returnValue(\PendingTalkClaimMapper::SPEAKER_CLAIM));
+
+        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
+
+        $talks_controller->setSpeakerForTalk($request, $db);
+    }
+
+
+    /**
+     * Ensures that if the setSpeakerForTalk method is called by the host who assigned the talk
+     * then an exception is thrown
+     *
+     * @test
+     * @expectedException        \Exception
+     * @expectedExceptionMessage You must be the talk speaker to approve this assignment
+     */
+    public function testApproveClaimAsHostWhoAssignedThrowsException()
+    {
+        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request->user_id = 2;
+        $request->parameters = [
+            'username'      => 'psherman',
+            'display_name'  => 'P Sherman'
+        ];
+
+        $talks_controller = new \TalksController();
+        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+        $talk_mapper
+            ->expects($this->once())
+            ->method('getSpeakerFromTalk')
+            ->will(
+                $this->returnValue(
+                    [
+                        'speaker_id'  => null,
+                        'ID'          => 1
+                    ]
+                )
+            );
+        $talks_controller->setTalkMapper($talk_mapper);
+
+        $user_mapper = $this->createUserMapper($db, $request);
+        $user_mapper
+            ->expects($this->once())
+            ->method('getUserIdFromUsername')
+            ->will($this->returnValue(1));
+        $talks_controller->setUserMapper($user_mapper);
+
+        $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('claimExists')
+            ->will($this->returnValue(\PendingTalkClaimMapper::HOST_ASSIGN));
+
+
+        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
+
+        $talks_controller->setSpeakerForTalk($request, $db);
+    }
+
+    /**
+     * Ensures that if the setSpeakerForTalk method is called by a user who has had a talk
+     * assigned to them then it succeeds
+     */
+    public function testApproveAssignmentAsUserSucceeds()
+    {
+        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request->user_id = 2;
+        $request->parameters = [
+            'username'      => 'janebloggs',
+            'display_name'  => 'Jane Bloggs'
+        ];
+
+        $talks_controller = new \TalksController();
+        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+        $talk_mapper
+            ->expects($this->once())
+            ->method('getSpeakerFromTalk')
+            ->will(
+                $this->returnValue(
+                    [
+                        'speaker_id'  => null,
+                        'ID'          => 1
+                    ]
+                )
+            );
+        $talk_mapper
+            ->expects($this->once())
+            ->method('assignTalkToSpeaker')
+            ->will($this->returnValue(true));
+        $talks_controller->setTalkMapper($talk_mapper);
+
+        $user_mapper = $this->createUserMapper($db, $request);
+        $user_mapper
+            ->expects($this->once())
+            ->method('getUserIdFromUsername')
+            ->will($this->returnValue(2));
+        $talks_controller->setUserMapper($user_mapper);
+
+        $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('claimExists')
+            ->will($this->returnValue(\PendingTalkClaimMapper::HOST_ASSIGN));
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('approveAssignmentAsSpeaker')
+            ->will($this->returnValue(true));
+
+
+
+        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
+
+        $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
+
+    }
+
+
+    /**
+     * Ensures that if the setSpeakerForTalk method is called by a host
+     * in response to a claimed talk then it succeeds
+     */
+    public function testApproveClaimAsHostSucceeds()
+    {
+        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request->user_id = 2;
+        $request->parameters = [
+            'username'      => 'psherman',
+            'display_name'  => 'P Sherman'
+        ];
+
+        $talks_controller = new \TalksController();
+        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+        $talk_mapper
+            ->expects($this->once())
+            ->method('getSpeakerFromTalk')
+            ->will(
+                $this->returnValue(
+                    [
+                        'speaker_id'  => null,
+                        'ID'          => 1
+                    ]
+                )
+            );
+        $talk_mapper
+            ->expects($this->once())
+            ->method('thisUserHasAdminOn')
+            ->will($this->returnValue(true));
+        $talk_mapper
+            ->expects($this->once())
+            ->method('assignTalkToSpeaker')
+            ->will($this->returnValue(true));
+
+        $talks_controller->setTalkMapper($talk_mapper);
+
+        $user_mapper = $this->createUserMapper($db, $request);
+        $user_mapper
+            ->expects($this->once())
+            ->method('getUserIdFromUsername')
+            ->will($this->returnValue(1));
+        $talks_controller->setUserMapper($user_mapper);
+
+        $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('claimExists')
+            ->will($this->returnValue(\PendingTalkClaimMapper::SPEAKER_CLAIM));
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('approveClaimAsHost')
+            ->will($this->returnValue(true));
+
+
+        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
+
+        $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
+
+    }
 
     private function createTalkMapper($db, $request)
     {
@@ -458,4 +721,3 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         return $user_mapper;
     }
 }
-
