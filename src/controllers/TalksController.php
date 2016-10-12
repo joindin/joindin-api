@@ -593,7 +593,10 @@ class TalksController extends ApiController
                 } else {
                     throw new Exception("There was a problem assigning the talk", 500);
                 }
-                //We need to send an email to the speaker asking for confirmation
+
+                $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
+                $emailService = new TalkClaimApprovedEmailService($this->config, $recipients, $event, $talk);
+                $emailService->sendEmail();
             } else {
                 throw new Exception("You must be an event admin to approve this claim", 401);
             }
