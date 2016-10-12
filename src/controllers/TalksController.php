@@ -576,6 +576,10 @@ class TalksController extends ApiController
             } elseif ($talk_mapper->thisUserHasAdminOn($talk_id)) {
                 $pending_talk_claim_mapper->assignTalkAsHost($talk_id, $speaker_id, $claim['ID'], $user_id);
                 //We need to send an email to the speaker asking for confirmation
+                $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
+                $username = $data['username'];
+                $emailService = new TalkAssignEmailService($this->config, $recipients, $event, $talk, $username);
+                $emailService->sendEmail();
             } else {
                 throw new Exception("You must be the speaker or event admin to link a user to a talk", 401);
             }
