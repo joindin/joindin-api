@@ -1,6 +1,6 @@
 <?php
 
-class TalkClaimEmailService extends EmailBaseService
+class TalkClaimApprovedEmailService extends EmailBaseService
 {
 
     protected $event;
@@ -11,7 +11,7 @@ class TalkClaimEmailService extends EmailBaseService
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
-        
+
         $this->talk = $talk;
         $this->event = $event['events'][0];
 
