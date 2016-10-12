@@ -527,6 +527,11 @@ class TalksController extends ApiController
         $talk_id = $this->getItemId($request);
         $talk_mapper = $this->getTalkMapper($db, $request);
         $talk = $talk_mapper->getTalkById($talk_id);
+
+        $event_id = $talk->event_id;
+        $event_mapper = $this->getEventMapper($db, $request);
+        $event = $event_mapper->getEventById($event_id);
+
         if (! $talk) {
             throw new Exception("Talk not found", 404);
         }
@@ -565,6 +570,9 @@ class TalksController extends ApiController
             if ($data['username'] === $user['username']) {
                 $pending_talk_claim_mapper->claimTalkAsSpeaker($talk_id, $user_id, $claim['ID']);
                 //We need to send an email to the host asking for confirmation
+                $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
+                $emailService = new TalkClaimEmailService($this->config, $recipients, $event, $talk);
+                $emailService->sendEmail();
             } elseif ($talk_mapper->thisUserHasAdminOn($talk_id)) {
                 $pending_talk_claim_mapper->assignTalkAsHost($talk_id, $speaker_id, $claim['ID'], $user_id);
                 //We need to send an email to the speaker asking for confirmation
@@ -631,6 +639,21 @@ class TalksController extends ApiController
 
         return $this->talk_mapper;
     }
+
+    public function setEventMapper(EventMapper $event_mapper)
+    {
+        $this->event_mapper = $event_mapper;
+    }
+
+    public function getEventMapper($db, $request)
+    {
+        if (! isset($this->event_mapper)) {
+            $this->event_mapper = new EventMapper($db, $request);
+        }
+
+        return $this->event_mapper;
+    }
+
 
     public function setUserMapper(UserMapper $user_mapper)
     {
