@@ -247,6 +247,22 @@ class UsersController extends ApiController
                 }
             }
 
+            $username = $request->getParameter("username", false);
+            if (false !== $username) {
+                // does anyone else have this username?
+                $existing_user = $user_mapper->getUserByUsername($username);
+                if ($existing_user['users']) {
+                    // yes but is that our existing user being found?
+                    $old_user = $user_mapper->getUserById($userId);
+                    if ($old_user['users'][0]['uri'] != $existing_user['users'][0]['uri']) {
+                        // the username exists and not on this user's account
+                        $errors[] = "That username is already associated with another account";
+                    }
+                }
+
+                $user['username'] = filter_var(trim($username), FILTER_SANITIZE_STRING);
+            }
+
             // Optional Fields
             $twitter_username = $request->getParameter("twitter_username", false);
             if (false !== $twitter_username) {
