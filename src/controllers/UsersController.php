@@ -249,8 +249,9 @@ class UsersController extends ApiController
 
             $username = $request->getParameter("username", false);
             if (false !== $username) {
+                $user['username'] = filter_var(trim($username), FILTER_SANITIZE_STRING);
                 // does anyone else have this username?
-                $existing_user = $user_mapper->getUserByUsername($username);
+                $existing_user = $user_mapper->getUserByUsername($user['username']);
                 if ($existing_user['users']) {
                     // yes but is that our existing user being found?
                     $old_user = $user_mapper->getUserById($userId);
@@ -259,8 +260,6 @@ class UsersController extends ApiController
                         $errors[] = "That username is already associated with another account";
                     }
                 }
-
-                $user['username'] = filter_var(trim($username), FILTER_SANITIZE_STRING);
             }
 
             // Optional Fields
