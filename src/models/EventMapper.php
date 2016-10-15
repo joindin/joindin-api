@@ -453,6 +453,8 @@ class EventMapper extends ApiMapper
                             . $row['ID'] . '/comments/reported';
                         $list[$key]['reported_talk_comments_uri'] = $base . '/' . $version . '/events/'
                             . $row['ID'] . '/talk_comments/reported';
+                        $list[$key]['pending_claims_uri'] = $base . '/' . $version . '/events/'
+                            . $row['ID'] . '/claims';
                     }
                     $list[$key]['all_talk_comments_uri'] = $base . '/' . $version . '/events/'
                                                            . $row['ID'] . '/talk_comments';
