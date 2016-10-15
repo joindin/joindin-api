@@ -12,6 +12,12 @@
         "verbs": ["GET"]
     },
     {
+        "path": "/events/(\\d+)/claims$",
+        "controller": "EventsController",
+        "action": "pendingClaims",
+        "verbs": ["GET"]
+    },
+    {
         "path": "/events(/[^/]+)*/?$",
         "controller": "EventsController",
         "action": "getAction",
