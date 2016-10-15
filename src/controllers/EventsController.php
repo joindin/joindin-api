@@ -529,6 +529,24 @@ class EventsController extends ApiController
         }
     }
 
+    public function pendingClaims($request, $db)
+    {
+        // Check for login
+        if (! isset($request->user_id)) {
+            throw new Exception("You must be logged in to view pending claims", 401);
+        }
+
+        $event_id = $this->getItemId($request);
+        $event_mapper = $this->getEventMapper($db, $request);
+
+        $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
+        if (! $event_mapper->thisUserHasAdminOn($event_id)) {
+            throw new Exception('You do not have permission to edit this track', 403);
+        }
+
+        return $pending_talk_claim_mapper->getPendingClaimsByEventId($event_id);
+    }
+
     /**
      * Create track
      *
@@ -665,5 +683,34 @@ class EventsController extends ApiController
         header("Content-Length: 0", null, 204);
 
         return;
+    }
+
+
+    public function setEventMapper(EventMapper $event_mapper)
+    {
+        $this->event_mapper = $event_mapper;
+    }
+
+    public function getEventMapper($db, $request)
+    {
+        if (! isset($this->event_mapper)) {
+            $this->event_mapper = new EventMapper($db, $request);
+        }
+
+        return $this->event_mapper;
+    }
+
+    public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper)
+    {
+        $this->pending_talk_claim_mapper = $pending_talk_claim_mapper;
+    }
+
+    public function getPendingTalkClaimMapper($db, $request)
+    {
+        if (! isset($this->pending_talk_claim_mapper)) {
+            $this->pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
+        }
+
+        return $this->pending_talk_claim_mapper;
     }
 }
