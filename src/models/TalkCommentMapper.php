@@ -389,16 +389,16 @@ class TalkCommentMapper extends ApiMapper
 
     /**
      * @param integer $comment_id
-     * @return false|integer
+     * @return false|array
      */
-    public function getCommentTimestamp($comment_id) {
-        $sql = "select tc.date_made from talk_comments tc where tc.ID = :comment_id";
+    public function getRawComment($comment_id) {
+        $sql = "select tc.* from talk_comments tc where tc.ID = :comment_id";
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(':comment_id' => $comment_id));
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (isset($results[0]['date_made'])) {
-                return $results[0]['date_made'];
+            if (isset($results[0])) {
+                return $results[0];
             }
         }
 

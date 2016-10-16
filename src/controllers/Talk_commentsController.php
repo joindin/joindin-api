@@ -133,22 +133,28 @@ class Talk_commentsController extends ApiController
 
     public function updateComment($request, $db)
     {
-        if (false == ($request->getUserId())) {
-            throw new Exception("You must be logged in to edit a comment", 401);
+        $request->user_id = 14;
+
+        // must be logged in
+        if (!isset($request->user_id) || empty($request->user_id)) {
+            throw new Exception('You must log in to edit a comment', 401);
         }
 
-        //TODO check if the logged user is the user editing the comment
-
-        $comment_id = $this->getItemId($request);
         $new_comment_body = $request->getParameter('comment');
         if (empty($new_comment_body)) {
             throw new Exception('The field "comment" is required', 400);
         }
 
+        $comment_id = $this->getItemId($request);
         $comment_mapper = new TalkCommentMapper($db, $request);
-        $comment_timestamp = $comment_mapper->getCommentTimestamp($comment_id);
-        if (false === $comment_timestamp) {
+        $comment = $comment_mapper->getRawComment($comment_id);
+
+        if (false === $comment) {
             throw new Exception('Comment not found', 404);
+        }
+
+        if ($comment['user_id'] != $request->user_id) {
+            throw new Exception('You are not the comment author', 401);
         }
 
         $max_comment_edit_minutes = 15;
@@ -156,13 +162,12 @@ class Talk_commentsController extends ApiController
             $max_comment_edit_minutes = $this->config['limits']['max_comment_edit_minutes'];
         }
 
-        if ($comment_timestamp + $max_comment_edit_minutes * 60 > time()) {
+        if ($comment['date_made'] + ($max_comment_edit_minutes * 60) < time()) {
             throw new Exception('Cannot edit the comment after ' . $max_comment_edit_minutes . ' minutes', 400);
         }
+
         $comment_mapper->updateCommentBody($comment_id, $new_comment_body);
 
-        $uri = $request->base  . '/' . $request->version . '/talk_comments/' . $comment_id;
-        header("Location: $uri", true, 204);
-        exit;
+        return $comment_mapper->getCommentById($comment_id);
     }
 }
