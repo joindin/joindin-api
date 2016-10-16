@@ -391,7 +391,8 @@ class TalkCommentMapper extends ApiMapper
      * @param integer $comment_id
      * @return false|array
      */
-    public function getRawComment($comment_id) {
+    public function getRawComment($comment_id)
+    {
         $sql = "select tc.* from talk_comments tc where tc.ID = :comment_id";
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(':comment_id' => $comment_id));
@@ -409,7 +410,8 @@ class TalkCommentMapper extends ApiMapper
      * @param integer $comment_id
      * @param string $new_comment_body
      */
-    public function updateCommentBody($comment_id, $new_comment_body) {
+    public function updateCommentBody($comment_id, $new_comment_body)
+    {
         $sql = "update talk_comments set comment = :new_comment_body where ID = :comment_id";
         $stmt = $this->_db->prepare($sql);
         $stmt->execute([
