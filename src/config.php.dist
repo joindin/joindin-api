@@ -37,6 +37,7 @@ $config =  array(
     ),
     'limits' => array(
         'max_pending_events' => 3
+        'max_comment_edit_min' => 15
     )
 );
 

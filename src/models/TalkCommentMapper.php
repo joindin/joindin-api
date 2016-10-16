@@ -386,4 +386,35 @@ class TalkCommentMapper extends ApiMapper
             }
         }
     }
+
+    /**
+     * @param integer $comment_id
+     * @return false|integer
+     */
+    public function getCommentTimestamp($comment_id) {
+        $sql = "select tc.date_made from talk_comments tc where tc.ID = :comment_id";
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array(':comment_id' => $comment_id));
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (isset($results[0]['date_made'])) {
+                return $results[0]['date_made'];
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param integer $comment_id
+     * @param string $new_comment_body
+     */
+    public function updateCommentBody($comment_id, $new_comment_body) {
+        $sql = "update talk_comments set comment = :new_comment_body where ID = :comment_id";
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute([
+            "new_comment_body" => $new_comment_body,
+            "comment_id" => $comment_id
+        ]);
+    }
 }

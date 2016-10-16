@@ -130,4 +130,39 @@ class Talk_commentsController extends ApiController
         header("Location: $uri", true, 204);
         exit;
     }
+
+    public function updateComment($request, $db)
+    {
+        if (false == ($request->getUserId())) {
+            throw new Exception("You must be logged in to edit a comment", 401);
+        }
+
+        //TODO check if the logged user is the user editing the comment
+
+        $comment_id = $this->getItemId($request);
+        $new_comment_body = $request->getParameter('comment');
+        if (empty($new_comment_body)) {
+            throw new Exception('The field "comment" is required', 400);
+        }
+
+        $comment_mapper = new TalkCommentMapper($db, $request);
+        $comment_timestamp = $comment_mapper->getCommentTimestamp($comment_id);
+        if (false === $comment_timestamp) {
+            throw new Exception('Comment not found', 404);
+        }
+
+        $max_comment_edit_minutes = 15;
+        if (isset($this->config['limits']['max_comment_edit_minutes'])) {
+            $max_comment_edit_minutes = $this->config['limits']['max_comment_edit_minutes'];
+        }
+
+        if ($comment_timestamp + $max_comment_edit_minutes * 60 > time()) {
+            throw new Exception('Cannot edit the comment after ' . $max_comment_edit_minutes . ' minutes', 400);
+        }
+        $comment_mapper->updateCommentBody($comment_id, $new_comment_body);
+
+        $uri = $request->base  . '/' . $request->version . '/talk_comments/' . $comment_id;
+        header("Location: $uri", true, 204);
+        exit;
+    }
 }
