@@ -167,7 +167,7 @@ class Talk_commentsController extends ApiController
         }
 
         $updateSuccess = $comment_mapper->updateCommentBody($comment_id, $new_comment_body);
-        if(false === $updateSuccess) {
+        if (false === $updateSuccess) {
             throw new Exception('Comment update failed', 500);
         }
 
