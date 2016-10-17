@@ -154,7 +154,7 @@ class Talk_commentsController extends ApiController
         }
 
         if ($comment['user_id'] != $request->user_id) {
-            throw new Exception('You are not the comment author', 401);
+            throw new Exception('You are not the comment author', 403);
         }
 
         $max_comment_edit_minutes = 15;
@@ -166,7 +166,10 @@ class Talk_commentsController extends ApiController
             throw new Exception('Cannot edit the comment after ' . $max_comment_edit_minutes . ' minutes', 400);
         }
 
-        $comment_mapper->updateCommentBody($comment_id, $new_comment_body);
+        $updateSuccess = $comment_mapper->updateCommentBody($comment_id, $new_comment_body);
+        if(false === $updateSuccess) {
+            throw new Exception('Comment update failed', 500);
+        }
 
         return $comment_mapper->getCommentById($comment_id);
     }

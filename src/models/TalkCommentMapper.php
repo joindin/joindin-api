@@ -409,14 +409,17 @@ class TalkCommentMapper extends ApiMapper
     /**
      * @param integer $comment_id
      * @param string $new_comment_body
+     * @return bool
      */
     public function updateCommentBody($comment_id, $new_comment_body)
     {
         $sql = "update talk_comments set comment = :new_comment_body where ID = :comment_id";
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute([
+        $result = $stmt->execute([
             "new_comment_body" => $new_comment_body,
             "comment_id" => $comment_id
         ]);
+
+        return $result;
     }
 }
