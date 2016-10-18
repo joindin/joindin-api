@@ -180,27 +180,25 @@ class PendingTalkClaimMapper extends ApiMapper
                     (host_approved_at IS NULL or user_approved_at IS NULL)';
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(['event_id' => $event_id]);
-
-        if ($response && $stmt->rowCount() > 0) {
-            $retval = [];
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($result as $row) {
-                $date = new DateTime('@' . $row['date_added']);
-                $retval[] = [
-                    'date_added'        => $date->format("c"),
-                    'display_name'      => $row['speaker_name'],
-                    'talk_uri'          => $base . '/' . $version . '/talks/' . $row['talk_id'],
-                    'speaker_uri'       => $base . '/' . $version . '/users/' . $row['speaker_id'],
-                    'approve_claim_uri' => ''
-                ];
-
-            }
-
-            return $retval;
-
-        } else {
+        
+        if (! $response || $stmt->rowCount() < 1) {
             return false;
+        }        
+        
+        $retval = [];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $date = new DateTime('@' . $row['date_added']);
+            $retval[] = [
+                'date_added'        => $date->format("c"),
+                'display_name'      => $row['speaker_name'],
+                'talk_uri'          => $base . '/' . $version . '/talks/' . $row['talk_id'],
+                'speaker_uri'       => $base . '/' . $version . '/users/' . $row['speaker_id'],
+                'approve_claim_uri' => ''
+            ];
+
         }
 
+        return $retval;
     }
 }
