@@ -183,7 +183,7 @@ class PendingTalkClaimMapper extends ApiMapper
         
         if (! $response || $stmt->rowCount() < 1) {
             return false;
-        }        
+        }
         
         $retval = [];
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
