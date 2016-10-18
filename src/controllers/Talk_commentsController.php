@@ -133,8 +133,6 @@ class Talk_commentsController extends ApiController
 
     public function updateComment($request, $db)
     {
-        $request->user_id = 14;
-
         // must be logged in
         if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to edit a comment', 401);
