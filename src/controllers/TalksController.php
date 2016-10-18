@@ -548,7 +548,7 @@ class TalksController extends ApiController
 
         if ($claim === false) {
             throw new Exception("No speaker matching that name found", 422);
-        } elseif ($claim['speaker_id'] != null) {
+        } elseif ($claim['speaker_id'] != null && $claim['speaker_id'] != 0) {
             throw new Exception("Talk already claimed", 422);
         }
 
