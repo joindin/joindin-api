@@ -36,7 +36,8 @@ $config =  array(
         'allow_auto_approve_events' => false,
     ),
     'limits' => array(
-        'max_pending_events' => 3
+        'max_pending_events' => 3,
+        'max_comment_edit_minutes' => 15,
     )
 );
 

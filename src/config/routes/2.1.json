@@ -235,6 +235,13 @@
     },
 
     {
+        "path": "/talk_comments(/[^/]+)*/?$",
+        "controller": "Talk_commentsController",
+        "action": "updateComment",
+        "verbs": ["PUT"]
+    },
+
+    {
         "path": "/emails/verifications",
         "controller": "EmailsController",
         "action": "verifications",
