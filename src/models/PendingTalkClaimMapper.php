@@ -167,4 +167,38 @@ class PendingTalkClaimMapper extends ApiMapper
         );
         return $response;
     }
+
+    public function getPendingClaimsByEventId($event_id)
+    {
+        $base       = $this->_request->base;
+        $version    = $this->_request->version;
+
+        $sql = 'select c.*, s.speaker_name from pending_talk_claims c
+                    inner join talks t on t.ID = c.talk_id
+                    inner join talk_speaker s on s.ID = c.claim_id
+                    where t.event_id = :event_id and
+                    (host_approved_at IS NULL or user_approved_at IS NULL)';
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(['event_id' => $event_id]);
+        
+        if (! $response || $stmt->rowCount() < 1) {
+            return false;
+        }
+        
+        $retval = [];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $date = new DateTime('@' . $row['date_added']);
+            $retval[] = [
+                'date_added'        => $date->format("c"),
+                'display_name'      => $row['speaker_name'],
+                'talk_uri'          => $base . '/' . $version . '/talks/' . $row['talk_id'],
+                'speaker_uri'       => $base . '/' . $version . '/users/' . $row['speaker_id'],
+                'approve_claim_uri' => ''
+            ];
+
+        }
+
+        return $retval;
+    }
 }
