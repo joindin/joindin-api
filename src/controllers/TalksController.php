@@ -527,9 +527,14 @@ class TalksController extends ApiController
         $talk_id = $this->getItemId($request);
         $talk_mapper = $this->getTalkMapper($db, $request);
         $talk = $talk_mapper->getTalkById($talk_id);
+
         if (! $talk) {
             throw new Exception("Talk not found", 404);
         }
+
+        $event_id = $talk->event_id;
+        $event_mapper = $this->getEventMapper($db, $request);
+        $event = $event_mapper->getEventById($event_id);
 
         $user_id = $request->user_id;
         $user_mapper = $this->getUserMapper($db, $request);
@@ -565,9 +570,20 @@ class TalksController extends ApiController
             if ($data['username'] === $user['username']) {
                 $pending_talk_claim_mapper->claimTalkAsSpeaker($talk_id, $user_id, $claim['ID']);
                 //We need to send an email to the host asking for confirmation
+                $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
+                $emailService = new TalkClaimEmailService($this->config, $recipients, $event, $talk);
+                if (!defined('UNIT_TEST')) {
+                    $emailService->sendEmail();
+                }
             } elseif ($talk_mapper->thisUserHasAdminOn($talk_id)) {
                 $pending_talk_claim_mapper->assignTalkAsHost($talk_id, $speaker_id, $claim['ID'], $user_id);
                 //We need to send an email to the speaker asking for confirmation
+                $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
+                $username = $data['username'];
+                $emailService = new TalkAssignEmailService($this->config, $recipients, $event, $talk, $username);
+                if (!defined('UNIT_TEST')) {
+                    $emailService->sendEmail();
+                }
             } else {
                 throw new Exception("You must be the speaker or event admin to link a user to a talk", 401);
             }
@@ -581,7 +597,12 @@ class TalksController extends ApiController
                 } else {
                     throw new Exception("There was a problem assigning the talk", 500);
                 }
-                //We need to send an email to the speaker asking for confirmation
+
+                $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
+                $emailService = new TalkClaimApprovedEmailService($this->config, $recipients, $event, $talk);
+                if (!defined('UNIT_TEST')) {
+                    $emailService->sendEmail();
+                }
             } else {
                 throw new Exception("You must be an event admin to approve this claim", 401);
             }
@@ -631,6 +652,21 @@ class TalksController extends ApiController
 
         return $this->talk_mapper;
     }
+
+    public function setEventMapper(EventMapper $event_mapper)
+    {
+        $this->event_mapper = $event_mapper;
+    }
+
+    public function getEventMapper($db, $request)
+    {
+        if (! isset($this->event_mapper)) {
+            $this->event_mapper = new EventMapper($db, $request);
+        }
+
+        return $this->event_mapper;
+    }
+
 
     public function setUserMapper(UserMapper $user_mapper)
     {

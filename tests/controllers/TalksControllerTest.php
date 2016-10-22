@@ -57,6 +57,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
         $talks_controller->setTalkMapper($talk_mapper);
 
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
+
         $talks_controller->setSpeakerForTalk($request, $db);
 
 
@@ -89,6 +92,10 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $user_mapper = $this->createUserMapper($db, $request);
         $talks_controller->setUserMapper($user_mapper);
 
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
+
+
         $talks_controller->setSpeakerForTalk($request, $db);
     }
 
@@ -118,6 +125,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
         $user_mapper = $this->createUserMapper($db, $request);
         $talks_controller->setUserMapper($user_mapper);
+
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -155,6 +165,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
         $user_mapper = $this->createUserMapper($db, $request);
         $talks_controller->setUserMapper($user_mapper);
+
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -196,6 +209,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
         $user_mapper = $this->createUserMapper($db, $request);
         $talks_controller->setUserMapper($user_mapper);
+
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -256,6 +272,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
+
         $talks_controller->setSpeakerForTalk($request, $db);
     }
 
@@ -301,7 +320,8 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
         $talks_controller->setUserMapper($user_mapper);
 
-
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -358,6 +378,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
             ->method('claimTalkAsSpeaker')
             ->will($this->returnValue(true));
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
+
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
 
         $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
 
@@ -419,6 +442,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
+
         $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
 
     }
@@ -478,6 +504,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
+
         $talks_controller->setSpeakerForTalk($request, $db);
     }
 
@@ -533,6 +562,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
+
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -593,6 +625,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
+
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
 
         $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
 
@@ -660,6 +695,9 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
+
         $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
 
     }
@@ -689,6 +727,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
                             'comment_count'           => 'comment_count',
                             'starred'                 => 'starred',
                             'starred_count'           => 'starred_count',
+                            'event_id'                => 1
                         ]
                     )
                 )
@@ -719,5 +758,38 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
             );
 
         return $user_mapper;
+    }
+
+    private function createEventMapper($db, $request)
+    {
+        $event_mapper = $this->getMockBuilder('\EventMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+
+        $event_mapper
+            ->method('getEventById')
+            ->will(
+                $this->returnValue(
+                    [
+                        'events' => [
+                            [
+                                'name'  => 'Test Event'
+                            ]
+                        ]
+                    ]
+                )
+            );
+
+        $event_mapper
+            ->method('getHostsEmailAddresses')
+            ->will(
+                $this->returnValue(
+                    [
+                        'none@example.com'
+                    ]
+                )
+            );
+
+        return $event_mapper;
     }
 }
