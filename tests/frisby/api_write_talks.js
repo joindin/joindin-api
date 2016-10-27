@@ -82,4 +82,32 @@ function testCreateTalkFailsWithIncorrectData(access_token, talks_uri) {
         .expectStatus(201)
         .expectHeaderContains('Location', '/talks/')
         .toss();
+
+    frisby.create('Create talk with Escaped title')
+        .post(
+            talks_uri,
+            {
+                "talk_title" : "Frisby \"test ' Ölrücklaufstoßdämpfer",
+                "talk_description" : "'Ölrücklaufstoßdämpfer\"",
+                "start_date" : (new Date()).toISOString(),
+            },
+            {json: true, headers: {json: true, 'Authorization' : 'oauth ' + access_token, 'Content-type': 'application/json'}}
+        )
+        .expectStatus(201) // Created as it is automatically approved
+        .expectHeaderContains("Location", "/talks/")
+        .after(function(err, res, body) {
+            if(res.statusCode == 201) {
+                // We have an event, we can test it!
+                var event_uri = res.headers.location;
+                frisby.create('Get Talkwith EscapedTitle')
+                    .get(event_uri)
+                    .expectStatus(200) // Created as it is automatically approved
+                    .expectJSON("talks.?", {
+                        "talk_title" : "Frisby \"test ' Ölrücklaufstoßdämpfer",
+                        "talk_description" : "'Ölrücklaufstoßdämpfer\""
+                    })
+                    .toss();
+            }
+        })
+        .toss();
 }
