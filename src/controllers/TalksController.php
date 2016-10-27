@@ -31,7 +31,11 @@ class TalksController extends ApiController
                 $collection = new TalkModelCollection([$talk], 1);
                 $list = $collection->getOutputView($request, $verbose);
             } elseif (isset($request->parameters['title'])) {
-                $keyword = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                $keyword = filter_var(
+                    $request->parameters['title'],
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
 
                 $mapper = new TalkMapper($db, $request);
                 $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
