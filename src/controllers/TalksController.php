@@ -31,7 +31,7 @@ class TalksController extends ApiController
                 $collection = new TalkModelCollection([$talk], 1);
                 $list = $collection->getOutputView($request, $verbose);
             } elseif (isset($request->parameters['title'])) {
-                $keyword = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING);
+                $keyword = filter_var($request->parameters['title'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 
                 $mapper = new TalkMapper($db, $request);
                 $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
@@ -430,7 +430,8 @@ class TalksController extends ApiController
 
         $talk['title'] = filter_var(
             $request->getParameter('talk_title'),
-            FILTER_SANITIZE_STRING
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
         );
         if (empty($talk['title'])) {
             throw new Exception("The talk title field is required", 400);
@@ -438,7 +439,8 @@ class TalksController extends ApiController
 
         $talk['description'] = filter_var(
             $request->getParameter('talk_description'),
-            FILTER_SANITIZE_STRING
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
         );
         if (empty($talk['description'])) {
             throw new Exception("The talk description field is required", 400);
@@ -446,7 +448,8 @@ class TalksController extends ApiController
 
         $talk['type'] = filter_var(
             $request->getParameter('type', 'Talk'),
-            FILTER_SANITIZE_STRING
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
         );
 
         $talk_type_mapper = new TalkTypeMapper($db, $request);
@@ -458,7 +461,8 @@ class TalksController extends ApiController
 
         $start_date = filter_var(
             $request->getParameter('start_date'),
-            FILTER_SANITIZE_STRING
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
         );
         if (empty($start_date)) {
             throw new Exception("Please give the date and time of the talk", 400);
@@ -474,7 +478,8 @@ class TalksController extends ApiController
 
         $talk['language'] = filter_var(
             $request->getParameter('language'),
-            FILTER_SANITIZE_STRING
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
         );
         if (empty($talk['language'])) {
             // default to UK English
@@ -501,7 +506,7 @@ class TalksController extends ApiController
 
         $talk['speakers'] = array_map(
             function ($speaker) {
-                $speaker = filter_var($speaker, FILTER_SANITIZE_STRING);
+                $speaker = filter_var($speaker, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 $speaker = trim($speaker);
                 return $speaker;
             },
