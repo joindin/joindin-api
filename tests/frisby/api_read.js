@@ -185,6 +185,21 @@ function testAttendeesForEventVerbose(evt) {
 	}).toss();
 }
 
+function testHostsForEvent(evt) {
+    frisby.create('Hosts to ' + evt.name)
+        .get(evt.uri + '/hosts?resultsperpage=20')
+        .expectStatus(200)
+        .expectHeader("content-type", "application/json; charset=utf8")
+        .afterJSON(function(evUsers) {
+            if(typeof evUsers.users == 'object') {
+                for(var i in evUsers.hosts) {
+                    var user = evUsers.hosts[i];
+                    datatest.checkHostData(user);
+                }
+            }
+        }).toss();
+}
+
 function testTracksForEvent(evt) {
 	frisby.create('Tracks at ' + evt.name)
 			.get(evt.tracks_uri + '?resultsperpage=3')
@@ -396,6 +411,7 @@ module.exports = {
 	testTalksForEvent            : testTalksForEvent,
 	testAttendeesForEvent        : testAttendeesForEvent,
 	testAttendeesForEventVerbose : testAttendeesForEventVerbose,
+    testHostsForEvent			 : testHostsForEvent,
 	testTracksForEvent           : testTracksForEvent,
 	testSearchEventsByTitle      : testSearchEventsByTitle,
 	testSearchEventsByNonexistingTitle : testSearchEventsByNonexistingTitle,

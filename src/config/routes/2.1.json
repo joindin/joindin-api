@@ -1,4 +1,9 @@
 [
+    {    "path": "/events(/[^/]+)*/hosts",
+        "controller": "Event_hostsController",
+        "action": "listHosts",
+        "verbs": ["GET"]
+    },
     {
         "path": "/events(/[^/]+)*/comments/reported",
         "controller": "Event_commentsController",
