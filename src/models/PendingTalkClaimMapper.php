@@ -184,21 +184,24 @@ class PendingTalkClaimMapper extends ApiMapper
         if (! $response || $stmt->rowCount() < 1) {
             return false;
         }
-        
-        $retval = [];
+
+        $list = [];
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
             $date = new DateTime('@' . $row['date_added']);
-            $retval[] = [
+
+            $list[] = new PendingTalkClaimModel(
+                [
                 'date_added'        => $date->format("c"),
                 'display_name'      => $row['speaker_name'],
                 'talk_uri'          => $base . '/' . $version . '/talks/' . $row['talk_id'],
                 'speaker_uri'       => $base . '/' . $version . '/users/' . $row['speaker_id'],
-                'approve_claim_uri' => ''
-            ];
+                'approve_claim_uri' => $base . '/' . $version . '/talks/' . $row['talk_id'] . '/speakers'
+                ]
+            );
 
         }
 
-        return $retval;
+        return new PendingTalkClaimModelCollection($list, count($list));
     }
 }
