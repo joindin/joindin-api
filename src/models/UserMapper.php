@@ -544,6 +544,31 @@ class UserMapper extends ApiMapper
     }
 
     /**
+     * Function to get just the user ID
+     *
+     * @param string $fullname The users full name we're looking for
+     *
+     * @return $user_id The user's ID (or false, if we didn't find her)
+     */
+    public function getUserIdFromFullname($fullname)
+    {
+        $sql = "select ID from user where full_name = :fullname";
+
+        $data = array("fullname" => $fullname);
+        $stmt = $this->_db->prepare($sql);
+
+        $response = $stmt->execute($data);
+        if ($response) {
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (isset($row['ID'])) {
+                return $row['ID'];
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * We don't expose the email address in resources, but sometimes we need
      * to email users, so this is how to get the email address
      *

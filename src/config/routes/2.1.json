@@ -4,6 +4,11 @@
         "action": "listHosts",
         "verbs": ["GET"]
     },
+    {   "path": "/events/[\\d]+/hosts",
+        "controller": "Event_hostsController",
+        "action": "addHost",
+        "verbs": ["POST"]
+    },
     {
         "path": "/events(/[^/]+)*/comments/reported",
         "controller": "Event_commentsController",

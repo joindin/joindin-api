@@ -37,6 +37,24 @@ class EventHostMapper extends ApiMapper
         return $retval;
     }
 
+    public function addHostToEvent($event_id, $host_id)
+    {
+        $sql = 'INSERT INTO user_admin (uid, rid, rtype) VALUES (:host_id, :event_id, :type)';
+        $stmt = $this->_db->prepare($sql);
+
+        $response = $stmt->execute([
+            ':host_id'  => $host_id,
+            ':event_id' => $event_id,
+            ':type'     => 'event',
+        ]);
+
+        if (! $response) {
+            return false;
+        }
+
+        return $this->_db->lastInsertId();
+    }
+
     /**
      * SQL for fetching event hosts, so it can be used in multiple places
      *
