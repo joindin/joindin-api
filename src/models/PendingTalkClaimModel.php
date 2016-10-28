@@ -56,5 +56,4 @@ class PendingTalkClaimModel extends AbstractModel
 
         return $item;
     }
-
 }
