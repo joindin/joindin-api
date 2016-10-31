@@ -74,8 +74,8 @@ class Event_commentsController extends ApiController
         $rating = $request->getParameter('rating', false);
         if (false === $rating) {
             throw new Exception('The field "rating" is required', 400);
-        } elseif (false === is_numeric($rating) || $rating > 5) {
-            throw new Exception('The field "rating" must be a number (1-5)', 400);
+        } elseif (false === is_numeric($rating)) {
+            throw new Exception('The field "rating" must be a number', 400);
         }
 
         $commentText = $request->getParameter('comment');
@@ -113,12 +113,15 @@ class Event_commentsController extends ApiController
         $comment_mapper = new EventCommentMapper($db, $request);
 
         // should rating be allowed?
-        if ($comment_mapper->hasUserRatedThisEvent($comment['user_id'], $comment['event_id'])) {
+        if ($comment_mapper->hasUserRatedThisEvent($comment['user_id'], $comment['event_id']) ||
+            $event_mapper->isUserAHostOn($comment['user_id'], $comment['event_id'])) {
+            // a user can only rate once and event hosts cannot rate their own event
             $comment['rating'] = 0;
-        }
-        if ($event_mapper->isUserAHostOn($comment['user_id'], $comment['event_id'])) {
-            // event hosts cannot rate their own event
-            $comment['rating'] = 0;
+        } else {
+            // if a user has never rated before and is not an event host the rating should be between 1 and 5
+            if ($rating < 1 || $rating > 5) {
+                throw new Exception('The field "rating" must be a number (1-5)', 400);
+            }
         }
 
         try {
