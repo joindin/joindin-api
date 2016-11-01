@@ -68,6 +68,7 @@ function testEvents(access_token) {
     testCreateEventFailsWithIncorrectData(access_token);
     testCreatePendingEvent(access_token);
     testCreateApprovedEvent(access_token);
+    testCreateEventWithEscapedTitle(access_token);
 }
 
 function testCreateEventFailsIfNotLoggedIn()
@@ -338,6 +339,47 @@ function testCreateApprovedEvent(access_token)
     })
     .toss();
 }
+
+function testCreateEventWithEscapedTitle(access_token)
+{
+    var today = new Date();
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    frisby.create('Create Event with Escaped title')
+        .post(
+            baseURL + "/v2.1/events",
+            {
+                "name" : "Frisby \"test ' Ölrücklaufstoßdämpfer",
+                "description" : "'Ölrücklaufstoßdämpfer\"",
+                "location" : "here",
+                "start_date" : yesterday.toISOString().substring(0, 10),
+                "end_date" : today.toISOString().substring(0, 10),
+                "tz_continent" : "Europe",
+                "tz_place" : "London",
+                "auto_approve_event": true
+            },
+            {json: true, headers: {json: true, 'Authorization' : 'Bearer ' + access_token, 'Content-type': 'application/json'}}
+        )
+        .expectStatus(201) // Created as it is automatically approved
+        .expectHeaderContains("Location", baseURL + "/v2.1/events")
+        .after(function(err, res, body) {
+            if(res.statusCode == 201) {
+                // We have an event, we can test it!
+                var event_uri = res.headers.location;
+                frisby.create('Get EVent with EscapedTitle')
+                    .get(event_uri)
+                    .expectStatus(200) // Created as it is automatically approved
+                    .expectJSON("events.?", {
+                        "name" : "Frisby \"test ' Ölrücklaufstoßdämpfer",
+                        "description" : "'Ölrücklaufstoßdämpfer\""
+                    })
+                    .toss();
+            }
+        })
+        .toss();
+}
+
 
 function testEventByUrl(access_token, url) {
   frisby.create('Get event from URL')
