@@ -547,9 +547,11 @@ class EventsController extends ApiController
         // verbosity
         $verbose = $this->getVerbosity($request);
 
-        $list = $pending_talk_claim_mapper->getPendingClaimsByEventId($event_id);
-
+        if (!$list = $pending_talk_claim_mapper->getPendingClaimsByEventId($event_id)){
+            $list = new PendingTalkClaimModelCollection([], 0);
+        }
         return $list->getOutputView($request, $verbose);
+
     }
 
     /**
