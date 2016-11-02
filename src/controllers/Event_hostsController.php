@@ -112,7 +112,7 @@ class Event_hostsController extends ApiController
     public function removeHostFromEvent(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
+            throw new Exception("You must be logged in to remove data", 401);
         }
 
         $user_id = $request->url_elements[5];
