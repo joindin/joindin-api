@@ -459,9 +459,8 @@ class EventMapper extends ApiMapper
                     $list[$key]['all_talk_comments_uri'] = $base . '/' . $version . '/events/'
                                                            . $row['ID'] . '/talk_comments';
                     $list[$key]['hosts']                 = $this->getHosts($row['ID']);
-                    $list[$key]['hosts_uri']             = $base . '/' . $version . '/events/'
-                                                           . $row['ID'] . '/hosts';
                 }
+                $list[$key]['hosts_uri']     = $base . '/' . $version . '/events/' . $row['ID'] . '/hosts';
                 $list[$key]['attendees_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/attendees';
 
                 if ($verbose) {
