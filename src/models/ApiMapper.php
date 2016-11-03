@@ -2,7 +2,7 @@
 
 class ApiMapper
 {
-    protected $_ec;
+    protected $ec;
     /**
      * Object constructor, sets up the db and some objects need request too
      *
@@ -17,7 +17,7 @@ class ApiMapper
             $this->website_url = $request->getConfigValue('website_url');
         }
 
-        $this->_ec = $ec;
+        $this->ec = $ec;
     }
 
     public function getDefaultFields()

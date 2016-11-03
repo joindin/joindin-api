@@ -45,8 +45,7 @@ class EventCoordinator
 
     public function addListener(ListenerInterface $listener)
     {
-        foreach ($listener->getCallbacks() as $eventname => $callback)
-        {
+        foreach ($listener->getCallbacks() as $eventname => $callback) {
             $this->eventManager->addListener($eventname, $callback);
         }
     }

@@ -855,7 +855,8 @@ class EventMapper extends ApiMapper
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute($event);
         if ($result) {
-            $this->_ec->trigger($ev);
+            // Trigger the event!
+            $this->ec->trigger($ev);
             return $this->_db->lastInsertId();
         }
 
