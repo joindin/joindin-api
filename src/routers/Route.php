@@ -106,17 +106,18 @@ class Route
      * @param Request $request The Request to process
      * @param mixed $db The Database object
      * @param mixed $config The application configuration
+     * @param EventCoordinator $ec
      *
      * @return mixed
      */
-    public function dispatch(Request $request, $db, $config)
+    public function dispatch(Request $request, $db, $config, $ec)
     {
         $className = $this->getController();
         $method    = $this->getAction();
         if (class_exists($className)) {
             $controller = new $className($config);
             if (method_exists($controller, $method)) {
-                return $controller->$method($request, $db);
+                return $controller->$method($request, $db, $ec);
             }
             throw new RuntimeException('Action not found', 500);
         }

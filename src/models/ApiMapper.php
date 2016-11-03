@@ -2,13 +2,14 @@
 
 class ApiMapper
 {
+    protected $_ec;
     /**
      * Object constructor, sets up the db and some objects need request too
      *
      * @param PDO $db The database connection handle
      * @param Request $request The request object (optional not all objects need it)
      */
-    public function __construct(PDO $db, Request $request = null)
+    public function __construct(PDO $db, Request $request = null, \Joindin\Events\EventCoordinator $ec = null)
     {
         $this->_db = $db;
         if (isset($request)) {
@@ -16,7 +17,7 @@ class ApiMapper
             $this->website_url = $request->getConfigValue('website_url');
         }
 
-        return true;
+        $this->_ec = $ec;
     }
 
     public function getDefaultFields()

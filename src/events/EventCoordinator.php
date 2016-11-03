@@ -26,24 +26,28 @@
 
 namespace Joindin\Events;
 
+use Joindin\Events\Listener\ListenerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class EventManagerFactory
+class EventCoordinator
 {
-    protected static $eventManager = null;
+    protected $eventManager = null;
 
-    public static function getEventManager()
+    public function __construct(EventDispatcher $dispatcher)
     {
-        if (null === self::$eventManager) {
-            self::$eventManager = new EventDispatcher();
-        }
-
-        return self::$eventManager;
+        $this->eventManager = $dispatcher;
     }
 
-    public static function setEventManager(EventDispatcherInterface $dispatcher)
+    public function trigger(AbstractEvent $event)
     {
-        self::$eventManager = $dispatcher;
+        $this->eventManager->dispatch($event->getName(), $event);
+    }
+
+    public function addListener(ListenerInterface $listener)
+    {
+        foreach ($listener->getCallbacks() as $eventname => $callback)
+        {
+            $this->eventManager->addListener($eventname, $callback);
+        }
     }
 }
