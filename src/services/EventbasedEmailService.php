@@ -2,7 +2,7 @@
 
 class EventbasedEmailService extends EmailBaseService
 {
-    protected $website_url;
+    protected $website_url = '';
 
     public function __construct($config)
     {
@@ -24,5 +24,10 @@ class EventbasedEmailService extends EmailBaseService
         $this->setHtmlBody($html);
 
         $this->dispatchEmail();
+    }
+
+    public function getWebsiteUrl()
+    {
+        return $this->website_url;
     }
 }

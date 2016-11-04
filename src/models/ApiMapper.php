@@ -9,7 +9,7 @@ class ApiMapper
      * @param PDO $db The database connection handle
      * @param Request $request The request object (optional not all objects need it)
      */
-    public function __construct(PDO $db, Request $request = null, \Joindin\Events\EventCoordinator $ec = null)
+    public function __construct(PDO $db, Request $request = null, \Joindin\Pubsub\EventCoordinator $ec = null)
     {
         $this->_db = $db;
         if (isset($request)) {

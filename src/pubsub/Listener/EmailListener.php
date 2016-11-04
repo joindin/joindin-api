@@ -34,20 +34,24 @@ class EmailListener implements ListenerInterface
     public function pendingEventCreated(PendingEventCreated $pendingEvent)
     {
         $event = $pendingEvent->getEvent();
-        $subject = 'New Event awaiting approval';
+        $subject = 'New event submitted to joind.in';
 
-        $date = new DateTime($event['start_date']);
+        $date = new \DateTime('@' . $event['start_date']);
         $replacements = array(
             "title"        => $event['name'],
             "description"  => $event['description'],
             "date"         => $date->format('jS M, Y'),
             "contact_name" => $event['contact_name'],
-            "website_url"  => $this->website_url,
-            "event_url"    => $this->website_url . '/event/' . $event['url_friendly_name'],
+            "website_url"  => $this->emailservice->getWebsiteUrl()
         );
 
+        if (isset($event['count']) && $event['count']) {
+            $replacements["count"] = "(" . $event['count'] . " events are pending)";
+        } else {
+            $replacements["count"] = "";
+        }
         $this->emailservice->setRecipients($this->userMapper->getSiteAdminEmails());
-        $this->emailservice->send($subject, $this->getMailContent('eventApproved.md', $replacements));
+        $this->emailservice->send($subject, $this->getMailContent('eventSubmission.md', $replacements));
     }
 
     protected function getMailContent($template, $replacements)

@@ -146,7 +146,7 @@ class EventsController extends ApiController
         return $list;
     }
 
-    public function postAction($request, $db, EventCoordinator $ec)
+    public function postAction($request, $db, \Joindin\Pubsub\EventCoordinator $ec)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);
