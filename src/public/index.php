@@ -70,8 +70,8 @@ $routers = [
 $router = new ApiRouter($config, $routers, ['2']);
 
 // Set up the event-listeners
-$ec = new \Joindin\Events\EventCoordinator(new \Symfony\Component\EventDispatcher\EventDispatcher());
-$ec->addListener(new \Joindin\Events\Listener\EmailListener(new EventbasedEmailService($config, new UserMapper($ji_db, $request))));
+$ec = new \Joindin\Pubsub\EventCoordinator(new \Symfony\Component\EventDispatcher\EventDispatcher());
+$ec->addListener(new \Joindin\Pubsub\Listener\EmailListener(new EventbasedEmailService($config), new UserMapper($ji_db, $request)));
 
 $route = $router->getRoute($request);
 $return_data = $route->dispatch($request, $ji_db, $config, $ec);

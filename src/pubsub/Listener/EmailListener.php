@@ -2,8 +2,8 @@
 
 namespace Joindin\Pubsub\Listener;
 
-use Joindin\Events\AutoApprovedEventCreated;
-use Joindin\Events\PendingEventCreated;
+use Joindin\Pubsub\Event\AutoApprovedEventCreated;
+use Joindin\Pubsub\Event\PendingEventCreated;
 use Joindin\Pubsub\ListenerInterface;
 
 class EmailListener implements ListenerInterface

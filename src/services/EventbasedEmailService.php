@@ -7,7 +7,7 @@ class EventbasedEmailService extends EmailBaseService
     public function __construct($config)
     {
         // set up the common stuff first
-        parent::__construct($config);
+        parent::__construct($config, []);
 
         $this->website_url = $config['website_url'];
     }
