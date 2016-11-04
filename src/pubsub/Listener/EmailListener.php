@@ -1,9 +1,10 @@
 <?php
 
-namespace Joindin\Events\Listener;
+namespace Joindin\Pubsub\Listener;
 
 use Joindin\Events\AutoApprovedEventCreated;
 use Joindin\Events\PendingEventCreated;
+use Joindin\Pubsub\ListenerInterface;
 
 class EmailListener implements ListenerInterface
 {

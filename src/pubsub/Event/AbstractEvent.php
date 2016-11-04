@@ -1,10 +1,11 @@
 <?php
 
-namespace Joindin\Events;
+namespace Joindin\Pubsub\Event;
 
+use Joindin\Pubsub\EventInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-abstract class AbstractEvent extends Event
+abstract class AbstractEvent extends Event implements EventInterface
 {
     /**
      * @return string

@@ -110,7 +110,7 @@ class Route
      *
      * @return mixed
      */
-    public function dispatch(Request $request, $db, $config, $ec)
+    public function dispatch(Request $request, $db, $config, $ec = null)
     {
         $className = $this->getController();
         $method    = $this->getAction();

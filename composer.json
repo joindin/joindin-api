@@ -6,5 +6,15 @@
         "guzzlehttp/guzzle": "^4.2.4",
         "guzzlehttp/oauth-subscriber": "0.1.*",
         "symfony/event-dispatcher": "^3.1"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "Joindin\\Pubsub\\" : "src/pubsub/"
+        }
+    },
+    "autoload-dev" : {
+        "psr-4" : {
+            "JoindinTest\\Pubsub\\" : "tests/pubsub/"
+        }
     }
 }

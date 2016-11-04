@@ -20,33 +20,16 @@
  * @author    Andreas Heigl<andreas@heigl.org>
  * @copyright Andreas Heigl
  * @license   http://www.opensource.org/licenses/mit-license.php MIT-License
- * @since     02.11.2016
+ * @since     03.11.2016
  * @link      http://github.com/heiglandreas/joindin-vm
  */
 
-namespace Joindin\Events;
+namespace Joindin\Pubsub;
 
-use Joindin\Events\Listener\ListenerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-
-class EventCoordinator
+interface ListenerInterface
 {
-    protected $eventManager = null;
-
-    public function __construct(EventDispatcher $dispatcher)
-    {
-        $this->eventManager = $dispatcher;
-    }
-
-    public function trigger(AbstractEvent $event)
-    {
-        $this->eventManager->dispatch($event->getName(), $event);
-    }
-
-    public function addListener(ListenerInterface $listener)
-    {
-        foreach ($listener->getCallbacks() as $eventname => $callback) {
-            $this->eventManager->addListener($eventname, $callback);
-        }
-    }
+    /**
+     * @return array
+     */
+    public function getCallbacks();
 }

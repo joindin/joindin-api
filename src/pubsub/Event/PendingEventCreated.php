@@ -1,6 +1,6 @@
 <?php
 
-namespace Joindin\Events;
+namespace Joindin\Pubsub\Event;
 
 class PendingEventCreated extends AbstractEvent
 {
