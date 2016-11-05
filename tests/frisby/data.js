@@ -7,6 +7,7 @@ module.exports = {
 	checkVerboseEventComment    : checkVerboseEventComment,
 	checkTalkData               : checkTalkData,
 	checkUserData               : checkUserData,
+    checkHostData               : checkHostData,
 	checkVerboseUserData        : checkVerboseUserData,
 	checkTrackData              : checkTrackData,
 	checkTalkCommentData        : checkTalkCommentData,
@@ -220,6 +221,13 @@ function checkUserData(user) {
     expect(typeof user.attended_events_uri).toBe('string');
     expect(user.hosted_events_uri).toBeDefined();
     expect(typeof user.hosted_events_uri).toBe('string');
+}
+
+function checkHostData(user) {
+    expect(user.user_name).toBeDefined();
+    expect(typeof user.user_name).toBe('string');
+    expect(user.user_uri).toBeDefined();
+    expect(typeof user.user_uri).toBe(string)
 }
 
 function checkVerboseUserData(user) {
