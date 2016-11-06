@@ -544,7 +544,14 @@ class EventsController extends ApiController
             throw new Exception('You do not have permission to edit this track', 403);
         }
 
-        return $pending_talk_claim_mapper->getPendingClaimsByEventId($event_id);
+        // verbosity
+        $verbose = $this->getVerbosity($request);
+
+        if (!$list = $pending_talk_claim_mapper->getPendingClaimsByEventId($event_id)) {
+            $list = new PendingTalkClaimModelCollection([], 0);
+        }
+        return $list->getOutputView($request, $verbose);
+
     }
 
     /**
