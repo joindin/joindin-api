@@ -76,7 +76,7 @@ class Event_hostsController extends ApiController
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
         $userMapper = $this->getUserMapper($request, $db);
-        $user_id = $userMapper->getUserIdFromFullname($username);
+        $user_id = $userMapper->getUserIdFromUsername($username);
         if (false === $user_id) {
             throw new Exception('No User found', 404);
         }

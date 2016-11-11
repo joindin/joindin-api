@@ -836,7 +836,7 @@ function testAddHostToEvent(access_token, url) {
         .post(
             url + "/hosts",
             {
-                "host_name" : "Angela Cole"
+                "host_name" : "acole"
             },
             {json : true,
                 headers : {'Authorization' : 'Bearer ' + access_token}
