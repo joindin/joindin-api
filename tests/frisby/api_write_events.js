@@ -848,9 +848,9 @@ function testAddHostToEvent(access_token, url) {
             frisby.create('Check Hosts for the event')
                 .get(track_uri)
                 .expectStatus(200)
-                .expectJSON('hosts', [
-                    {"host_name" : username, "host_url" : "*"},
-                    {"host_name" : "Angela Cole", "host_uri" : ""}
+                .expectJSON('hosts',[
+                    {"host_name" : "A test user for events"},
+                    {"host_name" : "Angela Cole", "host_uri" : "http://api.dev.joind.in/v2.1/users/9"}
                 ])
                 .toss();
         })
