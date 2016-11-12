@@ -784,7 +784,6 @@ function testEventTracks(access_token, url) {
 }
 
 function testAddHostToEvent(access_token, url) {
-    var host = "Ima Admin";
 
     frisby.create('Unauthenticated Hosts added')
         .post(
@@ -820,18 +819,6 @@ function testAddHostToEvent(access_token, url) {
         )
         .expectStatus(404)
         .toss();
-    // frisby.create('Username of currently logged in user provided')
-    //     .post(
-    //         url + "/hosts",
-    //         {
-    //             "host_name" : username
-    //         },
-    //         {json : true,
-    //             headers : {'Authorization' : 'Bearer ' + access_token}
-    //         }
-    //     )
-    //     .expectStatus(400)
-    //     .toss();
     frisby.create('Add new host')
         .post(
             url + "/hosts",
