@@ -168,6 +168,26 @@ class PendingTalkClaimMapper extends ApiMapper
         return $response;
     }
 
+    public function rejectClaimAsHost($talk_id, $speaker_id, $claim_id)
+    {
+        $sql = 'DELETE FROM pending_talk_claims
+                  WHERE
+                  talk_id = :talk_id AND claim_id = :claim_id
+                  AND speaker_id = :speaker_id AND host_approved_at IS NULL
+                  LIMIT 1
+               ';
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(
+            [
+                'talk_id'       => $talk_id,
+                'speaker_id'    => $speaker_id,
+                'claim_id'      => $claim_id
+            ]
+        );
+
+        return $response;
+    }
+
     public function getPendingClaimsByEventId($event_id)
     {
         $base       = $this->_request->base;

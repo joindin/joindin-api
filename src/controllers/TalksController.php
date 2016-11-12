@@ -562,7 +562,9 @@ class TalksController extends ApiController
 
         if ($claim === false) {
             throw new Exception("No speaker matching that name found", 422);
-        } elseif ($claim['speaker_id'] != null && $claim['speaker_id'] != 0) {
+        }
+
+        if ($claim['speaker_id'] != null && $claim['speaker_id'] != 0) {
             throw new Exception("Talk already claimed", 422);
         }
 
@@ -599,16 +601,26 @@ class TalksController extends ApiController
         } elseif ($claim_exists === PendingTalkClaimMapper::SPEAKER_CLAIM) {
             //The host needs to approve
             if ($talk_mapper->thisUserHasAdminOn($talk_id)) {
-                if ($pending_talk_claim_mapper->approveClaimAsHost($talk_id, $speaker_id, $claim['ID'])) {
-                    if (! $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id)) {
-                        throw new Exception("There was a problem assigning the talk", 500);
-                    }
+                //approve as default, as that is the current. When all calls to this have been updated this can be removed
+                $method = $this->getRequestParameter($request, 'action', 'approve');
+                $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
+
+                $success = false;
+
+                if ($method == "approve") {
+                    $success = $pending_talk_claim_mapper->approveClaimAsHost($talk_id, $speaker_id, $claim['ID'])
+                               && $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id);
+
+                    $emailService = new TalkClaimApprovedEmailService($this->config, $recipients, $event, $talk);
                 } else {
+                    $success = $pending_talk_claim_mapper->rejectClaimAsHost($talk_id, $speaker_id, $claim['ID']);
+                    $emailService = new TalkClaimRejectedEmailService($this->config, $recipients, $event, $talk);
+                }
+
+                if (!$success) {
                     throw new Exception("There was a problem assigning the talk", 500);
                 }
 
-                $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
-                $emailService = new TalkClaimApprovedEmailService($this->config, $recipients, $event, $talk);
                 if (!defined('UNIT_TEST')) {
                     $emailService->sendEmail();
                 }
