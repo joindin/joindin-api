@@ -565,7 +565,6 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
-
         $talks_controller->setSpeakerForTalk($request, $db);
     }
 
@@ -645,7 +644,6 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $request->parameters = [
             'username'      => 'psherman',
             'display_name'  => 'P Sherman',
-            'action'        => 'approve',
         ];
 
         $talks_controller = new \TalksController();
@@ -709,12 +707,18 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testRejectClaimAsHostSucceeds()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new \Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'DELETE'
+            ]
+        );
+
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',
             'display_name'  => 'P Sherman',
-            'action'        => 'reject'
         ];
 
         $talks_controller = new \TalksController();
@@ -739,7 +743,10 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
         $talks_controller->setTalkMapper($talk_mapper);
 
-        $user_mapper = $this->createUserMapper($db, $request);
+        $user_mapper = $this->getMockBuilder('\UserMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
@@ -764,7 +771,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
 
-        $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
+        $this->assertTrue($talks_controller->removeSpeakerForTalk($request, $db));
 
     }
 

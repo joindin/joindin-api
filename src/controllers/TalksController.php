@@ -750,4 +750,79 @@ class TalksController extends ApiController
         header('Location: ' . $uri, null, 204);
         exit;
     }
+
+    public function removeSpeakerForTalk(Request $request, PDO $db)
+    {
+        if (!isset($request->user_id)) {
+            throw new Exception("You must be logged in to delete data", 401);
+        }
+
+        $talk_id = $this->getItemId($request);
+
+        $talk_mapper = $this->getTalkMapper($db, $request);
+        $talk = $talk_mapper->getTalkById($talk_id);
+
+        $event_id = $talk->event_id;
+        $event_mapper = $this->getEventMapper($db, $request);
+        $event = $event_mapper->getEventById($event_id);
+
+        if (!$talk) {
+            throw new Exception("Talk not found", 404);
+        }
+
+        $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
+        if (!($is_admin)) {
+            throw new Exception("You do not have permission to reject the speaker claim on this talk", 403);
+        }
+
+        $data = $this->getLinkUserDataFromRequest($request);
+
+        $user_mapper = $this->getUserMapper($db, $request);
+        $speaker_id = $user_mapper->getUserIdFromUsername($data['username']);
+        if (! $speaker_id) {
+            throw new Exception("Specified user not found", 404);
+        }
+
+        $claim = $talk_mapper->getSpeakerFromTalk($talk_id, $data['display_name']);
+
+        if ($claim === false) {
+            throw new Exception("No speaker matching that name found", 422);
+        }
+
+        if ($claim['speaker_id'] != null && $claim['speaker_id'] != 0) {
+            throw new Exception("Talk already claimed", 422);
+        }
+
+        if ($data['display_name'] === '' || $data['username'] === '') {
+            throw new Exception("You must provide a display name and a username", 400);
+        }
+
+        $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
+        $claim_exists = $pending_talk_claim_mapper->claimExists($talk_id, $speaker_id, $claim['ID']);
+
+        if ($claim_exists !== PendingTalkClaimMapper::SPEAKER_CLAIM) {
+            throw new Exception("There was a problem with the claim", 500);
+        }
+        $method = $this->getRequestParameter($request, 'action', 'approve');
+        $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
+
+
+        $success = $pending_talk_claim_mapper->rejectClaimAsHost($talk_id, $speaker_id, $claim['ID']);
+
+        if (!$success) {
+            throw new Exception("There was a problem assigning the talk", 500);
+        }
+
+        //If we are unit testing, then we can't exit or send headers!
+        if (defined('UNIT_TEST')) {
+            return true;
+        }
+
+        $emailService = new TalkClaimRejectedEmailService($this->config, $recipients, $event, $talk);
+        $emailService->sendEmail();
+
+        $uri = $request->base . '/' . $request->version . '/talks/' . $talk_id;
+        header('Location: ' . $uri, null, 204);
+        exit;
+    }
 }
