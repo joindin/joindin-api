@@ -73,8 +73,10 @@ class TracksController extends ApiController
         $track_mapper->editEventTrack($track, $track_id);
 
         $uri = $request->base  . '/' . $request->version . '/tracks/' . $track_id;
-        header("Location: $uri", true, 204);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(204);
     }
 
     public function deleteTrack($request, $db)
@@ -104,7 +106,8 @@ class TracksController extends ApiController
 
         $track_mapper->deleteEventTrack($track_id);
 
-        header("Content-Length: 0", null, 204);
-        exit;
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(204);
     }
 }

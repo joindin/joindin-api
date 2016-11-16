@@ -159,9 +159,12 @@ class EventsController extends ApiController
                     $event_id     = $this->getItemId($request);
                     $event_mapper = new EventMapper($db, $request);
                     $event_mapper->setUserAttendance($event_id, $request->user_id);
-                    header("Location: " . $request->base . $request->path_info, null, 201);
 
+                    $view = $request->getView();
+                    $view->setHeader('Location', $request->base . $request->path_info);
+                    $view->setResponseCode(201);
                     return;
+
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
             }
@@ -328,12 +331,17 @@ class EventsController extends ApiController
                     $event_id = $event_mapper->createEvent($event, true);
 
                     // redirect to event listing
-                    header("Location: " . $request->base . $request->path_info . '/' . $event_id, null, 201);
+                    $view = $request->getView();
+                    $view->setHeader('Location', $request->base . $request->path_info . '/' . $event_id);
+                    $view->setResponseCode(201);
+
                 } else {
                     $event_id = $event_mapper->createEvent($event);
 
                     // set status to accepted; a pending event won't be visible
-                    header("Location: " . $request->base . $request->path_info, null, 202);
+                    $view = $request->getView();
+                    $view->setHeader('Location', $request->base . $request->path_info);
+                    $view->setResponseCode(202);
                 }
 
                 // now set the current user as host and attending
@@ -351,7 +359,7 @@ class EventsController extends ApiController
                     $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
                     $emailService->sendEmail();
                 }
-                exit;
+                return;
             }
         }
     }
@@ -367,9 +375,12 @@ class EventsController extends ApiController
                     $event_id     = $this->getItemId($request);
                     $event_mapper = new EventMapper($db, $request);
                     $event_mapper->setUserNonAttendance($event_id, $request->user_id);
-                    header("Location: " . $request->base . $request->path_info, null, 200);
 
+                    $view = $request->getView();
+                    $view->setHeader('Location', $request->base . $request->path_info);
+                    $view->setResponseCode(200);
                     return;
+
                     break;
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
@@ -524,8 +535,11 @@ class EventsController extends ApiController
                 $event_mapper->setTags($event_id, $tags);
             }
 
-            header("Location: " . $request->base . $request->path_info, null, 204);
-            exit;
+            $view = $request->getView();
+            $view->setHeader('Location', $request->base . $request->path_info);
+            $view->setResponseCode(204);
+            return;
+
         }
     }
 
@@ -614,8 +628,12 @@ class EventsController extends ApiController
         $track_id = $track_mapper->createEventTrack($track, $event_id);
 
         $uri = $request->base  . '/' . $request->version . '/tracks/' . $track_id;
-        header("Location: " . $uri, null, 201);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(201);
+        return;
+
     }
 
     /**
@@ -656,8 +674,10 @@ class EventsController extends ApiController
         }
 
         $location = $request->base . '/' . $request->version . '/events/' . $event_id;
-        header('Location: ' . $location, null, 204);
 
+        $view = $request->getView();
+        $view->setHeader('Location', $location);
+        $view->setResponseCode(204);
         return;
     }
 
@@ -687,9 +707,9 @@ class EventsController extends ApiController
             throw new Exception("This event cannot be rejected", 400);
         }
 
-        header("Content-Length: 0", null, 204);
-
-        return;
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(204);
     }
 
 

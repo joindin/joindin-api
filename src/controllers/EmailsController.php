@@ -22,8 +22,10 @@ class EmailsController extends ApiController
                 $emailService = new UserRegistrationEmailService($this->config, $recipients, $token);
                 $emailService->sendEmail();
 
-                header("Content-Length: 0", null, 202);
-                exit;
+                $view = $request->getView();
+                $view->setHeader('Content-Length', 0);
+                $view->setResponseCode(202);
+                return;
             }
             throw new Exception("Can't find that email address", 400);
         }
@@ -44,8 +46,10 @@ class EmailsController extends ApiController
                 $emailService = new UserUsernameReminderEmailService($this->config, $recipients, $user);
                 $emailService->sendEmail();
 
-                header("Content-Length: 0", null, 202);
-                exit;
+                $view = $request->getView();
+                $view->setHeader('Content-Length', 0);
+                $view->setResponseCode(202);
+                return;
             }
             throw new Exception("Can't find that email address", 400);
         }
@@ -76,8 +80,10 @@ class EmailsController extends ApiController
                 $emailService = new UserPasswordResetEmailService($this->config, $recipients, $user, $token);
                 $emailService->sendEmail();
 
-                header("Content-Length: 0", null, 202);
-                exit;
+                $view = $request->getView();
+                $view->setHeader('Content-Length', 0);
+                $view->setResponseCode(202);
+                return;
             }
             throw new Exception("Can't find that user", 400);
         }

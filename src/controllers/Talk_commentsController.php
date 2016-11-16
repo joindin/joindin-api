@@ -81,8 +81,10 @@ class Talk_commentsController extends ApiController
 
         // send them to the comments collection
         $uri = $request->base . '/' . $request->version . '/talks/' . $talkId . "/comments";
-        header("Location: " . $uri, true, 202);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(202);
     }
 
     /**
@@ -127,8 +129,10 @@ class Talk_commentsController extends ApiController
 
         $talk_id  = $commentInfo['talk_id'];
         $uri = $request->base  . '/' . $request->version . '/talks/' . $talk_id . "/comments";
-        header("Location: $uri", true, 204);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(204);
     }
 
     public function updateComment($request, $db)
