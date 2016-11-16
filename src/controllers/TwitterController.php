@@ -9,7 +9,7 @@ use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
 class TwitterController extends ApiController
 {
-    public function getRequestToken($request, $db)
+    public function getRequestToken(Request $request, $db)
     {
         // only trusted clients can change account details
         $clientId         = $request->getParameter('client_id');
@@ -40,7 +40,8 @@ class TwitterController extends ApiController
             // $tokens is instance of TwitterRequestTokenModelCollection
             $tokens      = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
             $output_list = $tokens->getOutputView($request);
-            header("Location: " . $output_list['twitter_request_tokens'][0]['uri'], null, 201);
+            $request->getView()->setHeader('Location', $output_list['twitter_request_tokens'][0]['uri']);
+            $request->getView()->setResponseCode(201);
 
             return $output_list;
         }
