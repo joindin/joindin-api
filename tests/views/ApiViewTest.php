@@ -5,7 +5,10 @@
  */
 class ApiViewTest extends PHPUnit_Framework_TestCase
 {
-    /** @runInSeparateProcess */
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testThatAReturnCodeSetViaHeaderIsReturnedWhenNoOtherReturnCodeIsSet()
     {
         $view = new ApiView();
@@ -20,7 +23,10 @@ class ApiViewTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(201, http_response_code());
     }
 
-    /** @runInSeparateProcess */
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testThatAReturnCodeSetViaSetHeaderIsReturnedEvenThoughAHeaderCodeIsSet()
     {
         $view = new ApiView();
@@ -36,8 +42,10 @@ class ApiViewTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(202, http_response_code());
     }
 
-
-    /** @runInSeparateProcess */
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testThatHeadersAreSet()
     {
         $view = new ApiView();
@@ -56,7 +64,10 @@ class ApiViewTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedHeaders, xdebug_get_headers());
     }
 
-    /** @runInSeparateProcess */
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testThatHeadersAreSetViaSetHeaders()
     {
         $view = new ApiView();
