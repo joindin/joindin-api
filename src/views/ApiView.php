@@ -45,7 +45,9 @@ class ApiView
         if ($content && $this->noRender === false) {
             $body = $this->buildOutput($content);
         }
-
+        if (200 == $this->responseCode) {
+            $this->responseCode = http_response_code();
+        }
         http_response_code($this->responseCode);
         foreach ($this->headers as $key => $value) {
             header($key . ': ' . $value, true);
