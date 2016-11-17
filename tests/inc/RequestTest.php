@@ -3,8 +3,6 @@ namespace JoindinTest\Inc;
 
 require_once __DIR__ . '/../../src/inc/Request.php';
 
-use Request;
-
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -818,14 +816,14 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array( // #0
-                'expected' => array(Request::CONTENT_TYPE_JSON,
-                                    Request::CONTENT_TYPE_HTML),
+                'expected' => array(\Request::CONTENT_TYPE_JSON,
+                                    \Request::CONTENT_TYPE_HTML),
             ),
             array( // #1
-                'expected' => array(Request::CONTENT_TYPE_HTML,
-                                    Request::CONTENT_TYPE_JSON),
-                'choices' => array(Request::CONTENT_TYPE_HTML,
-                                    Request::CONTENT_TYPE_JSON),
+                'expected' => array(\Request::CONTENT_TYPE_HTML,
+                                    \Request::CONTENT_TYPE_JSON),
+                'choices' => array(\Request::CONTENT_TYPE_HTML,
+                                    \Request::CONTENT_TYPE_JSON),
             ),
             array( // #2
                 'expected' => array('a', 'b'),
