@@ -258,8 +258,6 @@ class TalksController extends ApiController
         $view = $request->getView();
         $view->setHeader('Location', $uri);
         $view->setResponseCode(201);
-        return;
-
     }
 
     /**

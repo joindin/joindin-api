@@ -136,8 +136,6 @@ class Event_commentsController extends ApiController
         $view = $request->getView();
         $view->setHeader('Location', $uri);
         $view->setResponseCode(201);
-        return;
-
     }
 
     public function reportComment($request, $db)
@@ -174,8 +172,6 @@ class Event_commentsController extends ApiController
         $view = $request->getView();
         $view->setHeader('Location', $uri);
         $view->setResponseCode(202);
-        return;
-
     }
 
     /**
@@ -223,7 +219,5 @@ class Event_commentsController extends ApiController
         $view = $request->getView();
         $view->setHeader('Location', $uri);
         $view->setResponseCode(204);
-        return;
-
     }
 }

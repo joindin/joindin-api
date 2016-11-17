@@ -98,8 +98,6 @@ class EventImagesController extends ApiController
         $view = $request->getView();
         $view->setHeader('Location', $location);
         $view->setResponseCode(201);
-        return;
-
     }
 
     public function deleteImage($request, $db)
@@ -117,7 +115,5 @@ class EventImagesController extends ApiController
         $view = $request->getView();
         $view->setHeader('Location', $location);
         $view->setResponseCode(204);
-        return;
-
     }
 }

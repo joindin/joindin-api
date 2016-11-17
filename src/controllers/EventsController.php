@@ -632,8 +632,6 @@ class EventsController extends ApiController
         $view = $request->getView();
         $view->setHeader('Location', $uri);
         $view->setResponseCode(201);
-        return;
-
     }
 
     /**
@@ -678,7 +676,6 @@ class EventsController extends ApiController
         $view = $request->getView();
         $view->setHeader('Location', $location);
         $view->setResponseCode(204);
-        return;
     }
 
     /**
