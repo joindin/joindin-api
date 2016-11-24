@@ -20,8 +20,9 @@ class EventHostMapper extends ApiMapper
     public function getHostsByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
         $sql = $this->getHostSql();
-        $sql .= 'and event_id = :event_id order by host_name ';
+        $sql .= ' order by host_name ';
         $sql .= $this->buildLimit($resultsperpage, $start);
+
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':event_id' => $event_id
@@ -35,6 +36,24 @@ class EventHostMapper extends ApiMapper
         $retval           = $this->transformResults($results, $verbose);
 
         return $retval;
+    }
+
+    public function addHostToEvent($event_id, $host_id)
+    {
+        $sql = 'INSERT INTO user_admin (uid, rid, rtype) VALUES (:host_id, :event_id, :type)';
+        $stmt = $this->_db->prepare($sql);
+
+        $response = $stmt->execute([
+            ':host_id'  => $host_id,
+            ':event_id' => $event_id,
+            ':type'     => 'event',
+        ]);
+
+        if (! $response) {
+            return false;
+        }
+
+        return $this->_db->lastInsertId();
     }
 
     /**
