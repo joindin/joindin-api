@@ -124,17 +124,16 @@ class TalksController extends ApiController
                         $comment    = $comment_mapper->getCommentById($new_id);
                         $speakers   = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
                         $recipients = array();
-                        $commentAuthorEmail = $comments[0]['email'];
+                        $commentAuthorEmail = $comment[0]['email'];
                         foreach ($speakers as $person) {
                             if ($commentAuthorEmail == $person['email']) {
                                 continue;
                             }
                             $recipients[] = $person['email'];
                         }
-                        if (count($recipients) > 0) {
-                            $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
-                            $emailService->sendEmail();
-                        }
+
+                        $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+                        $emailService->sendEmail();
                         $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
                         header("Location: " . $uri, true, 201);
                         exit;
