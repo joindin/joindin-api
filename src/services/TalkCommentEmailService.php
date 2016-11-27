@@ -23,10 +23,6 @@ class TalkCommentEmailService extends EmailBaseService
 
     public function sendEmail()
     {
-        if (empty($this->recipients)) {
-            return false;
-        }
-
         $this->setSubject("New feedback on " . $this->talk->talk_title);
 
         $byLine = '';
