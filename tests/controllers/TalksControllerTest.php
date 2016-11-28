@@ -2,6 +2,12 @@
 
 namespace JoindinTest\Controller;
 
+use JoindinTest\Inc\mockPDO;
+use OAuthModel;
+use Request;
+use TalkCommentEmailService;
+use TalkCommentMapper;
+use TalksController;
 
 class TalksControllerTest extends \PHPUnit_Framework_TestCase
 {
@@ -701,6 +707,117 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
 
     }
+    /**
+     * @dataProvider getComments
+     */
+    public function testCommentOnTalk(
+        $commenterEmail,
+        $speakerEmails,
+        $expectedEmailsSent
+    ) {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/9999/comments',
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+
+        $request->user_id = 1;
+        $request->parameters = [
+            'username'      => 'psherman',
+            'display_name'  => 'P Sherman',
+            'comment' => 'Test Comment',
+            'rating' => '3',
+        ];
+
+        $talks_comment_email =
+            $this->getMockBuilder(TalkCommentEmailService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $talks_comment_email->method('sendEmail');
+
+        $talks_controller = $this->getMockBuilder(TalksController::class)
+            ->setMethods(['getTalkCommentEmailService'])
+            ->getMock();
+
+        $talks_controller
+            ->method('getTalkCommentEmailService')
+            ->with(
+                $this->anything(),
+                $expectedEmailsSent,
+                $this->anything(),
+                $this->anything()
+            )->willReturn($talks_comment_email);
+
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+
+        $talk_mapper
+            ->method('getSpeakerEmailsByTalkId')
+            ->willReturn($speakerEmails);
+
+        $talks_controller->setTalkMapper(
+            $talk_mapper
+        );
+
+        $talk_comment = $this->createTalkCommentMapper($db, $request);
+        $talk_comment
+            ->method('hasUserRatedThisTalk')
+            ->willReturn(
+                true
+            );
+
+        $talk_comment
+            ->method('save')
+            ->willReturn(
+                true
+            );
+        $talk_comment
+            ->method('getCommentById')
+            ->willReturn(
+                [['email' => $commenterEmail]]
+            );
+
+        $talks_controller->setTalkCommentMapper(
+            $talk_comment
+        );
+
+        $request->setOauthModel(
+            $this->createOathModel($db, $request, "test")
+        );
+
+        $this->assertTrue($talks_controller->postAction($request, $db));
+    }
+
+    public function getComments()
+    {
+        return [
+            'commentOnTalk' => [
+                'commenterEmail' => 'test@commeter.com',
+                'speakerEmails' => [
+                    ['email' => 'test@speaker1.com'],
+                    ['email' => 'test@speaker2.com'],
+                ],
+                'expectedEmailsSent' => [
+                    'test@speaker1.com',
+                    'test@speaker2.com'
+                ]
+            ],
+            'commentOnOwnTalk' => [
+                'commenterEmail' => 'test@speaker1.com',
+                'speakerEmails' => [
+                    ['email' => 'test@speaker1.com'],
+                    ['email' => 'test@speaker2.com'],
+                ],
+                'expectedEmailsSent' => [
+                    'test@speaker2.com'
+                ]
+            ],
+        ];
+    }
 
     private function createTalkMapper($db, $request)
     {
@@ -734,6 +851,15 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
             );
 
         return $talk_mapper;
+    }
+
+    private function createTalkCommentMapper($db, $request)
+    {
+        $talk_comment_mapper = $this->getMockBuilder(TalkCommentMapper::class)
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+
+        return $talk_comment_mapper;
     }
 
     private function createUserMapper($db, $request)
@@ -791,5 +917,23 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
             );
 
         return $event_mapper;
+    }
+
+    private function createOathModel($db, $request, $consumerName = "")
+    {
+
+        $oathModel = $this->getMockBuilder(OAuthModel::class)
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+
+        $oathModel
+            ->method('getConsumerName')
+            ->willReturn(
+                [
+                    $consumerName
+                ]
+            );
+
+        return $oathModel;
     }
 }
