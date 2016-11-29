@@ -819,6 +819,89 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 401
+     */
+    public function testNotLoggedInPostAction()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/9999/comments',
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+        $talks_controller = new TalksController();
+
+        $talks_controller->postAction($request, $db);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 400
+     */
+    public function testNotSendingMessage()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/9999/comments',
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+        $request->user_id = 1;
+        $request->parameters = [
+            'username'      => 'psherman',
+            'display_name'  => 'P Sherman',
+            'rating' => '3',
+        ];
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+
+        $talks_controller = new TalksController();
+
+        $talks_controller->setTalkMapper(
+            $talk_mapper
+        );
+
+        $talks_controller->postAction($request, $db);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 400
+     */
+    public function testNotSendingRating()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/9999/comments',
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+        $request->user_id = 1;
+        $request->parameters = [
+            'username'      => 'psherman',
+            'display_name'  => 'P Sherman',
+            'comment' => 'Test Comment',
+        ];
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+
+        $talks_controller = new TalksController();
+
+        $talks_controller->setTalkMapper(
+            $talk_mapper
+        );
+
+        $talks_controller->postAction($request, $db);
+    }
+
     private function createTalkMapper($db, $request)
     {
         $talk_mapper = $this->getMockBuilder('\TalkMapper')
