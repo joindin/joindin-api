@@ -48,10 +48,10 @@ class ApiView
         if (200 == $this->responseCode) {
             $this->responseCode = http_response_code();
         }
-        http_response_code($this->responseCode);
         foreach ($this->headers as $key => $value) {
             header($key . ': ' . $value, true);
         }
+        http_response_code($this->responseCode);
 
         echo $body;
 
