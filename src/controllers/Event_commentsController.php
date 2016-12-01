@@ -135,8 +135,10 @@ class Event_commentsController extends ApiController
         $event_mapper->cacheCommentCount($comment['event_id']);
 
         $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
-        header("Location: " . $uri, null, 201);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(201);
     }
 
     public function reportComment($request, $db)
@@ -169,8 +171,10 @@ class Event_commentsController extends ApiController
 
         // send them to the comments collection
         $uri = $request->base . '/' . $request->version . '/events/' . $eventId . "/comments";
-        header("Location: " . $uri, true, 202);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(202);
     }
 
     /**
@@ -214,7 +218,9 @@ class Event_commentsController extends ApiController
         $comment_mapper->moderateReportedComment($decision, $commentId, $request->user_id);
 
         $uri = $request->base  . '/' . $request->version . '/events/' . $event_id . "/comments";
-        header("Location: $uri", true, 204);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(204);
     }
 }

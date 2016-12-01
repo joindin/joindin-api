@@ -382,7 +382,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
 
-        $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
+        $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
 
     }
 
@@ -445,7 +445,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
 
-        $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
+        $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
 
     }
 
@@ -629,7 +629,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
 
-        $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
+        $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
 
     }
 
@@ -698,7 +698,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
 
-        $this->assertTrue($talks_controller->setSpeakerForTalk($request, $db));
+        $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
 
     }
 

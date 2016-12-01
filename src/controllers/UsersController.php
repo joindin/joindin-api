@@ -80,8 +80,11 @@ class UsersController extends ApiController
                     } else {
                         $success = $user_mapper->verifyUser($token);
                         if ($success) {
-                            header("Content-Length: 0", null, 204);
-                            exit; // no more content
+                            $view = $request->getView();
+                            $view->setHeader('Content-Length', 0);
+                            $view->setResponseCode(204);
+                            return;
+
                         } else {
                             throw new Exception("Verification failed", 400);
                         }
@@ -151,7 +154,9 @@ class UsersController extends ApiController
                 throw new Exception(implode(". ", $errors), 400);
             } else {
                 $user_id = $user_mapper->createUser($user);
-                header("Location: " . $request->base . $request->path_info . '/' . $user_id, null, 201);
+                $view = $request->getView();
+                $view->setHeader('Location', $request->base . $request->path_info . '/' . $user_id);
+                $view->setResponseCode(201);
 
                 // autoverify for test platforms
                 if (isset($this->config['features']['allow_auto_verify_users'])
@@ -170,7 +175,8 @@ class UsersController extends ApiController
                 $recipients   = array($user['email']);
                 $emailService = new UserRegistrationEmailService($this->config, $recipients, $token);
                 $emailService->sendEmail();
-                exit;
+
+                return;
             }
         }
     }
@@ -280,8 +286,11 @@ class UsersController extends ApiController
                 }
 
                 // we're good!
-                header("Content-Length: 0", null, 204);
-                exit; // no more content
+                $view = $request->getView();
+                $view->setHeader('Content-Length', 0);
+                $view->setResponseCode(204);
+                return;
+
             }
         }
         throw new Exception("Could not update user", 400);
@@ -305,8 +314,10 @@ class UsersController extends ApiController
             // OK, go ahead
             $success = $user_mapper->resetPassword($token, $password);
             if ($success) {
-                header("Content-Length: 0", null, 204);
-                exit; // no more content
+                $view = $request->getView();
+                $view->setHeader('Content-Length', 0);
+                $view->setResponseCode(204);
+                return;
             } else {
                 throw new Exception("Password could not be reset", 400);
             }
@@ -336,14 +347,10 @@ class UsersController extends ApiController
         if (! $user_mapper->delete($user_id)) {
             throw new Exception("There was a problem trying to delete the user", 400);
         }
-        //If we are unit testing, then we can't exit or send headers!
-        if (defined('UNIT_TEST')) {
-            return true;
-        }
 
-        header("Content-Length: 0", null, 204);
-        exit; // no more content
-
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(204);
     }
 
     public function setUserMapper(UserMapper $user_mapper)

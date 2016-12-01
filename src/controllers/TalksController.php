@@ -130,8 +130,12 @@ class TalksController extends ApiController
                         $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
                         $emailService->sendEmail();
                         $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
-                        header("Location: " . $uri, true, 201);
-                        exit;
+
+                        $view = $request->getView();
+                        $view->setHeader('Location', $uri);
+                        $view->setResponseCode(201);
+                        return;
+
                     } else {
                         throw new Exception("The comment could not be stored", 400);
                     }
@@ -141,8 +145,11 @@ class TalksController extends ApiController
                     // The logged in user *is* attending the talk.  Use DELETE to unattend
                     $talk_mapper = new TalkMapper($db, $request);
                     $talk_mapper->setUserStarred($talk_id, $request->user_id);
-                    header("Location: " . $request->base . $request->path_info, null, 201);
-                    exit;
+
+                    $view = $request->getView();
+                    $view->setHeader('Location', $request->base . $request->path_info);
+                    $view->setResponseCode(201);
+                    return;
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
             }
@@ -162,8 +169,12 @@ class TalksController extends ApiController
                     $talk_id     = $this->getItemId($request);
                     $talk_mapper = new TalkMapper($db, $request);
                     $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
-                    header("Location: " . $request->base . $request->path_info, null, 200);
-                    exit;
+
+                    $view = $request->getView();
+                    $view->setHeader('Location', $request->base . $request->path_info);
+                    $view->setResponseCode(200);
+                    return;
+
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
             }
@@ -176,8 +187,10 @@ class TalksController extends ApiController
             $talk = $talk_mapper->getTalkById($talk_id);
             if (false === $talk) {
                 // talk isn't there so it's as good as deleted
-                header("Content-Length: 0", null, 204);
-                exit; // no more content
+                $view = $request->getView();
+                $view->setHeader('Content-Length', 0);
+                $view->setResponseCode(204);
+                return;
             }
 
             $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
@@ -186,8 +199,10 @@ class TalksController extends ApiController
             }
 
             $talk_mapper->delete($talk_id);
-            header("Content-Length: 0", null, 204);
-            exit; // no more content
+            $view = $request->getView();
+            $view->setHeader('Content-Length', 0);
+            $view->setResponseCode(204);
+            return;
         }
     }
 
@@ -239,8 +254,10 @@ class TalksController extends ApiController
         $talk_mapper->addTalkToTrack($talk_id, $track_id);
 
         $uri = $request->base . '/' . $request->version . '/talks/' . $talk_id;
-        header('Location: ' . $uri, null, 201);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(201);
     }
 
     /**
@@ -285,8 +302,10 @@ class TalksController extends ApiController
         $talk_mapper->removeTrackFromTalk($talk_id, $track_id);
 
         $uri = $request->base . '/' . $request->version . '/talks/' . $talk_id;
-        header('Location: ' . $uri, null, 204);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(204);
     }
 
     /**
@@ -405,8 +424,9 @@ class TalksController extends ApiController
         // edit the talk
         $talk_mapper->editTalk($data, $talk_id);
 
-        header("Location: " . $request->base . $request->path_info, null, 204);
-        exit;
+        $view = $request->getView();
+        $view->setHeader('Location', $request->base . $request->path_info);
+        $view->setResponseCode(204);
     }
 
     /**
@@ -631,13 +651,9 @@ class TalksController extends ApiController
             }
         }
 
-        //If we are unit testing, then we can't exit or send headers!
-        if (defined('UNIT_TEST')) {
-            return true;
-        }
-
-        header("Location: " . $request->base . $request->path_info, null, 204);
-        exit;
+        $view = $request->getView();
+        $view->setHeader('Location', $request->base . $request->path_info);
+        $view->setResponseCode(204);
     }
 
     private function getLinkUserDataFromRequest(Request $request)
@@ -735,7 +751,9 @@ class TalksController extends ApiController
         $talk_mapper->removeApprovedSpeakerFromTalk($talk_id, $speaker_id);
 
         $uri = $request->base . '/' . $request->version . '/talks/' . $talk_id;
-        header('Location: ' . $uri, null, 204);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(204);
     }
 }
