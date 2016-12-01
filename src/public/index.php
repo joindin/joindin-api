@@ -69,8 +69,12 @@ $routers = [
 ];
 $router = new ApiRouter($config, $routers, ['2']);
 
+// Set up the event-listeners
+$ec = new \Joindin\Pubsub\EventCoordinator(new \Symfony\Component\EventDispatcher\EventDispatcher());
+$ec->addListener(new \Joindin\Pubsub\Listener\EmailListener(new EventbasedEmailService($config), new UserMapper($ji_db, $request)));
+
 $route = $router->getRoute($request);
-$return_data = $route->dispatch($request, $ji_db, $config);
+$return_data = $route->dispatch($request, $ji_db, $config, $ec);
 
 if ($return_data && isset($request->user_id)) {
     $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;

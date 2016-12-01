@@ -842,9 +842,11 @@ class EventMapper extends ApiMapper
         // the active opposite to pending to get it on the right web1 lists
         $pairs[] = 'private = 0';
         if (!$auto_approve) {
+            $ev = new \Joindin\Pubsub\Event\PendingEventCreated($event);
             $pairs[] = 'pending = 1';
             $pairs[] = 'active = 0';
         } else {
+            $ev = new \Joindin\Pubsub\Event\AutoApprovedEventCreated($event);
             $pairs[] = 'active = 1';
         }
 
@@ -854,6 +856,8 @@ class EventMapper extends ApiMapper
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute($event);
         if ($result) {
+            // Trigger the event!
+            $this->ec->trigger($ev);
             return $this->_db->lastInsertId();
         }
 

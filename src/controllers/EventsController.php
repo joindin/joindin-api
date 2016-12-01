@@ -146,7 +146,7 @@ class EventsController extends ApiController
         return $list;
     }
 
-    public function postAction($request, $db)
+    public function postAction($request, $db, \Joindin\Pubsub\EventCoordinator $ec)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);
@@ -285,7 +285,7 @@ class EventsController extends ApiController
 
             }
 
-            $event_mapper = new EventMapper($db, $request);
+            $event_mapper = new EventMapper($db, $request, $ec);
 
             // Make sure they only have a maximum of $max_pending_events
             // unapproved event submissions at any time
@@ -343,14 +343,7 @@ class EventsController extends ApiController
                     $event_mapper->setTags($event_id, $tags);
                 }
 
-                // Send an email if we didn't auto-approve
-                if (! $user_mapper->isSiteAdmin($request->user_id)) {
-                    $event        = $event_mapper->getPendingEventById($event_id, true);
-                    $count        = $event_mapper->getPendingEventsCount();
-                    $recipients   = $user_mapper->getSiteAdminEmails();
-                    $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
-                    $emailService->sendEmail();
-                }
+                // The Email is sent via the Notification System
                 exit;
             }
         }
