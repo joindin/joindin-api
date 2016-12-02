@@ -819,30 +819,39 @@ function testAddHostToEvent(access_token, url) {
         )
         .expectStatus(404)
         .toss();
-    frisby.create('Add new host')
-        .post(
-            url + "/hosts",
-            {
-                "host_name" : "acole"
-            },
-            {json : true,
-                headers : {'Authorization' : 'Bearer ' + access_token}
-            }
+    frisby.create('Retrieve a random User from the DB')
+        .get(
+            baseURL + '/v2.1/users/12'
         )
-        .expectStatus(201)
-        .after(function(err, res, body) {
-            var track_uri = res.headers.location;
-            frisby.create('Check Hosts for the event')
-                .get(track_uri)
-                .expectStatus(200)
-                .expectJSON('hosts',[
-                    {"host_name" : "A test user for events"},
-                    {"host_name" : "Angela Cole", "host_uri" : "http://api.dev.joind.in/v2.1/users/9"}
-                ])
+        .afterJSON(function(result) {
+            var hostToAdd = result['users'][0];
+            frisby.create('Add new host')
+                .post(
+                    url + "/hosts",
+                    {
+                        "host_name" : hostToAdd.username
+                    },
+                    {
+                        json    : true,
+                        headers : {'Authorization' : 'Bearer ' + access_token}
+                    }
+                )
+                .expectStatus(201)
+                .after(function (err, res, body) {
+                    var track_uri = res.headers.location;
+                    frisby.create('Check Hosts for the event')
+                        .get(track_uri)
+                        .expectStatus(200)
+                        .expectJSON('hosts', [
+                            {"host_name" : "A test user for events"},
+                            {"host_name"   : hostToAdd.full_name,
+                                "host_uri" : hostToAdd.uri
+                            }
+                        ])
+                        .toss();
+                })
                 .toss();
-        })
-        .toss();
-
+        }).toss();
 }
 
 
