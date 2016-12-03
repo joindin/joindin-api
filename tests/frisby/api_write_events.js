@@ -4,6 +4,7 @@ var frisby   = require('frisby');
 var datatest = require('./data');
 var talkstest  = require('./api_write_talks');
 var util     = require('util');
+var username = '';
 
 var baseURL = '';
 
@@ -26,7 +27,7 @@ function setupAndRunEventTests() {
 
   // Firstly we register a user so that we can then log in with this user
   var randomSuffix = parseInt(Math.random() * 1000000).toString();
-  var username = "testUser" + randomSuffix;
+  username = "testUser" + randomSuffix;
   var password = "pwpwpwpwpwpw";
   frisby.create('Register user for testing events')
     .post(baseURL + "/v2.1/users", {
@@ -335,6 +336,7 @@ function testCreateApprovedEvent(access_token)
         testEditEvent(access_token, res.headers.location);
         testEventComments(access_token, event_uri);
         testEventTracks(access_token, event_uri);
+        testAddHostToEvent(access_token, event_uri);
       }
     })
     .toss();
@@ -780,5 +782,68 @@ function testEventTracks(access_token, url) {
     })
     .toss();
 }
+
+function testAddHostToEvent(access_token, url) {
+
+    frisby.create('Unauthenticated Hosts added')
+        .post(
+            url + "/hosts",
+            {},
+            {
+                json : true,
+            }
+        )
+        .expectStatus(401)
+        .toss();
+
+    frisby.create('Username-payload required')
+        .post(
+            url + "/hosts",
+            {},
+            {json : true,
+                headers : {'Authorization' : 'Bearer ' + access_token}
+            }
+        )
+        .expectStatus(404)
+        .toss();
+
+    frisby.create('Username of unknown user provided')
+        .post(
+            url + "/hosts",
+            {
+                "host_name" : "claudio"
+            },
+            {json : true,
+                headers : {'Authorization' : 'Bearer ' + access_token}
+            }
+        )
+        .expectStatus(404)
+        .toss();
+    frisby.create('Add new host')
+        .post(
+            url + "/hosts",
+            {
+                "host_name" : "acole"
+            },
+            {json : true,
+                headers : {'Authorization' : 'Bearer ' + access_token}
+            }
+        )
+        .expectStatus(201)
+        .after(function(err, res, body) {
+            var track_uri = res.headers.location;
+            frisby.create('Check Hosts for the event')
+                .get(track_uri)
+                .expectStatus(200)
+                .expectJSON('hosts',[
+                    {"host_name" : "A test user for events"},
+                    {"host_name" : "Angela Cole", "host_uri" : "http://api.dev.joind.in/v2.1/users/9"}
+                ])
+                .toss();
+        })
+        .toss();
+
+}
+
 
 

@@ -94,7 +94,10 @@ class EventImagesController extends ApiController
         $event_mapper->saveNewImage($event_id, $small_filename, $small_width, $small_height, "small");
 
         $location = $request->base . '/' . $request->version . '/events/' . $event_id;
-        header('Location: ' . $location, null, 201);
+
+        $view = $request->getView();
+        $view->setHeader('Location', $location);
+        $view->setResponseCode(201);
     }
 
     public function deleteImage($request, $db)
@@ -108,7 +111,9 @@ class EventImagesController extends ApiController
         $event_mapper->removeImages($event_id);
 
         $location = $request->base . '/' . $request->version . '/events/' . $event_id;
-        header('Location: ' . $location, null, 204);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $location);
+        $view->setResponseCode(204);
     }
 }

@@ -129,7 +129,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $usersController->setUserMapper($userMapper);
-        $this->assertTrue($usersController->deleteUser($request, $db));
+        $this->assertNull($usersController->deleteUser($request, $db));
 
     }
 

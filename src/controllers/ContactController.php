@@ -73,7 +73,9 @@ class ContactController extends ApiController
         $emailService = new ContactEmailService($this->config);
         $emailService->sendEmail($data);
 
-        header("Content-Length: 0", null, 202);
-        exit;
+        $view = $request->getView();
+
+        $view->setResponseCode(202);
+        $view->setHeader('Content-Length', 0);
     }
 }

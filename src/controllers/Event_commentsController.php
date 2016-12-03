@@ -74,8 +74,8 @@ class Event_commentsController extends ApiController
         $rating = $request->getParameter('rating', false);
         if (false === $rating) {
             throw new Exception('The field "rating" is required', 400);
-        } elseif (false === is_numeric($rating) || $rating > 5) {
-            throw new Exception('The field "rating" must be a number (1-5)', 400);
+        } elseif (false === is_numeric($rating)) {
+            throw new Exception('The field "rating" must be a number', 400);
         }
 
         $commentText = $request->getParameter('comment');
@@ -113,12 +113,15 @@ class Event_commentsController extends ApiController
         $comment_mapper = new EventCommentMapper($db, $request);
 
         // should rating be allowed?
-        if ($comment_mapper->hasUserRatedThisEvent($comment['user_id'], $comment['event_id'])) {
+        if ($comment_mapper->hasUserRatedThisEvent($comment['user_id'], $comment['event_id']) ||
+            $event_mapper->isUserAHostOn($comment['user_id'], $comment['event_id'])) {
+            // a user can only rate once and event hosts cannot rate their own event
             $comment['rating'] = 0;
-        }
-        if ($event_mapper->isUserAHostOn($comment['user_id'], $comment['event_id'])) {
-            // event hosts cannot rate their own event
-            $comment['rating'] = 0;
+        } else {
+            // if a user has never rated before and is not an event host the rating should be between 1 and 5
+            if ($rating < 1 || $rating > 5) {
+                throw new Exception('The field "rating" must be a number (1-5)', 400);
+            }
         }
 
         try {
@@ -132,8 +135,10 @@ class Event_commentsController extends ApiController
         $event_mapper->cacheCommentCount($comment['event_id']);
 
         $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
-        header("Location: " . $uri, null, 201);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(201);
     }
 
     public function reportComment($request, $db)
@@ -166,8 +171,10 @@ class Event_commentsController extends ApiController
 
         // send them to the comments collection
         $uri = $request->base . '/' . $request->version . '/events/' . $eventId . "/comments";
-        header("Location: " . $uri, true, 202);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(202);
     }
 
     /**
@@ -211,7 +218,9 @@ class Event_commentsController extends ApiController
         $comment_mapper->moderateReportedComment($decision, $commentId, $request->user_id);
 
         $uri = $request->base  . '/' . $request->version . '/events/' . $event_id . "/comments";
-        header("Location: $uri", true, 204);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(204);
     }
 }
