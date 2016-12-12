@@ -691,4 +691,14 @@ class UserMapper extends ApiMapper
             return false;
         }
     }
+
+    public function hasValidRateLimit($userId)
+    {
+        return true;
+    }
+
+    public function countdownRateLimit($userId)
+    {
+        return true;
+    }
 }
