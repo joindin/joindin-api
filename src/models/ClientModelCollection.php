@@ -53,7 +53,7 @@ class ClientModelCollection extends AbstractModelCollection
      *
      * @return array
      */
-    public function getTalks()
+    public function getClients()
     {
         return $this->list;
     }

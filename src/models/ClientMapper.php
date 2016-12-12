@@ -63,7 +63,7 @@ class ClientMapper extends ApiMapper
      * @param $clientId
      * @param $userId
      *
-     * @return ClientModel
+     * @return ClientModelCollection
      */
     public function getClientByIdAndUser($clientId, $userId)
     {
@@ -121,5 +121,57 @@ class ClientMapper extends ApiMapper
         }
 
         return $clientId;
+    }
+
+    /**
+     * Update an existing Client
+     *
+     * @param int   $clientId
+     * @param array $data
+     *
+     * @throws Exception
+     * @return int
+     */
+    public function updateClient($clientId, array $data)
+    {
+        $clientSql = 'UPDATE oauth_consumers SET '
+                   . 'application = :application, description = :description, '
+                   . 'callback_url = :callback_url WHERE id = :client_id;';
+
+        $stmt = $this->_db->prepare($clientSql);
+
+        $result = $stmt->execute([
+            ':application'  => $data['name'],
+            ':description'  => $data['description'],
+            ':callback_url' => $data['callback_url'],
+            ':client_id'    => $clientId,
+        ]);
+
+        if (! $result) {
+            throw new Exception('There has been an error updating the application');
+        }
+
+        return $clientId;
+    }
+
+    /**
+     * Delete an existing client
+     *
+     * @param int $clientId
+     *
+     * @throws Exception
+     * @return bool
+     */
+    public function deleteClient($clientId)
+    {
+        $clientSql = 'DELETE FROM oauth_consumers WHERE id = :client_id';
+
+        $stmt = $this->_db->prepare($clientSql);
+
+        if (! $stmt->execute([':client_id' => $clientId])) {
+            throw new Exception('There has been an error updating the application');
+        }
+
+
     }
 }
