@@ -1,4 +1,9 @@
 {
+    "autoload" : {
+        "psr-4" : {
+            "Joindin\\Api\\" : "src/"
+        }
+    },
     "preferred-install": "dist",
     "require" : {
         "swiftmailer/swiftmailer": "v5.0.3",

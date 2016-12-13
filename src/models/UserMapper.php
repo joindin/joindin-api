@@ -692,9 +692,14 @@ class UserMapper extends ApiMapper
         }
     }
 
-    public function hasValidRateLimit($userId)
+    public function getCurrentRateLimit($userId)
     {
-        return true;
+        return [
+            'limit' => -1,
+            'remaining' => 1,
+            'reset' => time() + 100,
+            'user' => $userId,
+        ];
     }
 
     public function countdownRateLimit($userId)

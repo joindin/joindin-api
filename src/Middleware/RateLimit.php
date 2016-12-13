@@ -29,9 +29,17 @@ class RateLimit
         }
 
         $userMapper = $this->getUserMapper();
+        $rates = $userMapper->getCurrentRateLimit($request->getUserId());
 
-        if (! $userMapper->hasValidRateLimit($request->getUserId())) {
-            throw new Exception('RateLimit Exceeded');
+        $request->getView()->setHeader('X-RateLimit-Limit', $rates['limit']);
+        $request->getView()->setHeader('X-RateLimit-Remaining', $rates['remaining']);
+        $request->getView()->setHeader('X-RateLimit-Reset', $rates['reset']);
+
+        if (1 > $rates['remaining']) {
+            throw new \Exception(sprintf(
+                'API rate limit exceeded for %1$s',
+                $rates['user']
+            ), 403);
         }
 
         $userMapper->countdownRateLimit($request->getUserId());
