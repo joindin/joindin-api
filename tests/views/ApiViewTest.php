@@ -81,4 +81,25 @@ class ApiViewTest extends PHPUnit_Framework_TestCase
         ];
         $this->assertEquals($expectedHeaders, xdebug_get_headers());
     }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testThatSettingHeadersDoesntOverwriteIntendedHeaders()
+    {
+        $view = new ApiView();
+        $view->setResponseCode(201);
+        $view->setHeader('Location', 'http://example.org');
+
+        ob_start();
+        $view->render('');
+        ob_end_clean();
+
+        $expectedHeaders = [
+            'Location: http://example.org',
+        ];
+        $this->assertEquals($expectedHeaders, xdebug_get_headers());
+        $this->assertEquals(201, http_response_code());
+    }
 }

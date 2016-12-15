@@ -333,6 +333,36 @@
         "action": "logUserIn",
         "verbs": ["POST"]
     },
+    {
+        "path" : "/applications$",
+        "controller" : "ApplicationsController",
+        "action" : "listApplications",
+        "verbs" : ["GET"]
+    },
+    {
+        "path" : "/applications$",
+        "controller" : "ApplicationsController",
+        "action" : "createApplication",
+        "verbs" : ["POST"]
+    },
+    {
+        "path" : "/applications(/[0-9]+)$",
+        "controller" : "ApplicationsController",
+        "action" : "getApplication",
+        "verbs" : ["GET"]
+    },
+    {
+        "path" : "/applications(/[0-9]+)$",
+        "controller" : "ApplicationsController",
+        "action" : "editApplication",
+        "verbs" : ["PUT"]
+    },
+    {
+        "path" : "/applications(/[0-9]+)$",
+        "controller" : "ApplicationsController",
+        "action" : "deleteApplication",
+        "verbs" : ["DELETE"]
+    },
 
     {
         "path": "/?$",

@@ -85,7 +85,10 @@ abstract class AbstractModel
 
             // override if it is a date
             if (substr($output_name, - 5) == '_date' && ! empty($value)) {
-                $value = (new DateTime('@' . $value))->setTimezone($tz)->format('c');
+                if (is_numeric($value)) {
+                    $value = '@' . $value;
+                }
+                $value = (new DateTime($value))->setTimezone($tz)->format('c');
             }
 
             $item[$output_name] = $value;
