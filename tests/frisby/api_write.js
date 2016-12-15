@@ -82,7 +82,7 @@ function testUserByUrl(url) {
 }
 
 function testUnverifiedUserFailsLogin(username, password) {
-  frisby.create('Log in')
+  frisby.create('Log in 1')
     .post(baseURL + "/v2.1/token", {
       "grant_type": "password",
       "username": username,
@@ -96,7 +96,7 @@ function testUnverifiedUserFailsLogin(username, password) {
 }
 
 function testUserLogin(username, password) {
-  frisby.create('Log in')
+  frisby.create('Log in 2')
     .post(baseURL + "/v2.1/token", {
       "grant_type": "password",
       "username": username,
