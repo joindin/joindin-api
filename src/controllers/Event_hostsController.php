@@ -106,6 +106,65 @@ class Event_hostsController extends ApiController
      * @param Request $request
      * @param PDO     $db
      *
+     * @throws Exception
+     * @return bool
+     */
+    public function removeHostFromEvent(Request $request, PDO $db)
+    {
+        if (! isset($request->user_id)) {
+            throw new Exception("You must be logged in to remove data", 401);
+        }
+
+        $user_id = $request->url_elements[5];
+        if ($user_id === $request->user_id) {
+            throw new Exception('You are not allowed to remove yourself from the host-list', 403);
+        }
+
+        $event_id = $this->getItemId($request);
+
+        $eventMapper = $this->getEventMapper($request, $db);
+        $event = $eventMapper->getEventById($event_id);
+        if (false === $event) {
+            throw new Exception('Event not found', 404);
+        }
+
+        $isAdmin = $eventMapper->thisUserHasAdminOn($event_id);
+        if (!$isAdmin) {
+            throw new Exception("You do not have permission to remove hosts from this event", 403);
+        }
+
+        $userMapper = $this->getUserMapper($request, $db);
+        $user = $userMapper->getUserById($user_id);
+        if (false === $user) {
+            throw new Exception('No User found', 404);
+        }
+
+        $mapper = $this->getEventHostMapper($request, $db);
+
+        $uid = $mapper->removeHostFromEvent($user_id, $event_id);
+        if (false === $uid) {
+            throw new Exception('Something went wrong', 400);
+        }
+
+        $uri = sprintf(
+            '%1$s/%2$s/events/%3$s/hosts',
+            $request->base,
+            $request->version,
+            $event_id
+        );
+
+        $request->getView()->setHeader('Location', $uri);
+        $request->getView()->setResponseCode(204);
+        $request->getView()->setNoRender(true);
+
+        return;
+
+    }
+
+    /**
+     * @param Request $request
+     * @param PDO     $db
+     *
      * @return EventHostMapper
      */
     public function getEventHostMapper(Request $request, PDO $db)

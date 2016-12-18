@@ -21,7 +21,7 @@
     </logging>
 
     <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+        <whitelist processUncoveredFilesFromWhitelist="false">
             <directory suffix=".php">../src/controllers</directory>
             <directory suffix=".php">../src/inc</directory>
             <directory suffix=".php">../src/models</directory>

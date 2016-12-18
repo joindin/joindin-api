@@ -9,6 +9,11 @@
         "action": "addHost",
         "verbs": ["POST"]
     },
+    {   "path": "/events/[\\d]+/hosts/[\\d]+",
+        "controller": "Event_hostsController",
+        "action": "removeHostFromEvent",
+        "verbs": ["DELETE"]
+    },
     {
         "path": "/events(/[^/]+)*/comments/reported",
         "controller": "Event_commentsController",
