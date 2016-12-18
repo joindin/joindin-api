@@ -62,7 +62,7 @@ class EventHostMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
 
         return $stmt->execute([
-            ':host_id'  => $host_id,
+            ':user_id'  => $host_id,
             ':event_id' => $event_id,
             ':type'     => 'event',
         ]);
