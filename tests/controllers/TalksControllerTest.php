@@ -778,7 +778,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $talk_comment
             ->method('getCommentById')
             ->willReturn(
-                [['email' => $commenterEmail]]
+                ['comments' => [['email' => $commenterEmail]]]
             );
 
         $talks_controller->setTalkCommentMapper(
@@ -789,7 +789,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
             $this->createOathModel($db, $request, "test")
         );
 
-        $this->assertTrue($talks_controller->postAction($request, $db));
+        $this->assertNull($talks_controller->postAction($request, $db));
     }
 
     public function getComments()

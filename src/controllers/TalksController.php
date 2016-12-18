@@ -124,7 +124,7 @@ class TalksController extends ApiController
                         $comment    = $comment_mapper->getCommentById($new_id);
                         $speakers   = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
                         $recipients = array();
-                        $commentAuthorEmail = $comment[0]['email'];
+                        $commentAuthorEmail = $comment['comments'][0]['email'];
                         foreach ($speakers as $person) {
                             if ($commentAuthorEmail == $person['email']) {
                                 continue;
