@@ -130,7 +130,7 @@ class Event_hostsController extends ApiController
 
         $isAdmin = $eventMapper->thisUserHasAdminOn($event_id);
         if (!$isAdmin) {
-            throw new Exception("You do not have permission to add hosts to this event", 403);
+            throw new Exception("You do not have permission to remove hosts from this event", 403);
         }
 
         $userMapper = $this->getUserMapper($request, $db);

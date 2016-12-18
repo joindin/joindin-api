@@ -129,7 +129,7 @@ class Event_hostsControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Exception
      * @expectedExceptionCode 403
-     * @expectedExceptionMessage You do not have permission to add hosts to this event
+     * @expectedExceptionMessage You do not have permission to remove hosts from this event
      */
     public function testThatUserThatIsNotAdminOnEventWillThrowException()
     {
