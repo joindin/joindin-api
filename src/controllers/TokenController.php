@@ -4,6 +4,8 @@ class TokenController extends ApiController
 {
     protected $oauthModel;
 
+    protected $tokenMapper;
+
     public function postAction($request, $db)
     {
         $this->oauthModel = $request->getOauthModel($db);
@@ -54,5 +56,67 @@ class TokenController extends ApiController
         }
 
         throw new Exception("Grant type not recognised", 400);
+    }
+
+    public function listTokensForUser($request, $db)
+    {
+        if (! isset($request->user_id)) {
+            throw new Exception("You must be logged in", 401);
+        }
+
+        $mapper = $this->getTokenMapper($db, $request);
+
+        $tokens = $mapper->getTokensForUser(
+            $request->user_id,
+            $this->getResultsPerPage($request),
+            $this->getStart($request)
+        );
+
+        return $tokens->getOutputView($request, $this->getVerbosity($request));
+    }
+
+    public function revokeToken(Request $request, PDO $db)
+    {
+        if (! isset($request->user_id)) {
+            throw new Exception("You must be logged in", 401);
+        }
+
+        $tokenMapper = $this->getTokenMapper($db, $request);
+
+        $token = $tokenMapper->getTokenByIdAndUser(
+            $this->getItemId($request),
+            $request->user_id
+        );
+
+        if (! $token->getTokens()) {
+            throw new Exception('No tokens found', 404);
+        }
+
+        try {
+            $tokenMapper->deleteToken($this->getItemId($request));
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), 500, $e);
+        }
+
+        $request->getView()->setNoRender(true);
+        $request->getView()->setResponseCode(204);
+        $request->getView()->setHeader(
+            'Location',
+            $request->base . '/' . $request->version . '/token'
+        );
+    }
+
+    private function getTokenMapper(PDO $db, Request $request)
+    {
+        if (! $this->tokenMapper) {
+            $this->tokenMapper = new TokenMapper($db, $request);
+        }
+
+        return $this->tokenMapper;
+    }
+
+    public function setTokenMapper(TokenMapper $tokenMapper)
+    {
+        $this->tokenMapper = $tokenMapper;
     }
 }

@@ -158,7 +158,18 @@
         "action": "postAction",
         "verbs": ["POST"]
     },
-
+    {
+        "path": "/token/?$",
+        "controller": "TokenController",
+        "action": "listTokensForUser",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/token(/[^/]+)*/?$",
+        "controller": "TokenController",
+        "action": "revokeToken",
+        "verbs": ["DELETE"]
+    },
     {
         "path": "/tracks(/[^/]+)*/?$",
         "controller": "TracksController",
