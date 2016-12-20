@@ -75,6 +75,22 @@ class TokenController extends ApiController
         return $tokens->getOutputView($request, $this->getVerbosity($request));
     }
 
+    public function getToken($request, $db)
+    {
+        if (! isset($request->user_id)) {
+            throw new Exception("You must be logged in", 401);
+        }
+
+        $mapper = $this->getTokenMapper($db, $request);
+
+        $tokens = $mapper->getTokenByIdAndUser(
+            $this->getItemId($request),
+            $request->user_id
+        );
+
+        return $tokens->getOutputView($request, $this->getVerbosity($request));
+    }
+
     public function revokeToken(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {

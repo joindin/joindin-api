@@ -165,6 +165,12 @@
         "verbs": ["GET"]
     },
     {
+        "path": "/token(/[^/]+)/?$",
+        "controller": "TokenController",
+        "action": "getToken",
+        "verbs": ["GET"]
+    },
+    {
         "path": "/token(/[^/]+)*/?$",
         "controller": "TokenController",
         "action": "revokeToken",
