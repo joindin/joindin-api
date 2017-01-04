@@ -53,7 +53,11 @@ class UsersController extends ApiController
                 }
             } else {
                 if (isset($request->parameters['username'])) {
-                    $username = filter_var($request->parameters['username'], FILTER_SANITIZE_STRING);
+                    $username = filter_var(
+                        $request->parameters['username'],
+                        FILTER_SANITIZE_STRING,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    );
                     $list     = $mapper->getUserByUsername($username, $verbose);
                     if ($list === false) {
                         throw new Exception('Username not found', 404);
@@ -101,7 +105,11 @@ class UsersController extends ApiController
             $user_mapper = new UserMapper($db, $request);
 
             // Required Fields
-            $user['username'] = filter_var(trim($request->getParameter("username")), FILTER_SANITIZE_STRING);
+            $user['username'] = filter_var(trim(
+                $request->getParameter("username")),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($user['username'])) {
                 $errors[] = "'username' is a required field";
             } else {
@@ -112,12 +120,20 @@ class UsersController extends ApiController
                 }
             }
 
-            $user['full_name'] = filter_var(trim($request->getParameter("full_name")), FILTER_SANITIZE_STRING);
+            $user['full_name'] = filter_var(
+                trim($request->getParameter("full_name")),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($user['full_name'])) {
                 $errors[] = "'full_name' is a required field";
             }
 
-            $user['email'] = filter_var(trim($request->getParameter("email")), FILTER_VALIDATE_EMAIL);
+            $user['email'] = filter_var(
+                trim($request->getParameter("email")),
+                FILTER_VALIDATE_EMAIL,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($user['email'])) {
                 $errors[] = "A valid entry for 'email' is required";
             } else {
@@ -146,7 +162,8 @@ class UsersController extends ApiController
             // Optional Fields
             $user['twitter_username'] = filter_var(
                 trim($request->getParameter("twitter_username")),
-                FILTER_SANITIZE_STRING
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
             );
 
             // How does it look?  With no errors, we can proceed
@@ -235,12 +252,20 @@ class UsersController extends ApiController
                 }
             }
 
-            $user['full_name'] = filter_var(trim($request->getParameter("full_name")), FILTER_SANITIZE_STRING);
+            $user['full_name'] = filter_var(
+                trim($request->getParameter("full_name")),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($user['full_name'])) {
                 $errors[] = "'full_name' is a required field";
             }
 
-            $user['email'] = filter_var(trim($request->getParameter("email")), FILTER_VALIDATE_EMAIL);
+            $user['email'] = filter_var(
+                trim($request->getParameter("email")),
+                FILTER_VALIDATE_EMAIL,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
             if (empty($user['email'])) {
                 $errors[] = "A valid entry for 'email' is required";
             } else {
@@ -258,7 +283,11 @@ class UsersController extends ApiController
 
             $username = $request->getParameter("username", false);
             if (false !== $username) {
-                $user['username'] = filter_var(trim($username), FILTER_SANITIZE_STRING);
+                $user['username'] = filter_var(
+                    trim($username),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
                 // does anyone else have this username?
                 $existing_user = $user_mapper->getUserByUsername($user['username']);
                 if ($existing_user['users']) {
@@ -274,7 +303,11 @@ class UsersController extends ApiController
             // Optional Fields
             $twitter_username = $request->getParameter("twitter_username", false);
             if (false !== $twitter_username) {
-                $user['twitter_username'] = filter_var(trim($twitter_username), FILTER_SANITIZE_STRING);
+                $user['twitter_username'] = filter_var(
+                    trim($twitter_username),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
             }
 
             if ($errors) {
