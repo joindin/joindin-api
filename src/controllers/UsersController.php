@@ -107,8 +107,8 @@ class UsersController extends ApiController
             $user_mapper = $this->getUserMapper($db, $request);
 
             // Required Fields
-            $user['username'] = filter_var(trim(
-                $request->getParameter("username")),
+            $user['username'] = filter_var(
+                trim($request->getParameter("username")),
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
