@@ -5,6 +5,8 @@ class UsersController extends ApiController
 
     protected $user_mapper;
 
+    private $user_registration_email_service;
+
     public function getAction($request, $db)
     {
         $user_id = $this->getItemId($request);
@@ -102,7 +104,7 @@ class UsersController extends ApiController
             $user   = array();
             $errors = array();
 
-            $user_mapper = new UserMapper($db, $request);
+            $user_mapper = $this->getUserMapper($db, $request);
 
             // Required Fields
             $user['username'] = filter_var(trim(
@@ -190,7 +192,7 @@ class UsersController extends ApiController
                 $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
 
                 $recipients   = array($user['email']);
-                $emailService = new UserRegistrationEmailService($this->config, $recipients, $token);
+                $emailService = $this->getUserRegistrationEmailService($this->config, $recipients, $token);
                 $emailService->sendEmail();
 
                 return;
@@ -214,7 +216,7 @@ class UsersController extends ApiController
 
         $userId = $this->getItemId($request);
 
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = $this->getUserMapper($db, $request);
         if ($user_mapper->thisUserHasAdminOn($userId)) {
             $oauthModel  = $request->getOauthModel($db);
             $accessToken = $request->getAccessToken();
@@ -398,5 +400,23 @@ class UsersController extends ApiController
         }
 
         return $this->user_mapper;
+    }
+
+    public function setUserRegistrationEmailService(UserRegistrationEmailService $mailService)
+    {
+        $this->user_registration_email_service = $mailService;
+    }
+
+    public function getUserRegistrationEmailService($config, $recipient, $token)
+    {
+        if (! $this->user_registration_email_service) {
+            $this->user_registration_email_service = new UserRegistrationEmailService(
+                $config,
+                $recipient,
+                $token
+            );
+        }
+
+        return $this->user_registration_email_service;
     }
 }
