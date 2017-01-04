@@ -451,7 +451,6 @@ class TalksController extends ApiController
         }
         $event = $list['events'][0];
 
-
         $talk['title'] = filter_var(
             $request->getParameter('talk_title'),
             FILTER_SANITIZE_STRING,
