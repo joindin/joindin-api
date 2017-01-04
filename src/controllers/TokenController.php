@@ -66,7 +66,7 @@ class TokenController extends ApiController
 
         $mapper = $this->getTokenMapper($db, $request);
 
-        $tokens = $mapper->getTokensForUser(
+        $tokens = $mapper->getRevokableTokensForUser(
             $request->user_id,
             $this->getResultsPerPage($request),
             $this->getStart($request)
@@ -99,7 +99,7 @@ class TokenController extends ApiController
 
         $tokenMapper = $this->getTokenMapper($db, $request);
 
-        $token = $tokenMapper->getTokenByIdAndUser(
+        $token = $tokenMapper->getRevokableTokenByIdAndUser(
             $this->getItemId($request),
             $request->user_id
         );
