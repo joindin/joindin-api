@@ -66,6 +66,10 @@ class TokenController extends ApiController
 
         $mapper = $this->getTokenMapper($db, $request);
 
+        if (! $mapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
+            throw new Exception("You can not access the token list with this client", 403);
+        }
+
         $tokens = $mapper->getRevokableTokensForUser(
             $request->user_id,
             $this->getResultsPerPage($request),
@@ -83,6 +87,10 @@ class TokenController extends ApiController
 
         $mapper = $this->getTokenMapper($db, $request);
 
+        if (! $mapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
+            throw new Exception("You can not access the token list with this client", 403);
+        }
+
         $tokens = $mapper->getTokenByIdAndUser(
             $this->getItemId($request),
             $request->user_id
@@ -98,6 +106,10 @@ class TokenController extends ApiController
         }
 
         $tokenMapper = $this->getTokenMapper($db, $request);
+
+        if (! $tokenMapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
+            throw new Exception("You can not access the token list with this client", 403);
+        }
 
         $token = $tokenMapper->getRevokableTokenByIdAndUser(
             $this->getItemId($request),

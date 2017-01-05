@@ -184,4 +184,31 @@ class TokenMapper extends ApiMapper
 
         return true;
     }
+
+    /**
+     * Check qwhether the given access token was issued by a trusted application
+     *
+     * @param string $accessToken
+     *
+     * @return bool
+     */
+    public function tokenBelongsToTrustedApplication($accessToken)
+    {
+        $sql = 'SELECT b.enable_password_grant '
+               . 'FROM oauth_access_tokens AS a '
+               . 'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
+               . 'WHERE a.access_token = :token';
+        $sql .= $this->buildLimit(1, 0);
+
+        $stmt     = $this->_db->prepare($sql);
+        $response = $stmt->execute(array(
+            ':token'  => $accessToken,
+        ));
+
+        if (! $response) {
+            return false;
+        }
+
+        return $stmt->fetchColumn() == 1;
+    }
 }
