@@ -131,20 +131,17 @@ class OAuthModel
         $stmt->execute(array("username" => $username));
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($result) {
-            if ($result['verified'] == 1) {
-                if (password_verify(md5($password), $result['password'])) {
-                    return $result['ID'];
-                }
+        if (!$result) return false;
 
-                return false;
-            }
-
-            throw new Exception("Not Verified", 401);
+        if ($result['verified'] != 1) {
+            throw new Exception("Not verified", 401);
         }
 
-        return false;
+        if (!password_verify(md5($password), $result['password'])) {
+            return false;
+        }
 
+        return $result['ID'];
     }
 
     /**
