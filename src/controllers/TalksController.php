@@ -27,7 +27,7 @@ class TalksController extends ApiController
             }
         } else {
             if ($talk_id) {
-                $talk = $this->getTalkById($db, $request, $talk_id);
+                $talk = $this->getTalkById($request, $db, $talk_id, $verbose);
                 $collection = new TalkModelCollection([$talk], 1);
                 $list = $collection->getOutputView($request, $verbose);
             } elseif (isset($request->parameters['title'])) {
@@ -51,13 +51,11 @@ class TalksController extends ApiController
 
     public function postAction($request, $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
-        }
+        $this->checkLoggedIn($request);
         $talk_id = $this->getItemId($request);
 
         // Retrieve the talk. It if doesn't exist, then 404 with talk not found
-        $talk= $this->getTalkById($db, $request, $talk_id);
+        $talk = $this->getTalkById($request, $db, $talk_id);
 
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
@@ -160,9 +158,7 @@ class TalksController extends ApiController
 
     public function deleteAction($request, $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 401);
-        }
+        $this->checkLoggedIn($request);
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'starred':
@@ -215,16 +211,11 @@ class TalksController extends ApiController
      */
     public function addTrackToTalk(Request $request, PDO $db)
     {
-        if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
-        }
+        $this->checkLoggedIn($request);
 
-        $talk_id = $this->getItemId($request);
         $talk_mapper = new TalkMapper($db, $request);
-        $talk = $talk_mapper->getTalkById($talk_id);
-        if (!$talk) {
-            throw new Exception("Talk not found", 404);
-        }
+        $talk = $this->getTalkById($request, $db);
+        $talk_id = $talk->ID;
 
         $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
         $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
@@ -268,18 +259,13 @@ class TalksController extends ApiController
      */
     public function removeTrackFromTalk(Request $request, PDO $db)
     {
-        if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
-        }
+        $this->checkLoggedIn($request);
 
-        $talk_id = $this->getItemId($request);
         $track_id = $request->url_elements[5];
 
         $talk_mapper = new TalkMapper($db, $request);
-        $talk = $talk_mapper->getTalkById($talk_id);
-        if (!$talk) {
-            throw new Exception("Talk not found", 404);
-        }
+        $talk = $this->getTalkById($request, $db);
+        $talk_id = $talk->ID;
 
         $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
         $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
@@ -320,10 +306,18 @@ class TalksController extends ApiController
      *
      * @return TalkModelCollection
      */
-    protected function getTalkById($db, $request, $talk_id)
-    {
-        $mapper = new TalkMapper($db, $request);
-        $talk   = $mapper->getTalkById($talk_id);
+    protected function getTalkById(
+        Request $request,
+        PDO $db,
+        $talk_id = 0,
+        $verbose = false
+    ) {
+        $mapper = $this->getTalkMapper($db, $request);
+        if (0 === $talk_id) {
+            $talk_id = $this->getItemId($request);
+        }
+
+        $talk = $mapper->getTalkById($talk_id, $verbose);
         if (false === $talk) {
             throw new Exception('Talk not found', 404);
         }
@@ -345,10 +339,7 @@ class TalksController extends ApiController
      */
     public function createTalkAction(Request $request, PDO $db)
     {
-        if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
-        }
-
+        $this->checkLoggedIn($request);
         $event_id = $this->getItemId($request);
         if (empty($event_id)) {
             throw new Exception(
@@ -379,7 +370,7 @@ class TalksController extends ApiController
         $request->getView()->setResponseCode(201);
         $request->getView()->setHeader('Location', $uri);
 
-        $new_talk = $this->getTalkById($db, $request, $new_id);
+        $new_talk = $this->getTalkById($request, $db, $new_id);
         $collection = new TalkModelCollection([$new_talk], 1);
         $list = $collection->getOutputView($request);
 
@@ -399,18 +390,13 @@ class TalksController extends ApiController
      */
     public function editTalk(Request $request, PDO $db)
     {
-        if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 400);
-        }
+        $this->checkLoggedIn($request);
 
         $talk_id = $this->getItemId($request);
 
         $talk_mapper = new TalkMapper($db, $request);
 
-        $talk = $talk_mapper->getTalkById($talk_id);
-        if (!$talk) {
-            throw new Exception("Talk not found", 404);
-        }
+        $talk = $this->getTalkById($request, $db);
 
         $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
         $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
@@ -542,23 +528,17 @@ class TalksController extends ApiController
     public function getSpeakersForTalk(Request $request, PDO $db)
     {
         $talk_id = $this->getItemId($request);
-        $talk = $this->getTalkById($db, $request, $talk_id);
+        $talk = $this->getTalkById($request, $db, $talk_id);
         return $talk->speakers;
     }
 
     public function setSpeakerForTalk(Request $request, PDO $db)
     {
-        if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
-        }
+        $this->checkLoggedIn($request);
 
-        $talk_id = $this->getItemId($request);
-        $talk_mapper = $this->getTalkMapper($db, $request);
-        $talk = $talk_mapper->getTalkById($talk_id);
-
-        if (! $talk) {
-            throw new Exception("Talk not found", 404);
-        }
+        $talk = $this->getTalkById($request, $db);
+        $talk_id = $talk->ID;
+        $talk_mapper = $this->getTalkMapper($request, $db);
 
         $event_id = $talk->event_id;
         $event_mapper = $this->getEventMapper($db, $request);
@@ -726,18 +706,12 @@ class TalksController extends ApiController
 
     public function removeApprovedSpeakerFromTalk(Request $request, PDO $db)
     {
-        if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 401);
-        }
-
+        $this->checkLoggedIn($request);
         $talk_id = $this->getItemId($request);
         $speaker_id = $request->url_elements[5];
 
         $talk_mapper = new TalkMapper($db, $request);
-        $talk = $talk_mapper->getTalkById($talk_id);
-        if (!$talk) {
-            throw new Exception("Talk not found", 404);
-        }
+        $talk = $this->getTalkById($talk_id);
 
         $speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $speaker_id);
         if (!$speaker) {
@@ -762,22 +736,14 @@ class TalksController extends ApiController
 
     public function removeSpeakerForTalk(Request $request, PDO $db)
     {
-        if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 401);
-        }
-
-        $talk_id = $this->getItemId($request);
-
-        $talk_mapper = $this->getTalkMapper($db, $request);
-        $talk = $talk_mapper->getTalkById($talk_id);
+        $this->checkLoggedIn($request);
+        $talk = $this->getTalkById($request, $db);
+        $talk_mapper = $this->getTalkMapper($request, $db);
+        $talk_id = $talk->ID;
 
         $event_id = $talk->event_id;
         $event_mapper = $this->getEventMapper($db, $request);
         $event = $event_mapper->getEventById($event_id);
-
-        if (!$talk) {
-            throw new Exception("Talk not found", 404);
-        }
 
         $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
         if (!($is_admin)) {
@@ -822,16 +788,46 @@ class TalksController extends ApiController
             throw new Exception("There was a problem assigning the talk", 500);
         }
 
-        //If we are unit testing, then we can't exit or send headers!
-        if (defined('UNIT_TEST')) {
-            return true;
+        $emailService = new TalkClaimRejectedEmailService($this->config, $recipients, $event, $talk);
+        if (!defined('UNIT_TEST')) {
+            $emailService->sendEmail();
         }
 
-        $emailService = new TalkClaimRejectedEmailService($this->config, $recipients, $event, $talk);
-        $emailService->sendEmail();
-
         $uri = $request->base . '/' . $request->version . '/talks/' . $talk_id;
-        header('Location: ' . $uri, null, 204);
-        exit;
+
+        $view = $request->getView();
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(204);
+
+        return true;
     }
+
+    public function getTalkLinks(Request $request, PDO $db)
+    {
+        $this->getTalkById($request, $db);
+        $talk_id = $this->getItemId($request);
+        $talk_mapper = $this->getTalkMapper($db, $request);
+        return ['talk_links' => ($talk_mapper->getTalkMediaLinks($talk_id))];
+    }
+
+    protected function checkLoggedIn(Request $request)
+    {
+        $failMessages = [
+            'POST' => 'create data',
+            'DELETE' => 'remove data',
+            'GET' => 'view data',
+            'PUT' => 'update data'
+        ];
+
+        if (!isset($request->user_id)) {
+            throw new Exception(
+                sprintf(
+                    "You must be logged in to %s",
+                    $failMessages[$request->getVerb()]
+                ),
+                401
+            );
+        }
+    }
+
 }
