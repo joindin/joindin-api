@@ -1,26 +1,32 @@
-CREATE TABLE `talk_types_link` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `talk_id` int(11) NOT NULL,
-  `talk_type` int(11) NOT NULL,
-  `url` text NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `talk_id` (`talk_id`),
-  KEY `talk_type` (`talk_type`),
-  CONSTRAINT `talk_types_link_ibfk_1` FOREIGN KEY (`talk_id`) REFERENCES `talks` (`ID`),
-  CONSTRAINT `talk_types_link_ibfk_2` FOREIGN KEY (`talk_type`) REFERENCES `talk_types` (`ID`)
-) ENGINE=InnoDB;
+#Theres already an unsed table relating to this, drop it
+DROP TABLE talk_link_types;
+#switch talks to innodb so FKs work
+ALTER TABLE `joindin`.`talks` ENGINE=INNODB;
 
-CREATE TABLE `talk_types` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) NOT NULL,
-  `display_name` varchar(255) DEFAULT NULL,
+CREATE TABLE `talk_link_types` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `display_name` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB;
+) ENGINE=INNODB;
 
 
-INSERT INTO `talk_types`(`ID`,`type`,`display_name`) VALUES
-(1,'Slides','slides_link'),
-(2,'Video','video_link'),
-(3,'Audio','audio_link');
+CREATE TABLE `joindin`.`talk_links`(
+  `ID` INT NOT NULL AUTO_INCREMENT,
+  `talk_id` INT NOT NULL,
+  `talk_type` INT NOT NULL,
+  `url` TEXT NOT NULL,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`),
+  FOREIGN KEY (`talk_id`) REFERENCES `joindin`.`talks`(`ID`),
+  FOREIGN KEY (`talk_type`) REFERENCES `joindin`.`talk_link_types`(`ID`)
+);
 
+
+INSERT INTO `talk_link_types`(`ID`,`type`,`display_name`) VALUES
+(1,'slides_link'),
+(2,'video_link'),
+(3,'audio_link'),
+(4,'code_link'), #github / bitbucket links
+(5,'joindin_link'); #Links to another talk on the same topic by the speaker
+
+INSERT INTO patch_history SET patch_number = 67;

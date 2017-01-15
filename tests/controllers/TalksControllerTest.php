@@ -6,11 +6,12 @@ use JoindinTest\Inc\mockPDO;
 use PDOStatement;
 use PHPUnit_Framework_TestCase;
 use Request;
+use TalkMapper;
+use TalkModel;
 use TalksController;
 
 class TalksControllerTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * Ensures that if the setSpeakerForTalk method is called and no user_id is set,
      * an exception is thrown
@@ -866,42 +867,69 @@ class TalksControllerTest extends PHPUnit_Framework_TestCase
         $request = new Request(
             [],
             [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/3links',
+                'REQUEST_METHOD' => 'GET'
+            ]
+        );
+
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+
+        $expected = [
+            ['slides_link' => 'http://slideshare.net'],
+            ['code_link' => 'https://github.com/link/to/repo'],
+        ];
+
+        $talk_mapper
+            ->method('getTalkMediaLinks')
+            ->willReturn($expected);
+
+        $talks_controller = new TalksController();
+        $talks_controller->setTalkMapper($talk_mapper);
+
+        $output = $talks_controller->getTalkLinks($request, $db);
+        $this->assertSame(
+            $expected,
+            $output['talk_links']
+        );
+    }
+
+    public function testVerboseTalkOutput()
+    {
+        $request = new Request(
+            [],
+            [
                 'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/3?verbose=yes',
                 'REQUEST_METHOD' => 'GET'
             ]
         );
-        $request->user_id = 1;
+
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
-            'verbose'       => 'yes',
+            'verbose'      => 'yes',
         ];
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
-        $stmt = $this->getMockBuilder(PDOStatement::class)
-                ->setMethods(array("execute", 'fetchAll'))
-                ->getMock();
 
-        $stmt->method("execute")->willReturn(true);
+        $talk_mapper = $this->createVerboseTalkMapper($db, $request);
 
-        $stmt->method("fetchAll")->will(
-            $this->onConsecutiveCalls(
-                $this->getValidTalkDBRows(),
-                $this->getValidTalkDBRows(),
-                $this->getValidTalkDBRows(),
-                $this->getValidMediaRows()
-            )
-        );
-
-        $db->method('prepare')
-        ->willReturn($stmt);
+        $expected = [
+            ['slides_link' => 'http://slideshare.net'],
+            ['code_link' => 'https://github.com'],
+        ];
 
         $talks_controller = new TalksController();
+        $talks_controller->setTalkMapper($talk_mapper);
 
         $output = $talks_controller->getAction($request, $db);
 
         $this->assertSame(
-            $this->transformMediaRows($this->getValidMediaRows()),
+            $expected,
             $output['talks'][0]['talk_media']
+        );
+        $this->assertSame(
+            'http://slideshare.net',
+            $output['talks'][0]['slides_link']
         );
     }
 
@@ -931,6 +959,45 @@ class TalksControllerTest extends PHPUnit_Framework_TestCase
                             'starred'                 => 'starred',
                             'starred_count'           => 'starred_count',
                             'event_id'                => 1
+                        ]
+                    )
+                )
+            );
+
+        return $talk_mapper;
+    }
+
+    private function createVerboseTalkMapper($db, $request)
+    {
+        $talk_mapper = $this->getMockBuilder(TalkMapper::Class)
+            ->setConstructorArgs([$db,$request])
+            ->getMock();
+
+        $talk_mapper
+            ->expects($this->once())
+            ->method('getTalkById')
+            ->will(
+                $this->returnValue(
+                    new TalkModel(
+                        [
+                            'talk_title'              => 'talk_title',
+                            'url_friendly_talk_title' => 'url_friendly_talk_title',
+                            'talk_description'        => 'talk_desc',
+                            'type'                    => 'talk_type',
+                            'start_date'              => 'date_given',
+                            'duration'                => 'duration',
+                            'stub'                    => 'stub',
+                            'average_rating'          => 'avg_rating',
+                            'comments_enabled'        => 'comments_enabled',
+                            'comment_count'           => 'comment_count',
+                            'starred'                 => 'starred',
+                            'starred_count'           => 'starred_count',
+                            'event_id'                => 1,
+                            'slides_link'             => 'http://slideshare.net',
+                            'talk_media'              => [
+                                ['slides_link'  =>  'http://slideshare.net'],
+                                ['code_link'    =>  'https://github.com'],
+                            ],
                         ]
                     )
                 )
@@ -994,42 +1061,5 @@ class TalksControllerTest extends PHPUnit_Framework_TestCase
             );
 
         return $event_mapper;
-    }
-    private function getValidMediaRows()
-    {
-        return [
-            [
-                'display_name' => "slides_link",
-                'url' => "https://slideshare.net",
-            ],
-            [
-                'display_name' => "video_link",
-                'url' => "https://youtube.com",
-            ]
-        ];
-    }
-
-    private function transformMediaRows($rows)
-    {
-        $transformedRows = [];
-
-        foreach ($rows as $row) {
-               $transformedRows[] = [$row['display_name'] => $row['url']];
-        }
-
-        return $transformedRows;
-    }
-
-    private function getValidTalkDBRows()
-    {
-        return [[
-            'ID' => 9999,
-            'talk_title' => 'Test Talk',
-            'full_name' => 'Talker Name',
-            'speaker_id' => 1,
-            'track_name' => 'test track',
-            'display_name' => 'test name',
-            'url' => 'url',
-        ]];
     }
 }

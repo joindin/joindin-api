@@ -821,15 +821,15 @@ class TalkMapper extends ApiMapper
     {
         $sql = '
             select
-              ttl.id,
-              tt.`display_name`,
-              ttl.`url`
+              tl.id,
+              tlt.`display_name`,
+              tl.`url`
             from
               talks
-              inner join talk_types_link ttl
-                on ttl.`talk_id` = talks.`id`
-              inner join talk_types tt
-                on ttl.`talk_type` = tt.`id`
+              inner join talk_links tl
+                on tl.`talk_id` = talks.`id`
+              inner join talk_link_types tlt
+                on tlt.`id` = tl.`talk_type`
             where talk_id = :talk_id
         ';
 

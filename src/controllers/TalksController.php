@@ -211,7 +211,13 @@ class TalksController extends ApiController
      */
     public function addTrackToTalk(Request $request, PDO $db)
     {
-        $this->checkLoggedIn($request);
+        try {
+            $this->checkLoggedIn($request);
+        } catch (Exception $e) {
+            // throw again with a 400 status, This should be removed for consistency
+            // but will break backwards compatibility
+            throw new Exception($e->getMessage(), 400);
+        }
 
         $talk_mapper = new TalkMapper($db, $request);
         $talk = $this->getTalkById($request, $db);
@@ -259,7 +265,13 @@ class TalksController extends ApiController
      */
     public function removeTrackFromTalk(Request $request, PDO $db)
     {
-        $this->checkLoggedIn($request);
+        try {
+            $this->checkLoggedIn($request);
+        } catch (Exception $e) {
+            // throw again with a 400 status, This should be removed for consistency
+            // but will break backwards compatibility
+            throw new Exception($e->getMessage(), 400);
+        }
 
         $track_id = $request->url_elements[5];
 
@@ -804,8 +816,8 @@ class TalksController extends ApiController
 
     public function getTalkLinks(Request $request, PDO $db)
     {
-        $this->getTalkById($request, $db);
-        $talk_id = $this->getItemId($request);
+        $talk = $this->getTalkById($request, $db);
+        $talk_id = $talk->ID;
         $talk_mapper = $this->getTalkMapper($db, $request);
         return ['talk_links' => ($talk_mapper->getTalkMediaLinks($talk_id))];
     }
