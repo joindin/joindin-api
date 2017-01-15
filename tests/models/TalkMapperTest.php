@@ -40,7 +40,7 @@ class TalkMapperTest extends PHPUnit_Framework_TestCase
             ]
         ];
         $talk = $talk_mapper->addTalkMediaTypes($talk);
-        
+
         $this->assertSame(
             'https://slideshare.net',
             $talk[0]['slides_link']
@@ -49,7 +49,7 @@ class TalkMapperTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $this->transformMediaRows($this->getValidMediaRows()),
             $talk[0]['talk_media']
-        ); 
+        );
     }
 
     private function getValidMediaRows()
