@@ -2,10 +2,16 @@
 
 namespace JoindinTest\Controller;
 
+use JoindinTest\Inc\mockPDO;
+use PDOStatement;
+use PHPUnit_Framework_TestCase;
+use Request;
+use TalkMapper;
+use TalkModel;
+use TalksController;
 
-class TalksControllerTest extends \PHPUnit_Framework_TestCase
+class TalksControllerTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * Ensures that if the setSpeakerForTalk method is called and no user_id is set,
      * an exception is thrown
@@ -18,10 +24,16 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testClaimTalkWithNoUserIdThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/326/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/326/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talks_controller->setSpeakerForTalk($request, $db);
 
@@ -33,17 +45,23 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      *
-     * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage Talk not found
      */
     public function testClaimNonExistantTalkThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+
         $request->user_id = 2;
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
 
         $talk_mapper = $this->getMockBuilder('\TalkMapper')
@@ -71,20 +89,26 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      *
-     * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage You must provide a display name and a username
      */
     public function testClaimTalkWithoutUsernameThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+
         $request->user_id = 2;
         $request->parameters = [
             'display_name'  => 'Jane Bloggs'
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talks_controller->setTalkMapper($talk_mapper);
@@ -105,20 +129,26 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      *
-     * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage You must provide a display name and a username
      */
     public function testClaimTalkWithoutDisplayNameThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+
         $request->user_id = 2;
         $request->parameters = [
             'username'  => 'janebloggs'
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talks_controller->setTalkMapper($talk_mapper);
@@ -138,21 +168,27 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      *
-     * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage No speaker matching that name found
      */
     public function testClaimTalkWithInvalidSpeakerThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'janebloggs',
             'display_name'  =>  'P Sherman'
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -178,20 +214,25 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      *
-     * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage Talk already claimed
      */
     public function testClaimTalkAlreadyClaimedThrowsException(){
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'janebloggs',
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -222,20 +263,25 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      *
-     * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage You must be the speaker or event admin to link a user to a talk
      */
     public function testClaimTalkForSomeoneElseThrowsException(){
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -284,20 +330,25 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      *
-     * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage Specified user not found
      */
     public function testAssignTalkAsHostToNonExistentUserThrowsException(){
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -334,15 +385,21 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testClaimTalkAsUserIsSuccessful()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'janebloggs',
             'display_name'  => 'Jane Bloggs'
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -394,15 +451,21 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAssignTalkAsHostIsSuccessful()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -459,15 +522,21 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testApproveAssignmentAsUserWhoClaimedThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'janebloggs',
             'display_name'  => 'Jane Bloggs'
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -521,15 +590,21 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testApproveClaimAsHostWhoAssignedThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -574,15 +649,21 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testApproveAssignmentAsUserSucceeds()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'janebloggs',
             'display_name'  => 'Jane Bloggs',
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -639,15 +720,21 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testApproveClaimAsHostSucceeds()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',
             'display_name'  => 'P Sherman',
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -707,7 +794,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      */
     public function testRejectClaimAsHostSucceeds()
     {
-        $request = new \Request(
+        $request = new Request(
             [],
             [
                 'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
@@ -721,8 +808,8 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
             'display_name'  => 'P Sherman',
         ];
 
-        $talks_controller = new \TalksController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
         $talk_mapper
@@ -775,6 +862,77 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function testDifferentTalkMedia()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/3links',
+                'REQUEST_METHOD' => 'GET'
+            ]
+        );
+
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+
+        $expected = [
+            ['slides_link' => 'http://slideshare.net'],
+            ['code_link' => 'https://github.com/link/to/repo'],
+        ];
+
+        $talk_mapper
+            ->method('getTalkMediaLinks')
+            ->willReturn($expected);
+
+        $talks_controller = new TalksController();
+        $talks_controller->setTalkMapper($talk_mapper);
+
+        $output = $talks_controller->getTalkLinks($request, $db);
+        $this->assertSame(
+            $expected,
+            $output['talk_links']
+        );
+    }
+
+    public function testVerboseTalkOutput()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/3?verbose=yes',
+                'REQUEST_METHOD' => 'GET'
+            ]
+        );
+
+        $request->parameters = [
+            'verbose'      => 'yes',
+        ];
+
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talk_mapper = $this->createVerboseTalkMapper($db, $request);
+
+        $expected = [
+            ['slides_link' => 'http://slideshare.net'],
+            ['code_link' => 'https://github.com'],
+        ];
+
+        $talks_controller = new TalksController();
+        $talks_controller->setTalkMapper($talk_mapper);
+
+        $output = $talks_controller->getAction($request, $db);
+
+        $this->assertSame(
+            $expected,
+            $output['talks'][0]['talk_media']
+        );
+        $this->assertSame(
+            'http://slideshare.net',
+            $output['talks'][0]['slides_link']
+        );
+    }
+
     private function createTalkMapper($db, $request)
     {
         $talk_mapper = $this->getMockBuilder('\TalkMapper')
@@ -801,6 +959,45 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
                             'starred'                 => 'starred',
                             'starred_count'           => 'starred_count',
                             'event_id'                => 1
+                        ]
+                    )
+                )
+            );
+
+        return $talk_mapper;
+    }
+
+    private function createVerboseTalkMapper($db, $request)
+    {
+        $talk_mapper = $this->getMockBuilder(TalkMapper::Class)
+            ->setConstructorArgs([$db,$request])
+            ->getMock();
+
+        $talk_mapper
+            ->expects($this->once())
+            ->method('getTalkById')
+            ->will(
+                $this->returnValue(
+                    new TalkModel(
+                        [
+                            'talk_title'              => 'talk_title',
+                            'url_friendly_talk_title' => 'url_friendly_talk_title',
+                            'talk_description'        => 'talk_desc',
+                            'type'                    => 'talk_type',
+                            'start_date'              => 'date_given',
+                            'duration'                => 'duration',
+                            'stub'                    => 'stub',
+                            'average_rating'          => 'avg_rating',
+                            'comments_enabled'        => 'comments_enabled',
+                            'comment_count'           => 'comment_count',
+                            'starred'                 => 'starred',
+                            'starred_count'           => 'starred_count',
+                            'event_id'                => 1,
+                            'slides_link'             => 'http://slideshare.net',
+                            'talk_media'              => [
+                                ['slides_link'  =>  'http://slideshare.net'],
+                                ['code_link'    =>  'https://github.com'],
+                            ],
                         ]
                     )
                 )

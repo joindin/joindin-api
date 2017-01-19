@@ -99,6 +99,12 @@
         "verbs": ["DELETE"]
     },
     {
+        "path": "/talks(/[\\d]+)/links$",
+        "controller": "TalksController",
+        "action": "getTalkLinks",
+        "verbs": ["GET"]
+    },
+    {
         "path": "/talks(/[\\d]+)/speakers/?$",
         "controller": "TalksController",
         "action": "getSpeakersForTalk",

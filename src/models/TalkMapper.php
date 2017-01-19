@@ -82,10 +82,11 @@ class TalkMapper extends ApiMapper
     /**
      * Retrieve a single talk
      *
-     * @param  integer  $talk_id
+     * @param  integer $talk_id
+     * @param  bool $verbose
      * @return TalkModel|false
      */
-    public function getTalkById($talk_id)
+    public function getTalkById($talk_id, $verbose = false)
     {
         $sql = $this->getBasicSQL();
         $sql .= ' and t.ID = :talk_id';
@@ -95,6 +96,10 @@ class TalkMapper extends ApiMapper
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
                 $results = $this->processResults($results);
+                if ($verbose) {
+                    $results = $this->addTalkMediaTypes($results);
+                }
+
                 return new TalkModel($results[0]);
             }
         }
@@ -799,7 +804,7 @@ class TalkMapper extends ApiMapper
 
     public function assignTalkToSpeaker($talk_id, $claim_id, $speaker_id)
     {
-        $sql = 'update talk_speaker 
+        $sql = 'update talk_speaker
                 SET speaker_id = :speaker_id
                 WHERE ID = :claim_id AND talk_id = :talk_id';
         $stmt = $this->_db->prepare($sql);
@@ -810,5 +815,55 @@ class TalkMapper extends ApiMapper
                 'claim_id'      => $claim_id
             ]
         );
+    }
+
+    public function getTalkMediaLinks($talk_id)
+    {
+        $sql = '
+            select
+              tl.id,
+              tlt.`display_name`,
+              tl.`url`
+            from
+              talks
+              inner join talk_links tl
+                on tl.`talk_id` = talks.`id`
+              inner join talk_link_types tlt
+                on tlt.`id` = tl.`talk_type`
+            where talk_id = :talk_id
+        ';
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(
+            [
+                'talk_id' => $talk_id,
+            ]
+        );
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function addTalkMediaTypes($talk)
+    {
+        $links = $this->getTalkMediaLinks($talk[0]['ID']);
+
+        foreach ($links as $link) {
+            $talk = $this->handleBackwardsCompatibleMedia($talk, $link);
+            $talk[0]['talk_media'][] = [$link['display_name'] => $link['url']];
+        }
+
+        return $talk;
+    }
+
+    /**
+     * Used for adding back the slide link to the request
+     */
+    private function handleBackwardsCompatibleMedia($talk, $link)
+    {
+        if ($link['display_name'] == "slides_link") {
+            $talk[0][$link['display_name']] = $link['url'];
+        }
+
+        return $talk;
     }
 }
