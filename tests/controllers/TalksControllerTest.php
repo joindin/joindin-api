@@ -710,7 +710,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
      * @dataProvider getComments
      */
     public function testCommentOnTalk(
-        $commenterEmail,
+        $commenterId,
         $speakerEmails,
         $expectedEmailsSent
     ) {
@@ -722,7 +722,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $request->user_id = 1;
+        $request->user_id = $commenterId;
         $request->parameters = [
             'username'      => 'psherman',
             'display_name'  => 'P Sherman',
@@ -777,7 +777,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $talk_comment
             ->method('getCommentById')
             ->willReturn(
-                ['comments' => [['email' => $commenterEmail]]]
+                ['comments' => []]
             );
 
         $talks_controller->setTalkCommentMapper(
@@ -795,10 +795,10 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'commentOnTalk' => [
-                'commenterEmail' => 'test@commeter.com',
+                'commenterId' => 3,
                 'speakerEmails' => [
-                    ['email' => 'test@speaker1.com'],
-                    ['email' => 'test@speaker2.com'],
+                    ['email' => 'test@speaker1.com', 'ID' => 1],
+                    ['email' => 'test@speaker2.com', 'ID' => 2],
                 ],
                 'expectedEmailsSent' => [
                     'test@speaker1.com',
@@ -806,10 +806,10 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
                 ]
             ],
             'commentOnOwnTalk' => [
-                'commenterEmail' => 'test@speaker1.com',
+                'commenterId' => 1,
                 'speakerEmails' => [
-                    ['email' => 'test@speaker1.com'],
-                    ['email' => 'test@speaker2.com'],
+                    ['email' => 'test@speaker1.com', 'ID' => 1],
+                    ['email' => 'test@speaker2.com', 'ID' => 2],
                 ],
                 'expectedEmailsSent' => [
                     'test@speaker2.com'
