@@ -571,7 +571,6 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
 
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
-
         $talks_controller->setSpeakerForTalk($request, $db);
     }
 
@@ -585,7 +584,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'janebloggs',
-            'display_name'  => 'Jane Bloggs'
+            'display_name'  => 'Jane Bloggs',
         ];
 
         $talks_controller = new \TalksController();
@@ -650,7 +649,7 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',
-            'display_name'  => 'P Sherman'
+            'display_name'  => 'P Sherman',
         ];
 
         $talks_controller = new \TalksController();
@@ -900,6 +899,80 @@ class TalksControllerTest extends \PHPUnit_Framework_TestCase
         );
 
         $talks_controller->postAction($request, $db);
+    }
+
+    /**
+     * Ensures that if the setSpeakerForTalk method is called by a host who rejects the speaker
+     * in response to a claimed talk then it succeeds
+     */
+    public function testRejectClaimAsHostSucceeds()
+    {
+        $request = new \Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'DELETE'
+            ]
+        );
+
+        $request->user_id = 2;
+        $request->parameters = [
+            'username'      => 'psherman',
+            'display_name'  => 'P Sherman',
+        ];
+
+        $talks_controller = new \TalksController();
+        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+        $talk_mapper
+            ->expects($this->once())
+            ->method('getSpeakerFromTalk')
+            ->will(
+                $this->returnValue(
+                    [
+                        'speaker_id'  => null,
+                        'ID'          => 1
+                    ]
+                )
+            );
+        $talk_mapper
+            ->expects($this->once())
+            ->method('thisUserHasAdminOn')
+            ->will($this->returnValue(true));
+
+        $talks_controller->setTalkMapper($talk_mapper);
+
+        $user_mapper = $this->getMockBuilder('\UserMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+
+        $user_mapper
+            ->expects($this->once())
+            ->method('getUserIdFromUsername')
+            ->will($this->returnValue(1));
+        $talks_controller->setUserMapper($user_mapper);
+
+        $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('claimExists')
+            ->will($this->returnValue(\PendingTalkClaimMapper::SPEAKER_CLAIM));
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('rejectClaimAsHost')
+            ->will($this->returnValue(true));
+
+
+        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
+
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
+
+        $this->assertTrue($talks_controller->removeSpeakerForTalk($request, $db));
+
     }
 
     private function createTalkMapper($db, $request)

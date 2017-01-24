@@ -117,4 +117,28 @@ class EventHostMapperTest extends PHPUnit_Framework_TestCase
             ]
         ], $mapper->getHostsByEventId(12, 10, 0));
     }
+
+    public function testThatRemovingAHostFromAnEventCallsTheExpectedMethods()
+    {
+        $stmt1 = $this->getMockBuilder('PDOStatement')->disableOriginalConstructor()->getMock();
+        $stmt1->method('execute')
+              ->with([
+                  ':user_id'  => 12,
+                  ':event_id' => 14,
+                  ':type'     => 'event',
+              ])
+              ->willReturn(true);
+
+        $pdo = $this->getMockBuilder('PDO')->disableOriginalConstructor()->getMock();
+        $pdo->expects($this->once())
+            ->method('prepare')
+            ->with('DELETE FROM user_admin WHERE uid = :user_id AND rid = :event_id AND rtype = :type')
+            ->willReturn($stmt1);
+
+        $request = $this->getMockBuilder('Request')->disableOriginalConstructor()->getMock();
+
+        $mapper = new EventHostMapper($pdo, $request);
+        $this->assertTrue($mapper->removeHostfromEvent(12, 14));
+
+    }
 }

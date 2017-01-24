@@ -51,10 +51,15 @@ abstract class ApiController
     public function getSort($request)
     {
         // unfiltered, you probably want to switch case this
-        if (isset($request->parameters['sort'])) {
-            return $request->parameters['sort'];
-        } else {
-            return false;
+        return $this->getRequestParameter($request, 'sort');
+    }
+
+    protected function getRequestParameter($request, $parameter, $default = false)
+    {
+        if (isset($request->parameters[$parameter])) {
+            return $request->parameters[$parameter];
         }
+
+        return $default;
     }
 }

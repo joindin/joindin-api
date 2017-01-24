@@ -9,6 +9,11 @@
         "action": "addHost",
         "verbs": ["POST"]
     },
+    {   "path": "/events/[\\d]+/hosts/[\\d]+",
+        "controller": "Event_hostsController",
+        "action": "removeHostFromEvent",
+        "verbs": ["DELETE"]
+    },
     {
         "path": "/events(/[^/]+)*/comments/reported",
         "controller": "Event_commentsController",
@@ -106,6 +111,12 @@
         "verbs": ["POST"]
     },
     {
+        "path": "/talks(/[\\d]+)/speakers/?$",
+        "controller": "TalksController",
+        "action": "removeSpeakerForTalk",
+        "verbs": ["DELETE"]
+    },
+    {
         "path": "/talks(/[\\d]+)$",
         "controller": "TalksController",
         "action": "editTalk",
@@ -153,7 +164,24 @@
         "action": "postAction",
         "verbs": ["POST"]
     },
-
+    {
+        "path": "/token/?$",
+        "controller": "TokenController",
+        "action": "listTokensForUser",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/token(/[^/]+)/?$",
+        "controller": "TokenController",
+        "action": "getToken",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/token(/[^/]+)*/?$",
+        "controller": "TokenController",
+        "action": "revokeToken",
+        "verbs": ["DELETE"]
+    },
     {
         "path": "/tracks(/[^/]+)*/?$",
         "controller": "TracksController",
@@ -332,6 +360,36 @@
         "controller": "FacebookController",
         "action": "logUserIn",
         "verbs": ["POST"]
+    },
+    {
+        "path" : "/applications$",
+        "controller" : "ApplicationsController",
+        "action" : "listApplications",
+        "verbs" : ["GET"]
+    },
+    {
+        "path" : "/applications$",
+        "controller" : "ApplicationsController",
+        "action" : "createApplication",
+        "verbs" : ["POST"]
+    },
+    {
+        "path" : "/applications(/[0-9]+)$",
+        "controller" : "ApplicationsController",
+        "action" : "getApplication",
+        "verbs" : ["GET"]
+    },
+    {
+        "path" : "/applications(/[0-9]+)$",
+        "controller" : "ApplicationsController",
+        "action" : "editApplication",
+        "verbs" : ["PUT"]
+    },
+    {
+        "path" : "/applications(/[0-9]+)$",
+        "controller" : "ApplicationsController",
+        "action" : "deleteApplication",
+        "verbs" : ["DELETE"]
     },
 
     {

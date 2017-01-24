@@ -145,3 +145,7 @@ what to include, but you can also ignore the files used by your editor:
     nbproject/private/
 
 For more info on ignoring files, [github has an excellent help page](https://help.github.com/articles/ignoring-files/).
+
+## License
+
+The joindin-API is developed under a BSD-3 License. You can find the exact wording [in the LICENSE-file](LICENSE)
