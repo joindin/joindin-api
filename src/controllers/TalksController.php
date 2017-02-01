@@ -78,8 +78,8 @@ class TalksController extends ApiController
                     $oauth_model   = $request->getOauthModel($db);
                     $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
-                    $talk_mapper    = new TalkMapper($db, $request);
-                    $comment_mapper = new TalkCommentMapper($db, $request);
+                    $talk_mapper    = $this->getTalkMapper($db, $request);
+                    $comment_mapper = $this->getTalkCommentMapper($db, $request);
 
                     $data['user_id'] = $request->user_id;
                     $data['talk_id'] = $talk_id;
@@ -124,10 +124,16 @@ class TalksController extends ApiController
                         $comment    = $comment_mapper->getCommentById($new_id);
                         $speakers   = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
                         $recipients = array();
+
                         foreach ($speakers as $person) {
+                            if ($request->user_id == $person['ID']) {
+                                continue;
+                            }
+
                             $recipients[] = $person['email'];
                         }
-                        $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+
+                        $emailService = $this->getTalkCommentEmailService($this->config, $recipients, $talk, $comment);
                         $emailService->sendEmail();
                         $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
 
@@ -322,7 +328,7 @@ class TalksController extends ApiController
      */
     protected function getTalkById($db, $request, $talk_id)
     {
-        $mapper = new TalkMapper($db, $request);
+        $mapper = $this->getTalkMapper($db, $request);
         $talk   = $mapper->getTalkById($talk_id);
         if (false === $talk) {
             throw new Exception('Talk not found', 404);
@@ -681,6 +687,20 @@ class TalksController extends ApiController
         return $this->talk_mapper;
     }
 
+    public function setTalkCommentMapper(TalkCommentMapper $talk_comment_mapper)
+    {
+        $this->talk_comment_mapper = $talk_comment_mapper;
+    }
+
+    public function getTalkCommentMapper($db, $request)
+    {
+        if (! isset($this->talk_comment_mapper)) {
+            $this->talk_comment_mapper = new TalkCommentMapper($db, $request);
+        }
+
+        return $this->talk_comment_mapper;
+    }
+
     public function setEventMapper(EventMapper $event_mapper)
     {
         $this->event_mapper = $event_mapper;
@@ -758,6 +778,11 @@ class TalksController extends ApiController
         $view = $request->getView();
         $view->setHeader('Location', $uri);
         $view->setResponseCode(204);
+    }
+
+    public function getTalkCommentEmailService($config, $recipients, $talk, $comment)
+    {
+        return new TalkCommentEmailService($config, $recipients, $talk, $comment);
     }
 
     public function removeSpeakerForTalk(Request $request, PDO $db)
