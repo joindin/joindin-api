@@ -96,7 +96,7 @@ class OAuthModel
      * @param  string $username username
      * @param  string $password password
      *
-     * @return string           access token
+     * @return array access token and user Uri
      */
     public function createAccessTokenFromPassword($clientId, $username, $password)
     {
@@ -121,7 +121,7 @@ class OAuthModel
      * @param  string $username user's username
      * @param  string $password user's password
      *
-     * @return mixed            user's id on success or false
+     * @return int|bool            user's id on success or false
      */
     protected function getUserId($username, $password)
     {
