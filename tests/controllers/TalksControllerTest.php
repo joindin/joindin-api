@@ -3,13 +3,16 @@
 namespace JoindinTest\Controller;
 
 use JoindinTest\Inc\mockPDO;
+use OAuthModel;
 use PDOStatement;
 use PHPUnit_Framework_TestCase;
 use Request;
+use TalkCommentEmailService;
+use TalkCommentMapper;
+use TalkLinkController;
 use TalkMapper;
 use TalkModel;
 use TalksController;
-use TalkLinkController;
 
 class TalksControllerTest extends TalkBase
 {
@@ -65,7 +68,7 @@ class TalksControllerTest extends TalkBase
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
 
-        $talk_mapper = $this->getMockBuilder('\TalkMapper')
+        $talk_mapper = $this->getMockBuilder(TalkMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
@@ -788,6 +791,200 @@ class TalksControllerTest extends TalkBase
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
 
     }
+    /**
+     * @dataProvider getComments
+     */
+    public function testCommentOnTalk(
+        $commenterId,
+        $speakerEmails,
+        $expectedEmailsSent
+    ) {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/9999/comments',
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+
+        $request->user_id = $commenterId;
+        $request->parameters = [
+            'username'      => 'psherman',
+            'display_name'  => 'P Sherman',
+            'comment' => 'Test Comment',
+            'rating' => '3',
+        ];
+
+        $talks_comment_email =
+            $this->getMockBuilder(TalkCommentEmailService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $talks_comment_email->method('sendEmail');
+
+        $talks_controller = $this->getMockBuilder(TalksController::class)
+            ->setMethods(['getTalkCommentEmailService'])
+            ->getMock();
+
+        $talks_controller
+            ->method('getTalkCommentEmailService')
+            ->with(
+                $this->anything(),
+                $expectedEmailsSent,
+                $this->anything(),
+                $this->anything()
+            )->willReturn($talks_comment_email);
+
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+
+        $talk_mapper
+            ->method('getSpeakerEmailsByTalkId')
+            ->willReturn($speakerEmails);
+
+        $talks_controller->setTalkMapper(
+            $talk_mapper
+        );
+
+        $talk_comment = $this->createTalkCommentMapper($db, $request);
+        $talk_comment
+            ->method('hasUserRatedThisTalk')
+            ->willReturn(
+                true
+            );
+
+        $talk_comment
+            ->method('save')
+            ->willReturn(
+                true
+            );
+        $talk_comment
+            ->method('getCommentById')
+            ->willReturn(
+                ['comments' => []]
+            );
+
+        $talks_controller->setTalkCommentMapper(
+            $talk_comment
+        );
+
+        $request->setOauthModel(
+            $this->createOathModel($db, $request, "test")
+        );
+
+        $this->assertNull($talks_controller->postAction($request, $db));
+    }
+
+    public function getComments()
+    {
+        return [
+            'commentOnTalk' => [
+                'commenterId' => 3,
+                'speakerEmails' => [
+                    ['email' => 'test@speaker1.com', 'ID' => 1],
+                    ['email' => 'test@speaker2.com', 'ID' => 2],
+                ],
+                'expectedEmailsSent' => [
+                    'test@speaker1.com',
+                    'test@speaker2.com'
+                ]
+            ],
+            'commentOnOwnTalk' => [
+                'commenterId' => 1,
+                'speakerEmails' => [
+                    ['email' => 'test@speaker1.com', 'ID' => 1],
+                    ['email' => 'test@speaker2.com', 'ID' => 2],
+                ],
+                'expectedEmailsSent' => [
+                    'test@speaker2.com'
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 401
+     */
+    public function testNotLoggedInPostAction()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/9999/comments',
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+        $talks_controller = new TalksController();
+
+        $talks_controller->postAction($request, $db);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 400
+     */
+    public function testNotSendingMessage()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/9999/comments',
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+        $request->user_id = 1;
+        $request->parameters = [
+            'username'      => 'psherman',
+            'display_name'  => 'P Sherman',
+            'rating' => '3',
+        ];
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+
+        $talks_controller = new TalksController();
+
+        $talks_controller->setTalkMapper(
+            $talk_mapper
+        );
+
+        $talks_controller->postAction($request, $db);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 400
+     */
+    public function testNotSendingRating()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/9999/comments',
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+        $request->user_id = 1;
+        $request->parameters = [
+            'username'      => 'psherman',
+            'display_name'  => 'P Sherman',
+            'comment' => 'Test Comment',
+        ];
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+
+        $talks_controller = new TalksController();
+
+        $talks_controller->setTalkMapper(
+            $talk_mapper
+        );
+
+        $talks_controller->postAction($request, $db);
+    }
 
     /**
      * Ensures that if the setSpeakerForTalk method is called by a host who rejects the speaker
@@ -896,23 +1093,13 @@ class TalksControllerTest extends TalkBase
         );
     }
 
-    public function testGetTalkMapperReturnsTalkMapper()
+    private function createTalkCommentMapper($db, $request)
     {
-        $request = new Request(
-            [],
-            [
-                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/3links',
-                'REQUEST_METHOD' => 'GET'
-            ]
-        );
+        $talk_comment_mapper = $this->getMockBuilder(TalkCommentMapper::class)
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
 
-        $db = $this->getMockBuilder(mockPDO::class)->getMock();
-
-
-        $talks_controller = new TalkLinkController();
-        $talk_mapper = $talks_controller->getTalkMapper($db, $request);
-        $this->assertInstanceOf(TalkMapper::class, $talk_mapper);
-        $this->assertSame($talk_mapper, $talks_controller->getTalkMapper($db, $request));
+        return $talk_comment_mapper;
     }
 
 
@@ -952,5 +1139,23 @@ class TalksControllerTest extends TalkBase
             'http://slideshare.net',
             $output['talks'][0]['slides_link']
         );
+    }
+
+    private function createOathModel($db, $request, $consumerName = "")
+    {
+
+        $oathModel = $this->getMockBuilder(OAuthModel::class)
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+
+        $oathModel
+            ->method('getConsumerName')
+            ->willReturn(
+                [
+                    $consumerName
+                ]
+            );
+
+        return $oathModel;
     }
 }

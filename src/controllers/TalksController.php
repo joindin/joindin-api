@@ -76,8 +76,8 @@ class TalksController extends BaseTalkController
                     $oauth_model   = $request->getOauthModel($db);
                     $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
-                    $talk_mapper    = new TalkMapper($db, $request);
-                    $comment_mapper = new TalkCommentMapper($db, $request);
+                    $talk_mapper    = $this->getTalkMapper($db, $request);
+                    $comment_mapper = $this->getTalkCommentMapper($db, $request);
 
                     $data['user_id'] = $request->user_id;
                     $data['talk_id'] = $talk_id;
@@ -122,10 +122,16 @@ class TalksController extends BaseTalkController
                         $comment    = $comment_mapper->getCommentById($new_id);
                         $speakers   = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
                         $recipients = array();
+
                         foreach ($speakers as $person) {
+                            if ($request->user_id == $person['ID']) {
+                                continue;
+                            }
+
                             $recipients[] = $person['email'];
                         }
-                        $emailService = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+
+                        $emailService = $this->getTalkCommentEmailService($this->config, $recipients, $talk, $comment);
                         $emailService->sendEmail();
                         $uri = $request->base . '/' . $request->version . '/talk_comments/' . $new_id;
 
@@ -670,6 +676,11 @@ class TalksController extends BaseTalkController
         $view = $request->getView();
         $view->setHeader('Location', $uri);
         $view->setResponseCode(204);
+    }
+
+    public function getTalkCommentEmailService($config, $recipients, $talk, $comment)
+    {
+        return new TalkCommentEmailService($config, $recipients, $talk, $comment);
     }
 
     public function removeSpeakerForTalk(Request $request, PDO $db)

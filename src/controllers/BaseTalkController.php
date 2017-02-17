@@ -65,6 +65,20 @@ class BaseTalkController extends ApiController
         return $this->user_mapper;
     }
 
+    public function setTalkCommentMapper(TalkCommentMapper $talk_comment_mapper)
+    {
+        $this->talk_comment_mapper = $talk_comment_mapper;
+    }
+
+    public function getTalkCommentMapper($db, $request)
+    {
+        if (!isset($this->talk_comment_mapper)) {
+            $this->talk_comment_mapper = new TalkCommentMapper($db, $request);
+        }
+
+        return $this->talk_comment_mapper;
+    }
+
     /**
      * Get a single talk
      *
