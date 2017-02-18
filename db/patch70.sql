@@ -22,7 +22,7 @@ CREATE TABLE `joindin`.`talk_links`(
 );
 
 
-INSERT INTO `talk_link_types`(`ID`,`type`,`display_name`) VALUES
+INSERT INTO `talk_link_types`(`ID`,`display_name`) VALUES
 (1,'slides_link'),
 (2,'video_link'),
 (3,'audio_link'),
