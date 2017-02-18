@@ -99,6 +99,36 @@
         "verbs": ["DELETE"]
     },
     {
+        "path": "/talks(/[\\d]+)/links/?$",
+        "controller": "TalkLinkController",
+        "action": "getTalkLinks",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks(/[\\d]+)/links/?$",
+        "controller": "TalkLinkController",
+        "action": "addTalkLink",
+        "verbs": ["POST"]
+    },
+    {
+        "path": "/talks(/[\\d]+)/links(/[\\d]+)$",
+        "controller": "TalkLinkController",
+        "action": "getTalkLink",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks(/[\\d]+)/links(/[\\d]+)$",
+        "controller": "TalkLinkController",
+        "action": "removeTalkLink",
+        "verbs": ["DELETE"]
+    },
+    {
+        "path": "/talks(/[\\d]+)/links(/[\\d]+)$",
+        "controller": "TalkLinkController",
+        "action": "updateTalkLink",
+        "verbs": ["PUT"]
+    },
+    {
         "path": "/talks(/[\\d]+)/speakers/?$",
         "controller": "TalksController",
         "action": "getSpeakersForTalk",
