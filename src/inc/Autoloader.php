@@ -31,6 +31,14 @@ function apiv2Autoload($classname)
     }
 
     $filename = false;
+    if (strpos($classname, "JoindinTest" ) === 0) {
+        $rename = [
+            'Controller' => 'controllers',
+            '\\' => DIRECTORY_SEPARATOR,
+            'JoindinTest' => __DIR__ . '/../../tests',
+        ];
+        $filename = str_replace(array_keys($rename), $rename, $classname) . ".php";
+    }
 
     if (preg_match('/[a-zA-Z]+Controller$/', $classname)) {
         $filename = __DIR__ . '/../controllers/' . $classname . '.php';

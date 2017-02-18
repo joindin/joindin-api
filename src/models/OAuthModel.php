@@ -167,11 +167,9 @@ class OAuthModel
     {
         $hash              = $this->generateToken();
         $accessToken       = substr($hash, 0, 16);
-        $accessTokenSecret = substr($hash, 16, 16);
 
         $sql = "INSERT INTO oauth_access_tokens set
                 access_token = :access_token,
-                access_token_secret = :access_token_secret,
                 consumer_key = :consumer_key,
                 user_id = :user_id,
                 last_used_date = NOW()
@@ -181,7 +179,6 @@ class OAuthModel
         $result = $stmt->execute(
             array(
                 'access_token'        => $accessToken,
-                'access_token_secret' => $accessTokenSecret,
                 'consumer_key'        => $consumer_key,
                 'user_id'             => $user_id,
             )

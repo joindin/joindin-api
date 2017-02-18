@@ -37,7 +37,7 @@ class HtmlView extends ApiView
         }
         $this->layoutStop();
 
-        return true;
+        return null;
     }
 
     /**
