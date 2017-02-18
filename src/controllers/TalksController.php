@@ -584,10 +584,12 @@ class TalksController extends BaseTalkController
             } else {
                 throw new Exception("You must be the speaker or event admin to link a user to a talk", 401);
             }
-        } elseif ($claim_exists === PendingTalkClaimMapper::SPEAKER_CLAIM) {
+        } elseif ((
+            $claim_exists === PendingTalkClaimMapper::SPEAKER_CLAIM &&
+            $this->getRequestParameter($request, 'action') == 'approve'
+        )) {
             //The host needs to approve
             if ($talk_mapper->thisUserHasAdminOn($talk_id)) {
-                $method = $this->getRequestParameter($request, 'action', 'approve');
                 $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
 
                 $success = $pending_talk_claim_mapper->approveClaimAsHost($talk_id, $speaker_id, $claim['ID'])

@@ -536,7 +536,8 @@ class TalksControllerTest extends TalkBase
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'janebloggs',
-            'display_name'  => 'Jane Bloggs'
+            'display_name'  => 'Jane Bloggs',
+            'action'        => 'approve',
         ];
 
         $talks_controller = new TalksController();
@@ -735,6 +736,7 @@ class TalksControllerTest extends TalkBase
         $request->parameters = [
             'username'      => 'psherman',
             'display_name'  => 'P Sherman',
+            'action'        => 'approve',
         ];
 
         $talks_controller = new TalksController();
