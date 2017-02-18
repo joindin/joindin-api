@@ -865,7 +865,7 @@ class TalkMapper extends ApiMapper
         $sql = "
             DELETE
             FROM
-              talk_types_link
+              talk_links
             WHERE talk_id = :talk_id 
               AND id = :link_id 
         ";
