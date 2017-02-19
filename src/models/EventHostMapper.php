@@ -56,7 +56,7 @@ class EventHostMapper extends ApiMapper
         return $this->_db->lastInsertId();
     }
 
-    public function removeHostfromEvent($host_id, $event_id)
+    public function removeHostFromEvent($host_id, $event_id)
     {
         $sql = 'DELETE FROM user_admin WHERE uid = :user_id AND rid = :event_id AND rtype = :type';
         $stmt = $this->_db->prepare($sql);
