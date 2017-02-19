@@ -30,14 +30,12 @@ class EventsController extends ApiController
                     );
                     break;
                 case 'talk_comments':
-                    $sort                = $this->getSort($request);
                     $talk_comment_mapper = new TalkCommentMapper($db, $request);
                     $list                = $talk_comment_mapper->getCommentsByEventId(
                         $event_id,
                         $resultsperpage,
                         $start,
-                        $verbose,
-                        $sort
+                        $verbose
                     );
                     break;
                 case 'attendees':
@@ -353,7 +351,7 @@ class EventsController extends ApiController
 
                 // Send an email if we didn't auto-approve
                 if (! $user_mapper->isSiteAdmin($request->user_id)) {
-                    $event        = $event_mapper->getPendingEventById($event_id, true);
+                    $event        = $event_mapper->getPendingEventById($event_id);
                     $count        = $event_mapper->getPendingEventsCount();
                     $recipients   = $user_mapper->getSiteAdminEmails();
                     $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
