@@ -3,12 +3,7 @@
 namespace JoindinTest\Controller;
 
 use JoindinTest\Inc\mockPDO;
-use PDOStatement;
-use PHPUnit_Framework_TestCase;
 use Request;
-use TalkMapper;
-use TalkModel;
-use TalksController;
 use TalkLinkController;
 
 class TalkLinkControllerTest extends TalkBase

@@ -17,11 +17,11 @@ class TalksController extends BaseTalkController
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'comments':
-                    $comment_mapper = new TalkCommentMapper($db, $request);
+                    $comment_mapper = $this->getTalkCommentMapper($db, $request);
                     $list           = $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
                     break;
                 case 'starred':
-                    $mapper = new TalkMapper($db, $request);
+                    $mapper = $this->getTalkMapper($db, $request);
                     $list   = $mapper->getUserStarred($talk_id, $request->user_id);
                     break;
             }
@@ -37,7 +37,7 @@ class TalksController extends BaseTalkController
                     FILTER_FLAG_NO_ENCODE_QUOTES
                 );
 
-                $mapper = new TalkMapper($db, $request);
+                $mapper = $this->getTalkMapper($db, $request);
                 $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
                 $list = $talks->getOutputView($request, $verbose);
             } else {
