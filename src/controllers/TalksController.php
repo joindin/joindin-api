@@ -47,7 +47,6 @@ class TalksController extends BaseTalkController
         }
 
         $this->setDbAndRequest($db, $request);
-        $talk_id = $this->getItemId($request);
 
         $keyword = filter_var(
             $request->parameters['title'],
