@@ -1,4 +1,4 @@
-INSERT INTO `joindin`.`talk_links` (`talk_id`, `talk_type`, `url`)
+INSERT INTO `talk_links` (`talk_id`, `talk_type`, `url`)
 SELECT
   id,
   1,
