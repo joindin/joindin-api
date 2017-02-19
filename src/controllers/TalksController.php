@@ -7,37 +7,19 @@ class TalksController extends BaseTalkController
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
 
-        $type = [
-            'comments' => [$this, 'getTalkComments'],
-            'starred' => [$this, 'getTalkStarred'],
-        ];
-        
-        if ((
-            isset($request->url_elements[4]) &&
-            is_callable($type[$request->url_elements[4]])
-        )) {
-            return $type[$request->url_elements[4]]($talk_id);
-        }
+        $verbose = $this->getVerbosity($request);
 
-        if ($talk_id) {
-            $verbose = $this->getVerbosity($request);
+        $talk = $this->getTalkById($request, $db, $talk_id, $verbose);
+        $collection = new TalkModelCollection([$talk], 1);
 
-            $talk = $this->getTalkById($request, $db, $talk_id, $verbose);
-            $collection = new TalkModelCollection([$talk], 1);
+        return $collection->getOutputView($request, $verbose);
 
-            return $collection->getOutputView($request, $verbose);
-        }
-
-        if (isset($request->parameters['title'])) {
-            return $this->getTalkByKeyWord($request->parameters['title']);
-        }
-
-        throw new Exception('Generic talks listing not supported', 405);
     }
 
-    private function getTalkComments($talk_id)
+    public function getTalkComments($request, $db)
     {
-
+        $this->setDbAndRequest($db, $request);
+        $talk_id = $this->getItemId($request);
         $verbose = $this->getVerbosity($this->request);
 
         // pagination settings
@@ -45,32 +27,43 @@ class TalksController extends BaseTalkController
         $resultsperpage = $this->getResultsPerPage($this->request);
 
         $comment_mapper = $this->getMapper('talkcomment');
+
         return $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
     }
 
-    private function getTalkStarred($talk_id)
+    public function getTalkStarred($request, $db)
     {
+        $this->setDbAndRequest($db, $request);
+        $talk_id = $this->getItemId($request);
         $mapper = $this->getMapper('talk');
+
         return $mapper->getUserStarred($talk_id, $this->request->user_id);
     }
 
-    private function getTalkByKeyWord($keyword)
+    public function getTalkByKeyWord($request, $db)
     {
-            $keyword = filter_var(
-                $keyword,
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
-            );
+        if (!isset($request->parameters['title'])) {
+            throw new Exception('Generic talks listing not supported', 405);
+        }
 
-            $verbose = $this->getVerbosity($this->request);
+        $this->setDbAndRequest($db, $request);
+        $talk_id = $this->getItemId($request);
 
-            $start          = $this->getStart($this->request);
-            $resultsperpage = $this->getResultsPerPage($this->request);
+        $keyword = filter_var(
+            $request->parameters['title'],
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
 
-            $mapper = $this->getMapper('talk');
-            $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
+        $verbose = $this->getVerbosity($this->request);
 
-            return $talks->getOutputView($this->request, $verbose);
+        $start          = $this->getStart($this->request);
+        $resultsperpage = $this->getResultsPerPage($this->request);
+
+        $mapper = $this->getMapper('talk');
+        $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
+
+        return $talks->getOutputView($this->request, $verbose);
     }
 
     public function postAction($request, $db)

@@ -1163,7 +1163,7 @@ class TalksControllerTest extends TalkBase
             $talkComment
         );
 
-        $output = $talks_controller->getAction($request, $db);
+        $output = $talks_controller->getTalkComments($request, $db);
         $this->assertSame($expected, $output);
 
     }
@@ -1194,7 +1194,7 @@ class TalksControllerTest extends TalkBase
             $talkMapper
         );
 
-        $output = $talks_controller->getAction($request, $db);
+        $output = $talks_controller->getTalkStarred($request, $db);
         $this->assertSame($expected, $output);
 
     }
@@ -1245,7 +1245,7 @@ class TalksControllerTest extends TalkBase
             $talkMapper
         );
 
-        $output = $talks_controller->getAction($request, $db);
+        $output = $talks_controller->getTalkByKeyWord($request, $db);
         $this->assertSame($expected, $output);
     }
 
@@ -1267,6 +1267,6 @@ class TalksControllerTest extends TalkBase
 
         $talks_controller = new TalksController();
 
-        $output = $talks_controller->getAction($request, $db);
+        $output = $talks_controller->getTalkByKeyWord($request, $db);
     }
 }

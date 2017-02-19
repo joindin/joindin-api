@@ -153,7 +153,25 @@
         "verbs": ["PUT"]
     },
     {
-        "path": "/talks(/[^/]+)*/?$",
+        "path": "/talks/?$",
+        "controller": "TalksController",
+        "action": "getTalkByKeyWord",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks/[\\d]+/comments/?$",
+        "controller": "TalksController",
+        "action": "getTalkComments",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks/[\\d]+/starred/?$",
+        "controller": "TalksController",
+        "action": "getTalkStarred",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks/[\\d]+/?$",
         "controller": "TalksController",
         "action": "getAction",
         "verbs": ["GET"]
