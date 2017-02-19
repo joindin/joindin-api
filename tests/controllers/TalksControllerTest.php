@@ -864,7 +864,8 @@ class TalksControllerTest extends TalkBase
                 ['comments' => []]
             );
 
-        $talks_controller->setTalkCommentMapper(
+        $talks_controller->setMapper(
+            'talkcomment',
             $talk_comment
         );
 
@@ -1157,7 +1158,10 @@ class TalksControllerTest extends TalkBase
             ->willReturn($expected);
 
         $talks_controller = new TalksController();
-        $talks_controller->setTalkCommentMapper($talkComment);
+        $talks_controller->setMapper(
+            'talkcomment',
+            $talkComment
+        );
 
         $output = $talks_controller->getAction($request, $db);
         $this->assertSame($expected, $output);
@@ -1185,7 +1189,10 @@ class TalksControllerTest extends TalkBase
             ->willReturn($expected);
 
         $talks_controller = new TalksController();
-        $talks_controller->setTalkMapper($talkMapper);
+        $talks_controller->setMapper(
+            'talk',
+            $talkMapper
+        );
 
         $output = $talks_controller->getAction($request, $db);
         $this->assertSame($expected, $output);
@@ -1233,7 +1240,10 @@ class TalksControllerTest extends TalkBase
 
 
         $talks_controller = new TalksController();
-        $talks_controller->setTalkMapper($talkMapper);
+        $talks_controller->setMapper(
+            'talk',
+            $talkMapper
+        );
 
         $output = $talks_controller->getAction($request, $db);
         $this->assertSame($expected, $output);

@@ -2,6 +2,18 @@
 
 class BaseTalkController extends ApiController
 {
+    /** @var PDO */
+    protected $db;
+    /** @var Request */
+    protected $request;
+
+    protected $classMappings = [
+        'talk' => TalkMapper::class,
+        'talkcomment' => TalkCommentMapper::class,
+    ];
+
+    protected $classMaps = [];
+
     protected function checkLoggedIn(Request $request)
     {
         $failMessages = [
@@ -29,7 +41,7 @@ class BaseTalkController extends ApiController
 
     public function getTalkMapper($db, $request)
     {
-        if (! isset($this->talk_mapper)) {
+        if (!isset($this->talk_mapper)) {
             $this->talk_mapper = new TalkMapper($db, $request);
         }
 
@@ -65,19 +77,6 @@ class BaseTalkController extends ApiController
         return $this->user_mapper;
     }
 
-    public function setTalkCommentMapper(TalkCommentMapper $talk_comment_mapper)
-    {
-        $this->talk_comment_mapper = $talk_comment_mapper;
-    }
-
-    public function getTalkCommentMapper($db, $request)
-    {
-        if (!isset($this->talk_comment_mapper)) {
-            $this->talk_comment_mapper = new TalkCommentMapper($db, $request);
-        }
-
-        return $this->talk_comment_mapper;
-    }
 
     /**
      * Get a single talk
@@ -108,5 +107,33 @@ class BaseTalkController extends ApiController
         }
 
         return $talk;
+    }
+
+    protected function setDbAndRequest(PDO $db, Request $request)
+    {
+        $this->db = $db;
+        $this->request = $request;
+    }
+
+    protected function getMapper($type, PDO $db = null, Request $request = null)
+    {
+        if (is_null($db)) {
+            $db = $this->db;
+        }
+
+        if (is_null($request)) {
+            $request = $this->request;
+        }
+
+        if (!isset($this->classMaps[$type])) {
+            $this->classMaps[$type] = new $this->classMappings[$type]($db, $request);
+        }
+
+        return $this->classMaps[$type];
+    }
+
+    public function setMapper($type, $object)
+    {
+        $this->classMaps[$type] = $object;
     }
 }
