@@ -72,6 +72,7 @@ class TalkMapper extends ApiMapper
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $total = $this->getTotalCount($sql, array(':event_id' => $event_id));
             $results = $this->processResults($results);
+            $results = $this->addTalkMediaTypes($results);
 
             return new TalkModelCollection($results, $total);
         }
