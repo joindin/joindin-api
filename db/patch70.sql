@@ -1,7 +1,7 @@
 #Because of potential issuesm drop the talk_links table to be on the safe side
-DROP TABLE talk_links;
+DROP TABLE IF EXISTS talk_links;
 #Theres already an unsed table relating to this, drop it
-DROP TABLE talk_link_types;
+DROP TABLE IF EXISTS talk_link_types;
 
 #switch talks to innodb so FKs work
 ALTER TABLE `talks` ENGINE=INNODB;
