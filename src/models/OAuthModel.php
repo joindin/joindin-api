@@ -125,20 +125,25 @@ class OAuthModel
      */
     protected function getUserId($username, $password)
     {
-        $sql  = 'SELECT ID, password, email FROM user
-            WHERE username=:username
-            AND verified = 1';
+        $sql  = 'SELECT ID, password, email, verified FROM user
+            WHERE username=:username';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("username" => $username));
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($result) {
-            if (password_verify(md5($password), $result['password'])) {
-                return $result['ID'];
-            }
+
+        if (!$result) {
+            return false;
         }
 
-        return false;
+        if ($result['verified'] != 1) {
+            throw new Exception("Not verified", 401);
+        }
 
+        if (!password_verify(md5($password), $result['password'])) {
+            return false;
+        }
+
+        return $result['ID'];
     }
 
     /**
