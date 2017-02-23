@@ -31,13 +31,13 @@ set_exception_handler('handle_exception');
 
 // config setup
 define('BASEPATH', '.');
-include('../config.php');
+include '../config.php';
 if ($config['mode'] == "development") {
     ini_set("html_errors", 0);
 }
 
 // database setup
-include('../database.php');
+include '../database.php';
 $ji_db = new PDO(
     'mysql:host=' . $db['default']['hostname'] .
     ';dbname=' . $db['default']['database'],
