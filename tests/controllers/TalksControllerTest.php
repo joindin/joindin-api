@@ -3,15 +3,11 @@
 namespace JoindinTest\Controller;
 
 use JoindinTest\Inc\mockPDO;
-use OAuthModel;
-use PDOStatement;
-use PHPUnit_Framework_TestCase;
 use Request;
 use TalkCommentEmailService;
-use TalkCommentMapper;
 use TalkLinkController;
 use TalkMapper;
-use TalkModel;
+use TalkModelCollection;
 use TalksController;
 
 class TalksControllerTest extends TalkBase
@@ -221,7 +217,8 @@ class TalksControllerTest extends TalkBase
      * @expectedException        \Exception
      * @expectedExceptionMessage Talk already claimed
      */
-    public function testClaimTalkAlreadyClaimedThrowsException(){
+    public function testClaimTalkAlreadyClaimedThrowsException()
+    {
         $request = new Request(
             [],
             [
@@ -267,10 +264,11 @@ class TalksControllerTest extends TalkBase
      *
      * @return void
      *
-     * @expectedException        \Exception
+     * @expectedException        Exception
      * @expectedExceptionMessage You must be the speaker or event admin to link a user to a talk
      */
-    public function testClaimTalkForSomeoneElseThrowsException(){
+    public function testClaimTalkForSomeoneElseThrowsException()
+    {
         $request = new Request(
             [],
             [
@@ -334,10 +332,11 @@ class TalksControllerTest extends TalkBase
      *
      * @return void
      *
-     * @expectedException        \Exception
+     * @expectedException        Exception
      * @expectedExceptionMessage Specified user not found
      */
-    public function testAssignTalkAsHostToNonExistentUserThrowsException(){
+    public function testAssignTalkAsHostToNonExistentUserThrowsException()
+    {
         $request = new Request(
             [],
             [
@@ -865,7 +864,8 @@ class TalksControllerTest extends TalkBase
                 ['comments' => []]
             );
 
-        $talks_controller->setTalkCommentMapper(
+        $talks_controller->setMapper(
+            'talkcomment',
             $talk_comment
         );
 
@@ -1093,16 +1093,6 @@ class TalksControllerTest extends TalkBase
         );
     }
 
-    private function createTalkCommentMapper($db, $request)
-    {
-        $talk_comment_mapper = $this->getMockBuilder(TalkCommentMapper::class)
-            ->setConstructorArgs(array($db,$request))
-            ->getMock();
-
-        return $talk_comment_mapper;
-    }
-
-
     public function testVerboseTalkOutput()
     {
         $request = new Request(
@@ -1141,21 +1131,142 @@ class TalksControllerTest extends TalkBase
         );
     }
 
-    private function createOathModel($db, $request, $consumerName = "")
+    public function testGetComments()
     {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79/comments',
+                'REQUEST_METHOD' => 'GET'
+            ]
+        );
 
-        $oathModel = $this->getMockBuilder(OAuthModel::class)
-            ->setConstructorArgs(array($db,$request))
-            ->getMock();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $oathModel
-            ->method('getConsumerName')
-            ->willReturn(
-                [
-                    $consumerName
+        $expected = [
+            'comments' => [],
+            'meta' => [
+                'count' => 0,
+                'total' => 0,
+                'this_page' => 'http://api.dev.joind.in/v2.1' .
+                    '/talks/79/comments?resultsperpage=20',
                 ]
-            );
+        ];
 
-        return $oathModel;
+        $talkComment = $this->createTalkCommentMapper($db, $request);
+        $talkComment->method('getCommentsByTalkId')
+            ->willReturn($expected);
+
+        $talks_controller = new TalksController();
+        $talks_controller->setMapper(
+            'talkcomment',
+            $talkComment
+        );
+
+        $output = $talks_controller->getTalkComments($request, $db);
+        $this->assertSame($expected, $output);
+
+    }
+
+    public function testGetStarred()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79/starred',
+                'REQUEST_METHOD' => 'GET'
+            ]
+        );
+
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $expected = [
+            'has_starred' => false,
+        ];
+
+        $talkMapper = $this->createTalkMapper($db, $request, 0);
+        $talkMapper->method('getUserStarred')
+            ->willReturn($expected);
+
+        $talks_controller = new TalksController();
+        $talks_controller->setMapper(
+            'talk',
+            $talkMapper
+        );
+
+        $output = $talks_controller->getTalkStarred($request, $db);
+        $this->assertSame($expected, $output);
+
+    }
+
+    public function testSearchByTitle()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks',
+                'REQUEST_METHOD' => 'GET'
+            ]
+        );
+
+        $request->parameters = [
+            'title'      => 'linux',
+        ];
+
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $expected = [
+            'talks' => [
+                [
+                    'talk_title' => "Maintaining second generation clouds through Linux",
+                ],
+            ],
+            'meta' => [
+                'count' => 1,
+                'total' => 1,
+                'this_page' => "http://api.dev.joind.in/v2.1/talks/?title=linux&resultsperpage=20",
+            ]
+        ];
+
+        $collection = $this->getMockBuilder(TalkModelCollection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $collection->method('getOutputView')
+            ->willReturn($expected);
+
+        $talkMapper = $this->createTalkMapper($db, $request, 0);
+        $talkMapper->method('getTalksByTitleSearch')
+            ->willReturn($collection);
+
+
+        $talks_controller = new TalksController();
+        $talks_controller->setMapper(
+            'talk',
+            $talkMapper
+        );
+
+        $output = $talks_controller->getTalkByKeyWord($request, $db);
+        $this->assertSame($expected, $output);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionCode 405
+     */
+    public function testGenericTalkList()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks',
+                'REQUEST_METHOD' => 'GET'
+            ]
+        );
+
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talks_controller = new TalksController();
+
+        $output = $talks_controller->getTalkByKeyWord($request, $db);
     }
 }

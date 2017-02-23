@@ -4,49 +4,65 @@ class TalksController extends BaseTalkController
 {
     public function getAction($request, $db)
     {
+        $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
 
-        // verbosity
         $verbose = $this->getVerbosity($request);
 
+        $talk = $this->getTalkById($request, $db, $talk_id, $verbose);
+        $collection = new TalkModelCollection([$talk], 1);
+
+        return $collection->getOutputView($request, $verbose);
+
+    }
+
+    public function getTalkComments($request, $db)
+    {
+        $this->setDbAndRequest($db, $request);
+        $talk_id = $this->getItemId($request);
+        $verbose = $this->getVerbosity($this->request);
+
         // pagination settings
-        $start          = $this->getStart($request);
-        $resultsperpage = $this->getResultsPerPage($request);
+        $start          = $this->getStart($this->request);
+        $resultsperpage = $this->getResultsPerPage($this->request);
 
-        $list = array();
-        if (isset($request->url_elements[4])) {
-            switch ($request->url_elements[4]) {
-                case 'comments':
-                    $comment_mapper = new TalkCommentMapper($db, $request);
-                    $list           = $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
-                    break;
-                case 'starred':
-                    $mapper = new TalkMapper($db, $request);
-                    $list   = $mapper->getUserStarred($talk_id, $request->user_id);
-                    break;
-            }
-        } else {
-            if ($talk_id) {
-                $talk = $this->getTalkById($request, $db, $talk_id, $verbose);
-                $collection = new TalkModelCollection([$talk], 1);
-                $list = $collection->getOutputView($request, $verbose);
-            } elseif (isset($request->parameters['title'])) {
-                $keyword = filter_var(
-                    $request->parameters['title'],
-                    FILTER_SANITIZE_STRING,
-                    FILTER_FLAG_NO_ENCODE_QUOTES
-                );
+        $comment_mapper = $this->getMapper('talkcomment');
 
-                $mapper = new TalkMapper($db, $request);
-                $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
-                $list = $talks->getOutputView($request, $verbose);
-            } else {
-                // listing makes no sense
-                throw new Exception('Generic talks listing not supported', 405);
-            }
+        return $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
+    }
+
+    public function getTalkStarred($request, $db)
+    {
+        $this->setDbAndRequest($db, $request);
+        $talk_id = $this->getItemId($request);
+        $mapper = $this->getMapper('talk');
+
+        return $mapper->getUserStarred($talk_id, $this->request->user_id);
+    }
+
+    public function getTalkByKeyWord($request, $db)
+    {
+        if (!isset($request->parameters['title'])) {
+            throw new Exception('Generic talks listing not supported', 405);
         }
 
-        return $list;
+        $this->setDbAndRequest($db, $request);
+
+        $keyword = filter_var(
+            $request->parameters['title'],
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
+
+        $verbose = $this->getVerbosity($this->request);
+
+        $start          = $this->getStart($this->request);
+        $resultsperpage = $this->getResultsPerPage($this->request);
+
+        $mapper = $this->getMapper('talk');
+        $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
+
+        return $talks->getOutputView($this->request, $verbose);
     }
 
     public function postAction($request, $db)
@@ -77,7 +93,7 @@ class TalksController extends BaseTalkController
                     $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
                     $talk_mapper    = $this->getTalkMapper($db, $request);
-                    $comment_mapper = $this->getTalkCommentMapper($db, $request);
+                    $comment_mapper = $this->getMapper('talkcomment', $db, $request);
 
                     $data['user_id'] = $request->user_id;
                     $data['talk_id'] = $talk_id;
@@ -139,7 +155,6 @@ class TalksController extends BaseTalkController
                         $view->setHeader('Location', $uri);
                         $view->setResponseCode(201);
                         return;
-
                     } else {
                         throw new Exception("The comment could not be stored", 400);
                     }
@@ -605,7 +620,6 @@ class TalksController extends BaseTalkController
             } else {
                 throw new Exception("You must be an event admin to approve this claim", 401);
             }
-
         } elseif ($claim_exists === PendingTalkClaimMapper::HOST_ASSIGN) {
             //The speaker needs to approve
             if ($data['username'] === $user['username']) {
