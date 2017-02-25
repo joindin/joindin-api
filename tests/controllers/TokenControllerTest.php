@@ -2,7 +2,6 @@
 
 namespace JoindinTest\Controller;
 
-
 class TokenControllerTest extends \PHPUnit_Framework_TestCase
 {
     private $request;
@@ -38,6 +37,4 @@ class TokenControllerTest extends \PHPUnit_Framework_TestCase
 
         $usersController->listTokensForUser($this->request, $this->pdo);
     }
-
-
 }

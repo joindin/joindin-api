@@ -114,7 +114,6 @@ class ApiMapperTest extends PHPUnit_Framework_TestCase
             $result->method('execute')
                    ->with($this->equalTo($data))
                 ->will($this->throwException(new Exception()));
-
         } else {
             $result->method('execute')
                    ->with($this->equalTo($data));

@@ -24,5 +24,4 @@ class mockPDO extends \PDO
         // PHPUnit to fake it by unserializing a made-up string. We've neutered
         // the constructor in mockPDO.
     }
-
 }

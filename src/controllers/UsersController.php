@@ -90,7 +90,6 @@ class UsersController extends ApiController
                             $view->setHeader('Content-Length', 0);
                             $view->setResponseCode(204);
                             return;
-
                         } else {
                             throw new Exception("Verification failed", 400);
                         }
@@ -325,7 +324,6 @@ class UsersController extends ApiController
                 $view->setHeader('Content-Length', 0);
                 $view->setResponseCode(204);
                 return;
-
             }
         }
         throw new Exception("Could not update user", 400);
