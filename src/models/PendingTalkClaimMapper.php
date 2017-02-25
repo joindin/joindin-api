@@ -219,7 +219,6 @@ class PendingTalkClaimMapper extends ApiMapper
                 'approve_claim_uri' => $base . '/' . $version . '/talks/' . $row['talk_id'] . '/speakers'
                 ]
             );
-
         }
 
         return new PendingTalkClaimModelCollection($list, count($list));

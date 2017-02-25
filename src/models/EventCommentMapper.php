@@ -82,7 +82,6 @@ class EventCommentMapper extends ApiMapper
                     $this->formatOneComment($row, $verbose)
                 );
             }
-
         }
         $retval             = array();
         $retval['comments'] = $list;

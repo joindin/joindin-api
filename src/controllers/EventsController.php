@@ -283,7 +283,6 @@ class EventsController extends ApiController
                         $incoming_tag_list
                     );
                 }
-
             }
 
             $event_mapper = new EventMapper($db, $request);
@@ -332,7 +331,6 @@ class EventsController extends ApiController
                     $view = $request->getView();
                     $view->setHeader('Location', $request->base . $request->path_info . '/' . $event_id);
                     $view->setResponseCode(201);
-
                 } else {
                     $event_id = $event_mapper->createEvent($event);
 
@@ -537,7 +535,6 @@ class EventsController extends ApiController
             $view->setHeader('Location', $request->base . $request->path_info);
             $view->setResponseCode(204);
             return;
-
         }
     }
 

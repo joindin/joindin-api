@@ -10,8 +10,8 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
     /**
      * DataProvider for testConstruct
-     * 
-     * @return array 
+     *
+     * @return array
      */
     public function constructProvider()
     {
@@ -38,8 +38,8 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
     /**
      * DataProvider for testGetSet
-     * 
-     * @return array 
+     *
+     * @return array
      */
     public function getSetProvider()
     {
@@ -119,7 +119,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
      * @param Request $request
      * @param string $expectedException
      * @param integer $expectedExceptionCode
-     * 
+     *
      * @throws Exception
      */
     public function testDispatch(array $config, $controller, $action, Request $request, $expectedException = false, $expectedExceptionCode = false)
@@ -159,12 +159,12 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
         return $request;
     }
-
 }
 
 class TestController3
 {
-    public function action(Request $request, $db) {
+    public function action(Request $request, $db)
+    {
         if ($db == 'database') {
             return 'val';
         }

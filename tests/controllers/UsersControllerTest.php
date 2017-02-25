@@ -2,7 +2,6 @@
 
 namespace JoindinTest\Controller;
 
-
 class UsersControllerTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -228,4 +227,3 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
         $controller->updateUser($request, $db);
     }
 }
-
