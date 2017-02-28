@@ -772,11 +772,61 @@ class TalkMapper extends ApiMapper
         $stmt->execute($params);
     }
 
+    /**
+     * Remove a talk from all tracks it's associated with
+     *
+     * @param int $talk_id The ID of the talk to remove from the tracks
+     *
+     * @return bool
+     */
+    public function removeTalkFromAllTracks($talk_id)
+    {
+        $sql = 'DELETE FROM talk_track WHERE talk_id = :talk_id';
+
+        $stmt = $this->_db->prepare($sql);
+
+        return $stmt->execute(['talk_id' => $talk_id]);
+    }
+
+    /**
+     * Remove a talk.
+     *
+     * When removing a talk we also remove all talk-links as well as the talk
+     * from all tracks. When that is done, the talk is removed.
+     *
+     * When something breaks (or can't be deleted) the transaction is rolled back.
+     *
+     * @param int $talk_id
+     *
+     * @return bool
+     */
     public function delete($talk_id)
     {
-        $sql  = "delete from talks where ID = :talk_id";
+        $this->_db->beginTransaction();
+
+        if (! $this->removeAllTalkLinks($talk_id)) {
+            $this->_db->rollBack();
+            return false;
+        }
+
+        if (! $this->removeTalkFromAllTracks($talk_id)) {
+            $this->_db->rollBack();
+            return false;
+        }
+
+        if (! $this->removeAllSpeakersFromTalk($talk_id)) {
+            $this->_db->rollBack();
+            return false;
+        }
+
+        $sql  = "DELETE FROM talks WHERE ID = :talk_id";
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("talk_id" => $talk_id));
+        if (! $stmt->execute(array("talk_id" => $talk_id))) {
+            $this->_db->rollBack();
+            return false;
+        }
+
+        $this->_db->commit();
 
         return true;
     }
@@ -803,6 +853,15 @@ class TalkMapper extends ApiMapper
         $sql = 'update talk_speaker set speaker_id = null where talk_id = :talk_id and speaker_id = :speaker_id';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute($params);
+    }
+
+    public function removeAllSpeakersFromTalk($talk_id)
+    {
+        $sql = 'DELETE FROM talk_speaker WHERE talk_id = :talk_id';
+
+        $stmt = $this->_db->prepare($sql);
+
+        return $stmt->execute(['talk_id' => $talk_id]);
     }
 
     public function assignTalkToSpeaker($talk_id, $claim_id, $speaker_id)
@@ -882,6 +941,23 @@ class TalkMapper extends ApiMapper
             ]
         );
     }
+
+    /**
+     * Remove all talk links foa a given talk
+     *
+     * @param int $talk_id The talk-ID
+     *
+     * @return bool
+     */
+    public function removeAllTalkLinks($talk_id)
+    {
+        $sql = "DELETE FROM talk_links WHERE talk_id = :talk_id";
+
+        $stmt = $this->_db->prepare($sql);
+
+        return $stmt->execute(['talk_id' => $talk_id]);
+    }
+
     public function updateTalkLink($talk_id, $link_id, $display_name, $url)
     {
         $sql = "
