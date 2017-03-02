@@ -386,6 +386,31 @@ class UsersController extends ApiController
         $view->setResponseCode(204);
     }
 
+    public function setTrusted($request, $db)
+    {
+        if (false == ($request->getUserId())) {
+            throw new Exception("You must be logged in to change a user account", 401);
+        }
+
+        $user_mapper = $this->getUserMapper($db, $request);
+        if (!$user_mapper->isSiteAdmin($request->getUserId())) {
+            throw new Exception("You must be an admin to change a user's trusted state", 401);
+        }
+
+        $userId = $this->getItemId($request);
+        if (!is_bool($trustedStatus = $request->getParameter("trusted", null))) {
+            throw new Exception("You must provide a trusted state", 400);
+        }
+
+        if (!$user_mapper->setTrustedStatus($trustedStatus, $userId)){
+            throw new Exception("Unable to update status");
+        }
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(204);
+        return;
+    }
+
     public function setUserMapper(UserMapper $user_mapper)
     {
         $this->user_mapper = $user_mapper;

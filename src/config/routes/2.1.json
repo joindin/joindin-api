@@ -255,7 +255,12 @@
         "action": "passwordReset",
         "verbs": ["POST"]
     },
-
+    {
+        "path": "/users(/[0-9]+)/trusted?$",
+        "controller": "UsersController",
+        "action": "setTrusted",
+        "verbs": ["POST"]
+    },
     {
         "path": "/users(/[^/]+)*/?$",
         "controller": "UsersController",
@@ -283,7 +288,6 @@
         "action": "updateUser",
         "verbs": ["PUT"]
     },
-
     {
         "path": "/event_comments(/[^/]+)*/?$",
         "controller": "Event_commentsController",
