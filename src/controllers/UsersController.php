@@ -386,6 +386,17 @@ class UsersController extends ApiController
         $view->setResponseCode(204);
     }
 
+    /**
+     * Allow users to be set as trusted
+     *
+     * @param $request
+     * @param $db
+     *
+     * @return null
+     *
+     * @throws Exception
+     *
+     */
     public function setTrusted($request, $db)
     {
         if (false == ($request->getUserId())) {
@@ -402,7 +413,7 @@ class UsersController extends ApiController
             throw new Exception("You must provide a trusted state", 400);
         }
 
-        if (!$user_mapper->setTrustedStatus($trustedStatus, $userId)){
+        if (!$user_mapper->setTrustedStatus($trustedStatus, $userId)) {
             throw new Exception("Unable to update status");
         }
         $view = $request->getView();
