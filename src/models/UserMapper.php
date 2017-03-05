@@ -244,6 +244,14 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * Update the trusted status for the given user
+     *
+     * @param $trustedStatus bool
+     * @param $user_id       int
+     *
+     * @return bool
+     */
     public function setTrustedStatus($trustedStatus, $user_id)
     {
         $verify_sql = "update user set trusted = :trusted_status "
@@ -252,12 +260,7 @@ class UserMapper extends ApiMapper
         $verify_stmt = $this->_db->prepare($verify_sql);
         $verify_data = array("trusted_status" => (int) $trustedStatus, "user_id" => $user_id);
 
-        $result = $verify_stmt->execute($verify_data);
-
-        if ($result) {
-            return true;
-        }
-        return false;
+        return $verify_stmt->execute($verify_data);
     }
 
 

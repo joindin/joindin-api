@@ -389,13 +389,10 @@ class UsersController extends ApiController
     /**
      * Allow users to be set as trusted
      *
-     * @param $request
-     * @param $db
-     *
-     * @return null
+     * @param $request Request
+     * @param $db      PDO
      *
      * @throws Exception
-     *
      */
     public function setTrusted($request, $db)
     {
@@ -414,12 +411,11 @@ class UsersController extends ApiController
         }
 
         if (!$user_mapper->setTrustedStatus($trustedStatus, $userId)) {
-            throw new Exception("Unable to update status");
+            throw new Exception("Unable to update status", 500);
         }
         $view = $request->getView();
         $view->setHeader('Content-Length', 0);
         $view->setResponseCode(204);
-        return null;
     }
 
     public function setUserMapper(UserMapper $user_mapper)

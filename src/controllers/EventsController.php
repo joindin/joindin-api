@@ -314,7 +314,8 @@ class EventsController extends ApiController
                  * If the user is a site admin, or has been set to trusted,
                  * then approve the event straight away
                  */
-                $approveEventOnCreation = $user_mapper->isSiteAdmin($request->user_id) || $user_mapper->isTrusted($request->user_id);
+                $approveEventOnCreation = $user_mapper->isSiteAdmin($request->user_id)
+                    || $user_mapper->isTrusted($request->user_id);
 
                 // Do we want to automatically approve when testing?
                 if (isset($this->config['features']['allow_auto_approve_events'])
