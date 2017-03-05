@@ -408,7 +408,7 @@ class UsersController extends ApiController
         $view = $request->getView();
         $view->setHeader('Content-Length', 0);
         $view->setResponseCode(204);
-        return;
+        return null;
     }
 
     public function setUserMapper(UserMapper $user_mapper)
