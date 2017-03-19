@@ -243,7 +243,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
 
         $usersController = new \UsersController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $usersController->setTrusted($request, $db);
     }
@@ -265,7 +265,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
         $request->user_id = 2;
         $usersController = new \UsersController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
             ->setConstructorArgs(array($db,$request))
@@ -303,7 +303,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(null);
 
         $usersController = new \UsersController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
             ->setConstructorArgs(array($db,$request))
@@ -339,9 +339,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true);
 
         $usersController = new \UsersController();
-        // Please see below for explanation of why we're mocking a "mock" PDO
-        // class
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
             ->setConstructorArgs(array($db,$request))
@@ -392,9 +390,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->willReturn($view);
 
         $usersController = new \UsersController();
-        // Please see below for explanation of why we're mocking a "mock" PDO
-        // class
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
             ->setConstructorArgs(array($db,$request))
