@@ -41,9 +41,9 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 2;
         $usersController = new \UsersController();
-        // Please see below for explanation of why we're mocking a "mock" PDO
-        // class
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+
+
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
             ->setConstructorArgs(array($db,$request))
@@ -236,6 +236,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage You must be logged in to change a user account
+     * @expectedExceptionCode 401
      */
     public function testSetTrustedWithNoUserIdThrowsException()
     {
@@ -257,14 +258,13 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage You must be an admin to change a user's trusted state
+     * @expectedExceptionCode 403
      */
     public function testSetTrustedWithNonAdminIdThrowsException()
     {
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
         $request->user_id = 2;
         $usersController = new \UsersController();
-        // Please see below for explanation of why we're mocking a "mock" PDO
-        // class
         $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
@@ -292,6 +292,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage You must provide a trusted state
+     * @expectedExceptionCode 400
      */
     public function testSetTrustedWithoutStateThrowsException()
     {
@@ -302,8 +303,6 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(null);
 
         $usersController = new \UsersController();
-        // Please see below for explanation of why we're mocking a "mock" PDO
-        // class
         $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
@@ -313,7 +312,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
         $userMapper
             ->expects($this->once())
             ->method('isSiteAdmin')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $usersController->setUserMapper($userMapper);
         $usersController->setTrusted($request, $db);
@@ -329,6 +328,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
      * @test
      * @expectedException        \Exception
      * @expectedExceptionMessage Unable to update status
+     * @expectedExceptionCode 500
      */
     public function testSetTrustedWithFailureThrowsException()
     {

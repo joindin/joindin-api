@@ -402,7 +402,7 @@ class UsersController extends ApiController
 
         $user_mapper = $this->getUserMapper($db, $request);
         if (!$user_mapper->isSiteAdmin($request->getUserId())) {
-            throw new Exception("You must be an admin to change a user's trusted state", 401);
+            throw new Exception("You must be an admin to change a user's trusted state", 403);
         }
 
         $userId = $this->getItemId($request);
