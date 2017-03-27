@@ -90,7 +90,6 @@ class Header
                     $values[] = trim($v);
                 }
                 unset($values[$i]);
-
             }
         }
 

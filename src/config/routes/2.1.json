@@ -99,6 +99,36 @@
         "verbs": ["DELETE"]
     },
     {
+        "path": "/talks(/[\\d]+)/links/?$",
+        "controller": "TalkLinkController",
+        "action": "getTalkLinks",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks(/[\\d]+)/links/?$",
+        "controller": "TalkLinkController",
+        "action": "addTalkLink",
+        "verbs": ["POST"]
+    },
+    {
+        "path": "/talks(/[\\d]+)/links(/[\\d]+)$",
+        "controller": "TalkLinkController",
+        "action": "getTalkLink",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks(/[\\d]+)/links(/[\\d]+)$",
+        "controller": "TalkLinkController",
+        "action": "removeTalkLink",
+        "verbs": ["DELETE"]
+    },
+    {
+        "path": "/talks(/[\\d]+)/links(/[\\d]+)$",
+        "controller": "TalkLinkController",
+        "action": "updateTalkLink",
+        "verbs": ["PUT"]
+    },
+    {
         "path": "/talks(/[\\d]+)/speakers/?$",
         "controller": "TalksController",
         "action": "getSpeakersForTalk",
@@ -123,7 +153,25 @@
         "verbs": ["PUT"]
     },
     {
-        "path": "/talks(/[^/]+)*/?$",
+        "path": "/talks/?$",
+        "controller": "TalksController",
+        "action": "getTalkByKeyWord",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks/[\\d]+/comments/?$",
+        "controller": "TalksController",
+        "action": "getTalkComments",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks/[\\d]+/starred/?$",
+        "controller": "TalksController",
+        "action": "getTalkStarred",
+        "verbs": ["GET"]
+    },
+    {
+        "path": "/talks/[\\d]+/?$",
         "controller": "TalksController",
         "action": "getAction",
         "verbs": ["GET"]
@@ -207,7 +255,12 @@
         "action": "passwordReset",
         "verbs": ["POST"]
     },
-
+    {
+        "path": "/users(/[0-9]+)/trusted?$",
+        "controller": "UsersController",
+        "action": "setTrusted",
+        "verbs": ["POST"]
+    },
     {
         "path": "/users(/[^/]+)*/?$",
         "controller": "UsersController",
@@ -235,7 +288,6 @@
         "action": "updateUser",
         "verbs": ["PUT"]
     },
-
     {
         "path": "/event_comments(/[^/]+)*/?$",
         "controller": "Event_commentsController",

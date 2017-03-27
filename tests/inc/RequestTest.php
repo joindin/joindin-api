@@ -8,7 +8,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     /**
      * Make sure we have everything we need - in this case the config
      */
-    public function setUp() {
+    public function setUp()
+    {
         include __DIR__ . '/../../src/config.php';
         $this->config = $config;
     }
@@ -472,7 +473,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         // Please see below for explanation of why we're mocking a "mock" PDO
         // class
         $db      = $this->getMockBuilder(
-            '\JoindinTest\Inc\mockPDO')->getMock();
+            '\JoindinTest\Inc\mockPDO'
+        )->getMock();
         $db->method('getAvailableDrivers');
 
         $request = new \Request($this->config, []);
@@ -785,9 +787,14 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      */
-    public function testGetView(array $parameters = array(), $expectedClass = '',
-                                $accept = '', \ApiView $view = null, $skip = false)
-    {
+    public function testGetView(
+        array $parameters = array(),
+        $expectedClass = '',
+        $accept = '',
+        \ApiView $view = null,
+        $skip = false
+    ) {
+    
         if ($skip) {
             $this->markTestSkipped();
         }
@@ -842,9 +849,11 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      */
-    public function testGetSetFormatChoices(array $expected,
-                                            array $choices = null)
-    {
+    public function testGetSetFormatChoices(
+        array $expected,
+        array $choices = null
+    ) {
+    
         $request = new \Request($this->config, []);
         if ($choices) {
             $request->setFormatChoices($choices);

@@ -90,7 +90,6 @@ class UsersController extends ApiController
                             $view->setHeader('Content-Length', 0);
                             $view->setResponseCode(204);
                             return;
-
                         } else {
                             throw new Exception("Verification failed", 400);
                         }
@@ -325,7 +324,6 @@ class UsersController extends ApiController
                 $view->setHeader('Content-Length', 0);
                 $view->setResponseCode(204);
                 return;
-
             }
         }
         throw new Exception("Could not update user", 400);
@@ -383,6 +381,38 @@ class UsersController extends ApiController
             throw new Exception("There was a problem trying to delete the user", 400);
         }
 
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(204);
+    }
+
+    /**
+     * Allow users to be set as trusted
+     *
+     * @param $request Request
+     * @param $db      PDO
+     *
+     * @throws Exception
+     */
+    public function setTrusted($request, $db)
+    {
+        if (false == ($request->getUserId())) {
+            throw new Exception("You must be logged in to change a user account", 401);
+        }
+
+        $user_mapper = $this->getUserMapper($db, $request);
+        if (!$user_mapper->isSiteAdmin($request->getUserId())) {
+            throw new Exception("You must be an admin to change a user's trusted state", 403);
+        }
+
+        $userId = $this->getItemId($request);
+        if (!is_bool($trustedStatus = $request->getParameter("trusted", null))) {
+            throw new Exception("You must provide a trusted state", 400);
+        }
+
+        if (!$user_mapper->setTrustedStatus($trustedStatus, $userId)) {
+            throw new Exception("Unable to update status", 500);
+        }
         $view = $request->getView();
         $view->setHeader('Content-Length', 0);
         $view->setResponseCode(204);

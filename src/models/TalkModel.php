@@ -44,6 +44,7 @@ class TalkModel extends AbstractModel
         $fields = $this->getDefaultFields();
 
         $fields['slides_link'] = 'slides_link';
+        $fields['talk_media']  = 'talk_media';
         $fields['language']    = 'lang_name';
 
         return $fields;

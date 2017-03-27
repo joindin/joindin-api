@@ -30,14 +30,12 @@ class EventsController extends ApiController
                     );
                     break;
                 case 'talk_comments':
-                    $sort                = $this->getSort($request);
                     $talk_comment_mapper = new TalkCommentMapper($db, $request);
                     $list                = $talk_comment_mapper->getCommentsByEventId(
                         $event_id,
                         $resultsperpage,
                         $start,
-                        $verbose,
-                        $sort
+                        $verbose
                     );
                     break;
                 case 'attendees':
@@ -285,7 +283,6 @@ class EventsController extends ApiController
                         $incoming_tag_list
                     );
                 }
-
             }
 
             $event_mapper = new EventMapper($db, $request);
@@ -313,8 +310,12 @@ class EventsController extends ApiController
                 $event_owner           = $user_mapper->getUserById($request->user_id);
                 $event['contact_name'] = $event_owner['users'][0]['full_name'];
 
-                // When a site admin creates an event, we want to approve it immediately
-                $approveEventOnCreation = $user_mapper->isSiteAdmin($request->user_id);
+                /**
+                 * If the user is a site admin, or has been set to trusted,
+                 * then approve the event straight away
+                 */
+                $approveEventOnCreation = $user_mapper->isSiteAdmin($request->user_id)
+                    || $user_mapper->isTrusted($request->user_id);
 
                 // Do we want to automatically approve when testing?
                 if (isset($this->config['features']['allow_auto_approve_events'])
@@ -334,7 +335,6 @@ class EventsController extends ApiController
                     $view = $request->getView();
                     $view->setHeader('Location', $request->base . $request->path_info . '/' . $event_id);
                     $view->setResponseCode(201);
-
                 } else {
                     $event_id = $event_mapper->createEvent($event);
 
@@ -353,7 +353,7 @@ class EventsController extends ApiController
 
                 // Send an email if we didn't auto-approve
                 if (! $user_mapper->isSiteAdmin($request->user_id)) {
-                    $event        = $event_mapper->getPendingEventById($event_id, true);
+                    $event        = $event_mapper->getPendingEventById($event_id);
                     $count        = $event_mapper->getPendingEventsCount();
                     $recipients   = $user_mapper->getSiteAdminEmails();
                     $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
@@ -539,7 +539,6 @@ class EventsController extends ApiController
             $view->setHeader('Location', $request->base . $request->path_info);
             $view->setResponseCode(204);
             return;
-
         }
     }
 

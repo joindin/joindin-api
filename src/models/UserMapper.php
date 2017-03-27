@@ -38,6 +38,7 @@ class UserMapper extends ApiMapper
             "username"         => "username",
             "full_name"        => "full_name",
             "twitter_username" => "twitter_username",
+            "trusted"          => "trusted"
         );
 
         return $fields;
@@ -99,7 +100,7 @@ class UserMapper extends ApiMapper
     protected function getUsers($resultsperpage, $start, $where = null, $order = null)
     {
         $sql = 'select user.username, user.ID, user.email, '
-               . 'user.full_name, user.twitter_username, user.admin '
+               . 'user.full_name, user.twitter_username, user.admin, user.trusted '
                . 'from user '
                . 'left join user_attend ua on (ua.uid = user.ID) '
                . 'where active = 1 ';
@@ -226,6 +227,42 @@ class UserMapper extends ApiMapper
 
         return false;
     }
+
+    /**
+     * Check if the user represented by $user_id is trusted
+     *
+     * @param $user_id
+     * @return bool
+     */
+    public function isTrusted($user_id)
+    {
+        $results = $this->getUsers(1, 0, 'user.ID=' . (int) $user_id, null);
+        if (isset($results[0]) && $results[0]['trusted'] == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Update the trusted status for the given user
+     *
+     * @param $trustedStatus bool
+     * @param $user_id       int
+     *
+     * @return bool
+     */
+    public function setTrustedStatus($trustedStatus, $user_id)
+    {
+        $verify_sql = "update user set trusted = :trusted_status "
+            . "where ID = :user_id";
+
+        $verify_stmt = $this->_db->prepare($verify_sql);
+        $verify_data = array("trusted_status" => (int) $trustedStatus, "user_id" => $user_id);
+
+        return $verify_stmt->execute($verify_data);
+    }
+
 
     public function createUser($user)
     {
