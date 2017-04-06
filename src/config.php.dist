@@ -6,6 +6,9 @@ $config =  array(
     // the URL of web2 website is used in links within emails
     'website_url' => 'http://dev.joind.in',
 
+    // the fully qualified URL to where event icons are stored (excluding trailing slash)
+    'event_icon_url' => 'http://dev.joind.in/inc/img/event_icons',
+
     'oauth' => array(
         'expirable_client_ids' => array(
             // some clients, (e.g. web2) do not hold onto their token after the

@@ -8,6 +8,16 @@
  */
 class EventMapper extends ApiMapper
 {
+    protected $event_icon_url;
+
+    public function __construct(PDO $db, Request $request = null)
+    {
+        parent::__construct($db, $request);
+
+        if (isset($request)) {
+            $this->event_icon_url = $request->getConfigValue('event_icon_url');
+        }
+    }
 
     /**
      * Default mapping for column names to API field names
@@ -445,6 +455,12 @@ class EventMapper extends ApiMapper
                 // handle the slug
                 if (!empty($row['event_stub'])) {
                     $list[$key]['humane_website_uri'] = $this->website_url . '/e/' . $row['event_stub'];
+                }
+
+                // event icon
+                $list[$key]['icon_uri'] = $this->website_url . '/img/event_icons/none.png';
+                if (!empty($row['event_icon'])) {
+                    $list[$key]['icon_uri'] = $this->event_icon_url . '/' . $row['event_icon'];
                 }
 
                 if ($verbose) {
