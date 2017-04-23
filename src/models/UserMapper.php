@@ -728,4 +728,19 @@ class UserMapper extends ApiMapper
             return false;
         }
     }
+
+    public function getCurrentRateLimit($userId)
+    {
+        return [
+            'limit' => -1,
+            'remaining' => 1,
+            'reset' => time() + 100,
+            'user' => $userId,
+        ];
+    }
+
+    public function countdownRateLimit($userId)
+    {
+        return true;
+    }
 }

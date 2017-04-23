@@ -60,8 +60,11 @@ if (isset($headers['authorization'])) {
     $request->identifyUser($ji_db, $headers['authorization']);
 }
 
-// @TODO This feels just a tad... shonky.
-$rules = json_decode(file_get_contents('../config/routes/2.1.json'), true);
+// Which content type to return? Parameter takes precedence over accept headers
+// with final fall back to json 
+$format_choices = array('application/json', 'text/html');
+$header_format = $request->preferredContentTypeOutOf($format_choices);
+$format = $request->getParameter('format', $header_format);
 
 $routers = [
     "v2.1" => new VersionedRouter('2.1', $config, $rules),
@@ -78,4 +81,33 @@ if ($return_data && isset($request->user_id)) {
 
 // Handle output
 // TODO sort out headers, caching, etc
-$request->getView()->render($return_data);
+$request->view->render($return_data);
+exit;
+
+/**
+ *
+ * @param Request $request
+ * @param PDO $ji_db
+ * @return array
+ */
+function routeV2($request, $ji_db, $config)
+{
+    $ratelimit = new \Joindin\Api\Middleware\RateLimit(new UserMapper($ji_db, $request));
+    $request = $ratelimit($request);
+    // Route: call the handle() method of the class with the first URL element
+    if(isset($request->url_elements[2])) {
+        $class = ucfirst($request->url_elements[2]) . 'Controller';
+        if(class_exists($class)) {
+            $handler = new $class($config);
+            $return_data = $handler->handle($request, $ji_db); // the DB is set by the database config
+        } else {
+            throw new Exception('Unknown controller ' . $request->url_elements[2], 400);
+        }
+    } else {
+        throw new Exception('Request not understood', 404);
+    }
+    
+    return $return_data;
+}
+
+
