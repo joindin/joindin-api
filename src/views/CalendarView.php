@@ -58,10 +58,28 @@ class CalendarView extends ApiView
      */
     private function createEvent(array $content, $vcalendar)
     {
-        $event = new \Sabre\VObject\Component\VEvent($vcalendar, 'VEVENT');
+        $event = new \Sabre\VObject\Component\VEvent($vcalendar, 'VEVENT', [], false);
+
+        $event->add('UID', sha1($content['name'] . $content['start_date']));
+        $event->add(
+            'DTSTAMP',
+            (new DateTime())
+                ->setTimezone(new DateTimeZone('UTC'))
+                ->format('Ymd\THis\Z')
+        );
+
         $event->add('SUMMARY', $content['name']);
-        $event->add('DTSTART', (new \DateTime($content['start_date']))->setTimezone(new \DateTimeZone($content['tz_continent'] . '/' . $content['tz_place'])));
-        $event->add('DTEND', (new \DateTime($content['end_date']))->setTimezone(new \DateTimeZone($content['tz_continent'] . '/' . $content['tz_place'])));
+
+        $timezone = new \DateTimeZone($content['tz_continent'] . '/' . $content['tz_place']);
+
+        $start = new \DateTime($content['start_date']);
+        $start = $start->setTimezone($timezone);
+        $event->add('DTSTART', $start);
+
+        $end = new \DateTime($content['end_date']);
+        $end = $end->setTimezone($timezone);
+        $event->add('DTEND', $end);
+
         $event->add('DESCRIPTION', $content['description']);
         $event->add('URI', $content['href']);
         $event->add('LOCATION', $content['location']);

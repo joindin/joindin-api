@@ -823,8 +823,11 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array( // #0
-                'expected' => array(\Request::CONTENT_TYPE_JSON,
-                                    \Request::CONTENT_TYPE_HTML),
+                'expected' => [
+                    \Request::CONTENT_TYPE_JSON,
+                    \Request::CONTENT_TYPE_ICAL,
+                    \Request::CONTENT_TYPE_HTML,
+                ],
             ),
             array( // #1
                 'expected' => array(\Request::CONTENT_TYPE_HTML,
