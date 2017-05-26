@@ -573,6 +573,7 @@ class TalksController extends BaseTalkController
         if (! $speaker_id) {
             throw new Exception("Specified user not found", 404);
         }
+        $speaker_name = $user_mapper->getUserById($speaker_id)['users'][0]['full_name'];
 
         $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
         $claim_exists = $pending_talk_claim_mapper->claimExists($talk_id, $speaker_id, $claim['ID']);
@@ -606,7 +607,7 @@ class TalksController extends BaseTalkController
                 $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
 
                 $success = $pending_talk_claim_mapper->approveClaimAsHost($talk_id, $speaker_id, $claim['ID'])
-                           && $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id);
+                           && $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id, $speaker_name);
 
                 $emailService = new TalkClaimApprovedEmailService($this->config, $recipients, $event, $talk);
 
@@ -628,7 +629,7 @@ class TalksController extends BaseTalkController
             //The speaker needs to approve
             if ($data['username'] === $user['username']) {
                 if ($pending_talk_claim_mapper->approveAssignmentAsSpeaker($talk_id, $user_id, $claim['ID'])) {
-                    if (! $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id)) {
+                    if (! $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id, $speaker_name)) {
                         throw new Exception("There was a problem assigning the talk", 500);
                     }
                 } else {

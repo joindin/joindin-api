@@ -864,17 +864,19 @@ class TalkMapper extends ApiMapper
         return $stmt->execute(['talk_id' => $talk_id]);
     }
 
-    public function assignTalkToSpeaker($talk_id, $claim_id, $speaker_id)
+    public function assignTalkToSpeaker($talk_id, $claim_id, $speaker_id, $speaker_name)
     {
         $sql = 'update talk_speaker
-                SET speaker_id = :speaker_id
+                SET speaker_id = :speaker_id,
+                speaker_name = :speaker_name
                 WHERE ID = :claim_id AND talk_id = :talk_id';
         $stmt = $this->_db->prepare($sql);
         return $stmt->execute(
             [
                 'speaker_id'    => $speaker_id,
                 'talk_id'       => $talk_id,
-                'claim_id'      => $claim_id
+                'claim_id'      => $claim_id,
+                'speaker_name'  => $speaker_name
             ]
         );
     }
