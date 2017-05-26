@@ -618,6 +618,10 @@ class TalksController extends BaseTalkController
                     $emailService->sendEmail();
                 }
             } else {
+                if ($speaker_id == $request->getUserId()) {
+                    throw new Exception("You already have a pending claim for this talk. " .
+                        "Please wait for an event admin to approve your claim.", 401);
+                }
                 throw new Exception("You must be an event admin to approve this claim", 401);
             }
         } elseif ($claim_exists === PendingTalkClaimMapper::HOST_ASSIGN) {

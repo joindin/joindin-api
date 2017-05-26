@@ -521,7 +521,7 @@ class TalksControllerTest extends TalkBase
      *
      * @test
      * @expectedException        \Exception
-     * @expectedExceptionMessage You must be an event admin to approve this claim
+     * @expectedExceptionMessage You already have a pending claim for this talk. Please wait for an event admin to approve your claim.
      */
     public function testApproveAssignmentAsUserWhoClaimedThrowsException()
     {
@@ -560,6 +560,73 @@ class TalksControllerTest extends TalkBase
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->will($this->returnValue(2));
+        $talk_mapper
+            ->expects($this->once())
+            ->method('thisUserHasAdminOn')
+            ->will($this->returnValue(false));
+        $talks_controller->setUserMapper($user_mapper);
+
+        $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+        $pending_talk_claim_mapper
+            ->expects($this->once())
+            ->method('claimExists')
+            ->will($this->returnValue(\PendingTalkClaimMapper::SPEAKER_CLAIM));
+
+        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
+
+        $event_mapper = $this->createEventMapper($db, $request);
+        $talks_controller->setEventMapper($event_mapper);
+
+        $talks_controller->setSpeakerForTalk($request, $db);
+    }
+
+    /**
+     * Ensures that if the setSpeakerForTalk method is called by a non-admin user
+     * then an exception is thrown
+     *
+     * @test
+     * @expectedException        \Exception
+     * @expectedExceptionMessage You must be an event admin to approve this claim
+     */
+    public function testApproveAssignmentAsNonAdminUserThrowsException()
+    {
+        $request = new Request(
+            [],
+            [
+                'REQUEST_URI' => "http://api.dev.joind.in/v2.1/talks/9999/speakers",
+                'REQUEST_METHOD' => 'POST'
+            ]
+        );
+        $request->user_id = 2;
+        $request->parameters = [
+            'username'      => 'janebloggs',
+            'display_name'  => 'Jane Bloggs'
+        ];
+
+        $talks_controller = new TalksController();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
+
+        $talk_mapper = $this->createTalkMapper($db, $request);
+        $talk_mapper
+            ->expects($this->once())
+            ->method('getSpeakerFromTalk')
+            ->will(
+                $this->returnValue(
+                    [
+                        'speaker_id'  => null,
+                        'ID'          => 1
+                    ]
+                )
+            );
+        $talks_controller->setTalkMapper($talk_mapper);
+
+        $user_mapper = $this->createUserMapper($db, $request);
+        $user_mapper
+            ->expects($this->once())
+            ->method('getUserIdFromUsername')
+            ->will($this->returnValue(3));
         $talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
