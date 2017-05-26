@@ -94,14 +94,15 @@ class TalkBase extends PHPUnit_Framework_TestCase
             ->getMock();
 
         $user_mapper
-            ->expects($this->once())
+            ->expects($this->atLeastOnce())
             ->method('getUserById')
             ->will(
                 $this->returnValue(
                     [
                         'users' => [
                             [
-                                'username'  => 'janebloggs'
+                                'username'  => 'janebloggs',
+                                'full_name' => 'Jane Bloggs'
                             ]
                         ]
                     ]
