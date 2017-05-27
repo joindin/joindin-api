@@ -490,7 +490,11 @@ class TalkMapper extends ApiMapper
     public function updateSpeakersOnTalk($talk_id, array $speakers)
     {
         // get the current speakers
-        $sql = 'select if(ts.speaker_id,user.full_name, ts.speaker_name) as val from talk_speaker ts left join user on user.ID = ts.speaker_id where ts.talk_id = :talk_id';
+        $sql = 'select '
+             . 'if(ts.speaker_id,user.full_name, ts.speaker_name) as val '
+             . 'from talk_speaker AS ts '
+             . 'left join user on user.ID = ts.speaker_id '
+             . 'where ts.talk_id = :talk_id';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(['talk_id' => $talk_id]);
         $current_speakers = $stmt->fetchAll(PDO::FETCH_COLUMN);
