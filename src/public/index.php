@@ -40,7 +40,7 @@ if ($config['mode'] == "development") {
 include '../database.php';
 $ji_db = new PDO(
     'mysql:host=' . $db['default']['hostname'] .
-    ';dbname=' . $db['default']['database'],
+    ';dbname=' . $db['default']['database'] . ';charset=utf8mb4',
     $db['default']['username'],
     $db['default']['password']
 );
@@ -48,8 +48,8 @@ $ji_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Set the correct charset for this connection
 $ji_db->query("SET NAMES 'utf8' COLLATE 'utf8_general_ci'");
-$ji_db->query('SET CHARACTER SET utf8');
-
+$ji_db->query("SET CHARACTER SET 'utf8mb4'");
+$ji_db->query("SET character_set_connection = 'utf8mb4'");
 
 // collect URL and headers
 $request = new Request($config, $_SERVER);
