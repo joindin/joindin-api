@@ -39,6 +39,7 @@ mkdir -p $TARGET \
  ; git remote set-url deployremote https://github.com/$GITHUB_USER/$GITHUB_REPO.git \
 && git fetch deployremote \
 && git archive $LAUNCHREF | tar xC $TARGET \
+&& composer --prefer-dist --no-dev --no-progress --working-dir=$TARGET install \
 && (echo $TARGET ; echo $LAUNCHREF) > $TARGET/src/release.txt \
 && ln -s $TARGETBASE/config.php $TARGET/src/config.php \
 && ln -s $TARGETBASE/database.php $TARGET/src/database.php \
