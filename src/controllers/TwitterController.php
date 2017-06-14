@@ -116,7 +116,7 @@ class TwitterController extends ApiController
                 try {
                     $res = $client1->get('1.1/account/verify_credentials.json?include_email=true');
 
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     throw new Exception('Could not retrieve user-informations from Twitter', 403, $e);
                 }
 
