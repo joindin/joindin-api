@@ -136,13 +136,12 @@ insert into event_comments (
 
 /* Insert related talk data */
 insert into talks (
-	talk_title,speaker,slides_link,
+	talk_title,slides_link,
 	date_given,event_id,talk_desc,
 	active,owner_id,lang,duration,
 	ID
 ) values (
 	'Sample Talk #1 from Seed Load',
-	'John Doe',
 	'http://slideshare.com',
 	unix_timestamp(),
 	@evtid,
@@ -180,13 +179,12 @@ insert into talk_cat (
 );
 
 insert into talks (
-	talk_title,speaker,slides_link,
+	talk_title,slides_link,
 	date_given,event_id,talk_desc,
 	active,owner_id,lang,duration,
 	ID
 ) values (
 	'Sample Talk #2 from Seed Load',
-	'Jane Doe',
 	'http://slideshare.com',
 	unix_timestamp(),
 	@evtid,
