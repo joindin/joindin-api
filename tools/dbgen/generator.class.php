@@ -144,7 +144,8 @@ class DataGenerator {
 
     // Generate $count talks for random events
     protected function _generateTalks($count) {
-        echo "TRUNCATE talks;\n";
+        echo "DELETE FROM talks;\n";
+        echo "ALTER TABLE talks AUTO_INCREMENT = 1;\n";
         echo "INSERT INTO talks (talk_title, slides_link, date_given, event_id, ID, talk_desc, active, owner_id, lang, duration) VALUES \n";
 
         $first = true;
