@@ -1,7 +1,5 @@
 .gitattributes export-ignore
 .gitignore export-ignore
-scripts export-ignore
-tools export-ignore
 vendor/* export-ignore
 build.xml export-ignore
 build export-ignore
