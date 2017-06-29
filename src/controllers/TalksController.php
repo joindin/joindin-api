@@ -439,11 +439,7 @@ class TalksController extends BaseTalkController
         }
         $event = $list['events'][0];
 
-        $talk['title'] = filter_var(
-            $request->getParameter('talk_title'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
-        );
+        $talk['title'] = $request->getParameter('talk_title');
         if (empty($talk['title'])) {
             throw new Exception("The talk title field is required", 400);
         }
