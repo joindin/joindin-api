@@ -360,19 +360,63 @@ class OAuthModel
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("twitter_username" => $twitterUsername));
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($result) {
-            $userId = $result['ID'];
-
-            // create new token
-            $accessToken = $this->newAccessToken($clientId, $userId);
-
-            // we also want to send back the logged in user's uri
-            $userUri = $this->getUserUri($userId);
-
-            return array('access_token' => $accessToken, 'user_uri' => $userUri);
+        if (! $result) {
+            return false;
         }
 
-        return false;
+        $userId = $result['ID'];
+
+        // create new token
+        $accessToken = $this->newAccessToken($clientId, $userId);
+
+        // we also want to send back the logged in user's uri
+        $userUri = $this->getUserUri($userId);
+
+        return array('access_token' => $accessToken, 'user_uri' => $userUri);
+    }
+
+    /**
+     * $values is expected to contain:
+     * * name: The users "real name"
+     * * screen_name: The twitter-username
+     * * email (optional): The users email-address
+     *
+     * @param array $values
+     *
+     * @throws Exception
+     * @return array
+     */
+    public function createUserFromTwitterUsername($clientId, $values)
+    {
+        $sql = "select ID from user "
+             . "where twitter_username = :twitter_username";
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(array("twitter_username" => $values['screen_name']));
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            // User has not yet been validated
+            throw new Exception('User exists already');
+        }
+
+        if (! isset($values['email'])) {
+            $values['email'] = 'email@example.net';
+        }
+
+        $sql = "insert into user(username, full_name, twitter_username, email, verified, active, admin) "
+             . "values(:screen_name, :name, :screen_name, :email, 1, 1, 0)";
+
+        $stmt = $this->_db->prepare($sql);
+        if (! $stmt->execute([
+            'screen_name' => $values['screen_name'],
+            'name'        => $values['name'],
+            'email'       => $values['email'],
+        ])) {
+            throw new Exception('Something went wrong');
+        }
+
+        return $this->createAccessTokenFromTwitterUsername($clientId, $values['screen_name']);
     }
 
     /**

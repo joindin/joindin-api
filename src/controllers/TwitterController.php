@@ -95,15 +95,46 @@ class TwitterController extends ApiController
             $twitterUsername = $data['screen_name'];
 
             $result = $this->oauthModel->createAccessTokenFromTwitterUsername($clientId, $twitterUsername);
-            if ($result) {
-                // clean up request token data
-                $requestTokenMapper = new TwitterRequestTokenMapper($db);
-                $requestTokenMapper->delete($request_token);
+            if (! $result) {
+                // try to create the user.
 
-                return array('access_token' => $result['access_token'], 'user_uri' => $result['user_uri']);
+                $client1 = new Client(
+                    [
+                        'base_url' => 'https://api.twitter.com/',
+                        'defaults' => ['auth' => 'oauth']
+                    ]
+                );
+
+                $oauth1 = new Oauth1([
+                    'consumer_key'    => $this->config['twitter']['consumer_key'],
+                    'consumer_secret' => $this->config['twitter']['consumer_secret'],
+                    'token'           => $data['oauth_token'],
+                    'token_secret'    => $data['oauth_token_secret'],
+                ]);
+                $client1->getEmitter()->attach($oauth1);
+
+                try {
+                    $res = $client1->get('1.1/account/verify_credentials.json?include_email=true');
+
+                } catch (Exception $e) {
+                    throw new Exception('Could not retrieve user-informations from Twitter', 403, $e);
+                }
+
+                if ($res->getStatusCode() == 200) {
+                    $result = $this->oauthModel->createUserFromTwitterUsername($clientId, $res->json());
+                }
             }
 
-            throw new Exception("Could not sign in with Twitter", 403);
+            if (! $result) {
+                throw new Exception("Could not sign in with Twitter", 403);
+            }
+
+                // clean up request token data
+            $requestTokenMapper = new TwitterRequestTokenMapper($db);
+            $requestTokenMapper->delete($request_token);
+
+            return array('access_token' => $result['access_token'], 'user_uri' => $result['user_uri']);
+
         }
 
         throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);
