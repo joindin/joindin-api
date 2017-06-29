@@ -188,7 +188,7 @@ class Request
      * @param string $param Parameter to retrieve
      * @param string $default Default to return if parameter doesn't exist
      *
-     * @return string
+     * @return mixed
      */
     public function getParameter($param, $default = '')
     {
