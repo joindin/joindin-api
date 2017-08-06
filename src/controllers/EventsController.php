@@ -2,7 +2,7 @@
 
 class EventsController extends ApiController
 {
-    public function getAction(Request $request, $db)
+    public function getAction(Request $request, PDO $db)
     {
         $event_id = $this->getItemId($request);
 
@@ -144,7 +144,7 @@ class EventsController extends ApiController
         return $list;
     }
 
-    public function postAction(Request $request, $db)
+    public function postAction(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);
@@ -364,7 +364,7 @@ class EventsController extends ApiController
         }
     }
 
-    public function deleteAction(Request $request, $db)
+    public function deleteAction(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", 401);
@@ -390,7 +390,7 @@ class EventsController extends ApiController
         }
     }
 
-    public function putAction(Request $request, $db)
+    public function putAction(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception('You must be logged in to edit data', 401);
@@ -542,7 +542,7 @@ class EventsController extends ApiController
         }
     }
 
-    public function pendingClaims(Request $request, $db)
+    public function pendingClaims(Request $request, PDO $db)
     {
         // Check for login
         if (! isset($request->user_id)) {
@@ -575,7 +575,7 @@ class EventsController extends ApiController
      *
      * @return void
      */
-    public function createTrack(Request $request, $db)
+    public function createTrack(Request $request, PDO $db)
     {
         // Check for login
         if (! isset($request->user_id)) {
@@ -644,7 +644,7 @@ class EventsController extends ApiController
      *
      * @return void
      */
-    public function approveAction(Request $request, $db)
+    public function approveAction(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);
@@ -685,7 +685,7 @@ class EventsController extends ApiController
      *
      * @return void
      */
-    public function rejectAction(Request $request, $db)
+    public function rejectAction(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);
@@ -714,7 +714,7 @@ class EventsController extends ApiController
         $this->event_mapper = $event_mapper;
     }
 
-    public function getEventMapper($db, Request $request)
+    public function getEventMapper(PDO $db, Request $request)
     {
         if (! isset($this->event_mapper)) {
             $this->event_mapper = new EventMapper($db, $request);
@@ -728,7 +728,7 @@ class EventsController extends ApiController
         $this->pending_talk_claim_mapper = $pending_talk_claim_mapper;
     }
 
-    public function getPendingTalkClaimMapper($db, Request $request)
+    public function getPendingTalkClaimMapper(PDO $db, Request $request)
     {
         if (! isset($this->pending_talk_claim_mapper)) {
             $this->pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);

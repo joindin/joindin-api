@@ -14,7 +14,7 @@ class FacebookController extends ApiController
      * From that, look up who they are, create them a new access token and return
      * the same format as we do when logging in a user
      */
-    public function logUserIn(Request $request, $db)
+    public function logUserIn(Request $request, PDO $db)
     {
         if (empty($this->config['facebook']['app_id'])
             || empty($this->config['facebook']['app_secret'])) {

@@ -320,7 +320,7 @@ class Request
      * @return bool
      * @throws InvalidArgumentException
      */
-    public function identifyUser($db, $auth_header)
+    public function identifyUser(PDO $db = null, $auth_header)
     {
         if (($this->getScheme() == "https://") ||
             (isset($this->config['mode']) && $this->config['mode'] == "development")

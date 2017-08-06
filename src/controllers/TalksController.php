@@ -2,7 +2,7 @@
 
 class TalksController extends BaseTalkController
 {
-    public function getAction(Request $request, $db)
+    public function getAction(Request $request, PDO $db)
     {
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
@@ -16,7 +16,7 @@ class TalksController extends BaseTalkController
 
     }
 
-    public function getTalkComments(Request $request, $db)
+    public function getTalkComments(Request $request, PDO $db)
     {
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
@@ -31,7 +31,7 @@ class TalksController extends BaseTalkController
         return $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
     }
 
-    public function getTalkStarred(Request $request, $db)
+    public function getTalkStarred(Request $request, PDO $db)
     {
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
@@ -40,7 +40,7 @@ class TalksController extends BaseTalkController
         return $mapper->getUserStarred($talk_id, $this->request->user_id);
     }
 
-    public function getTalkByKeyWord(Request $request, $db)
+    public function getTalkByKeyWord(Request $request, PDO $db)
     {
         if (!isset($request->parameters['title'])) {
             throw new Exception('Generic talks listing not supported', 405);
@@ -65,7 +65,7 @@ class TalksController extends BaseTalkController
         return $talks->getOutputView($this->request, $verbose);
     }
 
-    public function postAction(Request $request, $db)
+    public function postAction(Request $request, PDO $db)
     {
         $this->checkLoggedIn($request);
         $talk_id = $this->getItemId($request);
@@ -177,7 +177,7 @@ class TalksController extends BaseTalkController
         }
     }
 
-    public function deleteAction(Request $request, $db)
+    public function deleteAction(Request $request, PDO $db)
     {
         $this->checkLoggedIn($request);
         if (isset($request->url_elements[4])) {
@@ -658,7 +658,7 @@ class TalksController extends BaseTalkController
         $this->pending_talk_claim_mapper = $pending_talk_claim_mapper;
     }
 
-    public function getPendingTalkClaimMapper($db, Request $request)
+    public function getPendingTalkClaimMapper(PDO $db, Request $request)
     {
         if (! isset($this->pending_talk_claim_mapper)) {
             $this->pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);

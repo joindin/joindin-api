@@ -9,7 +9,7 @@ use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
 class TwitterController extends ApiController
 {
-    public function getRequestToken(Request $request, $db)
+    public function getRequestToken(Request $request, PDO $db)
     {
         // only trusted clients can change account details
         $clientId         = $request->getParameter('client_id');
@@ -54,7 +54,7 @@ class TwitterController extends ApiController
      * this includes the user's screen name.  From that, look up who they are, create them a
      * new access token and return the same format as we do when logging in a user
      */
-    public function logUserIn(Request $request, $db)
+    public function logUserIn(Request $request, PDO $db)
     {
         $clientId         = $request->getParameter('client_id');
         $clientSecret     = $request->getParameter('client_secret');

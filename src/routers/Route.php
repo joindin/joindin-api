@@ -104,7 +104,7 @@ class Route
      * Dispatches the Request to the specified Route
      *
      * @param Request $request The Request to process
-     * @param mixed $db The Database object
+     * @param PDO $db The Database object
      * @param mixed $config The application configuration
      *
      * @return mixed

@@ -7,7 +7,7 @@ class UsersController extends ApiController
 
     private $user_registration_email_service;
 
-    public function getAction(Request $request, $db)
+    public function getAction(Request $request, PDO $db)
     {
         $user_id = $this->getItemId($request);
 
@@ -73,7 +73,7 @@ class UsersController extends ApiController
         return $list;
     }
 
-    public function postAction(Request $request, $db)
+    public function postAction(Request $request, PDO $db)
     {
         // check element 3, there's no user associated with the not-logged-in collections
         if (isset($request->url_elements[3])) {
@@ -203,11 +203,11 @@ class UsersController extends ApiController
      * Allow a user to edit their own record
      *
      * @param Request $request the request.
-     * @param         $db      the database.
+     * @param PDO     $db      the database.
      *
      * @return mixed
      */
-    public function updateUser(Request $request, $db)
+    public function updateUser(Request $request, PDO $db)
     {
         if (false == ($request->getUserId())) {
             throw new Exception("You must be logged in to change a user account", 401);
@@ -329,7 +329,7 @@ class UsersController extends ApiController
         throw new Exception("Could not update user", 400);
     }
 
-    public function passwordReset(Request $request, $db)
+    public function passwordReset(Request $request, PDO $db)
     {
         $token = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
         if (empty($token)) {
@@ -361,7 +361,7 @@ class UsersController extends ApiController
 
     }
 
-    public function deleteUser(Request $request, $db)
+    public function deleteUser(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", 401);
@@ -393,7 +393,7 @@ class UsersController extends ApiController
      *
      * @throws Exception
      */
-    public function setTrusted(Request $request, $db)
+    public function setTrusted(Request $request, PDO $db)
     {
         if (false == ($request->getUserId())) {
             throw new Exception("You must be logged in to change a user account", 401);
@@ -422,7 +422,7 @@ class UsersController extends ApiController
         $this->user_mapper = $user_mapper;
     }
 
-    public function getUserMapper($db, Request $request)
+    public function getUserMapper(PDO $db, Request $request)
     {
         if (! $this->user_mapper) {
             $this->user_mapper = new UserMapper($db, $request);

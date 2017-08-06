@@ -2,7 +2,7 @@
 
 class DefaultController extends ApiController
 {
-    public function handle(Request $request, $db)
+    public function handle(Request $request, PDO $db)
     {
         $retval = array();
 

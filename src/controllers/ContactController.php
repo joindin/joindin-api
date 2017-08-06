@@ -5,7 +5,7 @@
  */
 class ContactController extends ApiController
 {
-    public function handle(Request $request, $db)
+    public function handle(Request $request, PDO $db)
     {
         // really need to not require this to be declared
     }
@@ -26,7 +26,7 @@ class ContactController extends ApiController
      *
      * @return void
      */
-    public function contact(Request $request, $db)
+    public function contact(Request $request, PDO $db)
     {
         // only trusted clients can contact us to save on spam
         $clientId         = $request->getParameter('client_id');
