@@ -674,7 +674,7 @@ class TalksController extends BaseTalkController
         $speaker_id = $request->url_elements[5];
 
         $talk_mapper = new TalkMapper($db, $request);
-        $talk = $this->getTalkById($talk_id);
+        $talk = $this->getTalkById($request, $db, $talk_id);
 
         $speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $speaker_id);
         if (!$speaker) {
