@@ -9,7 +9,7 @@ abstract class AbstractModelCollection
      * Adds count, total, and this_page links.  Also adds next_page and prev_page
      * as appropriate
      */
-    protected function addPaginationLinks($request)
+    protected function addPaginationLinks(Request $request)
     {
         $meta['count'] = count($this->list);
 

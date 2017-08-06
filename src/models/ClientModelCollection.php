@@ -34,7 +34,7 @@ class ClientModelCollection extends AbstractModelCollection
      *
      * @
      */
-    public function getOutputView($request, $verbose = false)
+    public function getOutputView(Request $request, $verbose = false)
     {
         // handle the collection first
         $retval['clients'] = [];

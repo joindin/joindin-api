@@ -181,7 +181,7 @@ class Event_hostsController extends ApiController
         $this->eventHostMapper = $mapper;
     }
 
-    public function getEventMapper($request, $db)
+    public function getEventMapper(Request $request, $db)
     {
         if ($this->eventMapper === null) {
             $this->eventMapper = new EventMapper($db, $request);
@@ -195,7 +195,7 @@ class Event_hostsController extends ApiController
         $this->eventMapper = $eventMapper;
     }
 
-    public function getUserMapper($request, $db)
+    public function getUserMapper(Request $request, $db)
     {
         if ($this->userMapper === null) {
             $this->userMapper = new UserMapper($db, $request);

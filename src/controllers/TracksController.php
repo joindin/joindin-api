@@ -2,7 +2,7 @@
 
 class TracksController extends ApiController
 {
-    public function getAction($request, $db)
+    public function getAction(Request $request, $db)
     {
         $track_id = $this->getItemId($request);
 
@@ -23,7 +23,7 @@ class TracksController extends ApiController
         return $list;
     }
 
-    public function editTrack($request, $db)
+    public function editTrack(Request $request, $db)
     {
         // Check for login
         if (! isset($request->user_id)) {
@@ -79,7 +79,7 @@ class TracksController extends ApiController
         $view->setResponseCode(204);
     }
 
-    public function deleteTrack($request, $db)
+    public function deleteTrack(Request $request, $db)
     {
         // Check for login
         if (! isset($request->user_id)) {

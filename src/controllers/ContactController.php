@@ -26,7 +26,7 @@ class ContactController extends ApiController
      *
      * @return void
      */
-    public function contact($request, $db)
+    public function contact(Request $request, $db)
     {
         // only trusted clients can contact us to save on spam
         $clientId         = $request->getParameter('client_id');

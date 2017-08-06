@@ -32,7 +32,7 @@ class TalkModelCollection extends AbstractModelCollection
      * to it's presentable representation and adding the meta fields for totals
      * and pagination
      */
-    public function getOutputView($request, $verbose = false)
+    public function getOutputView(Request $request, $verbose = false)
     {
         // handle the collection first
         $retval['talks'] = [];

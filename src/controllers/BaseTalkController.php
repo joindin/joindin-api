@@ -39,7 +39,7 @@ class BaseTalkController extends ApiController
         $this->talk_mapper = $talk_mapper;
     }
 
-    public function getTalkMapper($db, $request)
+    public function getTalkMapper($db, Request $request)
     {
         if (!isset($this->talk_mapper)) {
             $this->talk_mapper = new TalkMapper($db, $request);
@@ -53,7 +53,7 @@ class BaseTalkController extends ApiController
         $this->event_mapper = $event_mapper;
     }
 
-    public function getEventMapper($db, $request)
+    public function getEventMapper($db, Request $request)
     {
         if (! isset($this->event_mapper)) {
             $this->event_mapper = new EventMapper($db, $request);
@@ -68,7 +68,7 @@ class BaseTalkController extends ApiController
         $this->user_mapper = $user_mapper;
     }
 
-    public function getUserMapper($db, $request)
+    public function getUserMapper($db, Request $request)
     {
         if (! isset($this->user_mapper)) {
             $this->user_mapper = new UserMapper($db, $request);

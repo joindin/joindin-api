@@ -8,6 +8,7 @@ class OAuthModel
     // @codingStandardsIgnoreStart
     protected $_db;
     // @codingStandardsIgnoreEnd
+    /** @var Request */
     protected $request;
 
     /**
@@ -41,7 +42,7 @@ class OAuthModel
     /**
      * @param mixed $request
      */
-    public function setRequest($request)
+    public function setRequest(Request $request)
     {
         $this->request = $request;
     }

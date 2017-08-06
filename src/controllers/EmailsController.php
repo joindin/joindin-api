@@ -5,7 +5,7 @@
  */
 class EmailsController extends ApiController
 {
-    public function verifications($request, $db)
+    public function verifications(Request $request, $db)
     {
         $user_mapper = new UserMapper($db, $request);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
@@ -31,7 +31,7 @@ class EmailsController extends ApiController
         }
     }
 
-    public function usernameReminder($request, $db)
+    public function usernameReminder(Request $request, $db)
     {
         $user_mapper = new UserMapper($db, $request);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
@@ -55,7 +55,7 @@ class EmailsController extends ApiController
         }
     }
 
-    public function passwordReset($request, $db)
+    public function passwordReset(Request $request, $db)
     {
         $user_mapper = new UserMapper($db, $request);
         $username    = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);

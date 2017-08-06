@@ -1,7 +1,7 @@
 <?php
 class TalkTypesController extends ApiController
 {
-    public function getAllTalkTypes($request, $db)
+    public function getAllTalkTypes(Request $request, $db)
     {
         // verbosity - here for consistency as we don't have verbose talk type details to return at the moment
         $verbose = $this->getVerbosity($request);
@@ -15,7 +15,7 @@ class TalkTypesController extends ApiController
         return $list;
     }
 
-    public function getTalkType($request, $db)
+    public function getTalkType(Request $request, $db)
     {
         $talk_type_id = $this->getItemId($request);
         // verbosity - here for consistency as we don't have verbose talk type details to return at the moment
