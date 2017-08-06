@@ -1,6 +1,6 @@
 <?php
 
-class EventsController extends ApiController
+class EventsController extends BaseApiController
 {
     public function getAction($request, $db)
     {

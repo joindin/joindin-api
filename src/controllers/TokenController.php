@@ -1,6 +1,6 @@
 <?php
 
-class TokenController extends ApiController
+class TokenController extends BaseApiController
 {
     protected $oauthModel;
 

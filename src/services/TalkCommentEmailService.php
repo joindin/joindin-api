@@ -1,6 +1,6 @@
 <?php
 
-class TalkCommentEmailService extends EmailBaseService
+class TalkCommentEmailService extends BaseEmailService
 {
     /**
      * @var TalkModel

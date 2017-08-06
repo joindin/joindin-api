@@ -1,6 +1,6 @@
 <?php
 
-class ApplicationsController extends ApiController
+class ApplicationsController extends BaseApiController
 {
     public function getApplication($request, $db)
     {

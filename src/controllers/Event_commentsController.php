@@ -1,6 +1,6 @@
 <?php
 // @codingStandardsIgnoreStart
-class Event_commentsController extends ApiController
+class Event_commentsController extends BaseApiController
 // @codingStandardsIgnoreEnd
 {
     public function getComments($request, $db)

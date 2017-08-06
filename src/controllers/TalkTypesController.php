@@ -1,5 +1,5 @@
 <?php
-class TalkTypesController extends ApiController
+class TalkTypesController extends BaseApiController
 {
     public function getAllTalkTypes($request, $db)
     {

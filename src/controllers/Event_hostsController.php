@@ -1,6 +1,6 @@
 <?php
 // @codingStandardsIgnoreStart
-class Event_hostsController extends ApiController
+class Event_hostsController extends BaseApiController
 // @codingStandardsIgnoreEnd
 {
     /** @var EventHostMapper */

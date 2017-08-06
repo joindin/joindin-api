@@ -1,6 +1,6 @@
 <?php
 
-class UserRegistrationEmailService extends EmailBaseService
+class UserRegistrationEmailService extends BaseEmailService
 {
     protected $token;
     protected $website_url;

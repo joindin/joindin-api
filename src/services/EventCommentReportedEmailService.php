@@ -1,6 +1,6 @@
 <?php
 
-class EventCommentReportedEmailService extends EmailBaseService
+class EventCommentReportedEmailService extends BaseEmailService
 {
 
     protected $comment;

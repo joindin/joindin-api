@@ -1,6 +1,6 @@
 <?php
 
-class UserUsernameReminderEmailService extends EmailBaseService
+class UserUsernameReminderEmailService extends BaseEmailService
 {
     protected $user;
     protected $website_url;

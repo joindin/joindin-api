@@ -7,7 +7,7 @@
 use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
-class TwitterController extends ApiController
+class TwitterController extends BaseApiController
 {
     public function getRequestToken(Request $request, $db)
     {

@@ -6,7 +6,7 @@
 
 use GuzzleHttp\Client;
 
-class FacebookController extends ApiController
+class FacebookController extends BaseApiController
 {
     /**
      * Take the verification code from the client, send to Facebook to get an access token.

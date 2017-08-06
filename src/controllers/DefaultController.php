@@ -1,6 +1,6 @@
 <?php
 
-class DefaultController extends ApiController
+class DefaultController extends BaseApiController
 {
     public function handle(Request $request, $db)
     {

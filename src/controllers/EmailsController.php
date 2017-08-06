@@ -3,7 +3,7 @@
 /**
  * Actions here deal with endpoints that trigger emails to be sent
  */
-class EmailsController extends ApiController
+class EmailsController extends BaseApiController
 {
     public function verifications($request, $db)
     {
