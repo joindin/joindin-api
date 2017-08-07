@@ -2,9 +2,10 @@
 
 abstract class ApiController
 {
+    /** @var array */
     protected $config;
 
-    public function __construct($config = null)
+    public function __construct(array $config = [])
     {
         $this->config = $config;
     }
