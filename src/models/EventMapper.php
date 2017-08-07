@@ -391,15 +391,9 @@ class EventMapper extends ApiMapper
     }
 
     /**
-     * Turn results into arrays with correct fields, add hypermedia
-     *
-     * @param array $results Results of the database query
-     * @param boolean $verbose whether to return detailed information
-     *
-     * @return array A dataset now with each record having its links,
-     *     and pagination if appropriate
+     * @inheritdoc
      */
-    public function transformResults($results, $verbose)
+    public function transformResults(array $results, $verbose)
     {
         $total = $results['total'];
         unset($results['total']);

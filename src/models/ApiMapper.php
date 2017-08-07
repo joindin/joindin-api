@@ -29,7 +29,16 @@ class ApiMapper
         return array();
     }
 
-    public function transformResults($results, $verbose)
+    /**
+     * Turn results into arrays with correct fields, add hypermedia
+     *
+     * @param array $results Results of the database query
+     * @param boolean $verbose whether to return detailed information
+     *
+     * @return array A dataset now with each record having its links,
+     *     and pagination if appropriate
+     */
+    public function transformResults(array $results, $verbose)
     {
         $fields = $verbose ? $this->getVerboseFields() : $this->getDefaultFields();
         $retval = array();

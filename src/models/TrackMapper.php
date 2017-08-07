@@ -46,7 +46,10 @@ class TrackMapper extends ApiMapper
         return false;
     }
 
-    public function transformResults($results, $verbose)
+    /**
+     * @inheritdoc
+     */
+    public function transformResults(array $results, $verbose)
     {
 
         $total = $results['total'];
