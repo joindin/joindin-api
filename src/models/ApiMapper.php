@@ -111,7 +111,7 @@ class ApiMapper
         return $stmtCount->fetchColumn(0);
     }
 
-    protected function getPaginationLinks($list, $total = 0)
+    protected function getPaginationLinks(array $list, $total = 0)
     {
         $request       = $this->_request;
         $count         = count($list);
