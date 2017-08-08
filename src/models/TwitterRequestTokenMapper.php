@@ -2,6 +2,11 @@
 
 class TwitterRequestTokenMapper extends ApiMapper
 {
+    /**
+     * @param string $token
+     * @param string $secret
+     * @return bool|TwitterRequestTokenModelCollection
+     */
     public function create($token, $secret)
     {
         $sql      = 'insert into twitter_request_tokens '
@@ -27,6 +32,10 @@ class TwitterRequestTokenMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param string $token
+     * @return bool
+     */
     public function delete($token)
     {
         $sql      = 'delete from twitter_request_tokens '

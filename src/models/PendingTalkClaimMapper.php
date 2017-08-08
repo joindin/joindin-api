@@ -103,6 +103,12 @@ class PendingTalkClaimMapper extends ApiMapper
         );
     }
 
+    /**
+     * @param int $talk_id
+     * @param int $speaker_id
+     * @param int $claim_id
+     * @return bool|int
+     */
     public function claimExists($talk_id, $speaker_id, $claim_id)
     {
         $sql = 'select * from pending_talk_claims WHERE 
@@ -132,6 +138,12 @@ class PendingTalkClaimMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $talk_id
+     * @param int $speaker_id
+     * @param int $claim_id
+     * @return bool
+     */
     public function approveAssignmentAsSpeaker($talk_id, $speaker_id, $claim_id)
     {
         $sql = 'update pending_talk_claims SET user_approved_at = NOW() WHERE 
@@ -150,6 +162,12 @@ class PendingTalkClaimMapper extends ApiMapper
         return $response;
     }
 
+    /**
+     * @param int $talk_id
+     * @param int $speaker_id
+     * @param int $claim_id
+     * @return bool
+     */
     public function approveClaimAsHost($talk_id, $speaker_id, $claim_id)
     {
         $sql = 'update pending_talk_claims SET host_approved_at = NOW() WHERE 
@@ -168,6 +186,12 @@ class PendingTalkClaimMapper extends ApiMapper
         return $response;
     }
 
+    /**
+     * @param int $talk_id
+     * @param int $speaker_id
+     * @param int $claim_id
+     * @return bool
+     */
     public function rejectClaimAsHost($talk_id, $speaker_id, $claim_id)
     {
         $sql = 'DELETE FROM pending_talk_claims
@@ -188,6 +212,10 @@ class PendingTalkClaimMapper extends ApiMapper
         return $response;
     }
 
+    /**
+     * @param int $event_id
+     * @return bool|PendingTalkClaimModelCollection
+     */
     public function getPendingClaimsByEventId($event_id)
     {
         $base       = $this->_request->base;

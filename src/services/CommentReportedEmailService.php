@@ -66,6 +66,9 @@ class CommentReportedEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 
+    /**
+     * @return string
+     */
     private function linkToReportedCommentsForEvent()
     {
         /*

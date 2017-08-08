@@ -2,9 +2,7 @@
 
 class TalkCommentEmailService extends EmailBaseService
 {
-    /**
-     * @var TalkModel
-     */
+    /** @var TalkModel */
     protected $talk;
 
     protected $comment;

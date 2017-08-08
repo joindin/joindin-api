@@ -53,6 +53,11 @@ class TwitterController extends ApiController
      * Take the verification token from the client, send to twitter to get an access token,
      * this includes the user's screen name.  From that, look up who they are, create them a
      * new access token and return the same format as we do when logging in a user
+     *
+     * @param Request $request
+     * @param PDO $db
+     * @return array
+     * @throws Exception
      */
     public function logUserIn(Request $request, PDO $db)
     {

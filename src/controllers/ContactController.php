@@ -21,10 +21,10 @@ class ContactController extends ApiController
      *  - subject
      *  - comment
      *
-     * @param  Request $request
-     * @param  PDO $db
-     *
+     * @param Request $request
+     * @param PDO $db
      * @return void
+     * @throws Exception
      */
     public function contact(Request $request, PDO $db)
     {

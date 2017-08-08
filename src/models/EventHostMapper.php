@@ -2,6 +2,9 @@
 
 class EventHostMapper extends ApiMapper
 {
+    /**
+     * @return array
+     */
     public function getDefaultFields()
     {
         $fields = array(
@@ -12,11 +15,21 @@ class EventHostMapper extends ApiMapper
         return $fields;
     }
 
+    /**
+     * @return array
+     */
     public function getVerboseFields()
     {
         return $this->getDefaultFields();
     }
 
+    /**
+     * @param int $event_id
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     * @return array|bool
+     */
     public function getHostsByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
         $sql = $this->getHostSql();
@@ -38,6 +51,11 @@ class EventHostMapper extends ApiMapper
         return $retval;
     }
 
+    /**
+     * @param int $event_id
+     * @param int $host_id
+     * @return bool|string
+     */
     public function addHostToEvent($event_id, $host_id)
     {
         $sql = 'INSERT INTO user_admin (uid, rid, rtype) VALUES (:host_id, :event_id, :type)';
@@ -56,6 +74,11 @@ class EventHostMapper extends ApiMapper
         return $this->_db->lastInsertId();
     }
 
+    /**
+     * @param int $host_id
+     * @param int $event_id
+     * @return bool
+     */
     public function removeHostFromEvent($host_id, $event_id)
     {
         $sql = 'DELETE FROM user_admin WHERE uid = :user_id AND rid = :event_id AND rtype = :type';
@@ -71,7 +94,7 @@ class EventHostMapper extends ApiMapper
     /**
      * SQL for fetching event hosts, so it can be used in multiple places
      *
-     * @return SQL to fetch hosts, containing an :event_id named parameter
+     * @return string SQL to fetch hosts, containing an :event_id named parameter
      */
     protected function getHostSql()
     {

@@ -81,8 +81,8 @@ class BaseTalkController extends ApiController
     /**
      * Get a single talk
      *
-     * @param  PDO      $db
      * @param  Request  $request
+     * @param  PDO      $db
      * @param  integer  $talk_id
      * @param  boolean $verbose
      *
@@ -115,6 +115,12 @@ class BaseTalkController extends ApiController
         $this->request = $request;
     }
 
+    /**
+     * @param string $type
+     * @param PDO|null $db
+     * @param Request|null $request
+     * @return ApiMapper
+     */
     protected function getMapper($type, PDO $db = null, Request $request = null)
     {
         if (is_null($db)) {

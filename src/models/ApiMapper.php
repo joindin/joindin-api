@@ -69,6 +69,11 @@ class ApiMapper
         return $retval;
     }
 
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     * @return string
+     */
     protected function buildLimit($resultsperpage, $start)
     {
         if ($resultsperpage == 0) {

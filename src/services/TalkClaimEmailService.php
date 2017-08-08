@@ -40,6 +40,9 @@ class TalkClaimEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 
+    /**
+     * @return string a link in markdown
+     */
     private function linkToPendingClaimsForEvent()
     {
 

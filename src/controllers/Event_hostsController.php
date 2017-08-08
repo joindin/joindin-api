@@ -50,7 +50,7 @@ class Event_hostsController extends ApiController
      *
      * @uses host_name
      * @throws Exception
-     * @return int|false
+     * @return void
      */
     public function addHost(Request $request, PDO $db)
     {
@@ -107,7 +107,7 @@ class Event_hostsController extends ApiController
      * @param PDO     $db
      *
      * @throws Exception
-     * @return bool
+     * @return void
      */
     public function removeHostFromEvent(Request $request, PDO $db)
     {

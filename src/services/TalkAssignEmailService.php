@@ -47,9 +47,11 @@ class TalkAssignEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 
+    /**
+     * @return string a link in markdown
+     */
     private function linkToEditUserPage()
     {
-
         return '[' . $this->website_url
             . '/user/' . $this->username
             . '/edit' . '](' . $this->website_url

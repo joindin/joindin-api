@@ -8,6 +8,9 @@ abstract class AbstractModelCollection
     /**
      * Adds count, total, and this_page links.  Also adds next_page and prev_page
      * as appropriate
+     *
+     * @param Request $request
+     * @return array
      */
     protected function addPaginationLinks(Request $request)
     {

@@ -2,6 +2,9 @@
 
 class LanguageMapper extends ApiMapper
 {
+    /**
+     * @return array
+     */
     public function getDefaultFields()
     {
         $fields = array(
@@ -12,6 +15,9 @@ class LanguageMapper extends ApiMapper
         return $fields;
     }
 
+    /**
+     * @return array
+     */
     public function getVerboseFields()
     {
         $fields = array(
@@ -22,6 +28,11 @@ class LanguageMapper extends ApiMapper
         return $fields;
     }
 
+    /**
+     * @param int $language_id
+     * @param bool $verbose
+     * @return array|bool
+     */
     public function getLanguageById($language_id, $verbose = false)
     {
         $results = $this->getLanguages(1, 0, array('ID' => (int) $language_id));
@@ -32,6 +43,12 @@ class LanguageMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     * @return array|bool
+     */
     public function getLanguageList($resultsperpage, $start = 0, $verbose = false)
     {
         $results = $this->getLanguages($resultsperpage, $start);

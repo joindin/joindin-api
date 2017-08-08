@@ -2,6 +2,9 @@
 
 class TrackMapper extends ApiMapper
 {
+    /**
+     * @return array
+     */
     public function getDefaultFields()
     {
         $fields = array(
@@ -13,6 +16,9 @@ class TrackMapper extends ApiMapper
         return $fields;
     }
 
+    /**
+     * @return array
+     */
     public function getVerboseFields()
     {
         $fields = array(
@@ -24,6 +30,13 @@ class TrackMapper extends ApiMapper
         return $fields;
     }
 
+    /**
+     * @param int $event_id
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     * @return array|bool
+     */
     public function getTracksByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
         $sql = $this->getBasicSQL();
@@ -74,6 +87,11 @@ class TrackMapper extends ApiMapper
         return $retval;
     }
 
+    /**
+     * @param int $track_id
+     * @param bool $verbose
+     * @return array|bool
+     */
     public function getTrackById($track_id, $verbose = false)
     {
         $sql = $this->getBasicSQL();
@@ -93,7 +111,13 @@ class TrackMapper extends ApiMapper
         return false;
     }
 
-    public function createEventTrack($data, $event_id)
+    /**
+     * @param array $data
+     * @param int $event_id
+     * @return string
+     * @throws Exception
+     */
+    public function createEventTrack(array $data, $event_id)
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields = [
@@ -160,8 +184,9 @@ class TrackMapper extends ApiMapper
      * @param  array $data
      * @param  int   $track_id
      * @return int
+     * @throws Exception
      */
-    public function editEventTrack($data, $track_id)
+    public function editEventTrack(array $data, $track_id)
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields = [

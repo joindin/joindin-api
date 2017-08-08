@@ -574,6 +574,7 @@ class EventsController extends ApiController
      * @param  PDO $db
      *
      * @return void
+     * @throws Exception
      */
     public function createTrack(Request $request, PDO $db)
     {
@@ -643,6 +644,7 @@ class EventsController extends ApiController
      * @param  PDO $db
      *
      * @return void
+     * @throws Exception
      */
     public function approveAction(Request $request, PDO $db)
     {
@@ -684,6 +686,7 @@ class EventsController extends ApiController
      * @param PDO $db
      *
      * @return void
+     * @throws Exception
      */
     public function rejectAction(Request $request, PDO $db)
     {

@@ -83,9 +83,10 @@ class EventMapper extends ApiMapper
      * Fetch the details for a single event
      *
      * @param int $event_id events.ID value
-     * @param boolean $verbose used to determine how many fields are needed
+     * @param bool $verbose used to determine how many fields are needed
+     * @param bool $activeEventsOnly
      *
-     * @return array the event detail
+     * @return array|bool the event detail
      */
     public function getEventById($event_id, $verbose = false, $activeEventsOnly = true)
     {
@@ -109,7 +110,7 @@ class EventMapper extends ApiMapper
      * @param bool $activeEventsOnly
      * @param bool $transform
      *
-     * @return array the event detail
+     * @return array|bool the event detail
      */
     public function getEventByTrackId($track_id, $verbose = false, $activeEventsOnly = true, $transform = true)
     {
@@ -328,6 +329,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id The event ID to update for
      * @param int $user_id The user's ID
+     * @return bool
      */
     public function setUserAttendance($event_id, $user_id)
     {
@@ -343,6 +345,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id The event ID
      * @param int $user_id The user's ID
+     * @return bool
      */
     public function setUserNonAttendance($event_id, $user_id)
     {
@@ -359,6 +362,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id the event to check
      * @param int $user_id the user you're interested in
+     * @return array
      */
 
     public function getUserAttendance($event_id, $user_id)
@@ -374,6 +378,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id the Event of interest
      * @param int $user_id which user (often the current one)
+     * @return bool
      */
 
     protected function isUserAttendingEvent($event_id, $user_id)
@@ -502,7 +507,7 @@ class EventMapper extends ApiMapper
     /**
      * SQL for fetching event hosts, so it can be used in multiple places
      *
-     * @return SQL to fetch hosts, containing an :event_id named parameter
+     * @return string SQL to fetch hosts, containing an :event_id named parameter
      */
     protected function getHostSql()
     {
@@ -565,11 +570,12 @@ class EventMapper extends ApiMapper
     /**
      * Events that a particular user has admin privileges on
      *
+     * @param int $user_id
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
      * @param boolean $verbose used to determine how many fields are needed
      *
-     * @return array the data, or false if something went wrong
+     * @return array|bool the data, or false if something went wrong
      */
     public function getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose = false)
     {
@@ -611,11 +617,12 @@ class EventMapper extends ApiMapper
     /**
      * Events that a particular user is marked as attending
      *
+     * @param int $user_id
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
      * @param boolean $verbose used to determine how many fields are needed
      *
-     * @return array the data, or false if something went wrong
+     * @return array|false the data, or false if something went wrong
      */
     public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false)
     {
@@ -663,7 +670,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id The identifier for the event to check
      *
-     * @return bool True if the user has privileges, false otherwise
+     * @return bool if the user has privileges
      */
     public function thisUserHasAdminOn($event_id)
     {
@@ -687,7 +694,7 @@ class EventMapper extends ApiMapper
     /**
      * Does the currently-authenticated user have rights to approve events?
      *
-     * @return bool True if the user has rights, false otherwise
+     * @return bool if the user has rights
      */
     public function thisUserCanApproveEvents()
     {
@@ -711,7 +718,7 @@ class EventMapper extends ApiMapper
      * @param  int $user_id The identifier of the user to check
      * @param  int $event_id The identifier of the event to check
      *
-     * @return True if the user is a host, false otherwise
+     * @return bool if the user is a host
      */
     public function isUserAHostOn($user_id, $event_id)
     {
@@ -758,6 +765,7 @@ class EventMapper extends ApiMapper
      *
      * @param string $name The event name to inflect
      * @param int $event_id The event to store it against
+     * @param string $start_date
      *
      * @return string The value we stored
      */
@@ -918,6 +926,10 @@ class EventMapper extends ApiMapper
 
     /**
      * Add a user as an admin on an event
+     *
+     * @param int $event_id
+     * @param int $user_id
+     * @return bool
      */
     public function addUserAsHost($event_id, $user_id)
     {
@@ -930,6 +942,10 @@ class EventMapper extends ApiMapper
 
     /**
      * Remove a user's admin rights to a specific event
+     *
+     * @param int $event_id
+     * @param int $user_id
+     * @return bool
      */
     public function removeUserAsHost($event_id, $user_id)
     {
@@ -943,7 +959,7 @@ class EventMapper extends ApiMapper
     /**
      * Update the cached count of talks for a specific event
      *
-     * @param $event_id
+     * @param int $event_id
      *
      * @return bool
      */
@@ -960,7 +976,7 @@ class EventMapper extends ApiMapper
     /**
      * Update the cached count of comments for a specific event
      *
-     * @param $event_id
+     * @param int $event_id
      *
      * @return bool
      */
@@ -977,7 +993,7 @@ class EventMapper extends ApiMapper
     /**
      * Update the cached count of tracks for a specific event
      *
-     * @param $event_id
+     * @param int $event_id
      *
      * @return bool
      */
@@ -997,7 +1013,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id The event you want
      *
-     * @return array The event details, or false if it wasn't found
+     * @return array|false The event details, or false if it wasn't found
      */
     public function getPendingEventById($event_id)
     {
@@ -1017,7 +1033,7 @@ class EventMapper extends ApiMapper
         return false;
     }
 
-    /*
+    /**
      * How many events currently pending?
      *
      * @return int The number of pending events
@@ -1035,7 +1051,7 @@ class EventMapper extends ApiMapper
         return $result['count'];
     }
 
-    /*
+    /**
      * How many events currently pending for a
      * given user
      *

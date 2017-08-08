@@ -173,7 +173,7 @@ class ApplicationsController extends ApiController
     }
 
     /**
-     * @param $db
+     * @param PDO $db
      * @param Request $request
      *
      * @return ClientMapper

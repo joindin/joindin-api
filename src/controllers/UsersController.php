@@ -205,7 +205,8 @@ class UsersController extends ApiController
      * @param Request $request the request.
      * @param PDO     $db      the database.
      *
-     * @return mixed
+     * @return void
+     * @throws Exception
      */
     public function updateUser(Request $request, PDO $db)
     {

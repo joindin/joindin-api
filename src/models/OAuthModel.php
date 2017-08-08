@@ -40,7 +40,7 @@ class OAuthModel
     }
 
     /**
-     * @param mixed $request
+     * @param Request $request
      */
     public function setRequest(Request $request)
     {
@@ -48,15 +48,15 @@ class OAuthModel
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getBase()
     {
-        return $this->request->base;
+        return $this->request->getBase();
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getVersion()
     {
@@ -67,8 +67,6 @@ class OAuthModel
      * verifyAccessToken
      *
      * @param string $token The valid access token
-     *
-     * @access public
      * @return int The ID of the user this belongs to
      */
     public function verifyAccessToken($token)
@@ -97,21 +95,21 @@ class OAuthModel
      * @param  string $username username
      * @param  string $password password
      *
-     * @return array access token and user Uri
+     * @return array|false access token and user Uri
      */
     public function createAccessTokenFromPassword($clientId, $username, $password)
     {
         // is the username/password combination correct?
-        $userId = $this->getUserId($username, $password);
-        if (! $userId) {
+        $user_Id = $this->getUserId($username, $password);
+        if (! $user_Id) {
             return false;
         }
 
         // create new token
-        $accessToken = $this->newAccessToken($clientId, $userId);
+        $accessToken = $this->newAccessToken($clientId, $user_Id);
 
         // we also want to send back the logged in user's uri
-        $userUri = $this->getUserUri($userId);
+        $userUri = $this->getUserUri($user_Id);
 
         return array('access_token' => $accessToken, 'user_uri' => $userUri);
     }
@@ -123,6 +121,7 @@ class OAuthModel
      * @param  string $password user's password
      *
      * @return int|bool            user's id on success or false
+     * @throws Exception
      */
     protected function getUserId($username, $password)
     {
@@ -167,7 +166,7 @@ class OAuthModel
      * @param string $consumer_key the identifier for the consumer
      * @param int $user_id the user granting access
      *
-     * @return string access token
+     * @return bool|string access token
      */
     public function newAccessToken($consumer_key, $user_id)
     {
@@ -350,7 +349,7 @@ class OAuthModel
      * @param  string $twitterUsername User's twitter nick
      * (that we just got back from authenticating them)
      *
-     * @return string                   access token
+     * @return array|bool                   access token
      */
     public function createAccessTokenFromTwitterUsername($clientId, $twitterUsername)
     {

@@ -56,6 +56,7 @@ class TalkMapper extends ApiMapper
      * @param int $event_id         The event to fetch talks for
      * @param int $resultsperpage   How many results to return on each page
      * @param int $start            Which result to start with
+     * @return bool|TalkModelCollection
      */
     public function getTalksByEventId($event_id, $resultsperpage, $start)
     {
@@ -196,6 +197,9 @@ class TalkMapper extends ApiMapper
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getBasicSQL()
     {
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
@@ -223,6 +227,10 @@ class TalkMapper extends ApiMapper
 
     }
 
+    /**
+     * @param int $talk_id
+     * @return array
+     */
     protected function getSpeakers($talk_id)
     {
         $base    = $this->_request->base;
@@ -251,6 +259,10 @@ class TalkMapper extends ApiMapper
         return $retval;
     }
 
+    /**
+     * @param int $talk_id
+     * @return array
+     */
     protected function getTracks($talk_id)
     {
         $base       = $this->_request->base;
@@ -279,6 +291,12 @@ class TalkMapper extends ApiMapper
         return $retval;
     }
 
+    /**
+     * @param int $user_id
+     * @param int $resultsperpage
+     * @param int $start
+     * @return bool|TalkModelCollection
+     */
     public function getTalksBySpeaker($user_id, $resultsperpage, $start)
     {
         // based on getBasicSQL() but needs the speaker table joins
@@ -649,6 +667,10 @@ class TalkMapper extends ApiMapper
      * values per event, so you can have the same inflected talk title at two
      * different events, but try to have the same one at the same event and this
      * update will fail.  The calling code catches this and picks a new title
+     *
+     * @param string $inflected_title
+     * @param int $talk_id
+     * @return bool
      */
     protected function storeInflectedTitle($inflected_title, $talk_id)
     {
@@ -668,6 +690,10 @@ class TalkMapper extends ApiMapper
         return $result;
     }
 
+    /**
+     * @param int $talk_id
+     * @return array
+     */
     public function getSpeakerEmailsByTalkId($talk_id)
     {
         $speaker_sql  = 'select user.email, user.ID from talk_speaker ts '
@@ -728,7 +754,7 @@ class TalkMapper extends ApiMapper
      * @param int $talk_id
      * @param int $track_id
      *
-     * @return int
+     * @return string
      */
     public function addTalkToTrack($talk_id, $track_id)
     {
@@ -831,6 +857,11 @@ class TalkMapper extends ApiMapper
         return true;
     }
 
+    /**
+     * @param int $talk_id
+     * @param string $display_name
+     * @return bool
+     */
     public function getSpeakerFromTalk($talk_id, $display_name)
     {
         $speaker_sql  = 'select ts.* from talk_speaker ts '
@@ -843,6 +874,10 @@ class TalkMapper extends ApiMapper
 
     }
 
+    /**
+     * @param int $talk_id
+     * @param int $speaker_id
+     */
     public function removeApprovedSpeakerFromTalk($talk_id, $speaker_id)
     {
         $params = [
@@ -855,6 +890,10 @@ class TalkMapper extends ApiMapper
         $stmt->execute($params);
     }
 
+    /**
+     * @param int $talk_id
+     * @return bool
+     */
     public function removeAllSpeakersFromTalk($talk_id)
     {
         $sql = 'DELETE FROM talk_speaker WHERE talk_id = :talk_id';
@@ -864,6 +903,13 @@ class TalkMapper extends ApiMapper
         return $stmt->execute(['talk_id' => $talk_id]);
     }
 
+    /**
+     * @param int $talk_id
+     * @param int $claim_id
+     * @param int $speaker_id
+     * @param string $speaker_name
+     * @return bool
+     */
     public function assignTalkToSpeaker($talk_id, $claim_id, $speaker_id, $speaker_name)
     {
         $sql = 'update talk_speaker
@@ -881,6 +927,11 @@ class TalkMapper extends ApiMapper
         );
     }
 
+    /**
+     * @param int $talk_id
+     * @param int|null $link_id
+     * @return array
+     */
     public function getTalkMediaLinks($talk_id, $link_id = null)
     {
         $sql = '
@@ -928,6 +979,11 @@ class TalkMapper extends ApiMapper
         return $talk;
     }
 
+    /**
+     * @param int $talk_id
+     * @param int $link_id
+     * @return bool
+     */
     public function removeTalkLink($talk_id, $link_id)
     {
         $sql = "
@@ -964,6 +1020,13 @@ class TalkMapper extends ApiMapper
         return $stmt->execute(['talk_id' => $talk_id]);
     }
 
+    /**
+     * @param int $talk_id
+     * @param int $link_id
+     * @param string$display_name
+     * @param string $url
+     * @return bool
+     */
     public function updateTalkLink($talk_id, $link_id, $display_name, $url)
     {
         $sql = "
@@ -991,6 +1054,12 @@ class TalkMapper extends ApiMapper
         return 1 == $stmt->rowCount();
     }
 
+    /**
+     * @param int $talk_id
+     * @param string $display_name
+     * @param string $url
+     * @return string
+     */
     public function addTalkLink($talk_id, $display_name, $url)
     {
         $sql = "

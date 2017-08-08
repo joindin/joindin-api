@@ -98,6 +98,7 @@ class Talk_commentsController extends ApiController
      *
      * @param Request $request the request
      * @param PDO $db the database adapter
+     * @throws Exception
      */
     public function moderateReportedComment(Request $request, PDO $db)
     {

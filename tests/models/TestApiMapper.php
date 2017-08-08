@@ -18,6 +18,11 @@ class TestApiMapper extends ApiMapper
         return [];
     }
 
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     * @return string
+     */
     public function buildLimit($resultsperpage, $start)
     {
         return parent::buildLimit(

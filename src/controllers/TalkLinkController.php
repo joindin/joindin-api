@@ -100,6 +100,12 @@ class TalkLinkController extends BaseTalkController
         return true;
     }
 
+    /**
+     * @param Request $request
+     * @param TalkMapper $mapper
+     * @param int $talk_id
+     * @throws Exception
+     */
     protected function checkAdminOrSpeaker(Request $request, TalkMapper $mapper, $talk_id)
     {
         $is_admin = $mapper->thisUserHasAdminOn($talk_id);
@@ -112,6 +118,11 @@ class TalkLinkController extends BaseTalkController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param int $talk_id
+     * @param int $link_id
+     */
     protected function sucessfullyAltered(Request $request, $talk_id, $link_id)
     {
         $uri = $request->base . '/' . $request->version . '/talks/' . $talk_id . '/links/' . $link_id;

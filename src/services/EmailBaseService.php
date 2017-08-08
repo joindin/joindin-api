@@ -75,6 +75,9 @@ abstract class EmailBaseService
 
     /**
      * Set the body of the message
+     *
+     * @param string $body
+     * @return $this
      */
     protected function setBody($body)
     {
@@ -87,6 +90,9 @@ abstract class EmailBaseService
      * Set the HTML body of the message
      *
      * Call setBody first
+     *
+     * @param string $body
+     * @return $this
      */
     protected function setHtmlBody($body)
     {
@@ -108,6 +114,8 @@ abstract class EmailBaseService
 
     /**
      * Set the subject line of the email
+     *
+     * @param string $subject
      */
     protected function setSubject($subject)
     {
@@ -116,6 +124,8 @@ abstract class EmailBaseService
 
     /**
      * Set the reply to header
+     *
+     * @param string $email
      */
     protected function setReplyTo($email)
     {
@@ -124,6 +134,8 @@ abstract class EmailBaseService
 
     /**
      * Get recipients list to check it
+     *
+     * @return array
      */
     public function getRecipients()
     {
@@ -132,6 +144,9 @@ abstract class EmailBaseService
 
     /**
      * Markdown to HTML
+     *
+     * @param string $markdown
+     * @return string mixed
      */
     public function markdownToHtml($markdown)
     {
@@ -140,6 +155,10 @@ abstract class EmailBaseService
         return $messageHTML;
     }
 
+    /**
+     * @param string $html
+     * @return string
+     */
     public function htmlToPlainText($html)
     {
         return strip_tags($html);

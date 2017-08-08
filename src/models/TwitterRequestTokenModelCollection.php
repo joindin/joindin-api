@@ -6,12 +6,21 @@
  */
 class TwitterRequestTokenModelCollection extends AbstractModelCollection
 {
+    /** @var int */
+    protected $total;
+
+    /** @var array */
+    protected $list;
     /**
      * Take arrays of data and create a collection of models; store metadata
+     *
+     * @param array $data
+     * @param int $total
      */
     public function __construct(array $data, $total = 0)
     {
         $this->total = $total;
+        $this->list = [];
 
         // hydrate the model objects
         foreach ($data as $item) {
@@ -25,6 +34,10 @@ class TwitterRequestTokenModelCollection extends AbstractModelCollection
      * This creates the expected output structure, converting each resource
      * to it's presentable representation and adding the meta fields for totals
      * and pagination
+     *
+     * @param Request $request
+     * @param bool $verbose
+     * @return array
      */
     public function getOutputView(Request $request, $verbose = false)
     {

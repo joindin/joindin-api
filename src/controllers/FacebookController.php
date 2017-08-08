@@ -13,6 +13,11 @@ class FacebookController extends ApiController
      * With the access token, read the user's profile to get their email address.
      * From that, look up who they are, create them a new access token and return
      * the same format as we do when logging in a user
+     *
+     * @param Request $request
+     * @param PDO $db
+     * @return array
+     * @throws Exception
      */
     public function logUserIn(Request $request, PDO $db)
     {

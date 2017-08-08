@@ -2,8 +2,12 @@
 
 class JsonPView extends JsonView
 {
+    /** @var string */
+    protected $_callback;
+
     public function __construct($callback)
     {
+        parent::__construct();
         $this->_callback = $callback;
     }
 

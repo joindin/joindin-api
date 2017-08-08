@@ -12,6 +12,10 @@
 class HtmlView extends ApiView
 {
 
+    /**
+     * @param $content
+     * @return bool
+     */
     public function render($content)
     {
         $this->setHeader('Content-Type', 'text/html; charset=utf8');

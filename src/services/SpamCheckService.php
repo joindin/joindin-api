@@ -10,6 +10,10 @@ class SpamCheckService
 
     protected $blog;
 
+    /**
+     * @param string $apiKey
+     * @param string $blog
+     */
     public function __construct($apiKey, $blog)
     {
         $this->akismetUrl = 'http://' . $apiKey . '.rest.akismet.com';
