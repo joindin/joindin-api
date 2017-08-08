@@ -4,10 +4,11 @@ class TalkClaimEmailService extends EmailBaseService
 {
 
     protected $event;
+    /** @var TalkModel */
     protected $talk;
     protected $website_url;
 
-    public function __construct($config, $recipients, $event, $talk)
+    public function __construct($config, $recipients, $event, TalkModel $talk)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
