@@ -35,7 +35,7 @@ abstract class EmailBaseService
      * @param array $config The system config
      * @param array $recipients An array of email addresses
      */
-    public function __construct($config, $recipients)
+    public function __construct(array $config, array $recipients)
     {
         $transport     = \Swift_MailTransport::newInstance();
         $this->mailer  = \Swift_Mailer::newInstance($transport);
@@ -55,8 +55,12 @@ abstract class EmailBaseService
     /**
      * Take the template and the replacements, return markdown
      * with the correct values in it
+     *
+     * @param string $templateName
+     * @param array $replacements
+     * @return string
      */
-    public function parseEmail($templateName, $replacements)
+    public function parseEmail($templateName, array $replacements)
     {
         $template = file_get_contents($this->templatePath . $templateName)
                     . file_get_contents($this->templatePath . 'signature.md');

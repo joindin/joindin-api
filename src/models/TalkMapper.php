@@ -332,11 +332,11 @@ class TalkMapper extends ApiMapper
      * - speakers (an array of names)
      * - type_id (id of the talk's type)
      *
-     * @param $data
-     *
-     * @return int
+     * @param array $data
+     * @return string
+     * @throws Exception
      */
-    public function createTalk($data)
+    public function createTalk(array $data)
     {
         // TODO map from the field mappings in getVerboseFields()
         $sql = 'insert into talks (event_id, talk_title, talk_desc, '
@@ -384,11 +384,11 @@ class TalkMapper extends ApiMapper
      * - speakers (an array of names)
      * - type_id (id of the talk's type)
      *
-     * @param $data
-     *
-     * @return void
+     * @param array $data
+     * @param int $talk_id
+     * @throws Exception
      */
-    public function editTalk($data, $talk_id)
+    public function editTalk(array $data, $talk_id)
     {
         $sql = "UPDATE talks SET %s, url_friendly_talk_title = null WHERE ID = :talk_id";
 
@@ -912,7 +912,11 @@ class TalkMapper extends ApiMapper
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function addTalkMediaTypes($talk)
+    /**
+     * @param array $talk
+     * @return array
+     */
+    public function addTalkMediaTypes(array $talk)
     {
         $links = $this->getTalkMediaLinks($talk[0]['ID']);
 
@@ -1014,8 +1018,12 @@ class TalkMapper extends ApiMapper
 
     /**
      * Used for adding back the slide link to the request
+     *
+     * @param array $talk
+     * @param array $link
+     * @return array
      */
-    private function handleBackwardsCompatibleMedia($talk, $link)
+    private function handleBackwardsCompatibleMedia(array $talk, array $link)
     {
         if ($link['display_name'] == "slides_link") {
             $talk[0][$link['display_name']] = $link['url'];

@@ -222,7 +222,7 @@ class OAuthModel
      *
      * @return void
      */
-    public function expireOldTokens($clientIds)
+    public function expireOldTokens(array $clientIds)
     {
         foreach ($clientIds as $clientId) {
             $sql = "DELETE FROM oauth_access_tokens WHERE
@@ -382,12 +382,13 @@ class OAuthModel
      * * screen_name: The twitter-username
      * * email (optional): The users email-address
      *
+     * @param string $clientId
      * @param array $values
      *
      * @throws Exception
      * @return array
      */
-    public function createUserFromTwitterUsername($clientId, $values)
+    public function createUserFromTwitterUsername($clientId, array $values)
     {
         $sql = "select ID from user "
              . "where twitter_username = :twitter_username";

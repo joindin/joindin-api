@@ -150,7 +150,12 @@ class TalkCommentMapper extends ApiMapper
         return $retval;
     }
 
-    protected function formatOneComment($row, $verbose)
+    /**
+     * @param array $row
+     * @param bool $verbose
+     * @return array
+     */
+    protected function formatOneComment(array $row, $verbose)
     {
         $base    = $this->_request->base;
         $version = $this->_request->version;
@@ -193,7 +198,12 @@ class TalkCommentMapper extends ApiMapper
         return $sql;
     }
 
-    public function save($data)
+    /**
+     * @param array $data
+     * @return string
+     * @throws Exception
+     */
+    public function save(array $data)
     {
         // check for a duplicate first
         $dupe_sql = 'select tc.ID from talk_comments tc '

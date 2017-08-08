@@ -5,7 +5,12 @@ class UserUsernameReminderEmailService extends EmailBaseService
     protected $user;
     protected $website_url;
 
-    public function __construct($config, $recipients, $user)
+    /**
+     * @param array $config
+     * @param array $recipients
+     * @param array $user
+     */
+    public function __construct(array $config, array $recipients, array $user)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);

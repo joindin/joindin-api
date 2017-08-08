@@ -10,7 +10,7 @@ class TokenMapper extends ApiMapper
      *
      * @return array
      */
-    private function processResults($results)
+    private function processResults(array $results)
     {
         if (!is_array($results)) {
             // $results isn't an array. This shouldn't happen as an exception

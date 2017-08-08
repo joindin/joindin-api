@@ -512,9 +512,10 @@ class UserMapper extends ApiMapper
      * @param array $user An array of fields to change
      * @param int $userId The user to update
      *
-     * @return bool True if successful
+     * @return bool if successful
+     * @throws Exception
      */
-    public function editUser($user, $userId)
+    public function editUser(array $user, $userId)
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields = array(

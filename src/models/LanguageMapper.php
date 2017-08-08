@@ -68,7 +68,13 @@ class LanguageMapper extends ApiMapper
         );
     }
 
-    protected function getLanguages($resultsperpage, $start, $params = array())
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     * @param array $params
+     * @return array|bool
+     */
+    protected function getLanguages($resultsperpage, $start, array $params = [])
     {
         $sql = 'select l.ID, l.lang_name, l.lang_abbr ' .
                'from lang as l ';

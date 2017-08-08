@@ -2,12 +2,26 @@
 
 class ApiView
 {
-    protected $headers = [];
+    /** @var array */
+    protected $headers;
 
-    protected $responseCode = 200;
+    /** @var int */
+    protected $responseCode;
 
-    protected $noRender = false;
+    /** @var bool */
+    protected $noRender;
 
+    public function __construct(array $headers = [], $responseCode = 200, $noRender = false)
+    {
+        $this->headers = $headers;
+        $this->responseCode = $responseCode;
+        $this->noRender = $noRender;
+    }
+
+    /**
+     * @param $content
+     * @return array
+     */
     protected function addCount($content)
     {
         if (is_array($content)) {

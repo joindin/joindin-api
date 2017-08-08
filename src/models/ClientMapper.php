@@ -89,12 +89,12 @@ class ClientMapper extends ApiMapper
     /**
      * Create a new client and return the new ID
      *
-     * @param array $client
+     * @param array $data
      *
      * @throws Exception
      * @return int
      */
-    public function createClient($data)
+    public function createClient(array $data)
     {
         $clientSql = 'INSERT INTO oauth_consumers (consumer_key, consumer_secret,'
                    . 'created_date, user_id, application, description, '

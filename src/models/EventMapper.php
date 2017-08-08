@@ -132,9 +132,9 @@ class EventMapper extends ApiMapper
      * @param int $start offset to start returning records from
      * @param array $params filters and other parameters to limit/order the collection
      *
-     * @return array the raw database results
+     * @return array|bool the raw database results
      */
-    protected function getEvents($resultsperpage, $start, $params = array())
+    protected function getEvents($resultsperpage, $start, array $params = [])
     {
         $data  = array();
         $order = " order by ";
@@ -307,11 +307,11 @@ class EventMapper extends ApiMapper
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
      * @param array $params filters and other parameters to limit/order the collection
-     * @param boolean $verbose used to determine how many fields are needed
+     * @param bool $verbose used to determine how many fields are needed
      *
-     * @return array the data, or false if something went wrong
+     * @return array|bool the data, or false if something went wrong
      */
-    public function getEventList($resultsperpage, $start, $params, $verbose = false)
+    public function getEventList($resultsperpage, $start, array $params, $verbose = false)
     {
         $results = $this->getEvents($resultsperpage, $start, $params);
         if (is_array($results)) {
@@ -800,12 +800,13 @@ class EventMapper extends ApiMapper
      *
      * Accepts a subset of event fields
      *
-     * @param string[] $event Event data to insert into the database.
-     * @param boolean $auto_approve if false an event is registered as 'pending' first and must be actively approved.
+     * @param array $event Event data to insert into the database.
+     * @param bool $auto_approve if false an event is registered as 'pending' first and must be actively approved.
      *
      * @return integer|false
+     * @throws Exception
      */
-    public function createEvent($event, $auto_approve = false)
+    public function createEvent(array $event, $auto_approve = false)
     {
 
         // Sanity check: ensure all mandatory fields are present.
@@ -859,12 +860,13 @@ class EventMapper extends ApiMapper
      *
      * Accepts a subset of event fields
      *
-     * @param string[] $event Event data to insert into the database.
+     * @param array $event Event data to insert into the database.
      * @param int $event_id The ID of the event to be edited
      *
      * @return integer|false
+     * @throws Exception
      */
-    public function editEvent($event, $event_id)
+    public function editEvent(array $event, $event_id)
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields          = array(

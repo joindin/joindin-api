@@ -150,7 +150,7 @@ class EventCommentMapper extends ApiMapper
 
     }
 
-    public function save($data)
+    public function save(array $data)
     {
         // check for a duplicate first
         $dupe_sql = 'select ec.ID from event_comments ec '
