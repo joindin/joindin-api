@@ -3,7 +3,7 @@
 /**
  * Container for multiple EventCommentReportModel objects
  */
-class TalkCommentReportModelCollection extends AbstractModelCollection
+class TalkCommentReportModelCollection extends BaseModelCollection
 {
     protected $list = array();
     protected $total;

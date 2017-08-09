@@ -3,7 +3,7 @@
 /**
  * Object that represents a talk
  */
-class TalkModel extends AbstractModel
+class TalkModel extends BaseModel
 {
     /**
      * Default fields in the output view

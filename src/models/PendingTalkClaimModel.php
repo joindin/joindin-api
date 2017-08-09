@@ -3,7 +3,7 @@
 /**
  * Object that represents a talk
  */
-class PendingTalkClaimModel extends AbstractModel
+class PendingTalkClaimModel extends BaseModel
 {
 
 

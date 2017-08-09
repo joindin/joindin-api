@@ -3,7 +3,7 @@
 /**
  * Object to represent a twitter request token
  */
-class TwitterRequestTokenModel extends AbstractModel
+class TwitterRequestTokenModel extends BaseModel
 {
     /**
      * Default fields in the output view

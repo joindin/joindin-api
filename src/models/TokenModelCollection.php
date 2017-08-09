@@ -4,7 +4,7 @@
  * Container for multiple Token objects, also handles
  * collection metadata such as pagination
  */
-class TokenModelCollection extends AbstractModelCollection
+class TokenModelCollection extends BaseModelCollection
 {
     protected $list = array();
     protected $total;
