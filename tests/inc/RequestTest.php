@@ -425,7 +425,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function ifIdentificationDoesNotHaveTwoPartsExceptionIsThrown()
     {
         $request = new \Request($this->config, ['HTTPS' => 'on']);
-        $request->identifyUser(null, 'This is a bad header');
+        $request->identifyUser('This is a bad header');
     }
 
     /**
@@ -442,7 +442,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function ifIdentificationHeaderDoesNotStartWithOauthThrowException()
     {
         $request = new \Request($this->config, ['HTTPS' => 'on']);
-        $request->identifyUser(null, 'Auth Me');
+        $request->identifyUser('Auth Me');
     }
 
     /**
@@ -457,7 +457,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $config = array_merge($this->config, array('mode' => 'production'));
         $request = new \Request($config, []);
         $request->setScheme('http://');
-        $this->assertFalse($request->identifyUser(null, 'This is a bad header'));
+        $this->assertFalse($request->identifyUser('This is a bad header'));
     }
 
     /**
@@ -552,7 +552,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
         $request->setOauthModel($mockOauth);
 
-        $request->identifyUser(null, 'oauth authPart');
+        $request->identifyUser('oauth authPart');
 
         $this->assertEquals('TheUserId', $request->user_id);
         $this->assertEquals('TheUserId', $request->getUserId());
@@ -577,7 +577,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
         $request->setOauthModel($mockOauth);
 
-        $request->identifyUser(null, 'Bearer authPart');
+        $request->identifyUser('Bearer authPart');
 
         $this->assertEquals('TheUserId', $request->user_id);
         $this->assertEquals('TheUserId', $request->getUserId());
