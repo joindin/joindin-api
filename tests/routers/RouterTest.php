@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../src/inc/Request.php';
 /**
  * A class to test DefaultRouter
  *
- * @covers Router
+ * @covers BaseRouter
  */
 class RouterTest extends PHPUnit_Framework_TestCase
 {
@@ -27,8 +27,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider constructProvider
      *
-     * @covers Router::__construct
-     * @covers Router::getConfig
+     * @covers BaseRouter::__construct
+     * @covers BaseRouter::getConfig
      *
      * @param array $config
      */
@@ -39,7 +39,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 }
 
-class TestRouter3 extends Router
+class TestRouter3 extends BaseRouter
 {
 
 
