@@ -17,7 +17,7 @@ class Event_hostsController extends ApiController
      * @param PDO     $db
      *
      * @throws Exception
-     * @return array|bool
+     * @return array
      */
     public function listHosts(Request $request, PDO $db)
     {

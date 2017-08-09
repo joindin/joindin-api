@@ -88,7 +88,7 @@ class BaseTalkController extends ApiController
      *
      * @throws Exception if the talk is not found
      *
-     * @return false|TalkModel
+     * @return TalkModel
      */
     protected function getTalkById(
         Request $request,
