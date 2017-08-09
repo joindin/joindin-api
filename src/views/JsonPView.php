@@ -3,12 +3,12 @@
 class JsonPView extends JsonView
 {
     /** @var string */
-    protected $_callback;
+    protected $callback;
 
     public function __construct($callback)
     {
         parent::__construct();
-        $this->_callback = $callback;
+        $this->callback = $callback;
     }
 
     public function render($content)
@@ -20,6 +20,6 @@ class JsonPView extends JsonView
 
     public function buildOutput($content)
     {
-        return $this->_callback . '(' . parent::buildOutput($content) . ');';
+        return $this->callback . '(' . parent::buildOutput($content) . ');';
     }
 }
