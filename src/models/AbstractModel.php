@@ -16,6 +16,7 @@ abstract class AbstractModel
      * Retrieve a single element from the model or null if it doesn't exist
      *
      * @param  string $field
+     *
      * @return mixed
      */
     public function __get($field)
@@ -63,6 +64,7 @@ abstract class AbstractModel
      *
      * @param Request $request
      * @param bool $verbose
+     *
      * @return array
      */
     public function getOutputView(Request $request, $verbose = false)

@@ -49,6 +49,7 @@ class Event_hostsController extends ApiController
      * @param PDO     $db
      *
      * @uses host_name
+     *
      * @throws Exception
      * @return void
      */

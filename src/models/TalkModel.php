@@ -71,6 +71,7 @@ class TalkModel extends AbstractModel
      *
      * @param Request $request
      * @param bool $verbose
+     *
      * @return array
      */
     public function getOutputView(Request $request, $verbose = false)
@@ -99,6 +100,7 @@ class TalkModel extends AbstractModel
      * Get the URL on the website of this talk
      *
      * @param string $website_url The URL to the main website (e.g. http://joind.in or http://test.joind.in)
+     *
      * @return string The link to the talk on the web (e.g. http://web2.dev.joind.in/talk/ed89b)
      **/
     public function getWebsiteUrl($website_url)

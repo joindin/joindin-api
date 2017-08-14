@@ -329,6 +329,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id The event ID to update for
      * @param int $user_id The user's ID
+     *
      * @return bool
      */
     public function setUserAttendance($event_id, $user_id)
@@ -345,6 +346,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id The event ID
      * @param int $user_id The user's ID
+     *
      * @return bool
      */
     public function setUserNonAttendance($event_id, $user_id)
@@ -362,6 +364,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id the event to check
      * @param int $user_id the user you're interested in
+     *
      * @return array
      */
 
@@ -378,6 +381,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id the Event of interest
      * @param int $user_id which user (often the current one)
+     *
      * @return bool
      */
 
@@ -811,8 +815,8 @@ class EventMapper extends ApiMapper
      * @param array $event Event data to insert into the database.
      * @param bool $auto_approve if false an event is registered as 'pending' first and must be actively approved.
      *
-     * @return integer|false
      * @throws Exception
+     * @return integer|false
      */
     public function createEvent(array $event, $auto_approve = false)
     {
@@ -871,8 +875,8 @@ class EventMapper extends ApiMapper
      * @param array $event Event data to insert into the database.
      * @param int $event_id The ID of the event to be edited
      *
-     * @return integer|false
      * @throws Exception
+     * @return integer|false
      */
     public function editEvent(array $event, $event_id)
     {
@@ -929,6 +933,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id
      * @param int $user_id
+     *
      * @return bool
      */
     public function addUserAsHost($event_id, $user_id)
@@ -945,6 +950,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id
      * @param int $user_id
+     *
      * @return bool
      */
     public function removeUserAsHost($event_id, $user_id)
@@ -1056,6 +1062,7 @@ class EventMapper extends ApiMapper
      * given user
      *
      * @param int $user_id The user ID to search for
+     *
      * @return int The number of pending events
      */
     public function getPendingEventsCountByUser($user_id)
@@ -1201,6 +1208,7 @@ class EventMapper extends ApiMapper
      *
      * Used when we are uploading new images
      * @param int $event_id the event to add an image to
+     *
      * @return bool whether the record was saved
      */
     public function removeImages($event_id)
@@ -1225,6 +1233,7 @@ class EventMapper extends ApiMapper
      * @param int $width the width of the image
      * @param int $height the height of the image
      * @param string $type Freeform field for what sort of image it is, "orig" and "small" are our starter set
+     *
      * @return bool whether the record was saved
      */
     public function saveNewImage($event_id, $filename, $width, $height, $type)

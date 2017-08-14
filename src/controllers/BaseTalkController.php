@@ -87,7 +87,6 @@ class BaseTalkController extends ApiController
      * @param  boolean $verbose
      *
      * @throws Exception if the talk is not found
-     *
      * @return TalkModel
      */
     protected function getTalkById(
@@ -119,6 +118,7 @@ class BaseTalkController extends ApiController
      * @param string $type
      * @param PDO|null $db
      * @param Request|null $request
+     *
      * @return ApiMapper
      */
     protected function getMapper($type, PDO $db = null, Request $request = null)

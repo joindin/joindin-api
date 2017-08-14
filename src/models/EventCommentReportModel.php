@@ -57,6 +57,7 @@ class EventCommentReportModel extends AbstractModel
     /**
      * @param Request $request
      * @param bool $verbose
+     *
      * @return array with client-facing fields and hypermedia, ready for output
      */
     public function getOutputView(Request $request, $verbose = false)

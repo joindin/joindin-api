@@ -42,6 +42,7 @@ class TalkCommentMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose = false)
@@ -71,6 +72,7 @@ class TalkCommentMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
@@ -103,6 +105,7 @@ class TalkCommentMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getCommentsByUserId($user_id, $resultsperpage, $start, $verbose = false)
@@ -134,6 +137,7 @@ class TalkCommentMapper extends ApiMapper
      * @param int $comment_id
      * @param bool $verbose
      * @param bool $include_hidden
+     *
      * @return array|bool
      */
     public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
@@ -186,6 +190,7 @@ class TalkCommentMapper extends ApiMapper
     /**
      * @param array $row
      * @param bool $verbose
+     *
      * @return array
      */
     protected function formatOneComment(array $row, $verbose)
@@ -213,6 +218,7 @@ class TalkCommentMapper extends ApiMapper
      * Template SQL for all comment-fetching queries
      *
      * @param bool $include_hidden If set to true, will return inactive and private comments also
+     *
      * @return string
      */
     protected function getBasicSQL($include_hidden = false)
@@ -234,8 +240,9 @@ class TalkCommentMapper extends ApiMapper
 
     /**
      * @param array $data
-     * @return string
+     *
      * @throws Exception
+     * @return string
      */
     public function save(array $data)
     {
@@ -305,6 +312,7 @@ class TalkCommentMapper extends ApiMapper
      * Get the event and talk ID this talk comment belongs to
      *
      * @param int $comment_id The comment in question
+     *
      * @return array|bool Some info
      */
     public function getCommentInfo($comment_id)
@@ -356,6 +364,7 @@ class TalkCommentMapper extends ApiMapper
      *
      * @param $event_id int    The event whose comments should be returned
      * @param $moderated bool  Whether to include comments that have been moderated
+     *
      * @return TalkCommentReportModelCollection
      */
     public function getReportedCommentsByEventId($event_id, $moderated = false)
@@ -436,6 +445,7 @@ class TalkCommentMapper extends ApiMapper
 
     /**
      * @param integer $comment_id
+     *
      * @return false|array
      */
     public function getRawComment($comment_id)
@@ -456,6 +466,7 @@ class TalkCommentMapper extends ApiMapper
     /**
      * @param integer $comment_id
      * @param string $new_comment_body
+     *
      * @return bool
      */
     public function updateCommentBody($comment_id, $new_comment_body)

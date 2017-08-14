@@ -67,6 +67,7 @@ class OAuthModel
      * verifyAccessToken
      *
      * @param string $token The valid access token
+     *
      * @return int The ID of the user this belongs to
      */
     public function verifyAccessToken($token)
@@ -120,8 +121,8 @@ class OAuthModel
      * @param  string $username user's username
      * @param  string $password user's password
      *
-     * @return int|bool            user's id on success or false
      * @throws Exception
+     * @return int|bool            user's id on success or false
      */
     protected function getUserId($username, $password)
     {
@@ -243,6 +244,7 @@ class OAuthModel
      * @param string $token The valid access token
      *
      * @access public
+     *
      * @return string An identifier for the OAuth consumer
      */
     public function getConsumerName($token)
@@ -426,6 +428,7 @@ class OAuthModel
      *
      * @param  string $clientId         aka consumer_key (of the joindin client)
      * @param  string $email            User's email address (that we just got back from authenticating them)
+     *
      * @return array|false              Array of access token and user uri on success or false or failure
      */
     public function createAccessTokenFromTrustedEmail($clientId, $email)

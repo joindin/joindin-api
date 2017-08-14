@@ -20,6 +20,7 @@ class ApiView
 
     /**
      * @param $content
+     *
      * @return array
      */
     protected function addCount($content)
@@ -40,6 +41,7 @@ class ApiView
 
     /**
      * @param string $header
+     *
      * @param string $value
      */
     public function setHeader($header, $value)
@@ -65,6 +67,7 @@ class ApiView
 
     /**
      * @param $content
+     *
      * @return bool
      */
     public function render($content)

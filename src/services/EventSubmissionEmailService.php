@@ -6,7 +6,6 @@ class EventSubmissionEmailService extends EmailBaseService
     protected $comment;
 
     /**
-     * EventSubmissionEmailService constructor.
      * @param array $config
      * @param array $recipients
      * @param array $event

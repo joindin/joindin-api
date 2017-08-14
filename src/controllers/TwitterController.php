@@ -56,8 +56,9 @@ class TwitterController extends ApiController
      *
      * @param Request $request
      * @param PDO $db
-     * @return array
+     *
      * @throws Exception
+     * @return array
      */
     public function logUserIn(Request $request, PDO $db)
     {

@@ -107,6 +107,7 @@ class PendingTalkClaimMapper extends ApiMapper
      * @param int $talk_id
      * @param int $speaker_id
      * @param int $claim_id
+     *
      * @return bool|int
      */
     public function claimExists($talk_id, $speaker_id, $claim_id)
@@ -142,6 +143,7 @@ class PendingTalkClaimMapper extends ApiMapper
      * @param int $talk_id
      * @param int $speaker_id
      * @param int $claim_id
+     *
      * @return bool
      */
     public function approveAssignmentAsSpeaker($talk_id, $speaker_id, $claim_id)
@@ -166,6 +168,7 @@ class PendingTalkClaimMapper extends ApiMapper
      * @param int $talk_id
      * @param int $speaker_id
      * @param int $claim_id
+     *
      * @return bool
      */
     public function approveClaimAsHost($talk_id, $speaker_id, $claim_id)
@@ -190,6 +193,7 @@ class PendingTalkClaimMapper extends ApiMapper
      * @param int $talk_id
      * @param int $speaker_id
      * @param int $claim_id
+     *
      * @return bool
      */
     public function rejectClaimAsHost($talk_id, $speaker_id, $claim_id)
@@ -214,6 +218,7 @@ class PendingTalkClaimMapper extends ApiMapper
 
     /**
      * @param int $event_id
+     *
      * @return bool|PendingTalkClaimModelCollection
      */
     public function getPendingClaimsByEventId($event_id)

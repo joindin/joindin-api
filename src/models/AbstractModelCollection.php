@@ -10,6 +10,7 @@ abstract class AbstractModelCollection
      * as appropriate
      *
      * @param Request $request
+     *
      * @return array
      */
     protected function addPaginationLinks(Request $request)

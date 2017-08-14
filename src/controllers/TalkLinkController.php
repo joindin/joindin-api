@@ -104,6 +104,7 @@ class TalkLinkController extends BaseTalkController
      * @param Request $request
      * @param TalkMapper $mapper
      * @param int $talk_id
+     *
      * @throws Exception
      */
     protected function checkAdminOrSpeaker(Request $request, TalkMapper $mapper, $talk_id)

@@ -5,6 +5,7 @@ class TwitterRequestTokenMapper extends ApiMapper
     /**
      * @param string $token
      * @param string $secret
+     *
      * @return bool|TwitterRequestTokenModelCollection
      */
     public function create($token, $secret)
@@ -34,6 +35,7 @@ class TwitterRequestTokenMapper extends ApiMapper
 
     /**
      * @param string $token
+     *
      * @return bool
      */
     public function delete($token)

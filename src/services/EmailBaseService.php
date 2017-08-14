@@ -58,6 +58,7 @@ abstract class EmailBaseService
      *
      * @param string $templateName
      * @param array $replacements
+     *
      * @return string
      */
     public function parseEmail($templateName, array $replacements)
@@ -77,6 +78,7 @@ abstract class EmailBaseService
      * Set the body of the message
      *
      * @param string $body
+     *
      * @return $this
      */
     protected function setBody($body)
@@ -92,6 +94,7 @@ abstract class EmailBaseService
      * Call setBody first
      *
      * @param string $body
+     *
      * @return $this
      */
     protected function setHtmlBody($body)
@@ -146,6 +149,7 @@ abstract class EmailBaseService
      * Markdown to HTML
      *
      * @param string $markdown
+     *
      * @return string mixed
      */
     public function markdownToHtml($markdown)
@@ -157,6 +161,7 @@ abstract class EmailBaseService
 
     /**
      * @param string $html
+     *
      * @return string
      */
     public function htmlToPlainText($html)

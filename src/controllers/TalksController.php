@@ -229,6 +229,7 @@ class TalksController extends BaseTalkController
      *
      * @param PDO $db
      * @param Request $request
+     *
      * @throws Exception
      */
     public function addTrackToTalk(Request $request, PDO $db)
@@ -284,6 +285,7 @@ class TalksController extends BaseTalkController
      *
      * @param PDO $db
      * @param Request $request
+     *
      * @throws Exception
      */
     public function removeTrackFromTalk(Request $request, PDO $db)
@@ -429,8 +431,8 @@ class TalksController extends BaseTalkController
      * @param  Request $request
      * @param  int     $event_id
      *
-     * @return array
      * @throws Exception
+     * @return array
      */
     protected function getTalkDataFromRequest(PDO $db, Request $request, $event_id)
     {

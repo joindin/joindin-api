@@ -35,6 +35,7 @@ class TrackMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getTracksByEventId($event_id, $resultsperpage, $start, $verbose = false)
@@ -90,6 +91,7 @@ class TrackMapper extends ApiMapper
     /**
      * @param int $track_id
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getTrackById($track_id, $verbose = false)
@@ -114,8 +116,9 @@ class TrackMapper extends ApiMapper
     /**
      * @param array $data
      * @param int $event_id
-     * @return string
+     *
      * @throws Exception
+     * @return string
      */
     public function createEventTrack(array $data, $event_id)
     {
@@ -183,8 +186,9 @@ class TrackMapper extends ApiMapper
      *
      * @param  array $data
      * @param  int   $track_id
-     * @return int
+     *
      * @throws Exception
+     * @return int
      */
     public function editEventTrack(array $data, $track_id)
     {

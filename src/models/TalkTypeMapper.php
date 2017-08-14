@@ -32,6 +32,7 @@ class TalkTypeMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getTalkTypeList($resultsperpage, $start = 0, $verbose = false)
@@ -46,6 +47,7 @@ class TalkTypeMapper extends ApiMapper
     /**
      * @param int $talkType_id
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getTalkTypeById($talkType_id, $verbose)
@@ -61,6 +63,7 @@ class TalkTypeMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      * @param array $params
+     *
      * @return array|bool
      */
     protected function getTalkTypes($resultsperpage, $start, $params = array())

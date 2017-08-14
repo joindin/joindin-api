@@ -46,6 +46,7 @@ class UserMapper extends ApiMapper
     /**
      * @param int $user_id
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getUserById($user_id, $verbose = false)
@@ -63,6 +64,7 @@ class UserMapper extends ApiMapper
     /**
      * @param string $username
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getUserByUsername($username, $verbose = false)
@@ -113,6 +115,7 @@ class UserMapper extends ApiMapper
      * @param int $start
      * @param string|null $where
      * @param string|null $order
+     *
      * @return array|bool
      */
     protected function getUsers($resultsperpage, $start, $where = null, $order = null)
@@ -156,6 +159,7 @@ class UserMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getUserList($resultsperpage, $start, $verbose = false)
@@ -176,6 +180,7 @@ class UserMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose)
@@ -253,6 +258,7 @@ class UserMapper extends ApiMapper
 
     /**
      * @param int $user_id
+     *
      * @return bool
      */
     public function isSiteAdmin($user_id)
@@ -269,6 +275,7 @@ class UserMapper extends ApiMapper
      * Check if the user represented by $user_id is trusted
      *
      * @param int $user_id
+     *
      * @return bool
      */
     public function isTrusted($user_id)
@@ -303,8 +310,9 @@ class UserMapper extends ApiMapper
 
     /**
      * @param int $user
-     * @return bool|string
+     *
      * @throws Exception
+     * @return bool|string
      */
     public function createUser($user)
     {
@@ -352,6 +360,7 @@ class UserMapper extends ApiMapper
     /**
      * @param string $email
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getUserByEmail($email, $verbose = false)
@@ -410,6 +419,7 @@ class UserMapper extends ApiMapper
      * user, when they use the token to verify, we'll set their status to verified
      *
      * @param int $user_id
+     *
      * @return bool|string
      */
     public function generateEmailVerificationTokenForUserId($user_id)
@@ -507,6 +517,7 @@ class UserMapper extends ApiMapper
      * Designed to allow creation of verified users for testing purposes
      *
      * @param int $user_id
+     *
      * @return bool
      */
     public function verifyThisTestUser($user_id)
@@ -516,6 +527,7 @@ class UserMapper extends ApiMapper
 
     /**
      * @param int $user_id
+     *
      * @return bool
      */
     protected function markUserVerified($user_id)
@@ -566,8 +578,8 @@ class UserMapper extends ApiMapper
      * @param array $user An array of fields to change
      * @param int $userId The user to update
      *
-     * @return bool if successful
      * @throws Exception
+     * @return bool if successful
      */
     public function editUser(array $user, $userId)
     {
@@ -667,6 +679,7 @@ class UserMapper extends ApiMapper
      * password
      *
      * @param int $user_id
+     *
      * @return bool|string
      */
     public function generatePasswordResetTokenForUserId($user_id)
@@ -697,6 +710,7 @@ class UserMapper extends ApiMapper
      *
      * @param string $token
      * @param string $password
+     *
      * @return bool
      */
     public function resetPassword($token, $password)
@@ -744,6 +758,7 @@ class UserMapper extends ApiMapper
 
     /**
      * @param int $user_id
+     *
      * @return bool
      */
     public function delete($user_id)

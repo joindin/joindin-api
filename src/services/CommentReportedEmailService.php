@@ -11,13 +11,6 @@ class CommentReportedEmailService extends EmailBaseService
     /** @var string */
     protected $website_url;
 
-    /**
-     * CommentReportedEmailService constructor.
-     * @param array $config
-     * @param array $recipients
-     * @param array $comment
-     * @param array $event
-     */
     public function __construct(array $config, array $recipients, array $comment, array $event)
     {
         // set up the common stuff first

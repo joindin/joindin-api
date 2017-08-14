@@ -28,6 +28,7 @@ class EventHostMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getHostsByEventId($event_id, $resultsperpage, $start, $verbose = false)
@@ -54,6 +55,7 @@ class EventHostMapper extends ApiMapper
     /**
      * @param int $event_id
      * @param int $host_id
+     *
      * @return bool|string
      */
     public function addHostToEvent($event_id, $host_id)

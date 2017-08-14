@@ -41,6 +41,7 @@ class TalkModelCollection extends AbstractModelCollection
      *
      * @param Request $request
      * @param bool $verbose
+     *
      * @return array
      */
     public function getOutputView(Request $request, $verbose = false)

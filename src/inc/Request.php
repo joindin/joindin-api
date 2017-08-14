@@ -316,8 +316,9 @@ class Request
      *
      * @param string $auth_header Authorization header to send into model
      * @param PDO $db Database adapter (needed to put into OAuthModel if it's not set already)
-     * @return bool
+     *
      * @throws InvalidArgumentException
+     * @return bool
      */
     public function identifyUser($auth_header, PDO $db = null)
     {
@@ -481,8 +482,8 @@ class Request
      *
      * @param PDO $db [optional] PDO db adapter to put into OAuthModel object
      *
-     * @return OAuthModel
      * @throws InvalidArgumentException
+     * @return OAuthModel
      */
     public function getOauthModel(PDO $db = null)
     {

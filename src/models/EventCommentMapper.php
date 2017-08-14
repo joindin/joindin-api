@@ -31,6 +31,7 @@ class EventCommentMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      * @param bool $verbose
+     *
      * @return array|bool
      */
     public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
@@ -57,6 +58,7 @@ class EventCommentMapper extends ApiMapper
      * @param int $comment_id
      * @param bool $verbose
      * @param bool $include_hidden
+     *
      * @return array|bool
      */
     public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
@@ -113,6 +115,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @param array $row      The database row with the comment result
      * @param bool $verbose  The verbosity level
+     *
      * @return array The extra fields to add to the existing data for this record
      */
     protected function formatOneComment($row, $verbose)
@@ -205,6 +208,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @param int $user_id
      * @param int $event_id
+     *
      * @return bool
      */
     public function hasUserRatedThisEvent($user_id, $event_id)
@@ -229,6 +233,7 @@ class EventCommentMapper extends ApiMapper
      * Get the event ID this event comment belongs to
      *
      * @param int $comment_id The comment in question
+     *
      * @return bool|array including event_id
      */
     public function getCommentInfo($comment_id)
@@ -279,6 +284,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @param int $event_id    The event whose comments should be returned
      * @param bool $moderated  Whether to include comments that have been moderated
+     *
      * @return EventCommentReportModelCollection
      */
     public function getReportedCommentsByEventId($event_id, $moderated = false)

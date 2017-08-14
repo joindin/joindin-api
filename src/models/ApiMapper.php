@@ -72,6 +72,7 @@ class ApiMapper
     /**
      * @param int $resultsperpage
      * @param int $start
+     *
      * @return string
      */
     protected function buildLimit($resultsperpage, $start)

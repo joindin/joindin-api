@@ -46,6 +46,7 @@ class PendingTalkClaimModel extends AbstractModel
      *
      * @param Request $request
      * @param bool $verbose
+     *
      * @return array
      */
     public function getOutputView(Request $request, $verbose = false)

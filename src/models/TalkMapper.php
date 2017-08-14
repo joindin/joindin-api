@@ -7,6 +7,7 @@ class TalkMapper extends ApiMapper
      * add sub-resource data
      *
      * @param  array|false $results
+     *
      * @return array
      */
     public function processResults($results)
@@ -56,6 +57,7 @@ class TalkMapper extends ApiMapper
      * @param int $event_id         The event to fetch talks for
      * @param int $resultsperpage   How many results to return on each page
      * @param int $start            Which result to start with
+     *
      * @return bool|TalkModelCollection
      */
     public function getTalksByEventId($event_id, $resultsperpage, $start)
@@ -88,6 +90,7 @@ class TalkMapper extends ApiMapper
      *
      * @param  integer $talk_id
      * @param  bool $verbose
+     *
      * @return TalkModel|false
      */
     public function getTalkById($talk_id, $verbose = false)
@@ -229,6 +232,7 @@ class TalkMapper extends ApiMapper
 
     /**
      * @param int $talk_id
+     *
      * @return array
      */
     protected function getSpeakers($talk_id)
@@ -261,6 +265,7 @@ class TalkMapper extends ApiMapper
 
     /**
      * @param int $talk_id
+     *
      * @return array
      */
     protected function getTracks($talk_id)
@@ -295,6 +300,7 @@ class TalkMapper extends ApiMapper
      * @param int $user_id
      * @param int $resultsperpage
      * @param int $start
+     *
      * @return bool|TalkModelCollection
      */
     public function getTalksBySpeaker($user_id, $resultsperpage, $start)
@@ -351,8 +357,9 @@ class TalkMapper extends ApiMapper
      * - type_id (id of the talk's type)
      *
      * @param array $data
-     * @return string
+     *
      * @throws Exception
+     * @return string
      */
     public function createTalk(array $data)
     {
@@ -404,6 +411,7 @@ class TalkMapper extends ApiMapper
      *
      * @param array $data
      * @param int $talk_id
+     *
      * @throws Exception
      */
     public function editTalk(array $data, $talk_id)
@@ -670,6 +678,7 @@ class TalkMapper extends ApiMapper
      *
      * @param string $inflected_title
      * @param int $talk_id
+     *
      * @return bool
      */
     protected function storeInflectedTitle($inflected_title, $talk_id)
@@ -692,6 +701,7 @@ class TalkMapper extends ApiMapper
 
     /**
      * @param int $talk_id
+     *
      * @return array
      */
     public function getSpeakerEmailsByTalkId($talk_id)
@@ -860,6 +870,7 @@ class TalkMapper extends ApiMapper
     /**
      * @param int $talk_id
      * @param string $display_name
+     *
      * @return bool
      */
     public function getSpeakerFromTalk($talk_id, $display_name)
@@ -892,6 +903,7 @@ class TalkMapper extends ApiMapper
 
     /**
      * @param int $talk_id
+     *
      * @return bool
      */
     public function removeAllSpeakersFromTalk($talk_id)
@@ -908,6 +920,7 @@ class TalkMapper extends ApiMapper
      * @param int $claim_id
      * @param int $speaker_id
      * @param string $speaker_name
+     *
      * @return bool
      */
     public function assignTalkToSpeaker($talk_id, $claim_id, $speaker_id, $speaker_name)
@@ -930,6 +943,7 @@ class TalkMapper extends ApiMapper
     /**
      * @param int $talk_id
      * @param int|null $link_id
+     *
      * @return array
      */
     public function getTalkMediaLinks($talk_id, $link_id = null)
@@ -965,6 +979,7 @@ class TalkMapper extends ApiMapper
 
     /**
      * @param array $talk
+     *
      * @return array
      */
     public function addTalkMediaTypes(array $talk)
@@ -982,6 +997,7 @@ class TalkMapper extends ApiMapper
     /**
      * @param int $talk_id
      * @param int $link_id
+     *
      * @return bool
      */
     public function removeTalkLink($talk_id, $link_id)
@@ -1025,6 +1041,7 @@ class TalkMapper extends ApiMapper
      * @param int $link_id
      * @param string$display_name
      * @param string $url
+     *
      * @return bool
      */
     public function updateTalkLink($talk_id, $link_id, $display_name, $url)
@@ -1058,6 +1075,7 @@ class TalkMapper extends ApiMapper
      * @param int $talk_id
      * @param string $display_name
      * @param string $url
+     *
      * @return string
      */
     public function addTalkLink($talk_id, $display_name, $url)
@@ -1090,6 +1108,7 @@ class TalkMapper extends ApiMapper
      *
      * @param array $talk
      * @param array $link
+     *
      * @return array
      */
     private function handleBackwardsCompatibleMedia(array $talk, array $link)
