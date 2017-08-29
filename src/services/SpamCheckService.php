@@ -67,7 +67,7 @@ class SpamCheckService
      * @param $key
      * @param array $data
      *
-     * @return bool|mixed
+     * @return false|mixed
      */
     protected function getField($key, array $data)
     {

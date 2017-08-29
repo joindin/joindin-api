@@ -32,7 +32,7 @@ class EventCommentMapper extends ApiMapper
      * @param int $start
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
@@ -59,7 +59,7 @@ class EventCommentMapper extends ApiMapper
      * @param bool $verbose
      * @param bool $include_hidden
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
     {
@@ -234,7 +234,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @param int $comment_id The comment in question
      *
-     * @return bool|array including event_id
+     * @return false|array including event_id
      */
     public function getCommentInfo($comment_id)
     {

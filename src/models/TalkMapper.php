@@ -58,7 +58,7 @@ class TalkMapper extends ApiMapper
      * @param int $resultsperpage   How many results to return on each page
      * @param int $start            Which result to start with
      *
-     * @return bool|TalkModelCollection
+     * @return false|TalkModelCollection
      */
     public function getTalksByEventId($event_id, $resultsperpage, $start)
     {
@@ -301,7 +301,7 @@ class TalkMapper extends ApiMapper
      * @param int $resultsperpage
      * @param int $start
      *
-     * @return bool|TalkModelCollection
+     * @return false|TalkModelCollection
      */
     public function getTalksBySpeaker($user_id, $resultsperpage, $start)
     {

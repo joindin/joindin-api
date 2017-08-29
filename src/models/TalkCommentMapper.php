@@ -43,7 +43,7 @@ class TalkCommentMapper extends ApiMapper
      * @param int $start
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose = false)
     {
@@ -73,7 +73,7 @@ class TalkCommentMapper extends ApiMapper
      * @param int $start
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
@@ -106,7 +106,7 @@ class TalkCommentMapper extends ApiMapper
      * @param int $start
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getCommentsByUserId($user_id, $resultsperpage, $start, $verbose = false)
     {
@@ -138,7 +138,7 @@ class TalkCommentMapper extends ApiMapper
      * @param bool $verbose
      * @param bool $include_hidden
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
     {
@@ -313,7 +313,7 @@ class TalkCommentMapper extends ApiMapper
      *
      * @param int $comment_id The comment in question
      *
-     * @return array|bool Some info
+     * @return false|array Some info
      */
     public function getCommentInfo($comment_id)
     {

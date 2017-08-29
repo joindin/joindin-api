@@ -86,7 +86,7 @@ class EventMapper extends ApiMapper
      * @param bool $verbose used to determine how many fields are needed
      * @param bool $activeEventsOnly
      *
-     * @return array|bool the event detail
+     * @return false|array the event detail
      */
     public function getEventById($event_id, $verbose = false, $activeEventsOnly = true)
     {
@@ -110,7 +110,7 @@ class EventMapper extends ApiMapper
      * @param bool $activeEventsOnly
      * @param bool $transform
      *
-     * @return array|bool the event detail
+     * @return false|bool the event detail
      */
     public function getEventByTrackId($track_id, $verbose = false, $activeEventsOnly = true, $transform = true)
     {
@@ -133,7 +133,7 @@ class EventMapper extends ApiMapper
      * @param int $start offset to start returning records from
      * @param array $params filters and other parameters to limit/order the collection
      *
-     * @return array|bool the raw database results
+     * @return false|array the raw database results
      */
     protected function getEvents($resultsperpage, $start, array $params = [])
     {
@@ -310,7 +310,7 @@ class EventMapper extends ApiMapper
      * @param array $params filters and other parameters to limit/order the collection
      * @param bool $verbose used to determine how many fields are needed
      *
-     * @return array|bool the data, or false if something went wrong
+     * @return false|array the data, or false if something went wrong
      */
     public function getEventList($resultsperpage, $start, array $params, $verbose = false)
     {
@@ -579,7 +579,7 @@ class EventMapper extends ApiMapper
      * @param int $start offset to start returning records from
      * @param boolean $verbose used to determine how many fields are needed
      *
-     * @return array|bool the data, or false if something went wrong
+     * @return false|array the data, or false if something went wrong
      */
     public function getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose = false)
     {
@@ -626,7 +626,7 @@ class EventMapper extends ApiMapper
      * @param int $start offset to start returning records from
      * @param boolean $verbose used to determine how many fields are needed
      *
-     * @return array|false the data, or false if something went wrong
+     * @return false|array the data, or false if something went wrong
      */
     public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false)
     {
@@ -1019,7 +1019,7 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id The event you want
      *
-     * @return array|false The event details, or false if it wasn't found
+     * @return false|array The event details, or false if it wasn't found
      */
     public function getPendingEventById($event_id)
     {

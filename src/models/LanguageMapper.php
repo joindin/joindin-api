@@ -32,7 +32,7 @@ class LanguageMapper extends ApiMapper
      * @param int $language_id
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getLanguageById($language_id, $verbose = false)
     {
@@ -49,7 +49,7 @@ class LanguageMapper extends ApiMapper
      * @param int $start
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getLanguageList($resultsperpage, $start = 0, $verbose = false)
     {
@@ -92,7 +92,7 @@ class LanguageMapper extends ApiMapper
      * @param int $start
      * @param array $params
      *
-     * @return array|bool
+     * @return false|array
      */
     protected function getLanguages($resultsperpage, $start, array $params = [])
     {

@@ -36,7 +36,7 @@ class TrackMapper extends ApiMapper
      * @param int $start
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getTracksByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
@@ -92,7 +92,7 @@ class TrackMapper extends ApiMapper
      * @param int $track_id
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getTrackById($track_id, $verbose = false)
     {

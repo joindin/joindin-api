@@ -108,7 +108,7 @@ class PendingTalkClaimMapper extends ApiMapper
      * @param int $speaker_id
      * @param int $claim_id
      *
-     * @return bool|int
+     * @return false|int
      */
     public function claimExists($talk_id, $speaker_id, $claim_id)
     {
@@ -219,7 +219,7 @@ class PendingTalkClaimMapper extends ApiMapper
     /**
      * @param int $event_id
      *
-     * @return bool|PendingTalkClaimModelCollection
+     * @return false|PendingTalkClaimModelCollection
      */
     public function getPendingClaimsByEventId($event_id)
     {

@@ -47,7 +47,7 @@ class UserMapper extends ApiMapper
      * @param int $user_id
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getUserById($user_id, $verbose = false)
     {
@@ -65,7 +65,7 @@ class UserMapper extends ApiMapper
      * @param string $username
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getUserByUsername($username, $verbose = false)
     {
@@ -93,7 +93,7 @@ class UserMapper extends ApiMapper
     }
 
     /**
-     * @return array|bool
+     * @return false|array
      */
     public function getSiteAdminEmails()
     {
@@ -116,7 +116,7 @@ class UserMapper extends ApiMapper
      * @param string|null $where
      * @param string|null $order
      *
-     * @return array|bool
+     * @return false|array
      */
     protected function getUsers($resultsperpage, $start, $where = null, $order = null)
     {
@@ -160,7 +160,7 @@ class UserMapper extends ApiMapper
      * @param int $start
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getUserList($resultsperpage, $start, $verbose = false)
     {
@@ -181,7 +181,7 @@ class UserMapper extends ApiMapper
      * @param int $start
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose)
     {
@@ -312,7 +312,7 @@ class UserMapper extends ApiMapper
      * @param int $user
      *
      * @throws Exception
-     * @return bool|string
+     * @return false|string user ID
      */
     public function createUser($user)
     {
@@ -361,7 +361,7 @@ class UserMapper extends ApiMapper
      * @param string $email
      * @param bool $verbose
      *
-     * @return array|bool
+     * @return false|array
      */
     public function getUserByEmail($email, $verbose = false)
     {
@@ -395,7 +395,7 @@ class UserMapper extends ApiMapper
      *
      * @param string $password The password to check (plain text)
      *
-     * @return bool|array Either true if it's fine, or an array of remarks about why it isn't
+     * @return true|array Either true if it's fine, or an array of remarks about why it isn't
      */
     public function checkPasswordValidity($password)
     {
@@ -420,7 +420,7 @@ class UserMapper extends ApiMapper
      *
      * @param int $user_id
      *
-     * @return bool|string
+     * @return false|string token
      */
     public function generateEmailVerificationTokenForUserId($user_id)
     {
@@ -491,7 +491,7 @@ class UserMapper extends ApiMapper
      *
      * @param string $email The email address of the user we're looking for
      *
-     * @return bool|int $user_id The user's ID (or false, if we didn't find her)
+     * @return false|int $user_id The user's ID (or false, if we didn't find her)
      */
     public function getUserIdFromEmail($email)
     {
@@ -631,7 +631,7 @@ class UserMapper extends ApiMapper
      *
      * @param string $username The username of the user we're looking for
      *
-     * @return int|bool $user_id The user's ID (or false, if we didn't find her)
+     * @return false|int $user_id The user's ID (or false, if we didn't find her)
      */
     public function getUserIdFromUsername($username)
     {
@@ -656,7 +656,7 @@ class UserMapper extends ApiMapper
      *
      * @param int $user_id The ID of the user
      *
-     * @return bool|string $email The email address
+     * @return false|string $email The email address
      */
     public function getEmailByUserId($user_id)
     {
@@ -680,7 +680,7 @@ class UserMapper extends ApiMapper
      *
      * @param int $user_id
      *
-     * @return bool|string
+     * @return false|string
      */
     public function generatePasswordResetTokenForUserId($user_id)
     {

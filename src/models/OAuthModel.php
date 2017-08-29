@@ -167,7 +167,7 @@ class OAuthModel
      * @param string $consumer_key the identifier for the consumer
      * @param int $user_id the user granting access
      *
-     * @return bool|string access token
+     * @return false|string access token
      */
     public function newAccessToken($consumer_key, $user_id)
     {
@@ -351,7 +351,7 @@ class OAuthModel
      * @param  string $twitterUsername User's twitter nick
      * (that we just got back from authenticating them)
      *
-     * @return array|bool                   access token
+     * @return false|array                   access token
      */
     public function createAccessTokenFromTwitterUsername($clientId, $twitterUsername)
     {
