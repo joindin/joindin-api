@@ -22,9 +22,8 @@ class JsonView extends ApiView
         $this->string_fields = array("stub", "track_name", "comment");
 
         $output = $this->numericCheck($content);
-        $retval = json_encode($output);
 
-        return $retval;
+        return json_encode($output);
     }
 
     protected function numericCheck($data)

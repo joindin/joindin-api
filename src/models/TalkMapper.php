@@ -309,8 +309,7 @@ class TalkMapper extends ApiMapper
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $total = $this->getTotalCount($sql, array(':user_id' => $user_id));
 
-            $results = $this->processResults($results);
-            return new TalkModelCollection($results, $total);
+            return new TalkModelCollection($this->processResults($results), $total);
         }
 
         return false;
@@ -676,9 +675,8 @@ class TalkMapper extends ApiMapper
                         . 'and email IS NOT null';
         $speaker_stmt = $this->_db->prepare($speaker_sql);
         $speaker_stmt->execute(array("talk_id" => $talk_id));
-        $speakers = $speaker_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return $speakers;
+        return $speaker_stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -845,14 +843,14 @@ class TalkMapper extends ApiMapper
 
     public function removeApprovedSpeakerFromTalk($talk_id, $speaker_id)
     {
-        $params = [
-            'talk_id' => $talk_id,
-            'speaker_id' => $speaker_id,
-        ];
-
         $sql = 'update talk_speaker set speaker_id = null where talk_id = :talk_id and speaker_id = :speaker_id';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute($params);
+        $stmt->execute(
+            [
+                'talk_id' => $talk_id,
+                'speaker_id' => $speaker_id,
+            ]
+        );
     }
 
     public function removeAllSpeakersFromTalk($talk_id)

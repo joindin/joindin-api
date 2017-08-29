@@ -32,9 +32,7 @@ class TalkCommentReportModel extends AbstractModel
      */
     public function getVerboseFields()
     {
-        $fields = $this->getDefaultFields();
-
-        return $fields;
+        return $this->getDefaultFields();
     }
 
     /**

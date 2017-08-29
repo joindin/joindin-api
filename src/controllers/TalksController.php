@@ -374,9 +374,8 @@ class TalksController extends BaseTalkController
 
         $new_talk = $this->getTalkById($request, $db, $new_id);
         $collection = new TalkModelCollection([$new_talk], 1);
-        $list = $collection->getOutputView($request);
 
-        return $list;
+        return $collection->getOutputView($request);
     }
 
     /**

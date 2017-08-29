@@ -136,14 +136,13 @@ class PendingTalkClaimMapper extends ApiMapper
                   LIMIT 1
                ';
         $stmt = $this->_db->prepare($sql);
-        $response = $stmt->execute(
+        return $stmt->execute(
             [
                 'talk_id'       => $talk_id,
                 'speaker_id'    => $speaker_id,
                 'claim_id'      => $claim_id
             ]
         );
-        return $response;
     }
 
     public function approveClaimAsHost($talk_id, $speaker_id, $claim_id)
@@ -154,14 +153,13 @@ class PendingTalkClaimMapper extends ApiMapper
                   LIMIT 1
                ';
         $stmt = $this->_db->prepare($sql);
-        $response = $stmt->execute(
+        return $stmt->execute(
             [
                 'talk_id'       => $talk_id,
                 'speaker_id'    => $speaker_id,
                 'claim_id'      => $claim_id
             ]
         );
-        return $response;
     }
 
     public function rejectClaimAsHost($talk_id, $speaker_id, $claim_id)
@@ -173,15 +171,13 @@ class PendingTalkClaimMapper extends ApiMapper
                   LIMIT 1
                ';
         $stmt = $this->_db->prepare($sql);
-        $response = $stmt->execute(
+        return $stmt->execute(
             [
                 'talk_id'       => $talk_id,
                 'speaker_id'    => $speaker_id,
                 'claim_id'      => $claim_id
             ]
         );
-
-        return $response;
     }
 
     public function getPendingClaimsByEventId($event_id)

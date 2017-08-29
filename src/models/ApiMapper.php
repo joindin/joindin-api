@@ -135,8 +135,7 @@ class ApiMapper
     {
         // code ported from web2
         $alpha      = preg_replace("/[^0-9a-zA-Z- ]/", "", $string);
-        $inflection = strtolower(str_replace(' ', '-', $alpha));
 
-        return $inflection;
+        return strtolower(str_replace(' ', '-', $alpha));
     }
 }

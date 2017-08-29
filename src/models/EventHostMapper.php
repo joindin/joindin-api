@@ -31,9 +31,8 @@ class EventHostMapper extends ApiMapper
 
         $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
-        $retval           = $this->transformResults($results, $verbose);
 
-        return $retval;
+        return $this->transformResults($results, $verbose);
     }
 
     public function addHostToEvent($event_id, $host_id)

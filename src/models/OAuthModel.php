@@ -155,9 +155,7 @@ class OAuthModel
      */
     public function getUserUri($userId)
     {
-        $userUri = $this->getBase() . '/' . $this->getVersion() . '/users/' . $userId;
-
-        return $userUri;
+        return $this->getBase() . '/' . $this->getVersion() . '/users/' . $userId;
     }
 
     /**

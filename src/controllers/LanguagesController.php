@@ -28,8 +28,6 @@ class LanguagesController extends ApiController
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = new LanguageMapper($db, $request);
-        $list   = $mapper->getLanguageList($resultsperpage, $start, $verbose);
-
-        return $list;
+        return $mapper->getLanguageList($resultsperpage, $start, $verbose);
     }
 }

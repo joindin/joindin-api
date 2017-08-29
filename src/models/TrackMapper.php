@@ -34,9 +34,8 @@ class TrackMapper extends ApiMapper
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
-            $retval           = $this->transformResults($results, $verbose);
 
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -76,9 +75,8 @@ class TrackMapper extends ApiMapper
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
                 $results['total'] = $this->getTotalCount($sql, array("track_id" => $track_id));
-                $retval           = $this->transformResults($results, $verbose);
 
-                return $retval;
+                return $this->transformResults($results, $verbose);
             }
         }
 
@@ -131,8 +129,7 @@ class TrackMapper extends ApiMapper
             ));
         }
 
-        $track_id = $this->_db->lastInsertId();
-        return $track_id;
+        return $this->_db->lastInsertId();
     }
 
     public function getBasicSQL()

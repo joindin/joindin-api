@@ -87,9 +87,7 @@ class EventMapper extends ApiMapper
     {
         $results = $this->getEvents(1, 0, array("event_id" => $event_id, 'active' => $activeEventsOnly));
         if ($results) {
-            $retval = $this->transformResults($results, $verbose);
-
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -311,9 +309,7 @@ class EventMapper extends ApiMapper
     {
         $results = $this->getEvents($resultsperpage, $start, $params);
         if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -910,9 +906,8 @@ class EventMapper extends ApiMapper
     {
         $sql    = "insert into user_admin set rtype = 'event', rid = :event_id, uid = :user_id";
         $stmt   = $this->_db->prepare($sql);
-        $result = $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
 
-        return $result;
+        return $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
     }
 
     /**
@@ -922,9 +917,8 @@ class EventMapper extends ApiMapper
     {
         $sql    = "delete from user_admin where rtype = 'event' and rid = :event_id and uid = :user_id";
         $stmt   = $this->_db->prepare($sql);
-        $result = $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
 
-        return $result;
+        return $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
     }
 
     /**
@@ -939,9 +933,8 @@ class EventMapper extends ApiMapper
         $sql    = "UPDATE events e SET talk_count = (SELECT COUNT(*) FROM talks t WHERE t.event_id = e.ID) ".
                   "WHERE e.ID = :event_id;";
         $stmt   = $this->_db->prepare($sql);
-        $result = $stmt->execute(array("event_id" => $event_id));
 
-        return $result;
+        return $stmt->execute(array("event_id" => $event_id));
     }
 
     /**
@@ -956,9 +949,8 @@ class EventMapper extends ApiMapper
         $sql    = "UPDATE events e SET comment_count = ".
                   "(SELECT COUNT(*) FROM event_comments ec WHERE ec.event_id = e.ID) WHERE e.ID = :event_id;";
         $stmt   = $this->_db->prepare($sql);
-        $result = $stmt->execute(array("event_id" => $event_id));
 
-        return $result;
+        return $stmt->execute(array("event_id" => $event_id));
     }
 
     /**
@@ -973,9 +965,8 @@ class EventMapper extends ApiMapper
         $sql    = "UPDATE events e SET track_count = (SELECT COUNT(*) FROM event_track et WHERE et.event_id = e.ID) " .
                   "WHERE e.ID = :event_id;";
         $stmt   = $this->_db->prepare($sql);
-        $result = $stmt->execute(array("event_id" => $event_id));
 
-        return $result;
+        return $stmt->execute(array("event_id" => $event_id));
     }
 
     /**
@@ -996,9 +987,8 @@ class EventMapper extends ApiMapper
         $response = $stmt->execute(array("event_id" => $event_id));
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $retval  = parent::transformResults($results, true);
 
-            return $retval[0];
+            return $this->transformResults($results, true)[0];
         }
 
         return false;
@@ -1179,9 +1169,8 @@ class EventMapper extends ApiMapper
         $sql = 'delete from event_images'
             . ' where event_id = :event_id';
         $stmt = $this->_db->prepare($sql);
-        $result = $stmt->execute(array("event_id" => $event_id));
 
-        return $result;
+        return $stmt->execute(array("event_id" => $event_id));
     }
 
     /**

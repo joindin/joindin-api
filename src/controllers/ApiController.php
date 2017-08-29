@@ -15,9 +15,7 @@ abstract class ApiController
         if (! empty($request->url_elements[3])
             && is_numeric($request->url_elements[3])
         ) {
-            $item_id = (int) $request->url_elements[3];
-
-            return $item_id;
+            return (int) $request->url_elements[3];
         }
 
         return false;

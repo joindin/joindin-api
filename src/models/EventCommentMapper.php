@@ -34,9 +34,8 @@ class EventCommentMapper extends ApiMapper
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
-            $retval           = $this->transformResults($results, $verbose);
 
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -54,9 +53,8 @@ class EventCommentMapper extends ApiMapper
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
                 $results['total'] = $this->getTotalCount($sql, array(':comment_id' => $comment_id));
-                $retval           = $this->transformResults($results, $verbose);
 
-                return $retval;
+                return $this->transformResults($results, $verbose);
             }
         }
 
@@ -175,9 +173,7 @@ class EventCommentMapper extends ApiMapper
             ':source'   => $data['source'],
         ));
 
-        $comment_id = $this->_db->lastInsertId();
-
-        return $comment_id;
+        return $this->_db->lastInsertId();
     }
 
     /**
