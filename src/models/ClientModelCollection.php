@@ -37,7 +37,7 @@ class ClientModelCollection extends AbstractModelCollection
     public function getOutputView($request, $verbose = false)
     {
         // handle the collection first
-        $retval['clients'] = [];
+        $retval = ['clients' => []];
         foreach ($this->list as $item) {
             $retval['clients'][] = $item->getOutputView($request, $verbose);
         }

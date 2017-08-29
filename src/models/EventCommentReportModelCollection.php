@@ -34,7 +34,7 @@ class EventCommentReportModelCollection extends AbstractModelCollection
     public function getOutputView($request, $verbose = false)
     {
         // handle the collection first
-        $retval['reports'] = [];
+        $retval = ['reports' => []];
         foreach ($this->list as $item) {
             $retval['reports'][] = $item->getOutputView($request, $verbose);
         }

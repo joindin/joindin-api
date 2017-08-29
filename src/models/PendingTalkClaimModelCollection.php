@@ -34,7 +34,7 @@ class PendingTalkClaimModelCollection extends AbstractModelCollection
     public function getOutputView($request, $verbose = false)
     {
         // handle the collection first
-        $retval['claims'] = [];
+        $retval = ['claims' => []];
         foreach ($this->list as $item) {
             $retval['claims'][] = $item->getOutputView($request, $verbose);
         }

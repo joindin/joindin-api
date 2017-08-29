@@ -37,7 +37,7 @@ class TokenModelCollection extends AbstractModelCollection
     public function getOutputView($request, $verbose = false)
     {
         // handle the collection first
-        $retval['tokens'] = [];
+        $retval = ['tokens' => []];
         foreach ($this->list as $item) {
             $retval['tokens'][] = $item->getOutputView($request, $verbose);
         }

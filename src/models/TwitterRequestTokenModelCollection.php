@@ -29,8 +29,7 @@ class TwitterRequestTokenModelCollection extends AbstractModelCollection
     public function getOutputView($request, $verbose = false)
     {
         // handle the collection first
-        $retval                           = array();
-        $retval['twitter_request_tokens'] = array();
+        $retval = ['twitter_request_tokens' => []];
         foreach ($this->list as $item) {
             $retval['twitter_request_tokens'][] = $item->getOutputView($request, $verbose);
         }
