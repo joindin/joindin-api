@@ -282,8 +282,8 @@ class OAuthModel
                 . 'and c.enable_password_grant = 1';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("key" => $key, "secret" => $secret));
-        $result = $stmt->fetch();
-        if ($result) {
+
+        if ($stmt->fetch()) {
             return true;
         }
 
@@ -307,8 +307,8 @@ class OAuthModel
                 . 'and c.enable_password_grant = 1';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("token" => $token));
-        $result = $stmt->fetch();
-        if ($result) {
+
+        if ($stmt->fetch()) {
             return true;
         }
 

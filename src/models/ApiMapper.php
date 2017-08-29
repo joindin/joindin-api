@@ -102,9 +102,8 @@ class ApiMapper
     protected function getPaginationLinks($list, $total = 0)
     {
         $request       = $this->_request;
-        $count         = count($list);
-        $meta['count'] = $count;
 
+        $meta['count']     = count($list);
         $meta['total']     = $total;
         $meta['this_page'] = $request->base . $request->path_info . '?' .
                              http_build_query($request->paginationParameters);
