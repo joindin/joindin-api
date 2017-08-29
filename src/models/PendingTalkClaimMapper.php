@@ -19,12 +19,10 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        $fields = [
+        return [
             "talk_id"           => "username",
             "speaker_id"        => "full_name",
         ];
-
-        return $fields;
     }
 
     /**
@@ -36,7 +34,7 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        $fields = [
+        return [
             "talk_id"           => "username",
             "speaker_id"        => "full_name",
             "date_added"        => "date_added",
@@ -44,8 +42,6 @@ class PendingTalkClaimMapper extends ApiMapper
             "user_approved_at"  => "user_approved_at",
             "host_approved_at"  => "host_approved_at",
         ];
-
-        return $fields;
     }
 
     /**

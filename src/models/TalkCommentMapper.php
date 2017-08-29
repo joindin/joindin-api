@@ -4,7 +4,7 @@ class TalkCommentMapper extends ApiMapper
 {
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'rating'            => 'rating',
             'comment'           => 'comment',
             'user_display_name' => 'full_name',
@@ -12,13 +12,11 @@ class TalkCommentMapper extends ApiMapper
             'talk_title'        => 'talk_title',
             'created_date'      => 'date_made'
         );
-
-        return $fields;
     }
 
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'rating'            => 'rating',
             'comment'           => 'comment',
             'user_display_name' => 'full_name',
@@ -27,8 +25,6 @@ class TalkCommentMapper extends ApiMapper
             'source'            => 'source',
             'created_date'      => 'date_made',
         );
-
-        return $fields;
     }
 
     public function getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose = false)
@@ -140,11 +136,11 @@ class TalkCommentMapper extends ApiMapper
                 );
             }
         }
-        $retval             = array();
-        $retval['comments'] = $list;
-        $retval['meta']     = $this->getPaginationLinks($list, $total);
 
-        return $retval;
+        return [
+            'comments' => $list,
+            'meta' => $this->getPaginationLinks($list, $total),
+        ];
     }
 
     protected function formatOneComment($row, $verbose)

@@ -14,7 +14,7 @@ class TalkModel extends AbstractModel
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'talk_title'              => 'talk_title',
             'url_friendly_talk_title' => 'url_friendly_talk_title',
             'talk_description'        => 'talk_desc',
@@ -28,8 +28,6 @@ class TalkModel extends AbstractModel
             'starred'                 => 'starred',
             'starred_count'           => 'starred_count',
         );
-
-        return $fields;
     }
 
     /**

@@ -16,7 +16,7 @@ class EventMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'name'                 => 'event_name',
             'url_friendly_name'    => 'url_friendly_name',
             'start_date'           => 'event_start',
@@ -35,8 +35,6 @@ class EventMapper extends ApiMapper
             'icon'                 => 'event_icon',
             'location'             => 'event_loc',
         );
-
-        return $fields;
     }
 
     /**
@@ -48,7 +46,7 @@ class EventMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'name'                 => 'event_name',
             'url_friendly_name'    => 'url_friendly_name',
             'start_date'           => 'event_start',
@@ -75,8 +73,6 @@ class EventMapper extends ApiMapper
             'cfp_end_date'         => 'event_cfp_end',
             'cfp_url'              => 'event_cfp_url',
         );
-
-        return $fields;
     }
 
     /**
@@ -363,10 +359,7 @@ class EventMapper extends ApiMapper
 
     public function getUserAttendance($event_id, $user_id)
     {
-        $retval                 = array();
-        $retval['is_attending'] = $this->isUserAttendingEvent($event_id, $user_id);
-
-        return $retval;
+        return ['is_attending' => $this->isUserAttendingEvent($event_id, $user_id)];
     }
 
     /**
@@ -469,11 +462,11 @@ class EventMapper extends ApiMapper
                 }
             }
         }
-        $retval           = array();
-        $retval['events'] = $list;
-        $retval['meta']   = $this->getPaginationLinks($list, $total);
 
-        return $retval;
+        return [
+            'events' => $list,
+            'meta' => $this->getPaginationLinks($list, $total),
+        ];
     }
 
     /**

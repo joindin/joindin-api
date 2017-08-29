@@ -14,15 +14,13 @@ class TokenModel extends AbstractModel
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'token' => 'id',
             'application' => 'application',
             'created_date'  => 'created_date',
             'last_used_date'  => 'last_used_date',
             'application_owner' => 'full_name',
         );
-
-        return $fields;
     }
 
     /**

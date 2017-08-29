@@ -5,25 +5,21 @@ class EventCommentMapper extends ApiMapper
     public function getDefaultFields()
     {
         // warning, users added in build array
-        $fields = array(
+        return array(
             'rating'       => 'rating',
             'comment'      => 'comment',
             'created_date' => 'date_made'
         );
-
-        return $fields;
     }
 
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'rating'       => 'rating',
             'comment'      => 'comment',
             'source'       => 'source',
             'created_date' => 'date_made',
         );
-
-        return $fields;
     }
 
     public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
@@ -83,11 +79,11 @@ class EventCommentMapper extends ApiMapper
                 );
             }
         }
-        $retval             = array();
-        $retval['comments'] = $list;
-        $retval['meta']     = $this->getPaginationLinks($list, $total);
 
-        return $retval;
+        return [
+            'comments' => $list,
+            'meta' => $this->getPaginationLinks($list, $total),
+        ];
     }
 
     /**

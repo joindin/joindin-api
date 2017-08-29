@@ -154,10 +154,7 @@ class TalkMapper extends ApiMapper
      */
     public function getUserStarred($talk_id, $user_id)
     {
-        $retval                = array();
-        $retval['has_starred'] = $this->hasUserStarredTalk($talk_id, $user_id);
-
-        return $retval;
+        return ['has_starred' => $this->hasUserStarredTalk($talk_id, $user_id)];
     }
 
     /**

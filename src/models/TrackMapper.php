@@ -4,24 +4,20 @@ class TrackMapper extends ApiMapper
 {
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'track_name'        => 'track_name',
             'track_description' => 'track_desc',
             'talks_count'       => 'talks_count',
         );
-
-        return $fields;
     }
 
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'track_name'        => 'track_name',
             'track_description' => 'track_desc',
             'talks_count'       => 'talks_count',
         );
-
-        return $fields;
     }
 
     public function getTracksByEventId($event_id, $resultsperpage, $start, $verbose = false)
@@ -64,11 +60,10 @@ class TrackMapper extends ApiMapper
             }
         }
 
-        $retval           = array();
-        $retval['tracks'] = $list;
-        $retval['meta']   = $this->getPaginationLinks($list, $total);
-
-        return $retval;
+        return [
+            'tracks' => $list,
+            'meta' => $this->getPaginationLinks($list, $total),
+        ];
     }
 
     public function getTrackById($track_id, $verbose = false)

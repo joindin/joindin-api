@@ -16,14 +16,12 @@ class PendingTalkClaimModel extends AbstractModel
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'date_added'              => 'date_added',
             'display_name'            => 'display_name',
             'speaker_uri'             => 'speaker_uri',
             'talk_uri'                => 'talk_uri',
         );
-
-        return $fields;
     }
 
     /**

@@ -4,22 +4,18 @@ class TalkTypeMapper extends ApiMapper
 {
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'title' => 'cat_title',
             'description' => 'cat_desc',
         );
-
-        return $fields;
     }
 
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'title' => 'cat_title',
             'description' => 'cat_desc',
         );
-
-        return $fields;
     }
 
     public function getTalkTypeList($resultsperpage, $start = 0, $verbose = false)

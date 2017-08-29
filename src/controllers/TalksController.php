@@ -647,10 +647,10 @@ class TalksController extends BaseTalkController
 
     private function getLinkUserDataFromRequest(Request $request)
     {
-        $talk = [];
-        $talk['display_name'] = trim($request->getParameter('display_name', ''));
-        $talk['username'] = trim($request->getParameter('username', ''));
-        return $talk;
+        return [
+            'display_name' => trim($request->getParameter('display_name', '')),
+            'username' => trim($request->getParameter('username', '')),
+        ];
     }
 
     public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper)

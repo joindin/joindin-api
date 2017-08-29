@@ -4,22 +4,18 @@ class LanguageMapper extends ApiMapper
 {
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'name' => 'lang_name',
             'code' => 'lang_abbr',
         );
-
-        return $fields;
     }
 
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'name' => 'lang_name',
             'code' => 'lang_abbr',
         );
-
-        return $fields;
     }
 
     public function getLanguageById($language_id, $verbose = false)

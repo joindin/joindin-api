@@ -16,13 +16,11 @@ class UserMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             "username"         => "username",
             "full_name"        => "full_name",
             "twitter_username" => "twitter_username"
         );
-
-        return $fields;
     }
 
     /**
@@ -210,11 +208,11 @@ class UserMapper extends ApiMapper
                 }
             }
         }
-        $retval          = array();
-        $retval['users'] = $list;
-        $retval['meta']  = $this->getPaginationLinks($list, $total);
 
-        return $retval;
+        return [
+            'users' => $list,
+            'meta'  => $this->getPaginationLinks($list, $total),
+        ];
     }
 
 

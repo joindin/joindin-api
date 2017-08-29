@@ -4,12 +4,10 @@ class EventHostMapper extends ApiMapper
 {
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'host_name' => 'host_name',
             'host_uri'  => 'host_uri',
         );
-
-        return $fields;
     }
 
     public function getVerboseFields()
@@ -113,10 +111,9 @@ class EventHostMapper extends ApiMapper
             $list[$key]['host_uri']  = $base . '/' . $version . '/users/' . $row['user_id'];
         }
 
-        $retval          = [];
-        $retval['hosts'] = $list;
-        $retval['meta']  = $this->getPaginationLinks($list, $total);
-
-        return $retval;
+        return [
+            'hosts' => $list,
+            'meta' => $this->getPaginationLinks($list, $total),
+        ];
     }
 }
