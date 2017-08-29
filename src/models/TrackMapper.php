@@ -97,7 +97,7 @@ class TrackMapper extends ApiMapper
 
         // get the list of column to API field name for all valid fields
         $fields = $this->getVerboseFields();
-        $items  = array();
+
         foreach ($fields as $api_name => $column_name) {
             // Ignore calculated fields
             if (in_array($column_name, ['talks_count'])) {
