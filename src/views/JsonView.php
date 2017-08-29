@@ -2,6 +2,9 @@
 
 class JsonView extends ApiView
 {
+    /** @var array */
+    private $string_fields;
+
     public function render($content)
     {
         $this->setHeader('Content-Type', 'application/json; charset=utf8');
