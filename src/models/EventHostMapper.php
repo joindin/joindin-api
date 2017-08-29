@@ -79,6 +79,7 @@ class EventHostMapper extends ApiMapper
     /**
      * @param int $host_id
      * @param int $event_id
+     *
      * @return bool
      */
     public function removeHostFromEvent($host_id, $event_id)

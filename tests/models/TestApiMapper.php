@@ -21,6 +21,7 @@ class TestApiMapper extends ApiMapper
     /**
      * @param int $resultsperpage
      * @param int $start
+     *
      * @return string
      */
     public function buildLimit($resultsperpage, $start)

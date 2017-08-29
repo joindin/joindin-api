@@ -14,6 +14,7 @@ class HtmlView extends ApiView
 
     /**
      * @param $content
+     *
      * @return bool
      */
     public function render($content)
