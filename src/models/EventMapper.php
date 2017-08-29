@@ -505,12 +505,10 @@ class EventMapper extends ApiMapper
      */
     protected function getHostSql()
     {
-        $host_sql = 'select a.uid as user_id, u.full_name'
-                    . ' from user_admin a '
-                    . ' inner join user u on u.ID = a.uid '
-                    . ' where rid = :event_id and rtype="event" and (rcode!="pending" OR rcode is null)';
-
-        return $host_sql;
+        return    'select a.uid as user_id, u.full_name'
+                . ' from user_admin a '
+                . ' inner join user u on u.ID = a.uid '
+                . ' where rid = :event_id and rtype="event" and (rcode!="pending" OR rcode is null)';
     }
 
     /**
