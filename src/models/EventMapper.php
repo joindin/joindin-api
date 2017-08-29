@@ -587,19 +587,7 @@ class EventMapper extends ApiMapper
         // limit clause
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute($data);
-        if ($response) {
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (is_array($results)) {
-                $results['total'] = $this->getTotalCount($sql, $data);
-                $retval           = $this->transformResults($results, $verbose);
-
-                return $retval;
-            }
-        }
-
-        return false;
+        return $this->getTransformedResultsFromSqlAndData($sql, $data, $verbose);
     }
 
     /**
@@ -637,19 +625,7 @@ class EventMapper extends ApiMapper
         // limit clause
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute($data);
-        if ($response) {
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (is_array($results)) {
-                $results['total'] = $this->getTotalCount($sql, $data);
-                $retval           = $this->transformResults($results, $verbose);
-
-                return $retval;
-            }
-        }
-
-        return false;
+        return $this->getTransformedResultsFromSqlAndData($sql, $data, $verbose);
     }
 
     /**
@@ -803,10 +779,8 @@ class EventMapper extends ApiMapper
             'tz_place',
             'contact_name',
         );
-        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($event));
-        if (!$contains_mandatory_fields) {
-            throw new Exception("Missing mandatory fields");
-        }
+
+        $this->verifyMandatoryFields($event, $mandatory_fields);
 
         $sql = "insert into events set ";
 
@@ -860,10 +834,8 @@ class EventMapper extends ApiMapper
             'tz_continent',
             'tz_place',
         );
-        $contains_mandatory_fields = !array_diff($mandatory_fields, array_keys($event));
-        if (!$contains_mandatory_fields) {
-            throw new Exception("Missing mandatory fields");
-        }
+
+        $this->verifyMandatoryFields($event, $mandatory_fields);
 
         $sql = "UPDATE events SET %s WHERE ID = :event_id";
 
@@ -1208,5 +1180,41 @@ class EventMapper extends ApiMapper
             $legacy_stmt->execute(["event_id" => $event_id, "filename" => $filename]);
         }
         return $result;
+    }
+
+    /**
+     * @param string $sql
+     * @param array $data
+     * @param bool $verbose
+     * @return false|array
+     */
+    protected function getTransformedResultsFromSqlAndData($sql, array $data, $verbose = false)
+    {
+        $stmt = $this->_db->prepare($sql);
+
+        if (!$stmt->execute($data)) {
+            return false;
+        }
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!is_array($results)) {
+            return false;
+        }
+
+        $results['total'] = $this->getTotalCount($sql, $data);
+
+        return $this->transformResults($results, $verbose);
+    }
+
+    /**
+     * @param array $event
+     * @param array $mandatoryFields
+     * @throws Exception
+     */
+    protected function verifyMandatoryFields(array $event, array $mandatoryFields)
+    {
+        if (false === empty(array_diff($mandatoryFields, array_keys($event)))) {
+            throw new Exception("Missing mandatory fields");
+        }
     }
 }
