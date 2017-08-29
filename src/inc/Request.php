@@ -192,12 +192,11 @@ class Request
      */
     public function getParameter($param, $default = '')
     {
-        $value = $default;
         if (array_key_exists($param, $this->parameters)) {
-            $value = $this->parameters[$param];
+            return $this->parameters[$param];
         }
 
-        return $value;
+        return $default;
     }
 
     /**
@@ -212,13 +211,12 @@ class Request
     public function getUrlElement($index, $default = '')
     {
         $index   = (int) $index;
-        $element = $default;
 
         if (isset($this->url_elements[$index])) {
-            $element = $this->url_elements[$index];
+            return $this->url_elements[$index];
         }
 
-        return $element;
+        return $default;
     }
 
     /**
@@ -653,11 +651,10 @@ class Request
      */
     public function getConfigValue($key, $default = '')
     {
-        $value = $default;
         if (array_key_exists($key, $this->config)) {
-            $value = $this->config[$key];
+            return $this->config[$key];
         }
 
-        return $value;
+        return $default;
     }
 }

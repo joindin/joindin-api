@@ -64,13 +64,10 @@ class ApiMapper
     {
         if ($resultsperpage == 0) {
             // special case, no limits
-            $limit = '';
-        } else {
-            $start = (int)$start;
-            $limit = ' LIMIT ' . $start . ',' . $resultsperpage;
+            return '';
         }
 
-        return $limit;
+        return ' LIMIT ' . intval($start) . ',' . $resultsperpage;
     }
 
     /**

@@ -480,14 +480,17 @@ class EventMapper extends ApiMapper
         $host_stmt = $this->_db->prepare($host_sql);
         $host_stmt->execute(array("event_id" => $event_id));
         $hosts  = $host_stmt->fetchAll(PDO::FETCH_ASSOC);
-        $retval = array();
-        if (is_array($hosts)) {
-            foreach ($hosts as $person) {
-                $entry              = array();
-                $entry['host_name'] = $person['full_name'];
-                $entry['host_uri']  = $base . '/' . $version . '/users/' . $person['user_id'];
-                $retval[]           = $entry;
-            }
+
+        if (!is_array($hosts)) {
+            return [];
+        }
+
+        $retval = [];
+        foreach ($hosts as $person) {
+            $retval[] = [
+                'host_name' => $person['full_name'],
+                'host_uri' => $base . '/' . $version . '/users/' . $person['user_id'],
+            ];
         }
 
         return $retval;
@@ -544,11 +547,14 @@ class EventMapper extends ApiMapper
         $tag_stmt = $this->_db->prepare($tag_sql);
         $tag_stmt->execute(array("event_id" => $event_id));
         $tags   = $tag_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!is_array($tags)) {
+            return [];
+        }
+
         $retval = array();
-        if (is_array($tags)) {
-            foreach ($tags as $row) {
-                $retval[] = $row['tag'];
-            }
+        foreach ($tags as $row) {
+            $retval[] = $row['tag'];
         }
 
         return $retval;
@@ -660,20 +666,18 @@ class EventMapper extends ApiMapper
     public function thisUserHasAdminOn($event_id)
     {
         // do we even have an authenticated user?
-        if (isset($this->_request->user_id)) {
-            $user_mapper = new UserMapper($this->_db, $this->_request);
-
-            // is user site admin?
-            $is_site_admin = $user_mapper->isSiteAdmin($this->_request->user_id);
-            if ($is_site_admin) {
-                return true;
-            }
-
-            // is user an event admin?
-            return $this->isUserAHostOn($this->_request->user_id, $event_id);
+        if (!isset($this->_request->user_id)) {
+            return false;
         }
 
-        return false;
+        // is user site admin?
+        $user_mapper = new UserMapper($this->_db, $this->_request);
+        if ($user_mapper->isSiteAdmin($this->_request->user_id)) {
+            return true;
+        }
+
+        // is user an event admin?
+        return $this->isUserAHostOn($this->_request->user_id, $event_id);
     }
 
     /**
@@ -684,17 +688,14 @@ class EventMapper extends ApiMapper
     public function thisUserCanApproveEvents()
     {
         // do we even have an authenticated user?
-        if (isset($this->_request->user_id)) {
-            $user_mapper = new UserMapper($this->_db, $this->_request);
-
-            // is user site admin?
-            $is_site_admin = $user_mapper->isSiteAdmin($this->_request->user_id);
-            if ($is_site_admin) {
-                return true;
-            }
+        if (!isset($this->_request->user_id)) {
+            return false;
         }
 
-        return false;
+        $user_mapper = new UserMapper($this->_db, $this->_request);
+
+        // is user site admin?
+        return $user_mapper->isSiteAdmin($this->_request->user_id);
     }
 
     /**

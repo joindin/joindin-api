@@ -228,18 +228,21 @@ class TalkMapper extends ApiMapper
         $speaker_stmt = $this->_db->prepare($speaker_sql);
         $speaker_stmt->execute(array("talk_id" => $talk_id));
         $speakers = $speaker_stmt->fetchAll(PDO::FETCH_ASSOC);
-        $retval   = array();
-        if (is_array($speakers)) {
-            foreach ($speakers as $person) {
-                $entry = array();
-                if ($person['full_name']) {
-                    $entry['speaker_name'] = $person['full_name'];
-                    $entry['speaker_uri']  = $base . '/' . $version . '/users/' . $person['speaker_id'];
-                } else {
-                    $entry['speaker_name'] = $person['speaker_name'];
-                }
-                $retval[] = $entry;
+
+        if (!is_array($speakers)) {
+            return [];
+        }
+
+        $retval = [];
+        foreach ($speakers as $person) {
+            $entry = array();
+            if ($person['full_name']) {
+                $entry['speaker_name'] = $person['full_name'];
+                $entry['speaker_uri']  = $base . '/' . $version . '/users/' . $person['speaker_id'];
+            } else {
+                $entry['speaker_name'] = $person['speaker_name'];
             }
+            $retval[] = $entry;
         }
 
         return $retval;
@@ -256,18 +259,21 @@ class TalkMapper extends ApiMapper
         $track_stmt = $this->_db->prepare($track_sql);
         $track_stmt->execute(array("talk_id" => $talk_id));
         $tracks = $track_stmt->fetchAll(PDO::FETCH_ASSOC);
-        $retval = array();
-        if (is_array($tracks)) {
-            foreach ($tracks as $track) {
-                // Make the track_uri
-                $track_uri = $base . '/' . $version . '/tracks/' . $track['ID'];
-                $remove_track_uri = $base . '/' . $version . '/talks/' . $talk_id . '/tracks/' . $track['ID'];
-                $retval[]  = array(
-                    'track_name' => $track['track_name'],
-                    'track_uri' => $track_uri,
-                    'remove_track_uri' => $remove_track_uri,
-                );
-            }
+
+        if (!is_array($tracks)) {
+            return [];
+        }
+
+        $retval = [];
+        foreach ($tracks as $track) {
+            // Make the track_uri
+            $track_uri = $base . '/' . $version . '/tracks/' . $track['ID'];
+            $remove_track_uri = $base . '/' . $version . '/talks/' . $talk_id . '/tracks/' . $track['ID'];
+            $retval[] = array(
+                'track_name' => $track['track_name'],
+                'track_uri' => $track_uri,
+                'remove_track_uri' => $remove_track_uri,
+            );
         }
 
         return $retval;
