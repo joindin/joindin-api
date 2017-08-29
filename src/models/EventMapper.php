@@ -374,13 +374,8 @@ class EventMapper extends ApiMapper
         $sql  = "select * from user_attend where eid = :event_id and uid = :user_id";
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("event_id" => $event_id, "user_id" => $user_id));
-        $result = $stmt->fetch();
 
-        if (is_array($result)) {
-            return true;
-        } else {
-            return false;
-        }
+        return is_array($stmt->fetch());
     }
 
     /**
@@ -719,12 +714,8 @@ class EventMapper extends ApiMapper
             "event_id" => $event_id,
             "user_id"  => $user_id,
         ));
-        $results = $stmt->fetchAll();
-        if ($results) {
-            return true;
-        }
 
-        return false;
+        return !empty($stmt->fetchAll());
     }
 
     /**

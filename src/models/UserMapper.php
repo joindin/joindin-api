@@ -341,18 +341,12 @@ class UserMapper extends ApiMapper
      */
     public function checkPasswordValidity($password)
     {
-        $errors = array();
         if (strlen($password) < 6) {
-            $errors[] = "Passwords must be at least 6 characters long";
-        }
-
-        if ($errors) {
-            return $errors;
+            return ["Passwords must be at least 6 characters long"];
         }
 
         // it's good!
         return true;
-
     }
 
 
