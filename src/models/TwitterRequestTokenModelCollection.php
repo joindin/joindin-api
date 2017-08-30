@@ -6,11 +6,6 @@
  */
 class TwitterRequestTokenModelCollection extends AbstractModelCollection
 {
-    /** @var int */
-    protected $total;
-
-    /** @var array */
-    protected $list;
     /**
      * Take arrays of data and create a collection of models; store metadata
      *
@@ -20,7 +15,6 @@ class TwitterRequestTokenModelCollection extends AbstractModelCollection
     public function __construct(array $data, $total = 0)
     {
         $this->total = $total;
-        $this->list = [];
 
         // hydrate the model objects
         foreach ($data as $item) {
