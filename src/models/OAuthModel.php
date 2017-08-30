@@ -96,7 +96,7 @@ class OAuthModel
      * @param  string $username username
      * @param  string $password password
      *
-     * @return array|false access token and user Uri
+     * @return false|array access token and user Uri
      */
     public function createAccessTokenFromPassword($clientId, $username, $password)
     {
@@ -429,7 +429,7 @@ class OAuthModel
      * @param  string $clientId         aka consumer_key (of the joindin client)
      * @param  string $email            User's email address (that we just got back from authenticating them)
      *
-     * @return array|false              Array of access token and user uri on success or false or failure
+     * @return false|array              Array of access token and user uri on success or false or failure
      */
     public function createAccessTokenFromTrustedEmail($clientId, $email)
     {
