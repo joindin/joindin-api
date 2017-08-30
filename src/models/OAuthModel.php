@@ -101,16 +101,16 @@ class OAuthModel
     public function createAccessTokenFromPassword($clientId, $username, $password)
     {
         // is the username/password combination correct?
-        $user_Id = $this->getUserId($username, $password);
-        if (! $user_Id) {
+        $userId = $this->getUserId($username, $password);
+        if (! $userId) {
             return false;
         }
 
         // create new token
-        $accessToken = $this->newAccessToken($clientId, $user_Id);
+        $accessToken = $this->newAccessToken($clientId, $userId);
 
         // we also want to send back the logged in user's uri
-        $userUri = $this->getUserUri($user_Id);
+        $userUri = $this->getUserUri($userId);
 
         return array('access_token' => $accessToken, 'user_uri' => $userUri);
     }
