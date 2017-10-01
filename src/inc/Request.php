@@ -12,12 +12,14 @@ class Request
      */
     const FORMAT_JSON = 'json';
     const FORMAT_HTML = 'html';
+    const FORMAT_ICAL = 'ical';
 
     /**
      * Content-types for the Accepts header
      */
     const CONTENT_TYPE_JSON = 'application/json';
     const CONTENT_TYPE_HTML = 'text/html';
+    const CONTENT_TYPE_ICAL = 'text/calendar';
 
     /**
      * HTTP Verbs
@@ -53,7 +55,7 @@ class Request
     /**
      * @var array The priority-ordered list of format choices
      */
-    protected $formatChoices = array(self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML);
+    protected $formatChoices = array(self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_ICAL, self::CONTENT_TYPE_HTML);
 
     /**
      * A list of parameters provided from a Route
@@ -282,6 +284,11 @@ class Request
                 case self::CONTENT_TYPE_HTML:
                 case self::FORMAT_HTML:
                     $this->view = new \HtmlView();
+                    break;
+
+                case self::CONTENT_TYPE_ICAL:
+                case self::FORMAT_ICAL:
+                    $this->view = new \CalendarView();
                     break;
 
                 case self::CONTENT_TYPE_JSON:

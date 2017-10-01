@@ -4,6 +4,7 @@
         "swiftmailer/swiftmailer": "v5.0.3",
         "michelf/php-markdown": "1.4.0",
         "guzzlehttp/guzzle": "^4.2.4",
-        "guzzlehttp/oauth-subscriber": "0.1.*"
+        "guzzlehttp/oauth-subscriber": "0.1.*",
+        "sabre/vobject": "^3"
     }
 }
