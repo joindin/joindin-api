@@ -161,6 +161,54 @@
         ]
     },
     {
+        "name": "guzzlehttp/oauth-subscriber",
+        "version": "0.1.2",
+        "version_normalized": "0.1.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/guzzle/oauth-subscriber.git",
+            "reference": "f5e857b5ab34279611c171111c40000435299698"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/f5e857b5ab34279611c171111c40000435299698",
+            "reference": "f5e857b5ab34279611c171111c40000435299698",
+            "shasum": ""
+        },
+        "require": {
+            "guzzlehttp/guzzle": "~4.0",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.0"
+        },
+        "time": "2014-05-20 00:04:02",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "GuzzleHttp\\Subscriber\\Oauth\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Michael Dowling",
+                "email": "mtdowling@gmail.com",
+                "homepage": "https://github.com/mtdowling"
+            }
+        ],
+        "description": "Guzzle OAuth 1.0 subscriber",
+        "homepage": "http://guzzlephp.org/",
+        "keywords": [
+            "Guzzle",
+            "oauth"
+        ]
+    },
+    {
         "name": "guzzlehttp/guzzle",
         "version": "4.2.4",
         "version_normalized": "4.2.4.0",
@@ -225,122 +273,6 @@
             "http client",
             "rest",
             "web service"
-        ]
-    },
-    {
-        "name": "guzzlehttp/oauth-subscriber",
-        "version": "0.1.2",
-        "version_normalized": "0.1.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/guzzle/oauth-subscriber.git",
-            "reference": "f5e857b5ab34279611c171111c40000435299698"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/f5e857b5ab34279611c171111c40000435299698",
-            "reference": "f5e857b5ab34279611c171111c40000435299698",
-            "shasum": ""
-        },
-        "require": {
-            "guzzlehttp/guzzle": "~4.0",
-            "php": ">=5.4.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~4.0"
-        },
-        "time": "2014-05-20 00:04:02",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "GuzzleHttp\\Subscriber\\Oauth\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Michael Dowling",
-                "email": "mtdowling@gmail.com",
-                "homepage": "https://github.com/mtdowling"
-            }
-        ],
-        "description": "Guzzle OAuth 1.0 subscriber",
-        "homepage": "http://guzzlephp.org/",
-        "keywords": [
-            "Guzzle",
-            "oauth"
-        ]
-    },
-    {
-        "name": "sabre/vobject",
-        "version": "3.5.3",
-        "version_normalized": "3.5.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/fruux/sabre-vobject.git",
-            "reference": "129d80533a9ec0d9cacfb50b51180c34edb6874c"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/fruux/sabre-vobject/zipball/129d80533a9ec0d9cacfb50b51180c34edb6874c",
-            "reference": "129d80533a9ec0d9cacfb50b51180c34edb6874c",
-            "shasum": ""
-        },
-        "require": {
-            "ext-mbstring": "*",
-            "php": ">=5.3.1"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "*",
-            "squizlabs/php_codesniffer": "*"
-        },
-        "time": "2016-10-07 03:20:40",
-        "bin": [
-            "bin/vobject",
-            "bin/generate_vcards"
-        ],
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.2.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Sabre\\VObject\\": "lib/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Evert Pot",
-                "email": "me@evertpot.com",
-                "homepage": "http://evertpot.com/",
-                "role": "Developer"
-            },
-            {
-                "name": "Dominik Tobschall",
-                "email": "dominik@fruux.com",
-                "homepage": "http://tobschall.de/",
-                "role": "Developer"
-            }
-        ],
-        "description": "The VObject library for PHP allows you to easily parse and manipulate iCalendar and vCard objects",
-        "homepage": "http://sabre.io/vobject/",
-        "keywords": [
-            "VObject",
-            "iCalendar",
-            "jCal",
-            "jCard",
-            "vCard"
         ]
     }
 ]
