@@ -425,28 +425,60 @@ class OAuthModel
      *
      * @param  string $clientId         aka consumer_key (of the joindin client)
      * @param  string $email            User's email address (that we just got back from authenticating them)
+     * @param  string $fullName         User's full name from Facebook
+     * @param  string $userName         Username to be created if not found
      * @return array|false              Array of access token and user uri on success or false or failure
      */
-    public function createAccessTokenFromTrustedEmail($clientId, $email)
+    public function createAccessTokenFromTrustedEmail($clientId, $email, $fullName = '', $userName = '')
     {
-        $sql = "select ID from user "
-            . "where email = :email "
-            . "and verified = 1";
+        $sql = "
+            SELECT ID from user
+            WHERE email = :email
+            AND verified = 1";
 
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(array("email" => $email));
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($result) {
-            $userId = $result['ID'];
-
-            // create new token
-            $accessToken = $this->newAccessToken($clientId, $userId);
-
-            // we also want to send back the logged in user's uri
-            $userUri = $this->getUserUri($userId);
-
-            return array('access_token' => $accessToken, 'user_uri' => $userUri);
+        if (!$result  && $fullName && $userName) {
+            $result = $this->createUserFromTrustedEmail($email, $fullName, $userName);
         }
-        return false;
+
+        $userId = $result['ID'];
+        if (!$userId) {
+            return false;
+        }
+
+        // create new token
+        $accessToken = $this->newAccessToken($clientId, $userId);
+
+        // we also want to send back the logged in user's uri
+        $userUri = $this->getUserUri($userId);
+
+        return array('access_token' => $accessToken, 'user_uri' => $userUri);
+    }
+
+    protected function createUserFromTrustedEmail($email, $fullName, $userName)
+    {
+        $sql = "
+            INSERT INTO user
+            SET email = :email,
+                verified = 1,
+                active = 1,
+                full_name = :fullName,
+                username = :userName
+        ";
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(
+            [
+                "email" => $email,
+                'fullName' => $fullName,
+                'userName' => $userName
+            ]
+        );
+
+        return [
+            'ID' => $this->_db->lastInsertId(),
+        ];
     }
 }
