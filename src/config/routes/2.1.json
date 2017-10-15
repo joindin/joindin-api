@@ -414,6 +414,12 @@
         "verbs": ["POST"]
     },
     {
+        "path": "/github/token",
+        "controller": "GithubController",
+        "action": "logUserIn",
+        "verbs": ["POST"]
+    },
+    {
         "path" : "/applications$",
         "controller" : "ApplicationsController",
         "action" : "listApplications",

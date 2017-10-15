@@ -1,20 +1,19 @@
 <?php
 
-class FacebookController extends OauthController
+class GithubController extends OauthController
 {
-    protected $accessTokenUrl = 'https://graph.facebook.com/v2.10/oauth/access_token';
-    protected $detailsUrl = 'https://graph.facebook.com/me';
-    protected $configKey = 'facebook';
-    protected $redirectSlug = '/user/facebook-access';
+    protected $accessTokenUrl = 'https://github.com/login/oauth/access_token';
+    protected $detailsUrl = 'https://api.github.com/user';
+    protected $configKey = 'github';
+    protected $redirectSlug = '/user/github-access';
 
     protected function getUserDetails($accessToken)
     {
         $result = $this->client->get(
             $this->detailsUrl,
             [
-                'query' => [
-                    'access_token' => $accessToken,
-                    'fields' => 'name,email',
+                'headers' => [
+                    'Authorization' => "token $accessToken",
                 ]
             ]
         );
@@ -26,7 +25,7 @@ class FacebookController extends OauthController
         $data = json_decode((string)$result->getBody(), true);
 
         $record = new OAuthUserModel;
-        $record->email = $data['email'];
+        $record->email = $data['email'] ?: $data['login'] . '@users.noreply.github.com';
         $record->fullName = $data['name'];
         $record->userName = $data['id'];
 
@@ -35,7 +34,8 @@ class FacebookController extends OauthController
 
     protected function extractAccessToken($response)
     {
-        $response = json_decode($response, true);
-        return $response['access_token'];
+        $output = [];
+        parse_str($response, $output);
+        return $output['access_token'];
     }
 }

@@ -31,6 +31,12 @@ $config =  array(
         'app_id' => '',
         'app_secret' => '',
     ),
+    'github' => array(
+        // set up at https://github.com/settings/developers
+        // configure url in OAuth Settings as /user/github-access on web2
+        'app_id' => '',
+        'app_secret' => '',
+    ),
     'features' => array(
         'allow_auto_verify_users' => false,
         'allow_auto_approve_events' => false,
