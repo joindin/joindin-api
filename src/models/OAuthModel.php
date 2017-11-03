@@ -106,8 +106,7 @@ class OAuthModel
             return false;
         }
 
-        // create new token
-        $accessToken = $this->newAccessToken($clientId, $userId);
+        $accessToken = $this->createAccessToken($clientId, $userId);
 
         // we also want to send back the logged in user's uri
         $userUri = $this->getUserUri($userId);
@@ -168,7 +167,7 @@ class OAuthModel
      *
      * @return string access token
      */
-    public function newAccessToken($consumer_key, $user_id)
+    public function createAccessToken($consumer_key, $user_id)
     {
         $hash              = $this->generateToken();
         $accessToken       = substr($hash, 0, 16);
@@ -366,8 +365,7 @@ class OAuthModel
 
         $userId = $result['ID'];
 
-        // create new token
-        $accessToken = $this->newAccessToken($clientId, $userId);
+        $accessToken = $this->createAccessToken($clientId, $userId);
 
         // we also want to send back the logged in user's uri
         $userUri = $this->getUserUri($userId);
@@ -448,8 +446,7 @@ class OAuthModel
             return false;
         }
 
-        // create new token
-        $accessToken = $this->newAccessToken($clientId, $userId);
+        $accessToken = $this->createAccessToken($clientId, $userId);
 
         // we also want to send back the logged in user's uri
         $userUri = $this->getUserUri($userId);
