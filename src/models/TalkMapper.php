@@ -409,9 +409,9 @@ class TalkMapper extends ApiMapper
                 $items[$api_name] = $data[$api_name];
             }
         }
+
         if (isset($data['slides_link'])) {
             $this->addTalkLink($talk_id, 'slides_link', $data['slides_link']);
-
         }
         // language is special as we need to select the ID from lang
         $pairs[] = 'lang = (select ID from lang where lang_name = :language)';
