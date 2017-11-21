@@ -67,7 +67,7 @@ class ApiMapper
             return '';
         }
 
-        return ' LIMIT ' . intval($start) . ',' . $resultsperpage;
+        return ' LIMIT ' . (int)$start . ',' . (int)$resultsperpage;
     }
 
     /**
