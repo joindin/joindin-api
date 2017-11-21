@@ -2,15 +2,13 @@
 
 class TalkCommentEmailService extends BaseEmailService
 {
-    /**
-     * @var TalkModel
-     */
+    /** @var TalkModel */
     protected $talk;
 
     protected $comment;
     protected $config;
 
-    public function __construct($config, $recipients, TalkModel $talk, $comment)
+    public function __construct(array $config, array $recipients, TalkModel $talk, array $comment)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);

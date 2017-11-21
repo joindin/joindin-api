@@ -35,7 +35,7 @@ abstract class BaseEmailService
      * @param array $config The system config
      * @param array $recipients An array of email addresses
      */
-    public function __construct($config, $recipients)
+    public function __construct(array $config, array $recipients)
     {
         $transport     = \Swift_MailTransport::newInstance();
         $this->mailer  = \Swift_Mailer::newInstance($transport);
@@ -55,8 +55,13 @@ abstract class BaseEmailService
     /**
      * Take the template and the replacements, return markdown
      * with the correct values in it
+     *
+     * @param string $templateName
+     * @param array $replacements
+     *
+     * @return string
      */
-    public function parseEmail($templateName, $replacements)
+    public function parseEmail($templateName, array $replacements)
     {
         $template = file_get_contents($this->templatePath . $templateName)
                     . file_get_contents($this->templatePath . 'signature.md');
@@ -71,6 +76,10 @@ abstract class BaseEmailService
 
     /**
      * Set the body of the message
+     *
+     * @param string $body
+     *
+     * @return $this
      */
     protected function setBody($body)
     {
@@ -83,6 +92,10 @@ abstract class BaseEmailService
      * Set the HTML body of the message
      *
      * Call setBody first
+     *
+     * @param string $body
+     *
+     * @return $this
      */
     protected function setHtmlBody($body)
     {
@@ -104,6 +117,8 @@ abstract class BaseEmailService
 
     /**
      * Set the subject line of the email
+     *
+     * @param string $subject
      */
     protected function setSubject($subject)
     {
@@ -112,6 +127,8 @@ abstract class BaseEmailService
 
     /**
      * Set the reply to header
+     *
+     * @param string $email
      */
     protected function setReplyTo($email)
     {
@@ -120,6 +137,8 @@ abstract class BaseEmailService
 
     /**
      * Get recipients list to check it
+     *
+     * @return array
      */
     public function getRecipients()
     {
@@ -128,6 +147,10 @@ abstract class BaseEmailService
 
     /**
      * Markdown to HTML
+     *
+     * @param string $markdown
+     *
+     * @return string mixed
      */
     public function markdownToHtml($markdown)
     {
@@ -136,6 +159,11 @@ abstract class BaseEmailService
         return $messageHTML;
     }
 
+    /**
+     * @param string $html
+     *
+     * @return string
+     */
     public function htmlToPlainText($html)
     {
         return strip_tags($html);

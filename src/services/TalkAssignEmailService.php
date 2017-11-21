@@ -7,7 +7,14 @@ class TalkAssignEmailService extends BaseEmailService
     protected $talk;
     protected $website_url;
 
-    public function __construct($config, $recipients, $event, $talk, $username)
+    /**
+     * @param array $config
+     * @param array $recipients
+     * @param array $event
+     * @param TalkModel $talk
+     * @param string $username
+     */
+    public function __construct(array $config, array $recipients, array $event, TalkModel $talk, $username)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
@@ -40,9 +47,11 @@ class TalkAssignEmailService extends BaseEmailService
         $this->dispatchEmail();
     }
 
+    /**
+     * @return string a link in markdown
+     */
     private function linkToEditUserPage()
     {
-
         return '[' . $this->website_url
             . '/user/' . $this->username
             . '/edit' . '](' . $this->website_url

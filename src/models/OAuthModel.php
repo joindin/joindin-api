@@ -8,6 +8,7 @@ class OAuthModel
     // @codingStandardsIgnoreStart
     protected $_db;
     // @codingStandardsIgnoreEnd
+    /** @var Request */
     protected $request;
 
     /**
@@ -33,29 +34,29 @@ class OAuthModel
     /**
      * @param \PDO $db
      */
-    public function setDb($db)
+    public function setDb(PDO $db)
     {
         $this->_db = $db;
     }
 
     /**
-     * @param mixed $request
+     * @param Request $request
      */
-    public function setRequest($request)
+    public function setRequest(Request $request)
     {
         $this->request = $request;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getBase()
     {
-        return $this->request->base;
+        return $this->request->getBase();
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getVersion()
     {
@@ -67,7 +68,6 @@ class OAuthModel
      *
      * @param string $token The valid access token
      *
-     * @access public
      * @return int The ID of the user this belongs to
      */
     public function verifyAccessToken($token)
@@ -96,7 +96,7 @@ class OAuthModel
      * @param  string $username username
      * @param  string $password password
      *
-     * @return array access token and user Uri
+     * @return false|array access token and user Uri
      */
     public function createAccessTokenFromPassword($clientId, $username, $password)
     {
@@ -121,6 +121,7 @@ class OAuthModel
      * @param  string $username user's username
      * @param  string $password user's password
      *
+     * @throws Exception
      * @return int|bool            user's id on success or false
      */
     protected function getUserId($username, $password)
@@ -166,7 +167,7 @@ class OAuthModel
      * @param string $consumer_key the identifier for the consumer
      * @param int $user_id the user granting access
      *
-     * @return string access token
+     * @return false|string access token
      */
     public function newAccessToken($consumer_key, $user_id)
     {
@@ -221,7 +222,7 @@ class OAuthModel
      *
      * @return void
      */
-    public function expireOldTokens($clientIds)
+    public function expireOldTokens(array $clientIds)
     {
         foreach ($clientIds as $clientId) {
             $sql = "DELETE FROM oauth_access_tokens WHERE
@@ -243,6 +244,7 @@ class OAuthModel
      * @param string $token The valid access token
      *
      * @access public
+     *
      * @return string An identifier for the OAuth consumer
      */
     public function getConsumerName($token)
@@ -349,7 +351,7 @@ class OAuthModel
      * @param  string $twitterUsername User's twitter nick
      * (that we just got back from authenticating them)
      *
-     * @return string                   access token
+     * @return false|array                   access token
      */
     public function createAccessTokenFromTwitterUsername($clientId, $twitterUsername)
     {
@@ -381,12 +383,13 @@ class OAuthModel
      * * screen_name: The twitter-username
      * * email (optional): The users email-address
      *
+     * @param string $clientId
      * @param array $values
      *
      * @throws Exception
      * @return array
      */
-    public function createUserFromTwitterUsername($clientId, $values)
+    public function createUserFromTwitterUsername($clientId, array $values)
     {
         $sql = "select ID from user "
              . "where twitter_username = :twitter_username";
@@ -425,7 +428,8 @@ class OAuthModel
      *
      * @param  string $clientId         aka consumer_key (of the joindin client)
      * @param  string $email            User's email address (that we just got back from authenticating them)
-     * @return array|false              Array of access token and user uri on success or false or failure
+     *
+     * @return false|array              Array of access token and user uri on success or false or failure
      */
     public function createAccessTokenFromTrustedEmail($clientId, $email)
     {

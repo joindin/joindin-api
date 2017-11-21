@@ -10,6 +10,10 @@ class SpamCheckService
 
     protected $blog;
 
+    /**
+     * @param string $apiKey
+     * @param string $blog
+     */
     public function __construct($apiKey, $blog)
     {
         $this->akismetUrl = 'http://' . $apiKey . '.rest.akismet.com';
@@ -19,13 +23,13 @@ class SpamCheckService
     /**
      * Check your comment against the spam check service
      *
-     * @param $data
-     * @param $userIp
-     * @param $userAgent
+     * @param array $data
+     * @param string $userIp
+     * @param string $userAgent
      *
      * @return Boolean true if the comment is okay, false if it got rated as spam
      */
-    public function isCommentAcceptable($data, $userIp, $userAgent)
+    public function isCommentAcceptable(array $data, $userIp, $userAgent)
     {
         $comment = array();
 
@@ -59,7 +63,13 @@ class SpamCheckService
         return false;
     }
 
-    protected function getField($key, $data)
+    /**
+     * @param $key
+     * @param array $data
+     *
+     * @return false|mixed
+     */
+    protected function getField($key, array $data)
     {
         if (isset($data[ $key ])) {
             return $data[ $key ];

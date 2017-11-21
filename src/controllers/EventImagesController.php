@@ -2,7 +2,7 @@
 
 class EventImagesController extends BaseApiController
 {
-    public function createImage($request, $db)
+    public function createImage(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);
@@ -100,7 +100,7 @@ class EventImagesController extends BaseApiController
         $view->setResponseCode(201);
     }
 
-    public function deleteImage($request, $db)
+    public function deleteImage(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);

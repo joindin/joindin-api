@@ -39,6 +39,11 @@ class TokenModel extends BaseModel
 
     /**
      * Return this object with client-facing fields and hypermedia, ready for output
+     *
+     * @param Request $request
+     * @param bool $verbose
+     *
+     * @return array
      */
     public function getOutputView(Request $request, $verbose = false)
     {

@@ -26,6 +26,14 @@ class EventCommentMapper extends ApiMapper
         return $fields;
     }
 
+    /**
+     * @param int $event_id
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
         $sql = $this->getBasicSQL();
@@ -46,6 +54,13 @@ class EventCommentMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $comment_id
+     * @param bool $verbose
+     * @param bool $include_hidden
+     *
+     * @return false|array
+     */
     public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
     {
         $sql = $this->getBasicSQL($include_hidden);
@@ -67,7 +82,10 @@ class EventCommentMapper extends ApiMapper
         return false;
     }
 
-    public function transformResults($results, $verbose)
+    /**
+     * @inheritdoc
+     */
+    public function transformResults(array $results, $verbose)
     {
 
         $total = $results['total'];
@@ -96,7 +114,8 @@ class EventCommentMapper extends ApiMapper
      * This is used so we can nest comments inside other not-list settings
      *
      * @param array $row      The database row with the comment result
-     * @param array $verbose  The verbosity level
+     * @param bool $verbose  The verbosity level
+     *
      * @return array The extra fields to add to the existing data for this record
      */
     protected function formatOneComment($row, $verbose)
@@ -147,7 +166,7 @@ class EventCommentMapper extends ApiMapper
 
     }
 
-    public function save($data)
+    public function save(array $data)
     {
         // check for a duplicate first
         $dupe_sql = 'select ec.ID from event_comments ec '
@@ -187,9 +206,10 @@ class EventCommentMapper extends ApiMapper
     /**
      * Has this user provided a rating for this event which is greater than zero?
      *
-     * @param  integer $user_id
+     * @param int $user_id
+     * @param int $event_id
      *
-     * @return boolean
+     * @return bool
      */
     public function hasUserRatedThisEvent($user_id, $event_id)
     {
@@ -213,7 +233,8 @@ class EventCommentMapper extends ApiMapper
      * Get the event ID this event comment belongs to
      *
      * @param int $comment_id The comment in question
-     * @return array including event_id
+     *
+     * @return false|array including event_id
      */
     public function getCommentInfo($comment_id)
     {
@@ -261,9 +282,10 @@ class EventCommentMapper extends ApiMapper
      *
      * Includes verbose nested comment info
      *
-     * @param $event_id int    The event whose comments should be returned
-     * @param $moderated bool  Whether to include comments that have been moderated
-     * @return array A list of the comments
+     * @param int $event_id    The event whose comments should be returned
+     * @param bool $moderated  Whether to include comments that have been moderated
+     *
+     * @return EventCommentReportModelCollection
      */
     public function getReportedCommentsByEventId($event_id, $moderated = false)
     {

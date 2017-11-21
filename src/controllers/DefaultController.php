@@ -2,7 +2,7 @@
 
 class DefaultController extends BaseApiController
 {
-    public function handle(Request $request, $db)
+    public function handle(Request $request, PDO $db)
     {
         $retval = array();
 

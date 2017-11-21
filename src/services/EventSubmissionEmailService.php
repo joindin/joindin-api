@@ -5,7 +5,13 @@ class EventSubmissionEmailService extends BaseEmailService
     protected $event;
     protected $comment;
 
-    public function __construct($config, $recipients, $event, $count = null)
+    /**
+     * @param array $config
+     * @param array $recipients
+     * @param array $event
+     * @param int|null $count
+     */
+    public function __construct(array $config, array $recipients, array $event, $count = null)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);

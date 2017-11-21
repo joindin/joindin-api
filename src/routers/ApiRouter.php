@@ -30,6 +30,8 @@ class ApiRouter extends BaseRouter
      * Constructs a new Router
      *
      * @param array $config The application configuration
+     * @param array $routers
+     * @param $oldVersions
      */
     public function __construct(array $config, array $routers, array $oldVersions)
     {

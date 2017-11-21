@@ -2,10 +2,10 @@
 
 class ContactEmailService extends BaseEmailService
 {
-    protected $user;
+    /** @var string */
     protected $website_url;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
         $recipients = $config['email']['contact'];
         if (! is_array($recipients)) {
@@ -18,7 +18,10 @@ class ContactEmailService extends BaseEmailService
         $this->website_url = $config['website_url'];
     }
 
-    public function sendEmail($data)
+    /**
+     * @param array $data
+     */
+    public function sendEmail(array $data)
     {
         $this->setSubject('Joind.in contact: ' . $data['subject']);
 
