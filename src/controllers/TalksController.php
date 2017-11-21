@@ -648,7 +648,7 @@ class TalksController extends BaseTalkController
     {
         return [
             'display_name' => trim($request->getParameter('display_name', '')),
-            'username' => trim($request->getParameter('username', '')),
+            'username'     => trim($request->getParameter('username', '')),
         ];
     }
 
