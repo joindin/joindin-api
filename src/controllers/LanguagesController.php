@@ -2,7 +2,7 @@
 
 class LanguagesController extends ApiController
 {
-    public function getLanguage($request, $db)
+    public function getLanguage(Request $request, PDO $db)
     {
         $language_id = $this->getItemId($request);
         // verbosity - here for consistency as we don't have verbose language details to return at the moment
@@ -18,7 +18,7 @@ class LanguagesController extends ApiController
         return $list;
     }
 
-    public function getAllLanguages($request, $db)
+    public function getAllLanguages(Request $request, PDO $db)
     {
         // verbosity - here for consistency as we don't have verbose language details to return at the moment
         $verbose = $this->getVerbosity($request);

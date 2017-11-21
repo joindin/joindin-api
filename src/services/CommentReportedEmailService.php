@@ -2,12 +2,16 @@
 
 class CommentReportedEmailService extends EmailBaseService
 {
-
+    /** @var array */
     protected $comment;
+
+    /** @var array */
     protected $event;
+
+    /** @var string */
     protected $website_url;
 
-    public function __construct($config, $recipients, $comment, $event)
+    public function __construct(array $config, array $recipients, array $comment, array $event)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
@@ -55,6 +59,9 @@ class CommentReportedEmailService extends EmailBaseService
         $this->dispatchEmail();
     }
 
+    /**
+     * @return string
+     */
     private function linkToReportedCommentsForEvent()
     {
         /*
