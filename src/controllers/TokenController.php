@@ -6,7 +6,7 @@ class TokenController extends ApiController
 
     protected $tokenMapper;
 
-    public function postAction($request, $db)
+    public function postAction(Request $request, PDO $db)
     {
         $this->oauthModel = $request->getOauthModel($db);
         // The "password" grant type posts here to exchange a username and
@@ -58,7 +58,7 @@ class TokenController extends ApiController
         throw new Exception("Grant type not recognised", 400);
     }
 
-    public function listTokensForUser($request, $db)
+    public function listTokensForUser(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in", 401);
@@ -79,7 +79,7 @@ class TokenController extends ApiController
         return $tokens->getOutputView($request, $this->getVerbosity($request));
     }
 
-    public function getToken($request, $db)
+    public function getToken(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in", 401);

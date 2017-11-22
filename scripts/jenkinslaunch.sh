@@ -45,7 +45,7 @@ mkdir -p $TARGET \
 && ln -s $TARGETBASE/config.php $TARGET/src/config.php \
 && ln -s $TARGETBASE/database.php $TARGET/src/database.php \
 && ln -s $TARGET $TARGETBASE/www.new \
-&& $TARGET/scripts/patchdb.sh $DBNAME \
+&& ./scripts/patchdb.sh -t '$TARGET' $DBNAME \
 && mv -Tf $TARGETBASE/www.new $TARGETBASE/www
 "
 

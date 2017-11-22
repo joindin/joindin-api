@@ -2,14 +2,15 @@
 
 abstract class ApiController
 {
+    /** @var array */
     protected $config;
 
-    public function __construct($config = null)
+    public function __construct(array $config = [])
     {
         $this->config = $config;
     }
 
-    public function getItemId($request)
+    public function getItemId(Request $request)
     {
         // item ID
         if (! empty($request->url_elements[3])
@@ -23,7 +24,7 @@ abstract class ApiController
         return false;
     }
 
-    public function getVerbosity($request)
+    public function getVerbosity(Request $request)
     {
         // verbosity
         if (isset($request->parameters['verbose'])
@@ -37,24 +38,24 @@ abstract class ApiController
         return $verbose;
     }
 
-    public function getStart($request)
+    public function getStart(Request $request)
     {
         return $request->paginationParameters['start'];
 
     }
 
-    public function getResultsPerPage($request)
+    public function getResultsPerPage(Request $request)
     {
         return (int) $request->paginationParameters['resultsperpage'];
     }
 
-    public function getSort($request)
+    public function getSort(Request $request)
     {
         // unfiltered, you probably want to switch case this
         return $this->getRequestParameter($request, 'sort');
     }
 
-    protected function getRequestParameter($request, $parameter, $default = false)
+    protected function getRequestParameter(Request $request, $parameter, $default = false)
     {
         if (isset($request->parameters[$parameter])) {
             return $request->parameters[$parameter];
