@@ -5,7 +5,7 @@ class EventApprovedEmailService extends EmailBaseService
     protected $event;
     protected $website_url;
 
-    public function __construct($config, $recipients, $event)
+    public function __construct(array $config, array $recipients, array $event)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);

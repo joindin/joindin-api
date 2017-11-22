@@ -29,7 +29,16 @@ class ApiMapper
         return array();
     }
 
-    public function transformResults($results, $verbose)
+    /**
+     * Turn results into arrays with correct fields, add hypermedia
+     *
+     * @param array $results Results of the database query
+     * @param boolean $verbose whether to return detailed information
+     *
+     * @return array A dataset now with each record having its links,
+     *     and pagination if appropriate
+     */
+    public function transformResults(array $results, $verbose)
     {
         $fields = $verbose ? $this->getVerboseFields() : $this->getDefaultFields();
         $retval = array();
@@ -60,6 +69,12 @@ class ApiMapper
         return $retval;
     }
 
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     *
+     * @return string
+     */
     protected function buildLimit($resultsperpage, $start)
     {
         if ($resultsperpage == 0) {
@@ -102,7 +117,7 @@ class ApiMapper
         return $stmtCount->fetchColumn(0);
     }
 
-    protected function getPaginationLinks($list, $total = 0)
+    protected function getPaginationLinks(array $list, $total = 0)
     {
         $request       = $this->_request;
         $count         = count($list);

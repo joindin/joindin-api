@@ -12,6 +12,17 @@ use TalksController;
 
 class TalksControllerTest extends TalkBase
 {
+    private $config;
+
+    public function setUp()
+    {
+        $this->config = [
+            'email' => [
+                'from' => 'source@example.com',
+            ],
+            'website_url' => 'http://example.com',
+        ];
+    }
     /**
      * Ensures that if the setSpeakerForTalk method is called and no user_id is set,
      * an exception is thrown
@@ -401,7 +412,7 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'Jane Bloggs'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController($this->config);
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
@@ -467,7 +478,7 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController($this->config);
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
@@ -803,7 +814,7 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'P Sherman',
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController($this->config);
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);
@@ -1073,7 +1084,7 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'P Sherman',
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController($this->config);
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->createTalkMapper($db, $request);

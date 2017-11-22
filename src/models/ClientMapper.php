@@ -34,7 +34,7 @@ class ClientMapper extends ApiMapper
      * @param int $resultsperpage   How many results to return on each page
      * @param int $start            Which result to start with
      *
-     * @return ClientModelCollection
+     * @return false|ClientModelCollection
      */
     public function getClientsForUser($user_id, $resultsperpage, $start)
     {
@@ -60,10 +60,10 @@ class ClientMapper extends ApiMapper
     /**
      * Get a specific client with given ID and user
      *
-     * @param $clientId
-     * @param $userId
+     * @param string $clientId
+     * @param string $userId
      *
-     * @return ClientModelCollection
+     * @return false|ClientModelCollection
      */
     public function getClientByIdAndUser($clientId, $userId)
     {
@@ -89,12 +89,12 @@ class ClientMapper extends ApiMapper
     /**
      * Create a new client and return the new ID
      *
-     * @param array $client
+     * @param array $data
      *
      * @throws Exception
      * @return int
      */
-    public function createClient($data)
+    public function createClient(array $data)
     {
         $clientSql = 'INSERT INTO oauth_consumers (consumer_key, consumer_secret,'
                    . 'created_date, user_id, application, description, '
@@ -160,7 +160,6 @@ class ClientMapper extends ApiMapper
      * @param int $clientId
      *
      * @throws Exception
-     * @return bool
      */
     public function deleteClient($clientId)
     {
@@ -171,7 +170,5 @@ class ClientMapper extends ApiMapper
         if (! $stmt->execute([':client_id' => $clientId])) {
             throw new Exception('There has been an error updating the application');
         }
-
-
     }
 }

@@ -10,7 +10,7 @@ class TokenMapper extends ApiMapper
      *
      * @return array
      */
-    private function processResults($results)
+    private function processResults(array $results)
     {
         if (!is_array($results)) {
             // $results isn't an array. This shouldn't happen as an exception
@@ -34,7 +34,7 @@ class TokenMapper extends ApiMapper
      * @param int $resultsperpage   How many results to return on each page
      * @param int $start            Which result to start with
      *
-     * @return TokenModelCollection
+     * @return TokenModelCollection|false
      */
     public function getTokensForUser($user_id, $resultsperpage, $start)
     {
@@ -68,7 +68,7 @@ class TokenMapper extends ApiMapper
      * @param int $resultsperpage   How many results to return on each page
      * @param int $start            Which result to start with
      *
-     * @return TokenModelCollection
+     * @return TokenModelCollection|false
      */
     public function getRevokableTokensForUser($user_id, $resultsperpage, $start)
     {
