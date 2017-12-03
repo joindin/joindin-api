@@ -81,8 +81,8 @@ The number in that line should match the filename of your new patch number - che
 ### Coding Style
 
 Please do your best to ensure that any code you contributed adheres to the
-Joind.in coding style. This is roughly equivalent to the PEAR coding standard with
-a couple of rules added or taken out. You can run php codesniffer using phing on an
+Joind.in coding style. This is the PSR-2 coding standard with
+no namespaces. You can run php codesniffer using phing on an
 individual file like so:
 
     phing phpcs-human -Dfilename.php
