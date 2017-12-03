@@ -3,7 +3,7 @@
 /**
  * Container for multiple EventCommentReportModel objects
  */
-class TalkCommentReportModelCollection extends AbstractModelCollection
+class TalkCommentReportModelCollection extends BaseModelCollection
 {
     /** @var array */
     protected $list;
@@ -47,7 +47,7 @@ class TalkCommentReportModelCollection extends AbstractModelCollection
     {
         $retval = [];
         // handle the collection first
-        $retval['reports'] = [];
+        $retval = ['reports' => []];
         foreach ($this->list as $item) {
             $retval['reports'][] = $item->getOutputView($request, $verbose);
         }

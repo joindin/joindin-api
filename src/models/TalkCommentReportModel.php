@@ -3,7 +3,7 @@
 /**
  * Object that represents a reported event comment
  */
-class TalkCommentReportModel extends AbstractModel
+class TalkCommentReportModel extends BaseModel
 {
     /**
      * Default fields in the output view

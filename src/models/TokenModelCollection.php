@@ -4,7 +4,7 @@
  * Container for multiple Token objects, also handles
  * collection metadata such as pagination
  */
-class TokenModelCollection extends AbstractModelCollection
+class TokenModelCollection extends BaseModelCollection
 {
     /** @var array */
     protected $list;
@@ -48,7 +48,7 @@ class TokenModelCollection extends AbstractModelCollection
     {
         $retval = [];
         // handle the collection first
-        $retval['tokens'] = [];
+        $retval = ['tokens' => []];
         foreach ($this->list as $item) {
             $retval['tokens'][] = $item->getOutputView($request, $verbose);
         }

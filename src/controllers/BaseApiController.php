@@ -1,6 +1,6 @@
 <?php
 
-abstract class ApiController
+abstract class BaseApiController
 {
     /** @var array */
     protected $config;

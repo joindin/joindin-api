@@ -3,7 +3,7 @@
 /**
  * Container for multiple EventCommentReportModel objects
  */
-class EventCommentReportModelCollection extends AbstractModelCollection
+class EventCommentReportModelCollection extends BaseModelCollection
 {
     protected $list = array();
     protected $total;
@@ -43,7 +43,7 @@ class EventCommentReportModelCollection extends AbstractModelCollection
     {
         $retval = [];
         // handle the collection first
-        $retval['reports'] = [];
+        $retval = ['reports' => []];
         foreach ($this->list as $item) {
             $retval['reports'][] = $item->getOutputView($request, $verbose);
         }

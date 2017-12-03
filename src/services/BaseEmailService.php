@@ -7,7 +7,7 @@
  *
  * @author Kim Rowan
  */
-abstract class EmailBaseService
+abstract class BaseEmailService
 {
     /**
      * The SwiftMailer object

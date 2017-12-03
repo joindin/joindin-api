@@ -1,6 +1,6 @@
 <?php
 
-class LanguagesController extends ApiController
+class LanguagesController extends BaseApiController
 {
     public function getLanguage(Request $request, PDO $db)
     {

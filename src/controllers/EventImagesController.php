@@ -1,6 +1,6 @@
 <?php
 
-class EventImagesController extends ApiController
+class EventImagesController extends BaseApiController
 {
     public function createImage(Request $request, PDO $db)
     {
@@ -27,7 +27,7 @@ class EventImagesController extends ApiController
         }
 
         if ($_FILES['image']['error'] != 0) {
-            throw new Exception("Image upload failed (Code: " . $FILES['image']['error'] . ")", 400);
+            throw new Exception("Image upload failed (Code: " . $_FILES['image']['error'] . ")", 400);
         }
 
         // check the file meets our expectations

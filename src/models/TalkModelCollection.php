@@ -4,7 +4,7 @@
  * Container for multiple TalkModel objects, also handles
  * collection metadata such as pagination
  */
-class TalkModelCollection extends AbstractModelCollection
+class TalkModelCollection extends BaseModelCollection
 {
     /** @var array */
     protected $list;
@@ -47,7 +47,7 @@ class TalkModelCollection extends AbstractModelCollection
     public function getOutputView(Request $request, $verbose = false)
     {
         // handle the collection first
-        $retval['talks'] = [];
+        $retval= ['talks' => []];
         foreach ($this->list as $item) {
             $retval['talks'][] = $item->getOutputView($request, $verbose);
         }

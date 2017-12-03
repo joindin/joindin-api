@@ -3,7 +3,7 @@
 /**
  * Container for multiple EventCommentReportModel objects
  */
-class PendingTalkClaimModelCollection extends AbstractModelCollection
+class PendingTalkClaimModelCollection extends BaseModelCollection
 {
     /** @var array */
     protected $list;
@@ -47,7 +47,7 @@ class PendingTalkClaimModelCollection extends AbstractModelCollection
     {
         $retval = [];
         // handle the collection first
-        $retval['claims'] = [];
+        $retval = ['claims' => []];
         foreach ($this->list as $item) {
             $retval['claims'][] = $item->getOutputView($request, $verbose);
         }

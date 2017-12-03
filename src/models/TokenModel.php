@@ -3,7 +3,7 @@
 /**
  * Object that represents a token
  */
-class TokenModel extends AbstractModel
+class TokenModel extends BaseModel
 {
     /**
      * Default fields in the output view

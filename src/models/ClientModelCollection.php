@@ -4,7 +4,7 @@
  * Container for multiple Client objects, also handles
  * collection metadata such as pagination
  */
-class ClientModelCollection extends AbstractModelCollection
+class ClientModelCollection extends BaseModelCollection
 {
     /** @var array */
     protected $list;
@@ -48,7 +48,7 @@ class ClientModelCollection extends AbstractModelCollection
     {
         $retval = [];
         // handle the collection first
-        $retval['clients'] = [];
+        $retval = ['clients' => []];
         foreach ($this->list as $item) {
             $retval['clients'][] = $item->getOutputView($request, $verbose);
         }

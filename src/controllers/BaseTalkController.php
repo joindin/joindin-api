@@ -1,6 +1,6 @@
 <?php
 
-class BaseTalkController extends ApiController
+class BaseTalkController extends BaseApiController
 {
     /** @var PDO */
     protected $db;

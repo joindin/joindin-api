@@ -1,6 +1,6 @@
 <?php
 
-class EventApprovedEmailService extends EmailBaseService
+class EventApprovedEmailService extends BaseEmailService
 {
     protected $event;
     protected $website_url;

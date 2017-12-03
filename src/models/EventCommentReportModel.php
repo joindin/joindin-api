@@ -3,7 +3,7 @@
 /**
  * Object that represents a reported event comment
  */
-class EventCommentReportModel extends AbstractModel
+class EventCommentReportModel extends BaseModel
 {
     /**
      * Default fields in the output view
