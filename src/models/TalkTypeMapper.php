@@ -2,6 +2,9 @@
 
 class TalkTypeMapper extends ApiMapper
 {
+    /**
+     * @return array
+     */
     public function getDefaultFields()
     {
         return array(
@@ -10,6 +13,9 @@ class TalkTypeMapper extends ApiMapper
         );
     }
 
+    /**
+     * @return array
+     */
     public function getVerboseFields()
     {
         return array(
@@ -18,6 +24,13 @@ class TalkTypeMapper extends ApiMapper
         );
     }
 
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getTalkTypeList($resultsperpage, $start = 0, $verbose = false)
     {
         $results = $this->getTalkTypes($resultsperpage, $start);
@@ -27,15 +40,28 @@ class TalkTypeMapper extends ApiMapper
         return false;
     }
 
-    public function getTalkTypeById($talkTypeId, $verbose)
+    /**
+     * @param int $talkType_id
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
+    public function getTalkTypeById($talkType_id, $verbose)
     {
-        $results = $this->getTalkTypes(1, 0, array('ID' => (int) $talkTypeId));
+        $results = $this->getTalkTypes(1, 0, array('ID' => (int) $talkType_id));
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
         return false;
     }
 
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     * @param array $params
+     *
+     * @return false|array
+     */
     protected function getTalkTypes($resultsperpage, $start, $params = array())
     {
         $sql = 'select c.ID, c.cat_title, c.cat_desc ' .
@@ -68,7 +94,10 @@ class TalkTypeMapper extends ApiMapper
         return false;
     }
 
-    public function transformResults($results, $verbose)
+    /**
+     * @inheritdoc
+     */
+    public function transformResults(array $results, $verbose)
     {
         $total = $results['total'];
         unset($results['total']);

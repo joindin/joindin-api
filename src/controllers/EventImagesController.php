@@ -1,8 +1,8 @@
 <?php
 
-class EventImagesController extends ApiController
+class EventImagesController extends BaseApiController
 {
-    public function createImage($request, $db)
+    public function createImage(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);
@@ -27,7 +27,7 @@ class EventImagesController extends ApiController
         }
 
         if ($_FILES['image']['error'] != 0) {
-            throw new Exception("Image upload failed (Code: " . $FILES['image']['error'] . ")", 400);
+            throw new Exception("Image upload failed (Code: " . $_FILES['image']['error'] . ")", 400);
         }
 
         // check the file meets our expectations
@@ -100,7 +100,7 @@ class EventImagesController extends ApiController
         $view->setResponseCode(201);
     }
 
-    public function deleteImage($request, $db)
+    public function deleteImage(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", 401);

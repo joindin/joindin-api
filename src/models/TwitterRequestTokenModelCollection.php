@@ -4,10 +4,13 @@
  * Container for multiple TwitterRequestTokenModel objects, also handles
  * collection metadata such as pagination
  */
-class TwitterRequestTokenModelCollection extends AbstractModelCollection
+class TwitterRequestTokenModelCollection extends BaseModelCollection
 {
     /**
      * Take arrays of data and create a collection of models; store metadata
+     *
+     * @param array $data
+     * @param int $total
      */
     public function __construct(array $data, $total = 0)
     {
@@ -25,12 +28,16 @@ class TwitterRequestTokenModelCollection extends AbstractModelCollection
      * This creates the expected output structure, converting each resource
      * to it's presentable representation and adding the meta fields for totals
      * and pagination
+     *
+     * @param Request $request
+     * @param bool $verbose
+     *
+     * @return array
      */
-    public function getOutputView($request, $verbose = false)
+    public function getOutputView(Request $request, $verbose = false)
     {
         // handle the collection first
-        $retval                           = array();
-        $retval['twitter_request_tokens'] = array();
+        $retval = ['twitter_request_tokens' => []];
         foreach ($this->list as $item) {
             $retval['twitter_request_tokens'][] = $item->getOutputView($request, $verbose);
         }

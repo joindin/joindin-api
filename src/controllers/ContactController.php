@@ -3,9 +3,9 @@
 /**
  * Contact us end point
  */
-class ContactController extends ApiController
+class ContactController extends BaseApiController
 {
-    public function handle(Request $request, $db)
+    public function handle(Request $request, PDO $db)
     {
         // really need to not require this to be declared
     }
@@ -21,12 +21,13 @@ class ContactController extends ApiController
      *  - subject
      *  - comment
      *
-     * @param  Request $request
-     * @param  PDO $db
+     * @param Request $request
+     * @param PDO $db
      *
+     * @throws Exception
      * @return void
      */
-    public function contact($request, $db)
+    public function contact(Request $request, PDO $db)
     {
         // only trusted clients can contact us to save on spam
         $clientId         = $request->getParameter('client_id');

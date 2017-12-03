@@ -1,6 +1,6 @@
 <?php
 // @codingStandardsIgnoreStart
-class Event_hostsController extends ApiController
+class Event_hostsController extends BaseApiController
 // @codingStandardsIgnoreEnd
 {
     /** @var EventHostMapper */
@@ -17,7 +17,7 @@ class Event_hostsController extends ApiController
      * @param PDO     $db
      *
      * @throws Exception
-     * @return array|bool
+     * @return array
      */
     public function listHosts(Request $request, PDO $db)
     {
@@ -49,8 +49,9 @@ class Event_hostsController extends ApiController
      * @param PDO     $db
      *
      * @uses host_name
+     *
      * @throws Exception
-     * @return int|false
+     * @return void
      */
     public function addHost(Request $request, PDO $db)
     {
@@ -107,7 +108,7 @@ class Event_hostsController extends ApiController
      * @param PDO     $db
      *
      * @throws Exception
-     * @return bool
+     * @return void
      */
     public function removeHostFromEvent(Request $request, PDO $db)
     {
@@ -181,7 +182,7 @@ class Event_hostsController extends ApiController
         $this->eventHostMapper = $mapper;
     }
 
-    public function getEventMapper($request, $db)
+    public function getEventMapper(Request $request, PDO $db)
     {
         if ($this->eventMapper === null) {
             $this->eventMapper = new EventMapper($db, $request);
@@ -195,7 +196,7 @@ class Event_hostsController extends ApiController
         $this->eventMapper = $eventMapper;
     }
 
-    public function getUserMapper($request, $db)
+    public function getUserMapper(Request $request, PDO $db)
     {
         if ($this->userMapper === null) {
             $this->userMapper = new UserMapper($db, $request);

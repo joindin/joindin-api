@@ -1,6 +1,6 @@
 <?php
 
-abstract class AbstractModel
+abstract class BaseModel
 {
     /**
      * @var array
@@ -16,6 +16,7 @@ abstract class AbstractModel
      * Retrieve a single element from the model or null if it doesn't exist
      *
      * @param  string $field
+     *
      * @return mixed
      */
     public function __get($field)
@@ -60,6 +61,11 @@ abstract class AbstractModel
 
     /**
      * Return this object with client-facing fields and hypermedia, ready for output
+     *
+     * @param Request $request
+     * @param bool $verbose
+     *
+     * @return array
      */
     public function getOutputView(Request $request, $verbose = false)
     {

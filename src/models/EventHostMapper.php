@@ -2,6 +2,9 @@
 
 class EventHostMapper extends ApiMapper
 {
+    /**
+     * @return array
+     */
     public function getDefaultFields()
     {
         return array(
@@ -10,11 +13,22 @@ class EventHostMapper extends ApiMapper
         );
     }
 
+    /**
+     * @return array
+     */
     public function getVerboseFields()
     {
         return $this->getDefaultFields();
     }
 
+    /**
+     * @param int $event_id
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getHostsByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
         $sql = $this->getHostSql();
@@ -35,6 +49,12 @@ class EventHostMapper extends ApiMapper
         return $this->transformResults($results, $verbose);
     }
 
+    /**
+     * @param int $event_id
+     * @param int $host_id
+     *
+     * @return false|string
+     */
     public function addHostToEvent($event_id, $host_id)
     {
         $sql = 'INSERT INTO user_admin (uid, rid, rtype) VALUES (:host_id, :event_id, :type)';
@@ -53,6 +73,12 @@ class EventHostMapper extends ApiMapper
         return $this->_db->lastInsertId();
     }
 
+    /**
+     * @param int $host_id
+     * @param int $event_id
+     *
+     * @return bool
+     */
     public function removeHostFromEvent($host_id, $event_id)
     {
         $sql = 'DELETE FROM user_admin WHERE uid = :user_id AND rid = :event_id AND rtype = :type';
@@ -68,7 +94,7 @@ class EventHostMapper extends ApiMapper
     /**
      * SQL for fetching event hosts, so it can be used in multiple places
      *
-     * @return SQL to fetch hosts, containing an :event_id named parameter
+     * @return string SQL to fetch hosts, containing an :event_id named parameter
      */
     protected function getHostSql()
     {
@@ -79,15 +105,9 @@ class EventHostMapper extends ApiMapper
     }
 
     /**
-     * Turn results into arrays with correct fields, add hypermedia
-     *
-     * @param array $results Results of the database query
-     * @param boolean $verbose whether to return detailed information
-     *
-     * @return array A dataset now with each record having its links,
-     *     and pagination if appropriate
+     * @inheritdoc
      */
-    public function transformResults($results, $verbose)
+    public function transformResults(array $results, $verbose)
     {
         $total = $results['total'];
         unset($results['total']);

@@ -3,7 +3,7 @@
 /**
  * A Router to route versioned Routes
  */
-class VersionedRouter extends Router
+class VersionedRouter extends BaseRouter
 {
 
     /**
@@ -28,10 +28,11 @@ class VersionedRouter extends Router
     /**
      * Constructs a new V2_1Router
      *
+     * @param float $version
      * @param array $config
      * @param array $rules
      */
-    public function __construct($version, array $config, array $rules = array())
+    public function __construct($version, array $config, array $rules = [])
     {
         parent::__construct($config);
         $this->version = $version;

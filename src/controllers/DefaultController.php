@@ -1,8 +1,8 @@
 <?php
 
-class DefaultController extends ApiController
+class DefaultController extends BaseApiController
 {
-    public function handle(Request $request, $db)
+    public function handle(Request $request, PDO $db)
     {
         // just add the available methods, with links
         return [

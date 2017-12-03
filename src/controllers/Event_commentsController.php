@@ -1,9 +1,9 @@
 <?php
 // @codingStandardsIgnoreStart
-class Event_commentsController extends ApiController
+class Event_commentsController extends BaseApiController
 // @codingStandardsIgnoreEnd
 {
-    public function getComments($request, $db)
+    public function getComments(Request $request, PDO $db)
     {
         $comment_id = $this->getItemId($request);
 
@@ -27,7 +27,7 @@ class Event_commentsController extends ApiController
         return false;
     }
 
-    public function getReported($request, $db)
+    public function getReported(Request $request, PDO $db)
     {
         $event_id = $this->getItemId($request);
         if (empty($event_id)) {
@@ -52,7 +52,7 @@ class Event_commentsController extends ApiController
         }
     }
 
-    public function createComment($request, $db)
+    public function createComment(Request $request, PDO $db)
     {
         $comment             = array();
         $comment['event_id'] = $this->getItemId($request);
@@ -141,7 +141,7 @@ class Event_commentsController extends ApiController
         $view->setResponseCode(201);
     }
 
-    public function reportComment($request, $db)
+    public function reportComment(Request $request, PDO $db)
     {
         // must be logged in to report a comment
         if (! isset($request->user_id) || empty($request->user_id)) {
@@ -188,8 +188,10 @@ class Event_commentsController extends ApiController
      *
      * @param Request $request the request
      * @param PDO $db the database adapter
+     *
+     * @throws Exception
      */
-    public function moderateReportedComment($request, $db)
+    public function moderateReportedComment(Request $request, PDO $db)
     {
         // must be logged in
         if (! isset($request->user_id) || empty($request->user_id)) {

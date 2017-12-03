@@ -3,7 +3,7 @@
 /**
  * The main API Router; acts as the version selector
  */
-class ApiRouter extends Router
+class ApiRouter extends BaseRouter
 {
 
     /**
@@ -30,6 +30,8 @@ class ApiRouter extends Router
      * Constructs a new Router
      *
      * @param array $config The application configuration
+     * @param array $routers
+     * @param $oldVersions
      */
     public function __construct(array $config, array $routers, array $oldVersions)
     {

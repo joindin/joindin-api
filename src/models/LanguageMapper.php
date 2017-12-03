@@ -2,6 +2,9 @@
 
 class LanguageMapper extends ApiMapper
 {
+    /**
+     * @return array
+     */
     public function getDefaultFields()
     {
         return array(
@@ -10,6 +13,9 @@ class LanguageMapper extends ApiMapper
         );
     }
 
+    /**
+     * @return array
+     */
     public function getVerboseFields()
     {
         return array(
@@ -18,6 +24,12 @@ class LanguageMapper extends ApiMapper
         );
     }
 
+    /**
+     * @param int $language_id
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getLanguageById($language_id, $verbose = false)
     {
         $results = $this->getLanguages(1, 0, array('ID' => (int) $language_id));
@@ -28,6 +40,13 @@ class LanguageMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getLanguageList($resultsperpage, $start = 0, $verbose = false)
     {
         $results = $this->getLanguages($resultsperpage, $start);
@@ -38,7 +57,10 @@ class LanguageMapper extends ApiMapper
         return false;
     }
 
-    public function transformResults($results, $verbose)
+    /**
+     * @inheritdoc
+     */
+    public function transformResults(array $results, $verbose)
     {
         $total = $results['total'];
         unset($results['total']);
@@ -61,7 +83,14 @@ class LanguageMapper extends ApiMapper
         );
     }
 
-    protected function getLanguages($resultsperpage, $start, $params = array())
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     * @param array $params
+     *
+     * @return false|array
+     */
+    protected function getLanguages($resultsperpage, $start, array $params = [])
     {
         $sql = 'select l.ID, l.lang_name, l.lang_abbr ' .
                'from lang as l ';

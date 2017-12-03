@@ -3,7 +3,7 @@
 /**
  * The default API Router
  */
-class DefaultRouter extends Router
+class DefaultRouter extends BaseRouter
 {
 
     /**

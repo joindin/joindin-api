@@ -8,7 +8,6 @@
  */
 class UserMapper extends ApiMapper
 {
-
     /**
      * Default mapping for column names to API field names
      *
@@ -40,6 +39,12 @@ class UserMapper extends ApiMapper
         );
     }
 
+    /**
+     * @param int $user_id
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getUserById($user_id, $verbose = false)
     {
         $results = $this->getUsers(1, 0, 'user.ID=' . (int) $user_id, null);
@@ -48,9 +53,14 @@ class UserMapper extends ApiMapper
         }
 
         return false;
-
     }
 
+    /**
+     * @param string $username
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getUserByUsername($username, $verbose = false)
     {
         $sql = 'select user.* '
@@ -76,6 +86,9 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @return false|array
+     */
     public function getSiteAdminEmails()
     {
         $sql  = 'select email from user where admin = 1';
@@ -91,6 +104,14 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     * @param string|null $where
+     * @param string|null $order
+     *
+     * @return false|array
+     */
     protected function getUsers($resultsperpage, $start, $where = null, $order = null)
     {
         $sql = 'select user.username, user.ID, user.email, '
@@ -128,6 +149,13 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getUserList($resultsperpage, $start, $verbose = false)
     {
         $order   = 'user.ID';
@@ -139,6 +167,14 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $event_id
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose)
     {
         $where   = "ua.eid = " . $event_id;
@@ -150,7 +186,10 @@ class UserMapper extends ApiMapper
         return false;
     }
 
-    public function transformResults($results, $verbose)
+    /**
+     * @inheritdoc
+     */
+    public function transformResults(array $results, $verbose)
     {
         $total = $results['total'];
         unset($results['total']);
@@ -207,7 +246,11 @@ class UserMapper extends ApiMapper
         ];
     }
 
-
+    /**
+     * @param int $user_id
+     *
+     * @return bool
+     */
     public function isSiteAdmin($user_id)
     {
         $results = $this->getUsers(1, 0, 'user.ID=' . (int) $user_id, null);
@@ -221,7 +264,8 @@ class UserMapper extends ApiMapper
     /**
      * Check if the user represented by $user_id is trusted
      *
-     * @param $user_id
+     * @param int $user_id
+     *
      * @return bool
      */
     public function isTrusted($user_id)
@@ -237,8 +281,8 @@ class UserMapper extends ApiMapper
     /**
      * Update the trusted status for the given user
      *
-     * @param $trustedStatus bool
-     * @param $user_id       int
+     * @param bool $trustedStatus
+     * @param int $user_id
      *
      * @return bool
      */
@@ -254,6 +298,12 @@ class UserMapper extends ApiMapper
     }
 
 
+    /**
+     * @param int $user
+     *
+     * @throws Exception
+     * @return false|string user ID
+     */
     public function createUser($user)
     {
         // Sanity check: ensure all mandatory fields are present.
@@ -297,6 +347,12 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param string $email
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getUserByEmail($email, $verbose = false)
     {
         $sql = 'select user.* '
@@ -329,7 +385,7 @@ class UserMapper extends ApiMapper
      *
      * @param string $password The password to check (plain text)
      *
-     * @return bool|array Either true if it's fine, or an array of remarks about why it isn't
+     * @return true|array Either true if it's fine, or an array of remarks about why it isn't
      */
     public function checkPasswordValidity($password)
     {
@@ -345,6 +401,10 @@ class UserMapper extends ApiMapper
     /**
      * Generate and store a token in the email_verification_tokens table for this
      * user, when they use the token to verify, we'll set their status to verified
+     *
+     * @param int $user_id
+     *
+     * @return false|string token
      */
     public function generateEmailVerificationTokenForUserId($user_id)
     {
@@ -415,7 +475,7 @@ class UserMapper extends ApiMapper
      *
      * @param string $email The email address of the user we're looking for
      *
-     * @return $user_id The user's ID (or false, if we didn't find her)
+     * @return false|int $user_id The user's ID (or false, if we didn't find her)
      */
     public function getUserIdFromEmail($email)
     {
@@ -439,12 +499,21 @@ class UserMapper extends ApiMapper
      * Used only on test platforms, if the config is enabled
      *
      * Designed to allow creation of verified users for testing purposes
+     *
+     * @param int $user_id
+     *
+     * @return bool
      */
     public function verifyThisTestUser($user_id)
     {
         return $this->markUserVerified($user_id);
     }
 
+    /**
+     * @param int $user_id
+     *
+     * @return bool
+     */
     protected function markUserVerified($user_id)
     {
         $verify_sql = "update user set verified = 1 "
@@ -465,7 +534,7 @@ class UserMapper extends ApiMapper
      *
      * @param int $user_id The identifier for the user to edit
      *
-     * @return bool True if the user has privileges, false otherwise
+     * @return bool if the user has privileges
      */
     public function thisUserHasAdminOn($user_id)
     {
@@ -493,9 +562,10 @@ class UserMapper extends ApiMapper
      * @param array $user An array of fields to change
      * @param int $userId The user to update
      *
-     * @return bool True if successful
+     * @throws Exception
+     * @return bool if successful
      */
-    public function editUser($user, $userId)
+    public function editUser(array $user, $userId)
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields = array(
@@ -545,7 +615,7 @@ class UserMapper extends ApiMapper
      *
      * @param string $username The username of the user we're looking for
      *
-     * @return $user_id The user's ID (or false, if we didn't find her)
+     * @return false|int $user_id The user's ID (or false, if we didn't find her)
      */
     public function getUserIdFromUsername($username)
     {
@@ -570,7 +640,7 @@ class UserMapper extends ApiMapper
      *
      * @param int $user_id The ID of the user
      *
-     * @return string $email The email address
+     * @return false|string $email The email address
      */
     public function getEmailByUserId($user_id)
     {
@@ -591,6 +661,10 @@ class UserMapper extends ApiMapper
      * Generate and store a token in the password_reset_tokens table for this
      * user, when they come to web2 with this token, we'll let them set a new
      * password
+     *
+     * @param int $user_id
+     *
+     * @return false|string
      */
     public function generatePasswordResetTokenForUserId($user_id)
     {
@@ -618,8 +692,10 @@ class UserMapper extends ApiMapper
      * Check that the token is valid, find out which user this is, save their
      * new password and then delete their other tokens
      *
-     * @param string $token The reset we sent them by email (link goes to web2)
-     * @param string $password The new password they chose
+     * @param string $token
+     * @param string $password
+     *
+     * @return bool
      */
     public function resetPassword($token, $password)
     {
@@ -664,6 +740,11 @@ class UserMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $user_id
+     *
+     * @return bool
+     */
     public function delete($user_id)
     {
         try {

@@ -3,7 +3,7 @@
 /**
  * Object that represents a reported event comment
  */
-class TalkCommentReportModel extends AbstractModel
+class TalkCommentReportModel extends BaseModel
 {
     /**
      * Default fields in the output view
@@ -52,6 +52,11 @@ class TalkCommentReportModel extends AbstractModel
 
     /**
      * Return this object with client-facing fields and hypermedia, ready for output
+     *
+     * @param Request $request
+     * @param bool $verbose
+     *
+     * @return array
      */
     public function getOutputView(Request $request, $verbose = false)
     {

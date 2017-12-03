@@ -4,16 +4,23 @@
  * Container for multiple TalkModel objects, also handles
  * collection metadata such as pagination
  */
-class TalkModelCollection extends AbstractModelCollection
+class TalkModelCollection extends BaseModelCollection
 {
-    protected $list = array();
+    /** @var array */
+    protected $list;
+
+    /** @var int */
     protected $total;
 
     /**
      * Take arrays of data and create a collection of models; store metadata
+     *
+     * @param array $data
+     * @param int $total
      */
     public function __construct(array $data, $total)
     {
+        $this->list = [];
         $this->total = $total;
 
         // hydrate the model objects if necessary and store to list
@@ -31,11 +38,16 @@ class TalkModelCollection extends AbstractModelCollection
      * This creates the expected output structure, converting each resource
      * to it's presentable representation and adding the meta fields for totals
      * and pagination
+     *
+     * @param Request $request
+     * @param bool $verbose
+     *
+     * @return array
      */
-    public function getOutputView($request, $verbose = false)
+    public function getOutputView(Request $request, $verbose = false)
     {
         // handle the collection first
-        $retval['talks'] = [];
+        $retval= ['talks' => []];
         foreach ($this->list as $item) {
             $retval['talks'][] = $item->getOutputView($request, $verbose);
         }

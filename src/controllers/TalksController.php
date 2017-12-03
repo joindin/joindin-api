@@ -2,7 +2,7 @@
 
 class TalksController extends BaseTalkController
 {
-    public function getAction($request, $db)
+    public function getAction(Request $request, PDO $db)
     {
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
@@ -16,7 +16,7 @@ class TalksController extends BaseTalkController
 
     }
 
-    public function getTalkComments($request, $db)
+    public function getTalkComments(Request $request, PDO $db)
     {
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
@@ -31,7 +31,7 @@ class TalksController extends BaseTalkController
         return $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
     }
 
-    public function getTalkStarred($request, $db)
+    public function getTalkStarred(Request $request, PDO $db)
     {
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
@@ -40,7 +40,7 @@ class TalksController extends BaseTalkController
         return $mapper->getUserStarred($talk_id, $this->request->user_id);
     }
 
-    public function getTalkByKeyWord($request, $db)
+    public function getTalkByKeyWord(Request $request, PDO $db)
     {
         if (!isset($request->parameters['title'])) {
             throw new Exception('Generic talks listing not supported', 405);
@@ -65,7 +65,7 @@ class TalksController extends BaseTalkController
         return $talks->getOutputView($this->request, $verbose);
     }
 
-    public function postAction($request, $db)
+    public function postAction(Request $request, PDO $db)
     {
         $this->checkLoggedIn($request);
         $talk_id = $this->getItemId($request);
@@ -177,7 +177,7 @@ class TalksController extends BaseTalkController
         }
     }
 
-    public function deleteAction($request, $db)
+    public function deleteAction(Request $request, PDO $db)
     {
         $this->checkLoggedIn($request);
         if (isset($request->url_elements[4])) {
@@ -229,6 +229,8 @@ class TalksController extends BaseTalkController
      *
      * @param PDO $db
      * @param Request $request
+     *
+     * @throws Exception
      */
     public function addTrackToTalk(Request $request, PDO $db)
     {
@@ -283,6 +285,8 @@ class TalksController extends BaseTalkController
      *
      * @param PDO $db
      * @param Request $request
+     *
+     * @throws Exception
      */
     public function removeTrackFromTalk(Request $request, PDO $db)
     {
@@ -337,7 +341,7 @@ class TalksController extends BaseTalkController
      * @param PDO     $db
      *
      * @throws Exception
-     * @return void
+     * @return array
      */
     public function createTalkAction(Request $request, PDO $db)
     {
@@ -426,6 +430,7 @@ class TalksController extends BaseTalkController
      * @param  Request $request
      * @param  int     $event_id
      *
+     * @throws Exception
      * @return array
      */
     protected function getTalkDataFromRequest(PDO $db, Request $request, $event_id)
@@ -539,7 +544,7 @@ class TalksController extends BaseTalkController
 
         $talk = $this->getTalkById($request, $db);
         $talk_id = $talk->ID;
-        $talk_mapper = $this->getTalkMapper($request, $db);
+        $talk_mapper = $this->getTalkMapper($db, $request);
 
         $event_id = $talk->event_id;
         $event_mapper = $this->getEventMapper($db, $request);
@@ -657,7 +662,7 @@ class TalksController extends BaseTalkController
         $this->pending_talk_claim_mapper = $pending_talk_claim_mapper;
     }
 
-    public function getPendingTalkClaimMapper($db, $request)
+    public function getPendingTalkClaimMapper(PDO $db, Request $request)
     {
         if (! isset($this->pending_talk_claim_mapper)) {
             $this->pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
@@ -673,7 +678,7 @@ class TalksController extends BaseTalkController
         $speaker_id = $request->url_elements[5];
 
         $talk_mapper = new TalkMapper($db, $request);
-        $talk = $this->getTalkById($talk_id);
+        $talk = $this->getTalkById($request, $db, $talk_id);
 
         $speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $speaker_id);
         if (!$speaker) {
@@ -705,7 +710,7 @@ class TalksController extends BaseTalkController
     {
         $this->checkLoggedIn($request);
         $talk = $this->getTalkById($request, $db);
-        $talk_mapper = $this->getTalkMapper($request, $db);
+        $talk_mapper = $this->getTalkMapper($db, $request);
         $talk_id = $talk->ID;
 
         $event_id = $talk->event_id;

@@ -3,7 +3,7 @@
 /**
  * Object to represent a twitter request token
  */
-class TwitterRequestTokenModel extends AbstractModel
+class TwitterRequestTokenModel extends BaseModel
 {
     /**
      * Default fields in the output view
@@ -37,6 +37,11 @@ class TwitterRequestTokenModel extends AbstractModel
 
     /**
      * Return this object with client-facing fields and hypermedia, ready for output
+     *
+     * @param Request $request
+     * @param bool $verbose
+     *
+     * @return array
      */
     public function getOutputView(Request $request, $verbose = false)
     {

@@ -33,7 +33,7 @@ class Route
      * @param string $action The name of the action this Route is for
      * @param array $params Parameters as determined from the URL
      */
-    public function __construct($controller, $action, $params = array())
+    public function __construct($controller, $action, array $params = [])
     {
         $this->setController($controller);
         $this->setAction($action);
@@ -104,7 +104,7 @@ class Route
      * Dispatches the Request to the specified Route
      *
      * @param Request $request The Request to process
-     * @param mixed $db The Database object
+     * @param PDO $db The Database object
      * @param mixed $config The application configuration
      *
      * @return mixed

@@ -2,6 +2,9 @@
 
 class TalkCommentMapper extends ApiMapper
 {
+    /**
+     * @return array
+     */
     public function getDefaultFields()
     {
         return array(
@@ -14,6 +17,9 @@ class TalkCommentMapper extends ApiMapper
         );
     }
 
+    /**
+     * @return array
+     */
     public function getVerboseFields()
     {
         return array(
@@ -27,6 +33,14 @@ class TalkCommentMapper extends ApiMapper
         );
     }
 
+    /**
+     * @param int $talk_id
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose = false)
     {
         $sql = $this->getBasicSQL();
@@ -48,6 +62,14 @@ class TalkCommentMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $event_id
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
         $sql = $this->getBasicSQL();
@@ -72,6 +94,14 @@ class TalkCommentMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $user_id
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     *
+     * @return false|array
+     */
     public function getCommentsByUserId($user_id, $resultsperpage, $start, $verbose = false)
     {
         $sql = $this->getBasicSQL();
@@ -96,6 +126,13 @@ class TalkCommentMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * @param int $comment_id
+     * @param bool $verbose
+     * @param bool $include_hidden
+     *
+     * @return false|array
+     */
     public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
     {
         $sql = $this->getBasicSQL($include_hidden);
@@ -116,7 +153,10 @@ class TalkCommentMapper extends ApiMapper
         return false;
     }
 
-    public function transformResults($results, $verbose)
+    /**
+     * @inheritdoc
+     */
+    public function transformResults(array $results, $verbose)
     {
 
         $total = $results['total'];
@@ -139,7 +179,13 @@ class TalkCommentMapper extends ApiMapper
         ];
     }
 
-    protected function formatOneComment($row, $verbose)
+    /**
+     * @param array $row
+     * @param bool $verbose
+     *
+     * @return array
+     */
+    protected function formatOneComment(array $row, $verbose)
     {
         $base    = $this->_request->base;
         $version = $this->_request->version;
@@ -164,6 +210,8 @@ class TalkCommentMapper extends ApiMapper
      * Template SQL for all comment-fetching queries
      *
      * @param bool $include_hidden If set to true, will return inactive and private comments also
+     *
+     * @return string
      */
     protected function getBasicSQL($include_hidden = false)
     {
@@ -182,7 +230,13 @@ class TalkCommentMapper extends ApiMapper
         return $sql;
     }
 
-    public function save($data)
+    /**
+     * @param array $data
+     *
+     * @throws Exception
+     * @return string
+     */
+    public function save(array $data)
     {
         // check for a duplicate first
         $dupe_sql = 'select tc.ID from talk_comments tc '
@@ -248,7 +302,8 @@ class TalkCommentMapper extends ApiMapper
      * Get the event and talk ID this talk comment belongs to
      *
      * @param int $comment_id The comment in question
-     * @return array Some info
+     *
+     * @return false|array Some info
      */
     public function getCommentInfo($comment_id)
     {
@@ -299,7 +354,8 @@ class TalkCommentMapper extends ApiMapper
      *
      * @param $event_id int    The event whose comments should be returned
      * @param $moderated bool  Whether to include comments that have been moderated
-     * @return array A list of the comments
+     *
+     * @return TalkCommentReportModelCollection
      */
     public function getReportedCommentsByEventId($event_id, $moderated = false)
     {
@@ -379,6 +435,7 @@ class TalkCommentMapper extends ApiMapper
 
     /**
      * @param integer $comment_id
+     *
      * @return false|array
      */
     public function getRawComment($comment_id)
@@ -399,6 +456,7 @@ class TalkCommentMapper extends ApiMapper
     /**
      * @param integer $comment_id
      * @param string $new_comment_body
+     *
      * @return bool
      */
     public function updateCommentBody($comment_id, $new_comment_body)

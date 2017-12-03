@@ -1,8 +1,8 @@
 <?php
 
-class ApplicationsController extends ApiController
+class ApplicationsController extends BaseApiController
 {
-    public function getApplication($request, $db)
+    public function getApplication(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in", 401);
@@ -18,7 +18,7 @@ class ApplicationsController extends ApiController
         return $client->getOutputView($request, $this->getVerbosity($request));
     }
 
-    public function listApplications($request, $db)
+    public function listApplications(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in", 401);
@@ -36,7 +36,7 @@ class ApplicationsController extends ApiController
 
     }
 
-    public function createApplication($request, $db)
+    public function createApplication(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in", 401);
@@ -90,7 +90,7 @@ class ApplicationsController extends ApiController
         return $newClient->getOutputView($request);
     }
 
-    public function editApplication($request, $db)
+    public function editApplication(Request $request, PDO $db)
     {
         if (! isset($request->user_id)) {
             throw new Exception("You must be logged in", 401);
@@ -173,12 +173,12 @@ class ApplicationsController extends ApiController
     }
 
     /**
-     * @param $db
-     * @param $request
+     * @param PDO $db
+     * @param Request $request
      *
      * @return ClientMapper
      */
-    private function getClientMapper($db, $request)
+    private function getClientMapper(PDO $db, Request $request)
     {
         return new ClientMapper($db, $request);
     }

@@ -52,7 +52,7 @@ $request = new Request($config, $_SERVER);
 // identify our user if applicable
 $headers = array_change_key_case(apache_request_headers(), CASE_LOWER);
 if (isset($headers['authorization'])) {
-    $request->identifyUser($ji_db, $headers['authorization']);
+    $request->identifyUser($headers['authorization'], $ji_db);
 }
 
 // @TODO This feels just a tad... shonky.
