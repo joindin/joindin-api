@@ -47,7 +47,7 @@ class TalkModelCollection extends BaseModelCollection
     public function getOutputView(Request $request, $verbose = false)
     {
         // handle the collection first
-        $retval['talks'] = [];
+        $retval= ['talks' => []];
         foreach ($this->list as $item) {
             $retval['talks'][] = $item->getOutputView($request, $verbose);
         }

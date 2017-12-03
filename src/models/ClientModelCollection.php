@@ -48,7 +48,7 @@ class ClientModelCollection extends BaseModelCollection
     {
         $retval = [];
         // handle the collection first
-        $retval['clients'] = [];
+        $retval = ['clients' => []];
         foreach ($this->list as $item) {
             $retval['clients'][] = $item->getOutputView($request, $verbose);
         }

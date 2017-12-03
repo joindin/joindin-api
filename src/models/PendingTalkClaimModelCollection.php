@@ -47,7 +47,7 @@ class PendingTalkClaimModelCollection extends BaseModelCollection
     {
         $retval = [];
         // handle the collection first
-        $retval['claims'] = [];
+        $retval = ['claims' => []];
         foreach ($this->list as $item) {
             $retval['claims'][] = $item->getOutputView($request, $verbose);
         }
