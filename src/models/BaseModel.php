@@ -1,6 +1,6 @@
 <?php
 
-abstract class AbstractModel
+abstract class BaseModel
 {
     /**
      * @var array

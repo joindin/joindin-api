@@ -1,6 +1,6 @@
 <?php
 
-class UsersController extends ApiController
+class UsersController extends BaseApiController
 {
 
     protected $user_mapper;

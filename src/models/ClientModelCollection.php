@@ -4,7 +4,7 @@
  * Container for multiple Client objects, also handles
  * collection metadata such as pagination
  */
-class ClientModelCollection extends AbstractModelCollection
+class ClientModelCollection extends BaseModelCollection
 {
     /** @var array */
     protected $list;

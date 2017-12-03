@@ -4,7 +4,7 @@
  * Container for multiple TwitterRequestTokenModel objects, also handles
  * collection metadata such as pagination
  */
-class TwitterRequestTokenModelCollection extends AbstractModelCollection
+class TwitterRequestTokenModelCollection extends BaseModelCollection
 {
     /**
      * Take arrays of data and create a collection of models; store metadata

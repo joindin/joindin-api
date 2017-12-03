@@ -1,6 +1,6 @@
 <?php
 
-class EventImagesController extends ApiController
+class EventImagesController extends BaseApiController
 {
     public function createImage(Request $request, PDO $db)
     {

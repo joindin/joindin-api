@@ -3,7 +3,7 @@
 /**
  * Contact us end point
  */
-class ContactController extends ApiController
+class ContactController extends BaseApiController
 {
     public function handle(Request $request, PDO $db)
     {

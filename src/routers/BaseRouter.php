@@ -3,7 +3,7 @@
 /**
  * The base Router class; contains configuration
  */
-abstract class Router
+abstract class BaseRouter
 {
     /**
      * @var array The configuration for this Router

@@ -1,6 +1,6 @@
 <?php
 
-class UserRegistrationEmailService extends EmailBaseService
+class UserRegistrationEmailService extends BaseEmailService
 {
     /** @var string */
     protected $token;

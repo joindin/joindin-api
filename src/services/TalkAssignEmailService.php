@@ -1,6 +1,6 @@
 <?php
 
-class TalkAssignEmailService extends EmailBaseService
+class TalkAssignEmailService extends BaseEmailService
 {
 
     protected $event;

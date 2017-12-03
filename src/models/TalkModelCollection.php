@@ -4,7 +4,7 @@
  * Container for multiple TalkModel objects, also handles
  * collection metadata such as pagination
  */
-class TalkModelCollection extends AbstractModelCollection
+class TalkModelCollection extends BaseModelCollection
 {
     /** @var array */
     protected $list;

@@ -1,6 +1,6 @@
 <?php
 
-class ContactEmailService extends EmailBaseService
+class ContactEmailService extends BaseEmailService
 {
     /** @var string */
     protected $website_url;

@@ -1,6 +1,6 @@
 <?php
 
-abstract class AbstractModelCollection
+abstract class BaseModelCollection
 {
     protected $list = [];
     protected $total;

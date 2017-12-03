@@ -3,7 +3,7 @@
 /**
  * Container for multiple EventCommentReportModel objects
  */
-class PendingTalkClaimModelCollection extends AbstractModelCollection
+class PendingTalkClaimModelCollection extends BaseModelCollection
 {
     /** @var array */
     protected $list;

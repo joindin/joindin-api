@@ -1,6 +1,6 @@
 <?php
 
-class UserPasswordResetEmailService extends EmailBaseService
+class UserPasswordResetEmailService extends BaseEmailService
 {
     /** @var array */
     protected $user;

@@ -3,7 +3,7 @@
 /**
  * A Router to route versioned Routes
  */
-class VersionedRouter extends Router
+class VersionedRouter extends BaseRouter
 {
 
     /**

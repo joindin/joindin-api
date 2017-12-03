@@ -3,7 +3,7 @@
 /**
  * The main API Router; acts as the version selector
  */
-class ApiRouter extends Router
+class ApiRouter extends BaseRouter
 {
 
     /**

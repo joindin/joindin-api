@@ -1,6 +1,6 @@
 <?php
 
-class TracksController extends ApiController
+class TracksController extends BaseApiController
 {
     public function getAction(Request $request, PDO $db)
     {
