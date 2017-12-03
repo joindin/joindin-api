@@ -3,7 +3,7 @@
 class JsonView extends ApiView
 {
     /** @var array */
-    private $string_fields;
+    protected $string_fields;
 
     public function render($content)
     {
