@@ -8,6 +8,8 @@ use GuzzleHttp\Client;
 
 class FacebookController extends BaseApiController
 {
+    private $oauthModel;
+
     /**
      * Take the verification code from the client, send to Facebook to get an access token.
      * With the access token, read the user's profile to get their email address.
@@ -44,7 +46,7 @@ class FacebookController extends BaseApiController
             'headers' => ['Accept' => 'application/json']
         ]);
 
-        $res = $client->get('https://graph.facebook.com/v2.3/oauth/access_token', [
+        $res = $client->get('https://graph.facebook.com/v2.10/oauth/access_token', [
             'query' => [
                 'client_id' => $this->config['facebook']['app_id'],
                 'redirect_uri' => $this->config['website_url'] . '/user/facebook-access',
@@ -61,6 +63,7 @@ class FacebookController extends BaseApiController
             $res = $client->get('https://graph.facebook.com/me', [
                 'query' => [
                     'access_token' => $access_token,
+                    'fields' => 'name,email',
                 ]
             ]);
             if ($res->getStatusCode() == 200) {
@@ -69,8 +72,16 @@ class FacebookController extends BaseApiController
                     throw new Exception("Email address is unavailable", 403);
                 }
                 $email = $data['email'];
+                $fullName = $data['name'];
+                $id = $data['id'];
                 
-                $result = $this->oauthModel->createAccessTokenFromTrustedEmail($clientId, $email);
+                $result = $this->oauthModel->createAccessTokenFromTrustedEmail(
+                    $clientId,
+                    $email,
+                    $fullName,
+                    $id
+                );
+
                 if ($result) {
                     return array('access_token' => $result['access_token'], 'user_uri' => $result['user_uri']);
                 }
