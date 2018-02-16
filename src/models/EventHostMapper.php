@@ -7,12 +7,10 @@ class EventHostMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'host_name' => 'host_name',
             'host_uri'  => 'host_uri',
         );
-
-        return $fields;
     }
 
     /**
@@ -47,9 +45,8 @@ class EventHostMapper extends ApiMapper
 
         $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
-        $retval           = $this->transformResults($results, $verbose);
 
-        return $retval;
+        return $this->transformResults($results, $verbose);
     }
 
     /**
@@ -133,10 +130,9 @@ class EventHostMapper extends ApiMapper
             $list[$key]['host_uri']  = $base . '/' . $version . '/users/' . $row['user_id'];
         }
 
-        $retval          = [];
-        $retval['hosts'] = $list;
-        $retval['meta']  = $this->getPaginationLinks($list, $total);
-
-        return $retval;
+        return [
+            'hosts' => $list,
+            'meta' => $this->getPaginationLinks($list, $total),
+        ];
     }
 }

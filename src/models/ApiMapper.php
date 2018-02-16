@@ -79,13 +79,10 @@ class ApiMapper
     {
         if ($resultsperpage == 0) {
             // special case, no limits
-            $limit = '';
-        } else {
-            $start = (int)$start;
-            $limit = ' LIMIT ' . $start . ',' . $resultsperpage;
+            return '';
         }
 
-        return $limit;
+        return ' LIMIT ' . (int)$start . ',' . (int)$resultsperpage;
     }
 
     /**
@@ -120,9 +117,8 @@ class ApiMapper
     protected function getPaginationLinks(array $list, $total = 0)
     {
         $request       = $this->_request;
-        $count         = count($list);
-        $meta['count'] = $count;
 
+        $meta['count']     = count($list);
         $meta['total']     = $total;
         $meta['this_page'] = $request->base . $request->path_info . '?' .
                              http_build_query($request->paginationParameters);
@@ -154,8 +150,7 @@ class ApiMapper
     {
         // code ported from web2
         $alpha      = preg_replace("/[^0-9a-zA-Z- ]/", "", $string);
-        $inflection = strtolower(str_replace(' ', '-', $alpha));
 
-        return $inflection;
+        return strtolower(str_replace(' ', '-', $alpha));
     }
 }

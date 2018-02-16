@@ -16,9 +16,7 @@ abstract class BaseApiController
         if (! empty($request->url_elements[3])
             && is_numeric($request->url_elements[3])
         ) {
-            $item_id = (int) $request->url_elements[3];
-
-            return $item_id;
+            return (int) $request->url_elements[3];
         }
 
         return false;
@@ -26,16 +24,15 @@ abstract class BaseApiController
 
     public function getVerbosity(Request $request)
     {
-        // verbosity
-        if (isset($request->parameters['verbose'])
-            && $request->parameters['verbose'] == 'yes'
-        ) {
-            $verbose = true;
-        } else {
-            $verbose = false;
+        if (! isset($request->parameters['verbose'])) {
+            return false;
         }
 
-        return $verbose;
+        if ($request->parameters['verbose'] !== 'yes') {
+            return false;
+        }
+
+        return true;
     }
 
     public function getStart(Request $request)

@@ -378,9 +378,8 @@ class TalksController extends BaseTalkController
 
         $new_talk = $this->getTalkById($request, $db, $new_id);
         $collection = new TalkModelCollection([$new_talk], 1);
-        $list = $collection->getOutputView($request);
 
-        return $list;
+        return $collection->getOutputView($request);
     }
 
     /**
@@ -652,10 +651,10 @@ class TalksController extends BaseTalkController
 
     private function getLinkUserDataFromRequest(Request $request)
     {
-        $talk = [];
-        $talk['display_name'] = trim($request->getParameter('display_name', ''));
-        $talk['username'] = trim($request->getParameter('username', ''));
-        return $talk;
+        return [
+            'display_name' => trim($request->getParameter('display_name', '')),
+            'username'     => trim($request->getParameter('username', '')),
+        ];
     }
 
     public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper)

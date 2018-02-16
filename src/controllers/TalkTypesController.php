@@ -11,8 +11,8 @@ class TalkTypesController extends BaseApiController
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = new TalkTypeMapper($db, $request);
-        $list = $mapper->getTalkTypeList($resultsperpage, $start, $verbose);
-        return $list;
+
+        return $mapper->getTalkTypeList($resultsperpage, $start, $verbose);
     }
 
     public function getTalkType(Request $request, PDO $db)

@@ -14,15 +14,13 @@ class EventCommentReportModel extends BaseModel
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'reporting_date'          => 'reporting_date',
             'decision'                => 'decision',
             'deciding_date'           => 'deciding_date',
             'reporting_user_username' => 'reporting_username',
             'deciding_user_username'  => 'deciding_username',
         );
-
-        return $fields;
     }
 
     /**
@@ -34,9 +32,7 @@ class EventCommentReportModel extends BaseModel
      */
     public function getVerboseFields()
     {
-        $fields = $this->getDefaultFields();
-
-        return $fields;
+        return $this->getDefaultFields();
     }
 
     /**

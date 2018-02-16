@@ -25,9 +25,8 @@ class TwitterRequestTokenMapper extends ApiMapper
             $select_stmt = $this->_db->prepare($select_sql);
             $select_stmt->execute(array(":id" => $token_id));
             $token_data = $select_stmt->fetch(PDO::FETCH_ASSOC);
-            $token      = new TwitterRequestTokenModelCollection([$token_data]);
 
-            return $token;
+            return new TwitterRequestTokenModelCollection([$token_data]);
         }
 
         return false;

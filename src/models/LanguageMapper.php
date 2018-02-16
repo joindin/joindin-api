@@ -7,12 +7,10 @@ class LanguageMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'name' => 'lang_name',
             'code' => 'lang_abbr',
         );
-
-        return $fields;
     }
 
     /**
@@ -20,12 +18,10 @@ class LanguageMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'name' => 'lang_name',
             'code' => 'lang_abbr',
         );
-
-        return $fields;
     }
 
     /**

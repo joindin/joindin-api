@@ -15,13 +15,11 @@ class UserMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             "username"         => "username",
             "full_name"        => "full_name",
             "twitter_username" => "twitter_username"
         );
-
-        return $fields;
     }
 
     /**
@@ -33,14 +31,12 @@ class UserMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             "username"         => "username",
             "full_name"        => "full_name",
             "twitter_username" => "twitter_username",
             "trusted"          => "trusted"
         );
-
-        return $fields;
     }
 
     /**
@@ -53,9 +49,7 @@ class UserMapper extends ApiMapper
     {
         $results = $this->getUsers(1, 0, 'user.ID=' . (int) $user_id, null);
         if ($results) {
-            $retval = $this->transformResults($results, $verbose);
-
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -167,9 +161,7 @@ class UserMapper extends ApiMapper
         $order   = 'user.ID';
         $results = $this->getUsers($resultsperpage, $start, null, $order);
         if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -188,9 +180,7 @@ class UserMapper extends ApiMapper
         $where   = "ua.eid = " . $event_id;
         $results = $this->getUsers($resultsperpage, $start, $where);
         if (is_array($results)) {
-            $retval = $this->transformResults($results, $verbose);
-
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -249,11 +239,11 @@ class UserMapper extends ApiMapper
                 }
             }
         }
-        $retval          = array();
-        $retval['users'] = $list;
-        $retval['meta']  = $this->getPaginationLinks($list, $total);
 
-        return $retval;
+        return [
+            'users' => $list,
+            'meta'  => $this->getPaginationLinks($list, $total),
+        ];
     }
 
     /**
@@ -399,18 +389,12 @@ class UserMapper extends ApiMapper
      */
     public function checkPasswordValidity($password)
     {
-        $errors = array();
         if (strlen($password) < 6) {
-            $errors[] = "Passwords must be at least 6 characters long";
-        }
-
-        if ($errors) {
-            return $errors;
+            return ["Passwords must be at least 6 characters long"];
         }
 
         // it's good!
         return true;
-
     }
 
 

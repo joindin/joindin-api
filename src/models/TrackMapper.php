@@ -7,13 +7,11 @@ class TrackMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'track_name'        => 'track_name',
             'track_description' => 'track_desc',
             'talks_count'       => 'talks_count',
         );
-
-        return $fields;
     }
 
     /**
@@ -21,13 +19,11 @@ class TrackMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'track_name'        => 'track_name',
             'track_description' => 'track_desc',
             'talks_count'       => 'talks_count',
         );
-
-        return $fields;
     }
 
     /**
@@ -52,9 +48,8 @@ class TrackMapper extends ApiMapper
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
-            $retval           = $this->transformResults($results, $verbose);
 
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -81,11 +76,10 @@ class TrackMapper extends ApiMapper
             }
         }
 
-        $retval           = array();
-        $retval['tracks'] = $list;
-        $retval['meta']   = $this->getPaginationLinks($list, $total);
-
-        return $retval;
+        return [
+            'tracks' => $list,
+            'meta' => $this->getPaginationLinks($list, $total),
+        ];
     }
 
     /**
@@ -104,9 +98,8 @@ class TrackMapper extends ApiMapper
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
                 $results['total'] = $this->getTotalCount($sql, array("track_id" => $track_id));
-                $retval           = $this->transformResults($results, $verbose);
 
-                return $retval;
+                return $this->transformResults($results, $verbose);
             }
         }
 
@@ -134,7 +127,7 @@ class TrackMapper extends ApiMapper
 
         // get the list of column to API field name for all valid fields
         $fields = $this->getVerboseFields();
-        $items  = array();
+
         foreach ($fields as $api_name => $column_name) {
             // Ignore calculated fields
             if (in_array($column_name, ['talks_count'])) {
@@ -166,8 +159,7 @@ class TrackMapper extends ApiMapper
             ));
         }
 
-        $track_id = $this->_db->lastInsertId();
-        return $track_id;
+        return $this->_db->lastInsertId();
     }
 
     public function getBasicSQL()

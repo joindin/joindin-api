@@ -14,11 +14,9 @@ class TwitterRequestTokenModel extends BaseModel
      */
     protected function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'token' => 'token',
         );
-
-        return $fields;
     }
 
     /**
@@ -30,12 +28,10 @@ class TwitterRequestTokenModel extends BaseModel
      */
     protected function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'token'  => 'token',
             'secret' => 'secret',
         );
-
-        return $fields;
     }
 
 

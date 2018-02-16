@@ -7,7 +7,7 @@ class TalkCommentMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'rating'            => 'rating',
             'comment'           => 'comment',
             'user_display_name' => 'full_name',
@@ -15,8 +15,6 @@ class TalkCommentMapper extends ApiMapper
             'talk_title'        => 'talk_title',
             'created_date'      => 'date_made'
         );
-
-        return $fields;
     }
 
     /**
@@ -24,7 +22,7 @@ class TalkCommentMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'rating'            => 'rating',
             'comment'           => 'comment',
             'user_display_name' => 'full_name',
@@ -33,8 +31,6 @@ class TalkCommentMapper extends ApiMapper
             'source'            => 'source',
             'created_date'      => 'date_made',
         );
-
-        return $fields;
     }
 
     /**
@@ -59,9 +55,8 @@ class TalkCommentMapper extends ApiMapper
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':talk_id' => $talk_id));
-            $retval           = $this->transformResults($results, $verbose);
 
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -92,9 +87,8 @@ class TalkCommentMapper extends ApiMapper
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
-            $retval           = $this->transformResults($results, $verbose);
 
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -125,9 +119,8 @@ class TalkCommentMapper extends ApiMapper
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, array(':user_id' => $user_id));
-            $retval           = $this->transformResults($results, $verbose);
 
-            return $retval;
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -152,9 +145,8 @@ class TalkCommentMapper extends ApiMapper
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
                 $results['total'] = $this->getTotalCount($sql, array(':comment_id' => $comment_id));
-                $retval           = $this->transformResults($results, $verbose);
 
-                return $retval;
+                return $this->transformResults($results, $verbose);
             }
         }
 
@@ -180,11 +172,11 @@ class TalkCommentMapper extends ApiMapper
                 );
             }
         }
-        $retval             = array();
-        $retval['comments'] = $list;
-        $retval['meta']     = $this->getPaginationLinks($list, $total);
 
-        return $retval;
+        return [
+            'comments' => $list,
+            'meta' => $this->getPaginationLinks($list, $total),
+        ];
     }
 
     /**
@@ -277,9 +269,7 @@ class TalkCommentMapper extends ApiMapper
             ':source'  => $data['source'],
         ));
 
-        $comment_id = $this->_db->lastInsertId();
-
-        return $comment_id;
+        return $this->_db->lastInsertId();
     }
 
     /**
@@ -473,11 +463,10 @@ class TalkCommentMapper extends ApiMapper
     {
         $sql = "update talk_comments set comment = :new_comment_body where ID = :comment_id";
         $stmt = $this->_db->prepare($sql);
-        $result = $stmt->execute([
+
+        return $stmt->execute([
             "new_comment_body" => $new_comment_body,
             "comment_id" => $comment_id
         ]);
-
-        return $result;
     }
 }

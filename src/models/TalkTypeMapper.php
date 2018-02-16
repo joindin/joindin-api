@@ -7,12 +7,10 @@ class TalkTypeMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        $fields = array(
+        return array(
             'title' => 'cat_title',
             'description' => 'cat_desc',
         );
-
-        return $fields;
     }
 
     /**
@@ -20,12 +18,10 @@ class TalkTypeMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        $fields = array(
+        return array(
             'title' => 'cat_title',
             'description' => 'cat_desc',
         );
-
-        return $fields;
     }
 
     /**
