@@ -978,7 +978,7 @@ class EventMapper extends ApiMapper
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            return $this->transformResults($results, true)[0];
+            return parent::transformResults($results, true)[0];
         }
 
         return false;
