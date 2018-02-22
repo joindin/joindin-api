@@ -379,7 +379,6 @@ class TalkMapper extends ApiMapper
             ':language'         => $data['language'],
             ':date'             => $data['date'],
             ':duration'         => $data['duration'],
-            ':slides_link'      => $data['slides_link'],
         ));
         $talk_id  = $this->_db->lastInsertId();
 
