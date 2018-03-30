@@ -184,7 +184,7 @@ class TalksController extends BaseTalkController
             switch ($request->url_elements[4]) {
                 case 'starred':
                     $talk_id     = $this->getItemId($request);
-                    $talk_mapper = new TalkMapper($db, $request);
+                    $talk_mapper = $this->getTalkMapper($db, $request);
                     $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
 
                     $view = $request->getView();
@@ -198,7 +198,7 @@ class TalksController extends BaseTalkController
         } else {
             // delete the talk
             $talk_id     = $this->getItemId($request);
-            $talk_mapper = new TalkMapper($db, $request);
+            $talk_mapper = $this->getTalkMapper($db, $request);
 
             // note: use the mapper's getTalkById as we don't want to throw a not found exception
             $talk = $talk_mapper->getTalkById($talk_id);

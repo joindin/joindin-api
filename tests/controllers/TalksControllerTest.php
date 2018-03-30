@@ -1274,7 +1274,6 @@ class TalksControllerTest extends TalkBase
 
         $output = $talks_controller->getTalkStarred($request, $db);
         $this->assertSame($expected, $output);
-
     }
 
     public function testSearchByTitle()
@@ -1345,6 +1344,6 @@ class TalksControllerTest extends TalkBase
 
         $talks_controller = new TalksController();
 
-        $output = $talks_controller->getTalkByKeyWord($request, $db);
+        $talks_controller->getTalkByKeyWord($request, $db);
     }
 }
