@@ -10,18 +10,6 @@ use TalksController;
 
 class TalksControllerDeleteTest extends TalkBase
 {
-    private $config;
-
-    public function setUp()
-    {
-        $this->config = [
-            'email' => [
-                'from' => 'source@example.com',
-            ],
-            'website_url' => 'http://example.com',
-        ];
-    }
-
     /**
      * @test
      * @expectedExceptionCode 401
@@ -40,7 +28,7 @@ class TalksControllerDeleteTest extends TalkBase
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talks_controller = new TalksController();
-        $talks_controller->deleteAction($request, $db);
+        $talks_controller->deleteTalkStarred($request, $db);
     }
 
     /**
@@ -72,7 +60,7 @@ class TalksControllerDeleteTest extends TalkBase
             $talkMapper
         );
 
-        $talks_controller->deleteAction($request, $db);
+        $talks_controller->deleteTalkStarred($request, $db);
     }
 
     /**
@@ -93,7 +81,7 @@ class TalksControllerDeleteTest extends TalkBase
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talks_controller = new TalksController();
-        $talks_controller->deleteAction($request, $db);
+        $talks_controller->deleteTalk($request, $db);
     }
 
     /**
@@ -134,7 +122,7 @@ class TalksControllerDeleteTest extends TalkBase
         $view->method('setHeader')->with('Content-Length', 0);
         $view->method('setResponseCode')->with(204);
 
-        $this->assertNull($talks_controller->deleteAction($request, $db));
+        $this->assertNull($talks_controller->deleteTalk($request, $db));
     }
 
     /**
@@ -166,7 +154,7 @@ class TalksControllerDeleteTest extends TalkBase
         $talks_controller->setTalkMapper($talk_mapper);
 
 
-        $talks_controller->deleteAction($request, $db);
+        $talks_controller->deleteTalk($request, $db);
     }
 
     /**
@@ -204,6 +192,6 @@ class TalksControllerDeleteTest extends TalkBase
         $view->method('setHeader')->with('Content-Length', 0);
         $view->method('setResponseCode')->with(204);
 
-        $this->assertNull($talks_controller->deleteAction($request, $db));
+        $this->assertNull($talks_controller->deleteTalk($request, $db));
     }
 }

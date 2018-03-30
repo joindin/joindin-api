@@ -201,9 +201,15 @@
         "verbs": ["DELETE"]
     },
     {
-        "path": "/talks(/[^/]+)*/?$",
+        "path": "/talks/[\\d+]]/starred?",
         "controller": "TalksController",
         "action": "deleteAction",
+        "verbs": ["DELETE"]
+    },
+    {
+        "path": "/talks/[^\\d]/?$",
+        "controller": "TalksController",
+        "action": "deleteTalk",
         "verbs": ["DELETE"]
     },
     {
