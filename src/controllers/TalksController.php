@@ -177,50 +177,39 @@ class TalksController extends BaseTalkController
         }
     }
 
-    public function deleteAction(Request $request, PDO $db)
+    public function deleteTalkStarred(Request $request, PDO $db)
+    {
+
+        $this->checkLoggedIn($request);
+
+        $talk_id     = $this->getItemId($request);
+        $talk_mapper = $this->getTalkMapper($db, $request);
+        $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
+
+        $view = $request->getView();
+        $view->setHeader('Location', $request->base . $request->path_info);
+        $view->setResponseCode(200);
+    }
+
+    public function deleteTalk(Request $request, PDO $db)
     {
         $this->checkLoggedIn($request);
-        if (isset($request->url_elements[4])) {
-            switch ($request->url_elements[4]) {
-                case 'starred':
-                    $talk_id     = $this->getItemId($request);
-                    $talk_mapper = new TalkMapper($db, $request);
-                    $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
 
-                    $view = $request->getView();
-                    $view->setHeader('Location', $request->base . $request->path_info);
-                    $view->setResponseCode(200);
-                    return;
+        $talk_id     = $this->getItemId($request);
+        $talk_mapper = $this->getTalkMapper($db, $request);
 
-                default:
-                    throw new Exception("Operation not supported, sorry", 404);
-            }
-        } else {
-            // delete the talk
-            $talk_id     = $this->getItemId($request);
-            $talk_mapper = new TalkMapper($db, $request);
-
-            // note: use the mapper's getTalkById as we don't want to throw a not found exception
-            $talk = $talk_mapper->getTalkById($talk_id);
-            if (false === $talk) {
-                // talk isn't there so it's as good as deleted
-                $view = $request->getView();
-                $view->setHeader('Content-Length', 0);
-                $view->setResponseCode(204);
-                return;
-            }
-
-            $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
-            if (! $is_admin) {
+        $talk = $talk_mapper->getTalkById($talk_id);
+        if ($talk) {
+            if (!($talk_mapper->thisUserHasAdminOn($talk_id))) {
                 throw new Exception("You do not have permission to do that", 400);
             }
 
             $talk_mapper->delete($talk_id);
-            $view = $request->getView();
-            $view->setHeader('Content-Length', 0);
-            $view->setResponseCode(204);
-            return;
         }
+
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(204);
     }
 
     /**
