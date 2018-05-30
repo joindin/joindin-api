@@ -1,9 +1,55 @@
 {
+    "name" : "joindin/joindin-api",
+    "description" : "The API-backend that powers joind.in",
+    "keywords" : ["joind.in", "events", "talks", "speaking", "feedback"],
+    "homepage" : "https://api.joind.in",
+    "license" : "",
+    "support" : {
+        "issues" : "https://joindin.jira.com",
+        "irc" : "irc://freenet/#joindin",
+        "source" : "https://github.com/joindin/joindin-api"
+    },
     "preferred-install": "dist",
     "require" : {
         "swiftmailer/swiftmailer": "v5.0.3",
         "michelf/php-markdown": "1.4.0",
         "guzzlehttp/guzzle": "^4.2.4",
         "guzzlehttp/oauth-subscriber": "0.1.*"
+    },
+    "require-dev": {
+        "phpunit/dbunit": "^2.0",
+        "phpunit/phpunit": "^5.7"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "Joindin\\Modifier\\" : "src/Modifier/"
+        },
+        "classmap" : [
+            "src/controllers",
+            "src/inc",
+            "src/models",
+            "src/routers",
+            "src/services",
+            "src/views"
+        ]
+    },
+    "autoload-dev" : {
+        "psr-4" : {
+            "JoindinTest\\" : "tests/"
+        },
+        "classmap" : [
+            "tests/controllers",
+            "tests/inc",
+            "tests/models",
+            "tests/routers",
+            "tests/views"
+        ]
+    },
+    "config" : {
+        "platform" : {
+            "php": "5.6.6"
+        },
+        "sort-packages" : true,
+        "optimize-autoloader" : true
     }
 }
