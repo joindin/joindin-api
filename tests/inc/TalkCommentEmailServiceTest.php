@@ -3,10 +3,12 @@
 namespace JoindinTest\Inc;
 
 use \TalkModel;
+use PHPUnit\Framework\TestCase;
+
 
 require_once __DIR__ . '/../../src/services/TalkCommentEmailService.php';
 
-class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase
+class TalkCommentEmailServiceTest extends Testcase
 {
 
     /**

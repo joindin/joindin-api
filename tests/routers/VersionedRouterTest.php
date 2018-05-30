@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 require_once __DIR__ . '/../../src/inc/Request.php';
 
 /**
@@ -7,7 +9,7 @@ require_once __DIR__ . '/../../src/inc/Request.php';
  *
  * @covers VersionedRouter
  */
-class VersionedRouterTest extends PHPUnit_Framework_TestCase
+class VersionedRouterTest extends TestCase
 {
 
     /**
