@@ -6,8 +6,9 @@ use PDOStatement;
 use PHPUnit_Framework_TestCase;
 use Request;
 use TalkMapper;
+use PHPUnit\Framework\TestCase;
 
-class TalkMapperTest extends PHPUnit_Framework_TestCase
+class TalkMapperTest extends TestCase
 {
     public function testMediaTypesAreAddedCorrectly()
     {

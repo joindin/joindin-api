@@ -3,10 +3,13 @@
 namespace JoindinTest\Inc;
 
 use TalkModel;
+use TalkCommentEmailService;
+use PHPUnit\Framework\TestCase;
+
 
 require_once __DIR__.'/../../src/services/TalkCommentEmailService.php';
 
-class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase
+class TalkCommentEmailServiceTest extends Testcase
 {
 
     protected $config = [
@@ -33,7 +36,7 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase
         $talk       = new TalkModel(["talk_title" => "sample talk"]);
         $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
-        $service = new \TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+        $service = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
         $this->assertInstanceOf('TalkCommentEmailService', $service);
     }
 
@@ -50,7 +53,7 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase
         $talk                     = new TalkModel(["talk_title" => "sample talk"]);
         $comment                  = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
-        $service = new \TalkCommentEmailService($config, $recipients, $talk, $comment);
+        $service = new TalkCommentEmailService($config, $recipients, $talk, $comment);
         $this->assertEquals(["blackhole@joind.in"], $service->getRecipients());
     }
 
@@ -65,7 +68,7 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase
         $talk       = new TalkModel(["talk_title" => "sample talk"]);
         $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
-        $service               = new \TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+        $service               = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
         $service->templatePath = __DIR__.'/../../src/views/emails/';
 
         $template     = "testTemplate.md";
@@ -94,7 +97,7 @@ Questions? Comments?  Get in touch: [feedback@joind.in](mailto:feedback@joind.in
         $talk       = new TalkModel(["talk_title" => "sample talk"]);
         $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
-        $service = new \TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+        $service = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
 
         $html = $service->markdownToHtml($markdown);
         $this->assertEquals(

@@ -3,8 +3,9 @@
 namespace JoindinTest\Controller;
 
 use Mockery as M;
+use PHPUnit\Framework\TestCase;
 
-class EventHostsControllerTest extends \PHPUnit_Framework_TestCase
+class EventHostsControllerTest extends TestCase
 {
     /**
      * @expectedException \Exception

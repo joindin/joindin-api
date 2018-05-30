@@ -10,9 +10,11 @@
 
 namespace JoindinTest\Inc;
 
+use PHPUnit\Framework\TestCase;
+
 require_once __DIR__ . '/../../src/inc/Header.php';
 
-class HeaderTest extends \PHPUnit_Framework_TestCase
+class HeaderTest extends TestCase
 {
 
     public function testParseParamsWithEmbededSeparator()

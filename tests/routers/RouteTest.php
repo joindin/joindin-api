@@ -1,11 +1,13 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Class to test Route
  *
  * @covers Route
  */
-class RouteTest extends PHPUnit_Framework_TestCase
+class RouteTest extends TestCase
 {
 
     /**
