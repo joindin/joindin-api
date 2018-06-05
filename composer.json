@@ -11,12 +11,13 @@
     },
     "preferred-install": "dist",
     "require" : {
-        "swiftmailer/swiftmailer": "v5.0.3",
+        "swiftmailer/swiftmailer": "^v5.0",
         "michelf/php-markdown": "1.4.0",
         "guzzlehttp/guzzle": "^4.2.4",
         "guzzlehttp/oauth-subscriber": "0.1.*"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-master",
         "phpunit/dbunit": "^2.0",
         "phpunit/phpunit": "^5.7"
     },
