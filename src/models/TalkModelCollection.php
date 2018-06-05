@@ -12,6 +12,8 @@ class TalkModelCollection extends BaseModelCollection
     /** @var int */
     protected $total;
 
+    private $modifier;
+
     /**
      * Take arrays of data and create a collection of models; store metadata
      *
@@ -22,6 +24,7 @@ class TalkModelCollection extends BaseModelCollection
     {
         $this->list = [];
         $this->total = $total;
+        $this->modifier = new \Joindin\Modifier\NullModifier();
 
         // hydrate the model objects if necessary and store to list
         foreach ($data as $item) {
@@ -49,6 +52,7 @@ class TalkModelCollection extends BaseModelCollection
         // handle the collection first
         $retval= ['talks' => []];
         foreach ($this->list as $item) {
+            $item = $this->modifier->modify($item);
             $retval['talks'][] = $item->getOutputView($request, $verbose);
         }
 
@@ -67,4 +71,10 @@ class TalkModelCollection extends BaseModelCollection
     {
         return $this->list;
     }
+
+    public function setModifier(\Joindin\Modifier\TalkModelModifying $modifier)
+    {
+        $this->modifier = $modifier;
+    }
+
 }

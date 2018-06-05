@@ -18,6 +18,7 @@ class EventsController extends BaseApiController
                 case 'talks':
                     $talk_mapper = new TalkMapper($db, $request);
                     $talks = $talk_mapper->getTalksByEventId($event_id, $resultsperpage, $start);
+                    \Joindin\Modifier\RemoveCommentsFromTalkInEarlyStageFactory::setForTalkCollection($talks);
                     $list = $talks->getOutputView($request, $verbose);
                     break;
                 case 'comments':

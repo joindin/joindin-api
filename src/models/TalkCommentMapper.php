@@ -216,7 +216,7 @@ class TalkCommentMapper extends ApiMapper
     protected function getBasicSQL($include_hidden = false)
     {
         $sql = 'select tc.*, '
-               . 'user.username, user.email, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
+               . 'user.username, user.email, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place, t.date_given '
                . 'from talk_comments tc '
                . 'inner join talks t on t.ID = tc.talk_id '
                . 'inner join events e on t.event_id = e.ID '
