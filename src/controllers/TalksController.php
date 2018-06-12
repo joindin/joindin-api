@@ -604,6 +604,8 @@ class TalksController extends BaseTalkController
 
                 $emailService = new TalkClaimApprovedEmailService($this->config, $recipients, $event, $talk);
 
+                $event_mapper->setUserAttendance($event_id, $speaker_id);
+
                 if (!$success) {
                     throw new Exception("There was a problem assigning the talk", 500);
                 }
@@ -625,6 +627,8 @@ class TalksController extends BaseTalkController
                     if (! $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id, $speaker_name)) {
                         throw new Exception("There was a problem assigning the talk", 500);
                     }
+
+                    $event_mapper->setUserAttendance($event_id, $speaker_id);
                 } else {
                     throw new Exception("There was a problem assigning the talk", 500);
                 }
