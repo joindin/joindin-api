@@ -76,5 +76,4 @@ class TalkModelCollection extends BaseModelCollection
     {
         $this->modifier = $modifier;
     }
-
 }
