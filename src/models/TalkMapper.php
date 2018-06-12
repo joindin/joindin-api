@@ -369,11 +369,13 @@ class TalkMapper extends ApiMapper
     public function createTalk(array $data)
     {
         // TODO map from the field mappings in getVerboseFields()
-        $sql = 'insert into talks (event_id, talk_title, talk_desc, '
-               . 'slides_link, lang, date_given, duration) '
-               . 'values (:event_id, :talk_title, :talk_description, '
-               . ':slides_link, (select ID from lang where lang_name = :language), '
-               . ':date, :duration)';
+        $sql = '
+          insert into talks (event_id, talk_title, talk_desc,
+            slides_link, lang, date_given, duration)
+            values (:event_id, :talk_title, :talk_description,
+            (select ID from lang where lang_name = :language),
+              :date, :duration)
+         ';
 
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
@@ -383,7 +385,6 @@ class TalkMapper extends ApiMapper
             ':language'         => $data['language'],
             ':date'             => $data['date'],
             ':duration'         => $data['duration'],
-            ':slides_link'      => $data['slides_link'],
         ));
         $talk_id  = $this->_db->lastInsertId();
 
