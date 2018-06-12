@@ -358,7 +358,7 @@ class TalksController extends BaseTalkController
         // create the talk
         $new_id = $talk_mapper->createTalk($talk);
 
-        if(!empty($talk['slides_link'])) {
+        if (!empty($talk['slides_link'])) {
             $talk_mapper->addTalkLink(
                 $new_id,
                 'slides_link',
