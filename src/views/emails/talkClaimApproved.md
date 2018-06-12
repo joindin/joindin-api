@@ -4,3 +4,4 @@ A host has approved your talk claim:
 
 **Talk Title:** [talkTitle]
 
+**Talk URI:** [talkUri]

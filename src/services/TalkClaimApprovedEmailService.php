@@ -13,6 +13,7 @@ class TalkClaimApprovedEmailService extends BaseEmailService
         // set up the common stuff first
         parent::__construct($config, $recipients);
 
+        $this->website_url = $config['website_url'];
         $this->talk = $talk;
         $this->event = $event['events'][0];
 
@@ -25,7 +26,8 @@ class TalkClaimApprovedEmailService extends BaseEmailService
 
         $replacements = array(
             "eventName" => $this->event['name'],
-            "talkTitle" => $this->talk->talk_title
+            "talkTitle" => $this->talk->talk_title,
+            "talkUri"   => $this->talk->getWebsiteUrl($this->website_url),
         );
 
         $messageBody = $this->parseEmail("talkClaimApproved.md", $replacements);
