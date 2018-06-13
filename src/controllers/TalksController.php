@@ -10,7 +10,10 @@ class TalksController extends BaseTalkController
         $verbose = $this->getVerbosity($request);
 
         $talk = $this->getTalkById($request, $db, $talk_id, $verbose);
+
         $collection = new TalkModelCollection([$talk], 1);
+
+        \Joindin\Modifier\RemoveCommentsFromTalkInEarlyStageFactory::setForTalkCollection($collection);
 
         return $collection->getOutputView($request, $verbose);
 
@@ -375,6 +378,8 @@ class TalksController extends BaseTalkController
 
         $new_talk = $this->getTalkById($request, $db, $new_id);
         $collection = new TalkModelCollection([$new_talk], 1);
+
+        \Joindin\Modifier\RemoveCommentsFromTalkInEarlyStageFactory::setForTalkCollection($collection);
 
         return $collection->getOutputView($request);
     }

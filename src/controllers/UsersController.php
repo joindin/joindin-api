@@ -23,6 +23,7 @@ class UsersController extends BaseApiController
                 case 'talks':
                     $talk_mapper = new TalkMapper($db, $request);
                     $talks       = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start);
+                    \Joindin\Modifier\RemoveCommentsFromTalkInEarlyStageFactory::setForTalkCollection($talks);
                     $list        = $talks->getOutputView($request, $verbose);
                     break;
                 case 'hosted':
