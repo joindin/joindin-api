@@ -18,6 +18,7 @@ class UserMapper extends ApiMapper
         return array(
             "username"         => "username",
             "full_name"        => "full_name",
+            "biography"        => "biography",
             "twitter_username" => "twitter_username"
         );
     }
@@ -35,6 +36,7 @@ class UserMapper extends ApiMapper
             "username"         => "username",
             "full_name"        => "full_name",
             "twitter_username" => "twitter_username",
+            "biography"        => "biography",
             "trusted"          => "trusted"
         );
     }
@@ -115,7 +117,7 @@ class UserMapper extends ApiMapper
     protected function getUsers($resultsperpage, $start, $where = null, $order = null)
     {
         $sql = 'select user.username, user.ID, user.email, '
-               . 'user.full_name, user.twitter_username, user.admin, user.trusted '
+               . 'user.full_name, user.biography, user.twitter_username, user.admin, user.trusted '
                . 'from user '
                . 'left join user_attend ua on (ua.uid = user.ID) '
                . 'where active = 1 ';

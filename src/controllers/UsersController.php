@@ -166,6 +166,11 @@ class UsersController extends BaseApiController
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
+            $user['biography'] = filter_var(
+                trim($request->getParameter("biography")),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
 
             // How does it look?  With no errors, we can proceed
             if ($errors) {
@@ -307,6 +312,14 @@ class UsersController extends BaseApiController
             if (false !== $twitter_username) {
                 $user['twitter_username'] = filter_var(
                     trim($twitter_username),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
+            }
+            $biography = $request->getParameter("biography", false);
+            if (false !== $biography) {
+                $user['biography'] = filter_var(
+                    trim($biography),
                     FILTER_SANITIZE_STRING,
                     FILTER_FLAG_NO_ENCODE_QUOTES
                 );
