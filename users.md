@@ -19,6 +19,7 @@ users:
         username: lornajane
         full_name: Lorna Mitchell
         twitter_username: lornajane
+        biography: Hello this is me
         gravatar_hash: f6bb323eb6b2ad7f5ca2f8f3fc15f887
         email: lornajane@example.org
         admin: 0
@@ -45,6 +46,7 @@ The verbose user format includes the ``gravatar_hash``, ``email``, admin`` and `
 *  ``username``: The user's username that they use to log in with; this will be unique
 *  ``full_name``: The user's name - this is used as their display name in most cases
 *  ``twitter_username``: If the user supplied their twitter username, it is here
+*  ``biography``: An optional field which can be used for supplying additional profile information
 *  ``gravatar_hash``: Unique identifier for showing their gravatar image; append this to ``http://www.gravatar.com/avatar/`` to make the image URL
 *  ``email``: The user's email address. Only visible to the current user or a site admin.
 *  ``admin``: Whether this user is a site admin. Only visible if the current user is a site admin.
@@ -73,7 +75,10 @@ To create a user, POST to the `/users` collection.  The following fields are req
  * ``email``
  * ``password``
 
-Optionally, you can also send the ``twitter_username`` field.
+Optionally the following fields can be included:
+
+ * ``twitter_username``
+ * ``biography``
 
 Your request should look something like this:
 
@@ -83,7 +88,8 @@ Your request should look something like this:
   "password": "qwerty",
   "email": "test@example.com",
   "full_name": "Test User",
-  "twitter_username": "mytwitterhandle"
+  "twitter_username": "mytwitterhandle",
+  "biography": "An example biography"
 }
 ~~~
 
