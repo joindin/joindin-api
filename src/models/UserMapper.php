@@ -87,6 +87,46 @@ class UserMapper extends ApiMapper
     }
 
     /**
+     * Search users by keyword
+     *
+     * @param string $keyword
+     * @param int $resultsperpage
+     * @param int $start
+     * @param bool $verbose
+     *
+     * @return array|bool Result collection or false on failure
+     */
+    public function getUserByKeyword($keyword, $resultsperpage, $start, $verbose)
+    {
+        $sql = 'select user.* '
+          . 'from user '
+          . 'where active = 1 '
+          . ' and ( '
+          . ' LOWER(user.username) like :keyword'
+          . ' or LOWER(user.full_name) like :keyword'
+          . ' or LOWER(user.twitter_username) like :keyword'
+          . ') '
+          . ' order by user.full_name asc';
+        $sql .= $this->buildLimit($resultsperpage, $start);
+
+        $data = array(
+          ':keyword' => '%' . strtolower($keyword) . '%',
+        );
+
+        $stmt     = $this->_db->prepare($sql);
+        $response = $stmt->execute($data);
+
+        if ($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results['total'] = $this->getTotalCount($sql, $data);
+
+            return $this->transformResults($results, $verbose);
+        }
+
+        return false;
+    }
+
+    /**
      * @return false|array
      */
     public function getSiteAdminEmails()
