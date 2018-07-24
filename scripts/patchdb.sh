@@ -85,7 +85,6 @@ if [ "$DBPORT" != "" ]
 then
     DBCMD="$DBCMD -P$DBPORT"
 fi
-DBCMD="$DBCMD $DBNAME"
 
 ###
 #
@@ -96,7 +95,7 @@ if [ "$INITDB" ]
 then
     PATCH_LEVEL=0
 else
-    PATCH_LEVEL=$($DBCMD -e 'select max(patch_number) as num from patch_history' | grep -v num)
+    PATCH_LEVEL=$($DBCMD $DBNAME -e 'select max(patch_number) as num from patch_history' | grep -v num)
 
     if [ $? -gt 0 ]
     then
@@ -118,13 +117,15 @@ MAX_PATCH_LEVEL=$(ls $PATCH_DIR/patch*.sql | egrep -o 'patch[0-9]*.sql' | egrep 
 if [ "$INITDB" ]
 then
     echo -n "Dropping and recreating DB before initialising it..."
-	$($DBCMD -e "drop database $DBNAME; create database $DBNAME;")
+    echo $DBCMD;
+	$($DBCMD -e "drop database if exists $DBNAME; create database $DBNAME;")
     echo -n "Initialising DB..."
-    $($DBCMD < $PATCH_DIR/init_db.sql)
-    $($DBCMD < $PATCH_DIR/init_data.sql)
+    $($DBCMD $DBNAME < $PATCH_DIR/init_db.sql)
+    $($DBCMD $DBNAME < $PATCH_DIR/init_data.sql)
     echo " Ok"
 fi
 
+DBCMD="$DBCMD $DBNAME"
 
 for ((i=$(($PATCH_LEVEL + 1)); i <= $(($MAX_PATCH_LEVEL)); i++));
 do
