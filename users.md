@@ -38,7 +38,7 @@ meta:
 
 ## Verbose User Format
 
-The verbose user format includes the ``gravatar_hash``, ``email``, admin`` and ``can_edit`` fields.
+The verbose user format includes the ``gravatar_hash``, ``email``, ``admin`` and ``can_edit`` fields.
 
 ## User Fields
 
@@ -63,6 +63,19 @@ The verbose user format includes the ``gravatar_hash``, ``email``, admin`` and `
 ## Filtering the Users Collection
 
 You can filter by ``username``, e.g. ``{{ site.apiurl }}/v2.1/users?username=lornajane``
+
+## Searching for Users
+
+To search for users using a specific ``keyword`` the keyword parameter can be used:
+
+``{{ site.apiurl }}/v2.1/users?keyword=lorna``
+
+This will look for the keyword in (parts of) each of the following fields:
+* ``username``
+* ``twitter_username``
+* ``full_name``
+
+Such a search request will return a collection of users as specified under 'User Format'.
 
 ## Creating a User
 
