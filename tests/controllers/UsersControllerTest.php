@@ -143,13 +143,15 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ['full_name'],
             ['email'],
             ['password'],
-            ['twitter_username']
+            ['twitter_username'],
+            ['biography']
         )->willReturnOnConsecutiveCalls(
             'user"\'stuff',
             'full"\'stuff',
             'mailstuff@example.com',
             'pass"\'stuff',
-            'twitter"\'stuff'
+            'twitter"\'stuff',
+            'Bio"\'stuff'
         );
 
         $view = $this->getMockBuilder('\ApiView')->disableOriginalConstructor()->getMock();
@@ -169,6 +171,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             'email' => 'mailstuff@example.com',
             'password' => 'pass"\'stuff',
             'twitter_username' => 'twitter"\'stuff',
+            'biography' => 'Bio"\'stuff'
         ])->willReturn(true);
 
         $emailService = $this->getMockBuilder('\UserRegistrationEmailService')->disableOriginalConstructor()->getMock();
@@ -190,13 +193,15 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             ['full_name'],
             ['email'],
             ['username'],
-            ['twitter_username']
+            ['twitter_username'],
+            ['biography']
         )->willReturnOnConsecutiveCalls(
             '',
             'full"\'stuff',
             'mailstuff@example.com',
             'user"\'stuff',
-            'twitter"\'stuff'
+            'twitter"\'stuff',
+            'Bio"\'stuff'
         );
 
         $oauthmodel = $this->getMockBuilder('\OAuthModel')->disableOriginalConstructor()->getMock();
@@ -218,6 +223,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
             'full_name' => 'full"\'stuff',
             'email' => 'mailstuff@example.com',
             'twitter_username' => 'twitter"\'stuff',
+            'biography' => 'Bio"\'stuff',
             'user_id' => false,
         ])->willReturn(true);
 
