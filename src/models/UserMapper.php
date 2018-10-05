@@ -467,7 +467,6 @@ class UserMapper extends ApiMapper
         }
 
         return false;
-
     }
 
     /**

@@ -121,7 +121,6 @@ class TwitterController extends BaseApiController
 
                 try {
                     $res = $client1->get('1.1/account/verify_credentials.json?include_email=true');
-
                 } catch (Exception $e) {
                     throw new Exception('Could not retrieve user-informations from Twitter', 403, $e);
                 }
@@ -140,7 +139,6 @@ class TwitterController extends BaseApiController
             $requestTokenMapper->delete($request_token);
 
             return array('access_token' => $result['access_token'], 'user_uri' => $result['user_uri']);
-
         }
 
         throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);

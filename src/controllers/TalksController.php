@@ -13,7 +13,6 @@ class TalksController extends BaseTalkController
         $collection = new TalkModelCollection([$talk], 1);
 
         return $collection->getOutputView($request, $verbose);
-
     }
 
     public function getTalkComments(Request $request, PDO $db)

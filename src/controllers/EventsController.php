@@ -564,7 +564,6 @@ class EventsController extends BaseApiController
             $list = new PendingTalkClaimModelCollection([], 0);
         }
         return $list->getOutputView($request, $verbose);
-
     }
 
     /**

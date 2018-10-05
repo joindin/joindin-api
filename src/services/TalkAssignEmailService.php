@@ -24,7 +24,6 @@ class TalkAssignEmailService extends BaseEmailService
         $this->website_url = $config['website_url'];
         $this->event = $event['events'][0];
         $this->username = $username;
-
     }
 
     public function sendEmail()

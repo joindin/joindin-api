@@ -47,7 +47,6 @@ class TalksControllerTest extends TalkBase
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talks_controller->setSpeakerForTalk($request, $db);
-
     }
 
     /**
@@ -90,8 +89,6 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setEventMapper($event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
-
-
     }
 
     /**
@@ -454,7 +451,6 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setEventMapper($event_mapper);
 
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
-
     }
 
     /**
@@ -523,7 +519,6 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setEventMapper($event_mapper);
 
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
-
     }
 
     /**
@@ -791,7 +786,6 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setEventMapper($event_mapper);
 
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
-
     }
 
 
@@ -866,7 +860,6 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setEventMapper($event_mapper);
 
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
-
     }
     /**
      * @dataProvider getComments
@@ -1135,7 +1128,6 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setEventMapper($event_mapper);
 
         $this->assertTrue($talks_controller->removeSpeakerForTalk($request, $db));
-
     }
 
     public function testDifferentTalkMedia()
@@ -1243,7 +1235,6 @@ class TalksControllerTest extends TalkBase
 
         $output = $talks_controller->getTalkComments($request, $db);
         $this->assertSame($expected, $output);
-
     }
 
     public function testGetStarred()

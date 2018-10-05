@@ -139,6 +139,5 @@ class EventHostMapperTest extends PHPUnit_Framework_TestCase
 
         $mapper = new EventHostMapper($pdo, $request);
         $this->assertTrue($mapper->removeHostFromEvent(12, 14));
-
     }
 }

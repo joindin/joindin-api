@@ -33,7 +33,6 @@ class ApplicationsController extends BaseApiController
         );
 
         return $clients->getOutputView($request, $this->getVerbosity($request));
-
     }
 
     public function createApplication(Request $request, PDO $db)
@@ -138,7 +137,6 @@ class ApplicationsController extends BaseApiController
         $newClient = $clientMapper->getClientByIdAndUser($clientId, $request->user_id);
 
         return $newClient->getOutputView($request);
-
     }
 
     public function deleteApplication(Request $request, PDO $db)
