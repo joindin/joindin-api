@@ -20,7 +20,6 @@ class CommentReportedEmailService extends BaseEmailService
         $this->comment = $comment['comments'][0];
         $this->website_url = $config['website_url'];
         $this->event = $event['events'][0];
-
     }
 
     public function sendEmail()

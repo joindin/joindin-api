@@ -157,7 +157,6 @@ class EventCommentMapper extends ApiMapper
             $sql .= 'and ec.active = 1 ';
         }
         return $sql;
-
     }
 
     public function save(array $data)

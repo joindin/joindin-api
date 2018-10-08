@@ -15,7 +15,6 @@ class TalkClaimRejectedEmailService extends BaseEmailService
 
         $this->talk = $talk;
         $this->event = $event['events'][0];
-
     }
 
     public function sendEmail()
