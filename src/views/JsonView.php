@@ -49,7 +49,7 @@ class JsonView extends ApiView
 
     protected function scalarNumericCheck($key, $value)
     {
-        if (is_numeric($value) && ! in_array($key, $this->string_fields)) {
+        if (is_numeric($value) && ! in_array($key, $this->string_fields) && $value < PHP_INT_MAX) {
             return (float) $value;
         }
 
