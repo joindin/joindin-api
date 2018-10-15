@@ -18,7 +18,6 @@ $options = getopt("t:d:u:p:i::");
 
 // No options? Let's help out...
 if (!$options || count($options) == 0) {
-    
     echo <<<HELPTEXT
 
 
@@ -85,7 +84,7 @@ if (!$hasMysql) {
 }
 
 
-$baseMysqlCmd = "mysql -u{$options['u']} " 
+$baseMysqlCmd = "mysql -u{$options['u']} "
     . ($options['p'] ? "-p{$options['p']} " : "")
     . "{$options['d']}";
 
@@ -93,7 +92,8 @@ $baseMysqlCmd = "mysql -u{$options['u']} "
 ///////////////////////////////////////////////
 // Try getting the max patch_level so far
 
-exec($baseMysqlCmd . ' -r '
+exec(
+    $baseMysqlCmd . ' -r '
     . '-e "select max(patch_number) as num from `' . $options['d'] . '`.patch_history',
     $res
 );
@@ -101,7 +101,7 @@ exec($baseMysqlCmd . ' -r '
 $maxPatchNum = 0;
 if ($res && array_key_exists(1, $res) && $res[1] > 0) {
     $maxPatchNum = $res[1];
-} else if (is_array($res) && count($res) === 0) {
+} elseif (is_array($res) && count($res) === 0) {
     $maxPatchNum = false;
 }
 
@@ -115,7 +115,6 @@ if ($maxPatchNum === false && !array_key_exists('i', $options)) {
 // Initialise db
 //////////////////////////////////////////////
 if (array_key_exists('i', $options)) {
-
     if (!file_exists($options['t'] . DIRECTORY_SEPARATOR . 'init_db.sql')) {
         echo "Couldn't find the init_db.sql file to initialise db";
         exit;
@@ -133,17 +132,15 @@ if (array_key_exists('i', $options)) {
 /////////////////////////////////////////////
 
 // First, look through the directory for patch123.sql files
-// and get all the {123} numbers, so we can run them all 
+// and get all the {123} numbers, so we can run them all
 // in order.
 $matchedNums = array();
 if ($dh = opendir($options['t'])) {
     while (($file = readdir($dh)) !== false) {
-        
         preg_match("/patch([\d]+)\.sql/", $file, $matches);
         if ($matches && array_key_exists(1, $matches) && $matches[1] > $maxPatchNum) {
             $matchedNums[] = (int)$matches[1];
         }
-
     }
     closedir($dh);
 }
@@ -160,10 +157,3 @@ foreach ($matchedNums as $patchNum) {
 }
 
 echo "\nAll done\n";
-
-
-
-
-
-
-

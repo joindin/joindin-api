@@ -1,6 +1,7 @@
 <?php
 
-interface Generator_Data_Interface {
+interface Generator_Data_Interface
+{
     function getEventTitleGeneratorData();
     function getTalkTitleGeneratorData();
     function getCategoryData();

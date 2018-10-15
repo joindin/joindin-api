@@ -16,7 +16,6 @@ class TalkClaimApprovedEmailService extends BaseEmailService
         $this->website_url = $config['website_url'];
         $this->talk = $talk;
         $this->event = $event['events'][0];
-
     }
 
     public function sendEmail()
