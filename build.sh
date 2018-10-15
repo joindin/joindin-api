@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 phpcs \
     --standard=tools/codesniffer/JoindInPSR2/ruleset.xml \
