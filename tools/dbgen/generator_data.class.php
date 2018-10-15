@@ -3,10 +3,12 @@
 /***
  * Some returns stdClasses, others arrays..
  */
-class Generator_Data implements Generator_Data_Interface {
+class Generator_Data implements Generator_Data_Interface
+{
 
     // Data for generating event names
-    function getEventTitleGeneratorData() {
+    function getEventTitleGeneratorData()
+    {
         $events = new StdClass();
         $events->firstpart = array("PHP", "Perl", "Python", "Ruby", "C", "MySQL", "DevOp", "Linux", "Debian", "CentOS", "Zend", "Developer", "Web", "Symfony", "Apache", "Computer", "IT", "Dev");
         $events->lastpart  = array("Con", "Conf", " meetup", "UUG", " day", "Congress");
@@ -14,7 +16,8 @@ class Generator_Data implements Generator_Data_Interface {
     }
 
     // Words to generate talk titles for your future presentations...
-    function getTalkTitleGeneratorData() {
+    function getTalkTitleGeneratorData()
+    {
         $ret = new StdClass();
         $ret->a = array("Coaching", "Dealing with", "Producing", "Maintaining", "Controlling", "Creating", "Having", "Assembling", "Monitoring", "Accessing", "Generating", "Refactoring");
         $ret->b = array("heavy", "light", "fast", "optimal", "flexible", "rigid", "technical", "oldschool", "newtech", "fantastic", "obsolete", "second generation", "v2.0", "private", "public");
@@ -25,7 +28,8 @@ class Generator_Data implements Generator_Data_Interface {
     }
 
     // "talk" categories
-    function getCategoryData() {
+    function getCategoryData()
+    {
         $categories = array(
             1 => array ('title' => 'Talk', 'desc' => 'Talk'),
             2 => array ('title' => 'Social event', 'desc' => 'Social event'),
@@ -37,7 +41,8 @@ class Generator_Data implements Generator_Data_Interface {
     }
 
     // Standard languages
-    function getLanguageData() {
+    function getLanguageData()
+    {
         $languages = array(
             1 => array ('name' => 'English - US', 'abbr' => 'us'),
             2 => array ('name' => 'English - UK', 'abbr' => 'uk'),
@@ -53,15 +58,18 @@ class Generator_Data implements Generator_Data_Interface {
     }
 
     // Different types of sources from where comments are made. Adding duplicates will increase the chance of getting picked
-    function getCommentSourceData() {
+    function getCommentSourceData()
+    {
         return array("web", "web", "web", "api", "api", "iphone", "android");
     }
 
-    function getTrackColorData() {
+    function getTrackColorData()
+    {
         return array("red", "green", "blue", "black", "yellow", "white", "cyan", "gray");
     }
 
-    function getUserGeneratorData() {
+    function getUserGeneratorData()
+    {
         $users = new StdClass();
 
         // Taken from public list of most used female and male first names in the US
@@ -106,7 +114,8 @@ class Generator_Data implements Generator_Data_Interface {
     }
 
 
-    function getDescriptionGeneratorData() {
+    function getDescriptionGeneratorData()
+    {
         // Lorum Ipsum, per line so we can shuffle and change the lengths.
         $lorum = array(
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
@@ -126,7 +135,8 @@ class Generator_Data implements Generator_Data_Interface {
     }
 
     // Set of cities in Alabama. Taken from the web. The Lat/Long information is correct for the corresponding village
-    function getCityData() {
+    function getCityData()
+    {
         $cities = array(
             array('Abbeville',31.566367,-85.251300),
             array('Adamsville',33.590411,-86.949166),
@@ -625,5 +635,4 @@ class Generator_Data implements Generator_Data_Interface {
         );
         return $cities;
     }
-
 }
