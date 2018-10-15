@@ -13,7 +13,6 @@ before_script:
   - composer global require phpunit/phpunit
   - composer global require jakub-onderka/php-parallel-lint
   - composer install
-  - phpenv config-rm xdebug.ini 
   - cp src/config.php.dist src/config.php
 script:
 - PATH=$HOME/.composer/vendor/bin:$PATH ./build.sh
