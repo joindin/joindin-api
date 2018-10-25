@@ -20,6 +20,8 @@ ALTER TABLE `invite_list` convert to CHARACTER SET 'utf8mb4' COLLATE utf8mb4_gen
 
 ALTER TABLE `lang` convert to CHARACTER SET 'utf8mb4' COLLATE utf8mb4_general_ci;
 
+ALTER TABLE `meta_data` MODIFY COLUMN entry VARCHAR(80);
+
 ALTER TABLE `meta_data` convert to CHARACTER SET 'utf8mb4' COLLATE utf8mb4_general_ci;
 
 ALTER TABLE `patch_history` convert to CHARACTER SET 'utf8mb4' COLLATE utf8mb4_general_ci;
