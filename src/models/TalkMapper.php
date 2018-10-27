@@ -370,7 +370,7 @@ class TalkMapper extends ApiMapper
         // TODO map from the field mappings in getVerboseFields()
         $sql = '
           insert into talks (event_id, talk_title, talk_desc,
-            slides_link, lang, date_given, duration)
+            lang, date_given, duration)
             values (:event_id, :talk_title, :talk_description,
             (select ID from lang where lang_name = :language),
               :date, :duration)
