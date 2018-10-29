@@ -124,6 +124,7 @@ class EventCommentMapper extends ApiMapper
         // figure out user
         if ($row['user_id']) {
             $result['user_display_name'] = $row['full_name'];
+            $result['username']          = $row['username'];
             $result['user_uri']          = $base . '/' . $version . '/users/'
                                                     . $row['user_id'];
         } else {
@@ -147,7 +148,7 @@ class EventCommentMapper extends ApiMapper
 
     protected function getBasicSQL($include_hidden = false)
     {
-        $sql = 'select ec.*, user.email, user.full_name, e.event_tz_cont, e.event_tz_place '
+        $sql = 'select ec.*, user.username, user.email, user.full_name, e.event_tz_cont, e.event_tz_place '
                . 'from event_comments ec '
                . 'left join user on user.ID = ec.user_id '
                . 'inner join events e on ec.event_id = e.ID '
