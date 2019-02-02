@@ -14,4 +14,4 @@ phpcs \
 
 cd tests
 phpunit
-./diffFilter --phpunit ../diff.txt build/logs/clover.xml 80
+./diffFilter.phar --phpunit ../diff.txt build/logs/clover.xml 80
