@@ -6,7 +6,9 @@ include '../inc/Header.php';
 if (!function_exists('apache_request_headers')) {
     include '../inc/nginx-helper.php';
 }
-
+if(!ini_get('date.timezone')) {
+    date_default_timezone_set('UTC');
+}
 // Add exception handler
 function handle_exception($e)
 {
