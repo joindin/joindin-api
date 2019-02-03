@@ -10,3 +10,4 @@ vendor/.git
 .idea
 node_modules
 vendor
+diff.txt

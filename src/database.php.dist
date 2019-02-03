@@ -51,9 +51,9 @@ if (! defined('BASEPATH')) {
 $active_group  = "default";
 $active_record = true;
 
-$db['default']['hostname'] = "localhost";
-$db['default']['username'] = "joind_in";
-$db['default']['password'] = "pleasechangeme";
+$db['default']['hostname'] = getenv('MYSQL_HOST') ?: "localhost";
+$db['default']['username'] = getenv('MYSQL_USER') ?: "joindin";
+$db['default']['password'] = getenv('MYSQL_PASSWORD') ?: "password";
 $db['default']['database'] = "joindin";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";

@@ -43,6 +43,12 @@ class TalkMapper extends ApiMapper
                     $results[$key]['starred'] = false;
                 }
 
+                // Did the logged in user rate this talk?
+                $results[$key]['user_rating'] = false;
+                if (isset($this->_request->user_id)) {
+                    $results[$key]['user_rating'] = $this->getUserRatingOnTalk($row['ID'], $this->_request->user_id);
+                }
+
                 // add speakers & tracks
                 $results[$key]['speakers'] = $this->getSpeakers($row['ID']);
                 $results[$key]['tracks']   = $this->getTracks($row['ID']);
@@ -337,7 +343,6 @@ class TalkMapper extends ApiMapper
         }
 
         return false;
-
     }
 
     /**
@@ -363,11 +368,13 @@ class TalkMapper extends ApiMapper
     public function createTalk(array $data)
     {
         // TODO map from the field mappings in getVerboseFields()
-        $sql = 'insert into talks (event_id, talk_title, talk_desc, '
-               . 'slides_link, lang, date_given, duration) '
-               . 'values (:event_id, :talk_title, :talk_description, '
-               . ':slides_link, (select ID from lang where lang_name = :language), '
-               . ':date, :duration)';
+        $sql = '
+          insert into talks (event_id, talk_title, talk_desc,
+            lang, date_given, duration)
+            values (:event_id, :talk_title, :talk_description,
+            (select ID from lang where lang_name = :language),
+              :date, :duration)
+         ';
 
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
@@ -377,7 +384,6 @@ class TalkMapper extends ApiMapper
             ':language'         => $data['language'],
             ':date'             => $data['date'],
             ':duration'         => $data['duration'],
-            ':slides_link'      => $data['slides_link'],
         ));
         $talk_id  = $this->_db->lastInsertId();
 
@@ -570,6 +576,36 @@ class TalkMapper extends ApiMapper
         $result = $stmt->fetch();
 
         return is_array($result);
+    }
+
+    /**
+     * Get the rating the given user has given on this talk.
+     *
+     * @param int $talk_id the talk of interest
+     * @param int $user_id which user (often the current one)
+     *
+     * @return int|false
+     */
+    protected function getUserRatingOnTalk($talk_id, $user_id)
+    {
+        $stmt = $this->_db->prepare('
+            SELECT rating 
+            FROM talk_comments 
+            WHERE talk_id = :talk_id 
+            AND user_id = :user_id;
+        ');
+        $stmt->execute([
+            'talk_id' => $talk_id,
+            'user_id' => $user_id,
+        ]);
+
+        $result = $stmt->fetch();
+
+        if (! $result) {
+            return false;
+        }
+
+        return $result['rating'];
     }
 
     /**
@@ -883,7 +919,6 @@ class TalkMapper extends ApiMapper
         $speakers = $speaker_stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return count($speakers) > 0 ? $speakers[0] : false;
-
     }
 
     /**

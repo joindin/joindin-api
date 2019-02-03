@@ -22,7 +22,7 @@ class JsonView extends ApiView
         // Don't use JSON_NUMERIC_CHECK because it eats things (e.g. talk stubs)
 
         // Specify a list of fields to NOT convert to numbers
-        $this->string_fields = array("stub", "track_name", "comment");
+        $this->string_fields = array("stub", "track_name", "comment", "username");
 
         $output = $this->numericCheck($content);
 
@@ -49,7 +49,7 @@ class JsonView extends ApiView
 
     protected function scalarNumericCheck($key, $value)
     {
-        if (is_numeric($value) && ! in_array($key, $this->string_fields)) {
+        if (is_numeric($value) && ! in_array($key, $this->string_fields) && $value < PHP_INT_MAX) {
             return (float) $value;
         }
 

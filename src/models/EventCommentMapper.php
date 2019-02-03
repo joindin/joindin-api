@@ -33,7 +33,7 @@ class EventCommentMapper extends ApiMapper
     public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
         $sql = $this->getBasicSQL();
-        $sql .= 'and event_id = :event_id order by date_made ';
+        $sql .= 'and event_id = :event_id order by date_made desc ';
         $sql .= $this->buildLimit($resultsperpage, $start);
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
@@ -124,6 +124,7 @@ class EventCommentMapper extends ApiMapper
         // figure out user
         if ($row['user_id']) {
             $result['user_display_name'] = $row['full_name'];
+            $result['username']          = $row['username'];
             $result['user_uri']          = $base . '/' . $version . '/users/'
                                                     . $row['user_id'];
         } else {
@@ -147,7 +148,7 @@ class EventCommentMapper extends ApiMapper
 
     protected function getBasicSQL($include_hidden = false)
     {
-        $sql = 'select ec.*, user.email, user.full_name, e.event_tz_cont, e.event_tz_place '
+        $sql = 'select ec.*, user.username, user.email, user.full_name, e.event_tz_cont, e.event_tz_place '
                . 'from event_comments ec '
                . 'left join user on user.ID = ec.user_id '
                . 'inner join events e on ec.event_id = e.ID '
@@ -157,7 +158,6 @@ class EventCommentMapper extends ApiMapper
             $sql .= 'and ec.active = 1 ';
         }
         return $sql;
-
     }
 
     public function save(array $data)

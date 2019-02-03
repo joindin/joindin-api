@@ -244,8 +244,4 @@ class TalkMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($mapper->delete(12));
     }
-
-
-
-
 }

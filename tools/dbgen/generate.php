@@ -15,12 +15,12 @@
 //    define("COUNT_TALK_COMMENTS",    50);
 
 //    // Medium: enough for development purposes without stressing out your DB
-    define("COUNT_USERS",            50);
-    define("COUNT_EVENTS",          100);
-    define("COUNT_EVENT_COMMENTS",  200);
-    define("COUNT_TRACKS",          150);
-    define("COUNT_TALKS",           500);
-    define("COUNT_TALK_COMMENTS",  1000);
+    define("COUNT_USERS", 50);
+    define("COUNT_EVENTS", 100);
+    define("COUNT_EVENT_COMMENTS", 200);
+    define("COUNT_TRACKS", 150);
+    define("COUNT_TALKS", 500);
+    define("COUNT_TALK_COMMENTS", 1000);
 
 //    // Heavy: simulates current production values I think
 //    define("COUNT_USERS",            200);
@@ -72,7 +72,7 @@
     define("COMMENT_IS_PRIVATE", 5);
 
     // Percentage of talks that is claimed
-    define("TALK_IS_CLAIMED",75);
+    define("TALK_IS_CLAIMED", 75);
 
     // Does the talk have multiple speakers
     define("TALK_HAS_MULTIPLE_SPEAKERS", 20);
@@ -102,5 +102,3 @@
     $gen = new DataGenerator(new Generator_Data());
     echo $gen->generate();
     exit;
-
-?>

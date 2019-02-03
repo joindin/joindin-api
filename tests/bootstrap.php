@@ -25,3 +25,5 @@ class mockPDO extends \PDO
         // the constructor in mockPDO.
     }
 }
+
+class_alias(mockPDO::class, 'JoindinTest\Inc\mockPDO');

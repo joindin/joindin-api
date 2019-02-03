@@ -13,7 +13,6 @@ class TalksController extends BaseTalkController
         $collection = new TalkModelCollection([$talk], 1);
 
         return $collection->getOutputView($request, $verbose);
-
     }
 
     public function getTalkComments(Request $request, PDO $db)
@@ -357,6 +356,14 @@ class TalksController extends BaseTalkController
 
         // create the talk
         $new_id = $talk_mapper->createTalk($talk);
+
+        if (!empty($talk['slides_link'])) {
+            $talk_mapper->addTalkLink(
+                $new_id,
+                'slides_link',
+                $talk['slides_link']
+            );
+        }
 
         // Update the cache count for the number of talks at this event
         $event_mapper->cacheTalkCount($event_id);

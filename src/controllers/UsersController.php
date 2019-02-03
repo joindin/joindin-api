@@ -23,54 +23,63 @@ class UsersController extends BaseApiController
                 case 'talks':
                     $talk_mapper = new TalkMapper($db, $request);
                     $talks       = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start);
-                    $list        = $talks->getOutputView($request, $verbose);
-                    break;
+                    return $talks->getOutputView($request, $verbose);
+
                 case 'hosted':
                     $event_mapper = new EventMapper($db, $request);
-                    $list         = $event_mapper->getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose);
-                    break;
+                    return $event_mapper->getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose);
+
                 case 'attended':
                     $event_mapper = new EventMapper($db, $request);
-                    $list         = $event_mapper->getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose);
-                    break;
+                    return $event_mapper->getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose);
+
                 case 'talk_comments':
                     $talkComment_mapper = new TalkCommentMapper($db, $request);
-                    $list               = $talkComment_mapper->getCommentsByUserId(
+                    return $talkComment_mapper->getCommentsByUserId(
                         $user_id,
                         $resultsperpage,
                         $start,
                         $verbose
                     );
-                    break;
+
                 default:
                     throw new InvalidArgumentException('Unknown Subrequest', 404);
-                    break;
-            }
-        } else {
-            $mapper = new UserMapper($db, $request);
-            if ($user_id) {
-                $list = $mapper->getUserById($user_id, $verbose);
-                if (count($list['users']) == 0) {
-                    throw new Exception('User not found', 404);
-                }
-            } else {
-                if (isset($request->parameters['username'])) {
-                    $username = filter_var(
-                        $request->parameters['username'],
-                        FILTER_SANITIZE_STRING,
-                        FILTER_FLAG_NO_ENCODE_QUOTES
-                    );
-                    $list     = $mapper->getUserByUsername($username, $verbose);
-                    if ($list === false) {
-                        throw new Exception('Username not found', 404);
-                    }
-                } else {
-                    $list = $mapper->getUserList($resultsperpage, $start, $verbose);
-                }
             }
         }
 
-        return $list;
+        $mapper = new UserMapper($db, $request);
+
+        if ($user_id) {
+            $list = $mapper->getUserById($user_id, $verbose);
+            if (count($list['users']) == 0) {
+                throw new Exception('User not found', 404);
+            }
+            return $list;
+        }
+
+        if (isset($request->parameters['username'])) {
+            $username = filter_var(
+                $request->parameters['username'],
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
+            $list = $mapper->getUserByUsername($username, $verbose);
+            if ($list === false) {
+                throw new Exception('Username not found', 404);
+            }
+            return $list;
+        }
+
+        if (isset($request->parameters['keyword'])) {
+            $keyword = filter_var(
+                $request->parameters['keyword'],
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
+            return $mapper->getUserByKeyword($keyword, $resultsperpage, $start, $verbose);
+        }
+
+        return $mapper->getUserList($resultsperpage, $start, $verbose);
     }
 
     public function postAction(Request $request, PDO $db)
@@ -163,6 +172,11 @@ class UsersController extends BaseApiController
             // Optional Fields
             $user['twitter_username'] = filter_var(
                 trim($request->getParameter("twitter_username")),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
+            $user['biography'] = filter_var(
+                trim($request->getParameter("biography")),
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
@@ -311,6 +325,14 @@ class UsersController extends BaseApiController
                     FILTER_FLAG_NO_ENCODE_QUOTES
                 );
             }
+            $biography = $request->getParameter("biography", false);
+            if (false !== $biography) {
+                $user['biography'] = filter_var(
+                    trim($biography),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_NO_ENCODE_QUOTES
+                );
+            }
 
             if ($errors) {
                 throw new Exception(implode(". ", $errors), 400);
@@ -359,7 +381,6 @@ class UsersController extends BaseApiController
             // the password wasn't acceptable, tell the user why
             throw new Exception(implode(". ", $validity), 400);
         }
-
     }
 
     public function deleteUser(Request $request, PDO $db)

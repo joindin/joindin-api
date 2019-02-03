@@ -159,7 +159,6 @@ class Event_hostsController extends BaseApiController
         $request->getView()->setNoRender(true);
 
         return;
-
     }
 
     /**
