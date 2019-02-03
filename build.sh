@@ -2,6 +2,7 @@
 set -e
 
 parallel-lint --exclude vendor .
+git diff origin/master... > diff.txt
 
 phpcs \
     --standard=tools/codesniffer/JoindInPSR2/ruleset.xml \
@@ -13,3 +14,4 @@ phpcs \
 
 cd tests
 phpunit
+./diffFilter.phar --phpunit ../diff.txt build/logs/clover.xml 80
