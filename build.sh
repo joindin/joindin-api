@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-parallel-lint --exclude vendor .
+vendor/bin/parallel-lint --exclude vendor .
 git diff origin/master... > diff.txt
 
-phpcs \
+vendor/bin/phpcs \
     --standard=tools/codesniffer/JoindInPSR2/ruleset.xml \
     --ignore=**/config.php,**/database.php,vendor,tools,tests/bootstrap.php \
     --extensions=php \
@@ -12,6 +12,5 @@ phpcs \
     -p \
     .
 
-cd tests
-phpunit
+vendor/bin/phpunit
 ./diffFilter.phar --phpunit ../diff.txt build/logs/clover.xml 80
