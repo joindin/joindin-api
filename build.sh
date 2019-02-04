@@ -12,5 +12,8 @@ vendor/bin/phpcs \
     -p \
     .
 
+
+php vendor/bin/security-checker security:check composer.lock
+
 vendor/bin/phpunit
 vendor/bin/diffFilter --phpunit diff.txt build/logs/clover.xml 80
