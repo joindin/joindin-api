@@ -13,4 +13,4 @@ vendor/bin/phpcs \
     .
 
 vendor/bin/phpunit
-./diffFilter.phar --phpunit ../diff.txt build/logs/clover.xml 80
+vendor/bin/diffFilter --phpunit diff.txt build/logs/clover.xml 80
