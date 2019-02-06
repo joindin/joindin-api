@@ -438,23 +438,68 @@ class UsersController extends BaseApiController
      */
     public function setTrusted(Request $request, PDO $db)
     {
+        $this->setAdminOnlyBooleanField($request, $db, 'trusted');
+    }
+
+    /**
+     * Allow users to be set as admin
+     *
+     * @param $request Request
+     * @param $db      PDO
+     *
+     * @throws Exception
+     */
+    public function setAdmin(Request $request, PDO $db)
+    {
+        $this->setAdminOnlyBooleanField($request, $db, 'admin');
+    }
+
+    /**
+     * Handles setting a boolean value that only an admin can set, since we have the same pattern happening 2x
+     * (and may add setting for the activity bool as well)
+     *
+     * @param $request Request
+     * @param $db      PDO
+     * @param $field   string
+     *
+     * @throws Exception
+     */
+    protected function setAdminOnlyBooleanField(Request $request, PDO $db, $field)
+    {
         if (false == ($request->getUserId())) {
             throw new Exception("You must be logged in to change a user account", 401);
         }
 
+        if (!in_array($field, ['trusted', 'admin'])) {
+            throw new \InvalidArgumentException('Unknown boolean field change attempted', 501);
+        }
+
         $user_mapper = $this->getUserMapper($db, $request);
         if (!$user_mapper->isSiteAdmin($request->getUserId())) {
-            throw new Exception("You must be an admin to change a user's trusted state", 403);
+            throw new Exception("You must be an admin to change a user's $field state", 403);
         }
 
         $userId = $this->getItemId($request);
-        if (!is_bool($trustedStatus = $request->getParameter("trusted", null))) {
-            throw new Exception("You must provide a trusted state", 400);
+        if (!is_bool($fieldStatus = $request->getParameter($field, null))) {
+            $article = $field === 'admin' ? 'an' : 'a';
+            throw new Exception("You must provide $article $field state", 400);
         }
 
-        if (!$user_mapper->setTrustedStatus($trustedStatus, $userId)) {
+        switch ($field) {
+            case 'trusted':
+                $wasSuccessful = $user_mapper->setTrustedStatus($fieldStatus, $userId);
+                break;
+            case 'admin':
+                $wasSuccessful = $user_mapper->setAdminStatus($fieldStatus, $userId);
+                break;
+            default:
+                throw new \InvalidArgumentException("Unknown boolean field change attempted: $field", 501);
+        }
+
+        if (!$wasSuccessful) {
             throw new Exception("Unable to update status", 500);
         }
+
         $view = $request->getView();
         $view->setHeader('Content-Length', 0);
         $view->setResponseCode(204);

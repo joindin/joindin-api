@@ -264,6 +264,26 @@ class UsersControllerTest extends TestCase
         $usersController->setTrusted($request, $db);
     }
 
+    /**
+     * Ensures that if the setAdmin method is called and no user_id is set,
+     * an exception is thrown
+     *
+     * @return void
+     *
+     * @test
+     * @expectedException        \Exception
+     * @expectedExceptionMessage You must be logged in to change a user account
+     * @expectedExceptionCode 401
+     */
+    public function testSetAdminWithNoUserIdThrowsException()
+    {
+        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/admin", 'REQUEST_METHOD' => 'POST']);
+
+        $usersController = new \UsersController();
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
+
+        $usersController->setAdmin($request, $db);
+    }
 
     /**
      * Ensures that if the setTrsuted method is called and user_id is a,
@@ -295,7 +315,36 @@ class UsersControllerTest extends TestCase
         $usersController->setTrusted($request, $db);
     }
 
+    /**
+     * Ensures that if the setAdmin method is called and user_id is a,
+     * non-admin, an exception is thrown
+     *
+     * @return void
+     *
+     * @test
+     * @expectedException        \Exception
+     * @expectedExceptionMessage You must be an admin to change a user's admin state
+     * @expectedExceptionCode 403
+     */
+    public function testSetAdminWithNonAdminIdThrowsException()
+    {
+        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/admin", 'REQUEST_METHOD' => 'POST']);
+        $request->user_id = 2;
+        $usersController = new \UsersController();
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
+        $userMapper = $this->getMockBuilder('\UserMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+
+        $userMapper
+            ->expects($this->once())
+            ->method('isSiteAdmin')
+            ->will($this->returnValue(false));
+
+        $usersController->setUserMapper($userMapper);
+        $usersController->setAdmin($request, $db);
+    }
 
     /**
      * Ensures that if the setTrusted method is called by an admin,
@@ -329,6 +378,41 @@ class UsersControllerTest extends TestCase
 
         $usersController->setUserMapper($userMapper);
         $usersController->setTrusted($request, $db);
+    }
+
+    /**
+     * Ensures that if the setAdmin method is called by an admin,
+     * but without an admin state, an exception is thrown
+     *
+     * @return void
+     *
+     * @test
+     * @expectedException        \Exception
+     * @expectedExceptionMessage You must provide an admin state
+     * @expectedExceptionCode 400
+     */
+    public function testSetAdminWithoutStateThrowsException()
+    {
+        $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
+        $request->method('getUserId')->willReturn(2);
+        $request->method('getParameter')
+            ->with("admin")
+            ->willReturn(null);
+
+        $usersController = new \UsersController();
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
+
+        $userMapper = $this->getMockBuilder('\UserMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+
+        $userMapper
+            ->expects($this->once())
+            ->method('isSiteAdmin')
+            ->willReturn(true);
+
+        $usersController->setUserMapper($userMapper);
+        $usersController->setAdmin($request, $db);
     }
 
     /**
@@ -370,12 +454,52 @@ class UsersControllerTest extends TestCase
         $usersController->setTrusted($request, $db);
     }
 
+    /**
+     * Ensures that if the setAdmin method is called by an admin,
+     * but the update fails, an exception is thrown
+     *
+     * @return void
+     *
+     * @test
+     * @expectedException        \Exception
+     * @expectedExceptionMessage Unable to update status
+     * @expectedExceptionCode 500
+     */
+    public function testSetAdminWithFailureThrowsException()
+    {
+        $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
+        $request->method('getUserId')->willReturn(2);
+        $request->method('getParameter')
+            ->with("admin")
+            ->willReturn(true);
+
+        $usersController = new \UsersController();
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
+
+        $userMapper = $this->getMockBuilder('\UserMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+
+        $userMapper
+            ->expects($this->once())
+            ->method('isSiteAdmin')
+            ->will($this->returnValue(true));
+
+        $userMapper
+            ->expects($this->once())
+            ->method("setAdminStatus")
+            ->willReturn(false);
+
+        $usersController->setUserMapper($userMapper);
+        $usersController->setAdmin($request, $db);
+    }
 
     /**
      * Ensures that if the setTrusted method is called by an admin,
      * and the update succeeds, a view is created and null is returned
      *
      * @return void
+     * @throws \Exception
      */
     public function testSetTrustedWithSuccessCreatesView()
     {
@@ -418,5 +542,55 @@ class UsersControllerTest extends TestCase
 
         $usersController->setUserMapper($userMapper);
         $this->assertNull($usersController->setTrusted($request, $db));
+    }
+
+    /**
+     * Ensures that if the setAdmin method is called by an admin,
+     * and the update succeeds, a view is created and null is returned
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function testSetAdminWithSuccessCreatesView()
+    {
+        $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
+        $request->method('getUserId')->willReturn(2);
+        $request->method('getParameter')
+            ->with("admin")
+            ->willReturn(true);
+
+        $view = $this->getMockBuilder(\JsonView::class)->getMock();
+        $view->expects($this->once())
+            ->method("setHeader")
+            ->willReturn(true);
+
+        $view->expects($this->once())
+            ->method("setResponseCode")
+            ->with(204)
+            ->willReturn(true);
+
+        $request->expects($this->once())
+            ->method("getView")
+            ->willReturn($view);
+
+        $usersController = new \UsersController();
+        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
+
+        $userMapper = $this->getMockBuilder('\UserMapper')
+            ->setConstructorArgs(array($db,$request))
+            ->getMock();
+
+        $userMapper
+            ->expects($this->once())
+            ->method('isSiteAdmin')
+            ->will($this->returnValue(true));
+
+        $userMapper
+            ->expects($this->once())
+            ->method("setAdminStatus")
+            ->willReturn(true);
+
+        $usersController->setUserMapper($userMapper);
+        $this->assertNull($usersController->setAdmin($request, $db));
     }
 }

@@ -268,6 +268,12 @@
         "verbs": ["POST"]
     },
     {
+        "path": "/users(/[0-9]+)/admin?$",
+        "controller": "UsersController",
+        "action": "setAdmin",
+        "verbs": ["POST"]
+    },
+    {
         "path": "/users(/[^/]+)*/?$",
         "controller": "Joindin\\Api\\Controller\\UsersController",
         "action": "getAction",
