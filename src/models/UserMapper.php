@@ -339,6 +339,19 @@ class UserMapper extends ApiMapper
         return $verify_stmt->execute($verify_data);
     }
 
+    /**
+     * Update whether the given user is a site admin
+     *
+     * @param bool $adminStatus
+     * @param int $user_id
+     *
+     * @return bool
+     */
+    public function setAdminStatus($adminStatus, $user_id)
+    {
+        $updateStmt = $this->_db->prepare("UPDATE USER SET admin = :admin_status WHERE ID = :user_id");
+        return $updateStmt->execute(["admin_status" => (int) $adminStatus, "user_id" => $user_id]);
+    }
 
     /**
      * @param int $user
