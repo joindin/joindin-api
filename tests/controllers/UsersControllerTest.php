@@ -50,7 +50,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
 
         $userMapper
             ->expects($this->once())
-            ->method('thisUserHasAdminOn')
+            ->method('isSiteAdmin')
             ->will($this->returnValue(false));
 
         $usersController->setUserMapper($userMapper);
@@ -67,7 +67,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
      * @expectedException        \Exception
      * @expectedExceptionMessage There was a problem trying to delete the user
      */
-    public function testDeleteUserWithAdminAccessThowsExceptionOnFailedDelete()
+    public function testDeleteUserWithAdminAccessThrowsExceptionOnFailedDelete()
     {
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
@@ -82,7 +82,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
 
         $userMapper
             ->expects($this->once())
-            ->method('thisUserHasAdminOn')
+            ->method('isSiteAdmin')
             ->will($this->returnValue(true));
 
         $userMapper
@@ -101,7 +101,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testDeleteUserWithAdminAccessDeletesSuccesfully()
+    public function testDeleteUserWithAdminAccessDeletesSuccessfully()
     {
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
@@ -116,7 +116,7 @@ class UsersControllerTest extends \PHPUnit_Framework_TestCase
 
         $userMapper
             ->expects($this->once())
-            ->method('thisUserHasAdminOn')
+            ->method('isSiteAdmin')
             ->will($this->returnValue(true));
 
         $userMapper
