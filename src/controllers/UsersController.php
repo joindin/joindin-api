@@ -393,7 +393,7 @@ class UsersController extends BaseApiController
 
         $user_mapper = $this->getUserMapper($db, $request);
 
-        $is_admin = $user_mapper->thisUserHasAdminOn($user_id);
+        $is_admin = $user_mapper->isSiteAdmin($user_id);
         if (! $is_admin) {
             throw new Exception("You do not have permission to do that", 403);
         }
