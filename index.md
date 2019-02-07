@@ -1,9 +1,7 @@
 ---
 layout: page
-title: Joind.in API Documentation
+title: API Documentation
 ---
-
-# Joind.in API Documentation
 
 API documentation, examples and other information about the API for <http://joind.in>, the event feedback site.
 

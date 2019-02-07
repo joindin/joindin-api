@@ -1,9 +1,7 @@
 ---
 layout: page
-title: Joind.in API Documentation
+title: Languages
 ---
-
-# Languages
 
 It is possible to fetch a read-only list of languages, or a single language
 

@@ -1,8 +1,7 @@
 ---
 layout: page
-title: Joind.in API Documentation
+title: Events
 ---
-## Events
 
 This page deals with the various event pages and data structures of events.
 

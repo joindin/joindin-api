@@ -1,9 +1,7 @@
 ---
 layout: page
-title: Joind.in API Documentation
+title: Talk Comments
 ---
-
-# Talk Comments
 
 Users can comment on talks.  Currently, users need to be authenticated in order to comment on talks via the API.
 
