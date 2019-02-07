@@ -1,9 +1,7 @@
 ---
 layout: page
-title: Joind.in API Documentation
+title: Talks
 ---
-
-# Talks
 
 Talks can represent more than just a talk, you may also find keynotes, tutorials, and social events masquerading under the heading of "talks".  There is no general talks collection, instead you can find talks by event or by speaker.
 

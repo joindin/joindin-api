@@ -1,9 +1,7 @@
 ---
 layout: page
-title: Joind.in API Documentation
+title: Talk Types
 ---
-
-# Talk Types
 
 It is possible to fetch a read-only list of talk types, or a single talk type
 

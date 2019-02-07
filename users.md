@@ -1,9 +1,7 @@
 ---
 layout: page
-title: Joind.in API Documentation
+title: Users
 ---
-
-## Users
 
 Users appear across the API, sometimes called other things.  You can find collections of users in an event where they are hosts or attendees, in talks where they are speakers, linked from comments where they are the author, and elsewhere - if you are authenticated then the URI for your own user record will be included in the ``meta`` block of each response.
 

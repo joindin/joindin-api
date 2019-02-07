@@ -1,9 +1,7 @@
 ---
 layout: page
-title: Joind.in API Documentation
+title: Event Comments
 ---
-
-## Event Comments
 
 Users can comment on events.  Currently the user must be signed in before they can comment (anonymous options may appear in the future).
 
