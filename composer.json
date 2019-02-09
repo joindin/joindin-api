@@ -11,8 +11,8 @@
     },
     "preferred-install": "dist",
     "require" : {
-        "swiftmailer/swiftmailer": "^v5.0",
-        "michelf/php-markdown": "1.4.0",
+        "swiftmailer/swiftmailer": "^5.4",
+        "michelf/php-markdown": "^1.8",
         "guzzlehttp/guzzle": "^4.2.4",
         "guzzlehttp/oauth-subscriber": "0.1.*"
     },
