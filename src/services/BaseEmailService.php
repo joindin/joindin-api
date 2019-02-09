@@ -44,11 +44,13 @@ abstract class BaseEmailService
             throw new Exception("SMTP Server not properly set up.");
         }
 
-        $transport = (Swift_SmtpTransport::newInstance(
+        $transport = Swift_SmtpTransport::newInstance(
             $config['email']['smtp']['host'],
             $config['email']['smtp']['port'],
             $config['email']['smtp']['security']
-        ))
+        );
+
+        $transport
             ->setUsername($config['email']['smtp']['username'])
             ->setPassword($config['email']['smtp']['password'])
         ;
