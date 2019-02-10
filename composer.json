@@ -5,7 +5,7 @@
     "homepage" : "https://api.joind.in",
     "license" : "",
     "support" : {
-        "issues" : "https://joindin.jira.com",
+        "issues" : "https://github.com/joindin/joindin-api/issues",
         "irc" : "irc://freenet/#joindin",
         "source" : "https://github.com/joindin/joindin-api"
     },
