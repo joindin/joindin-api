@@ -1,11 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "946eacd16efb60e2df2b2382d5385e63",
-    "content-hash": "9dc0914c079d8d532e43059b8b2d2f00",
+    "content-hash": "4d532084346c4a1ba0dce7f0badd882c",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -70,7 +69,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2016-07-15 17:44:18"
+            "time": "2016-07-15T17:44:18+00:00"
         },
         {
             "name": "guzzlehttp/oauth-subscriber",
@@ -116,7 +115,7 @@
                 "Guzzle",
                 "oauth"
             ],
-            "time": "2014-05-20 00:04:02"
+            "time": "2014-05-20T00:04:02+00:00"
         },
         {
             "name": "guzzlehttp/streams",
@@ -169,7 +168,7 @@
                 "Guzzle",
                 "stream"
             ],
-            "time": "2014-08-17 21:15:53"
+            "time": "2014-08-17T21:15:53+00:00"
         },
         {
             "name": "michelf/php-markdown",
@@ -220,7 +219,7 @@
             "keywords": [
                 "markdown"
             ],
-            "time": "2013-11-29 17:09:24"
+            "time": "2013-11-29T17:09:24+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -271,7 +270,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2013-12-03 13:33:24"
+            "time": "2013-12-03T13:33:24+00:00"
         }
     ],
     "packages-dev": [],
