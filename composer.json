@@ -13,7 +13,7 @@
         "ext-pdo": "*",
         "ext-json": "*",
         "swiftmailer/swiftmailer": "^v5.4.9",
-        "michelf/php-markdown": "^1.8.0",
+        "michelf/php-markdown": "^1.8",
         "guzzlehttp/guzzle": "^4.2.4",
         "guzzlehttp/oauth-subscriber": "0.1.*"
     },
