@@ -23,7 +23,7 @@ $config = [
             'port'     => 25,
             'username' => 'username',
             'password' => 'ChangeMeSeymourChangeMe',
-            'security' => 'ssl'
+            'security' => null
         ],
     ],
     'twitter'          => [
