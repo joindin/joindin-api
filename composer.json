@@ -3,7 +3,7 @@
     "description" : "The API-backend that powers joind.in",
     "keywords" : ["joind.in", "events", "talks", "speaking", "feedback"],
     "homepage" : "https://api.joind.in",
-    "license" : "",
+    "license" : "BSD-3-Clause",
     "support" : {
         "issues" : "https://github.com/joindin/joindin-api/issues",
         "irc" : "irc://freenet/#joindin",
