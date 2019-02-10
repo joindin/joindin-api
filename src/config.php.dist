@@ -21,8 +21,8 @@ $config = [
         'smtp'           => [
             'host'     => 'localhost',
             'port'     => 25,
-            'username' => 'username',
-            'password' => 'ChangeMeSeymourChangeMe',
+            'username' => null,
+            'password' => null,
             'security' => null
         ],
     ],
