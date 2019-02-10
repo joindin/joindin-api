@@ -40,9 +40,10 @@ abstract class BaseEmailService
      */
     public function __construct(array $config, array $recipients)
     {
-        if (!isset($config['email']['smtp']) && !defined('UNIT_TEST')) {
-            throw new Exception("SMTP Server not properly set up.");
-        }
+        if(!defined('UNIT_TEST')) {
+            if (!isset($config['email']['smtp'])) {
+                throw new Exception("SMTP Server not properly set up.");
+            }
 
         $transport = Swift_SmtpTransport::newInstance(
             $config['email']['smtp']['host'],
@@ -54,7 +55,9 @@ abstract class BaseEmailService
             ->setUsername($config['email']['smtp']['username'])
             ->setPassword($config['email']['smtp']['password'])
         ;
-
+        } else {
+            $transport = Swift_SmtpTransport::newInstance();
+        }
 
         $this->mailer  = Swift_Mailer::newInstance($transport);
         $this->message = Swift_Message::newInstance();
