@@ -6,7 +6,6 @@ use TalkModel;
 use TalkCommentEmailService;
 use PHPUnit\Framework\TestCase;
 
-
 require_once __DIR__.'/../../src/services/TalkCommentEmailService.php';
 
 class TalkCommentEmailServiceTest extends Testcase
