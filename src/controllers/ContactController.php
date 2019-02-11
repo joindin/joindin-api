@@ -32,13 +32,14 @@ class ContactController extends BaseApiController
         // only trusted clients can contact us to save on spam
         $clientId         = $request->getParameter('client_id');
         $clientSecret     = $request->getParameter('client_secret');
-        $this->oauthModel = $request->getOauthModel($db);
-        if (! $this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
+        $oauthModel = $request->getOauthModel($db);
+        if (! $oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
             throw new Exception("This client cannot perform this action", 403);
         }
 
         $fields = ['name', 'email', 'subject', 'comment'];
         $error  = [];
+        $data   = [];
         foreach ($fields as $name) {
             $value = $request->getParameter($name);
             if (empty($value)) {
@@ -62,7 +63,7 @@ class ContactController extends BaseApiController
                 $this->config['akismet']['blog']
             );
             $isValid          = $spamCheckService->isCommentAcceptable(
-                $data['comment'],
+                $data,
                 $request->getClientIP(),
                 $request->getClientUserAgent()
             );
