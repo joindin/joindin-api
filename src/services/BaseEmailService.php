@@ -1,5 +1,7 @@
 <?php
 
+use Michelf\Markdown;
+
 /**
  * Base Email Class
  *
@@ -32,19 +34,35 @@ abstract class BaseEmailService
     /**
      * Make a message to be sent later
      *
-     * @param array $config The system config
+     * @param array $config     The system config
      * @param array $recipients An array of email addresses
+     * @throws \Exception
      */
     public function __construct(array $config, array $recipients)
     {
-        $transport     = \Swift_MailTransport::newInstance();
-        $this->mailer  = \Swift_Mailer::newInstance($transport);
-        $this->message = \Swift_Message::newInstance();
+        if (!isset($config['email']['smtp'])) {
+            throw new Exception("SMTP Server not properly set up.");
+        }
+
+        $transport = Swift_SmtpTransport::newInstance(
+            $config['email']['smtp']['host'],
+            $config['email']['smtp']['port'],
+            $config['email']['smtp']['security']
+        );
+
+        $transport
+            ->setUsername($config['email']['smtp']['username'])
+            ->setPassword($config['email']['smtp']['password'])
+        ;
+
+
+        $this->mailer  = Swift_Mailer::newInstance($transport);
+        $this->message = Swift_Message::newInstance();
 
         if (isset($config['email']['forward_all_to'])
-            && ! empty($config['email']['forward_all_to'])
+            && !empty($config['email']['forward_all_to'])
         ) {
-            $this->recipients = array($config['email']['forward_all_to']);
+            $this->recipients = [$config['email']['forward_all_to']];
         } else {
             $this->recipients = $recipients;
         }
@@ -57,18 +75,18 @@ abstract class BaseEmailService
      * with the correct values in it
      *
      * @param string $templateName
-     * @param array $replacements
+     * @param array  $replacements
      *
      * @return string
      */
     public function parseEmail($templateName, array $replacements)
     {
-        $template = file_get_contents($this->templatePath . $templateName)
-                    . file_get_contents($this->templatePath . 'signature.md');
+        $template = file_get_contents($this->templatePath.$templateName)
+                    .file_get_contents($this->templatePath.'signature.md');
 
         $message = $template;
         foreach ($replacements as $field => $value) {
-            $message = str_replace('[' . $field . ']', $value, $message);
+            $message = str_replace('['.$field.']', $value, $message);
         }
 
         return $message;
@@ -154,7 +172,7 @@ abstract class BaseEmailService
      */
     public function markdownToHtml($markdown)
     {
-        $messageHTML = Michelf\Markdown::defaultTransform($markdown);
+        $messageHTML = Markdown::defaultTransform($markdown);
 
         return $messageHTML;
     }

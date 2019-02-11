@@ -19,6 +19,13 @@ class TalksControllerTest extends TalkBase
         $this->config = [
             'email' => [
                 'from' => 'source@example.com',
+                'smtp'           => [
+                    'host'     => 'localhost',
+                    'port'     => 25,
+                    'username' => 'username',
+                    'password' => 'ChangeMeSeymourChangeMe',
+                    'security' => null
+                ],
             ],
             'website_url' => 'http://example.com',
         ];

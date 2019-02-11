@@ -2,12 +2,25 @@
 
 namespace JoindinTest\Inc;
 
-use \TalkModel;
+use TalkModel;
 
-require_once __DIR__ . '/../../src/services/TalkCommentEmailService.php';
+require_once __DIR__.'/../../src/services/TalkCommentEmailService.php';
 
 class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase
 {
+
+    protected $config = [
+        'email' => [
+            "from" => "test@joind.in",
+            'smtp' => [
+                'host'     => 'localhost',
+                'port'     => 25,
+                'username' => 'username',
+                'password' => 'ChangeMeSeymourChangeMe',
+                'security' => null,
+            ],
+        ],
+    ];
 
     /**
      * Check that we can create the service
@@ -16,12 +29,11 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase
      */
     public function createService()
     {
-        $config = array("email" => array("from" => "test@joind.in"));
-        $recipients = array("test@joind.in");
-        $talk = new TalkModel(array("talk_title" => "sample talk"));
-        $comment = array("comments" => array(array("comment" => "test comment", "rating" => 3)));
+        $recipients = ["test@joind.in"];
+        $talk       = new TalkModel(["talk_title" => "sample talk"]);
+        $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
-        $service = new \TalkCommentEmailService($config, $recipients, $talk, $comment);
+        $service = new \TalkCommentEmailService($this->config, $recipients, $talk, $comment);
         $this->assertInstanceOf('TalkCommentEmailService', $service);
     }
 
@@ -32,13 +44,14 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase
      */
     public function createServiceWithEmailRedirect()
     {
-        $config = array("email" => array("from" => "test@joind.in", "forward_all_to" => "blackhole@joind.in"));
-        $recipients = array("test@joind.in");
-        $talk = new TalkModel(array("talk_title" => "sample talk"));
-        $comment = array("comments" => array(array("comment" => "test comment", "rating" => 3)));
+        $config                   = $this->config;
+        $config["email"]["forward_all_to"] = "blackhole@joind.in";
+        $recipients               = ["test@joind.in"];
+        $talk                     = new TalkModel(["talk_title" => "sample talk"]);
+        $comment                  = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
         $service = new \TalkCommentEmailService($config, $recipients, $talk, $comment);
-        $this->assertEquals($service->getRecipients(), array("blackhole@joind.in"));
+        $this->assertEquals(["blackhole@joind.in"], $service->getRecipients());
     }
 
     /**
@@ -48,18 +61,17 @@ class TalkCommentEmailServiceTest extends \PHPUnit_Framework_Testcase
      */
     public function templateReplacements()
     {
-        $config = array("email" => array("from" => "test@joind.in"));
-        $recipients = array("test@joind.in");
-        $talk = new TalkModel(array("talk_title" => "sample talk"));
-        $comment = array("comments" => array(array("comment" => "test comment", "rating" => 3)));
+        $recipients = ["test@joind.in"];
+        $talk       = new TalkModel(["talk_title" => "sample talk"]);
+        $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
-        $service = new \TalkCommentEmailService($config, $recipients, $talk, $comment);
-        $service->templatePath = __DIR__ . '/../../src/views/emails/';
+        $service               = new \TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+        $service->templatePath = __DIR__.'/../../src/views/emails/';
 
-        $template = "testTemplate.md";
-        $replacements = array("cat" => "Camel", "mat" => "magic carpet");
-        $message = $service->parseEmail($template, $replacements);
-        $expected = "The Camel sat on the magic carpet
+        $template     = "testTemplate.md";
+        $replacements = ["cat" => "Camel", "mat" => "magic carpet"];
+        $message      = $service->parseEmail($template, $replacements);
+        $expected     = "The Camel sat on the magic carpet
 
 
 ----
@@ -77,17 +89,18 @@ Questions? Comments?  Get in touch: [feedback@joind.in](mailto:feedback@joind.in
      */
     public function markdownTransform()
     {
-        $markdown = "A *sunny* day";
-        
-        $config = array("email" => array("from" => "test@joind.in"));
-        $recipients = array("test@joind.in");
-        $talk = new TalkModel(array("talk_title" => "sample talk"));
-        $comment = array("comments" => array(array("comment" => "test comment", "rating" => 3)));
+        $markdown   = "A *sunny* day";
+        $recipients = ["test@joind.in"];
+        $talk       = new TalkModel(["talk_title" => "sample talk"]);
+        $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
-        $service = new \TalkCommentEmailService($config, $recipients, $talk, $comment);
+        $service = new \TalkCommentEmailService($this->config, $recipients, $talk, $comment);
 
         $html = $service->markdownToHtml($markdown);
-        $this->assertEquals($html, "<p>A <em>sunny</em> day</p>
-");
+        $this->assertEquals(
+            $html,
+            "<p>A <em>sunny</em> day</p>
+"
+        );
     }
 }
