@@ -11,8 +11,9 @@ use TalkCommentMapper;
 use TalkMapper;
 use TalkModel;
 use UserMapper;
+use PHPUnit\Framework\TestCase;
 
-class TalkBase extends PHPUnit_Framework_TestCase
+class TalkBase extends TestCase
 {
     protected function createTalkMapper(mockPDO $db, Request $request, $expetcedCalls = 1)
     {

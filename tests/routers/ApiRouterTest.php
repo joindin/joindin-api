@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 require_once __DIR__ . '/../../src/inc/Request.php';
 
 /**
@@ -7,7 +9,7 @@ require_once __DIR__ . '/../../src/inc/Request.php';
  *
  * @covers ApiRouter
  */
-class ApiRouterTest extends PHPUnit_Framework_TestCase
+class ApiRouterTest extends TestCase
 {
 
     /**

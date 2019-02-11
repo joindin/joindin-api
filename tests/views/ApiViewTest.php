@@ -1,9 +1,11 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @covers ApiView
  */
-class ApiViewTest extends PHPUnit_Framework_TestCase
+class ApiViewTest extends TestCase
 {
     /**
      * @runInSeparateProcess

@@ -1,9 +1,11 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @covers JsonView
  */
-class JsonViewTest extends PHPUnit_Framework_TestCase
+class JsonViewTest extends TestCase
 {
 
     /**

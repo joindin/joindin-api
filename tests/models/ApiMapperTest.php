@@ -1,10 +1,12 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 require_once __DIR__ . '/TestApiMapper.php';
 /**
  *
  */
-class ApiMapperTest extends PHPUnit_Framework_TestCase
+class ApiMapperTest extends TestCase
 {
     public function setup()
     {

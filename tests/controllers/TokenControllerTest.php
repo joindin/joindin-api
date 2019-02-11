@@ -2,7 +2,9 @@
 
 namespace JoindinTest\Controller;
 
-class TokenControllerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class TokenControllerTest extends TestCase
 {
     private $request;
 

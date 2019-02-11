@@ -1,9 +1,11 @@
 <?php
 namespace JoindinTest\Inc;
 
+use PHPUnit\Framework\TestCase;
+
 require_once __DIR__ . '/../../src/inc/Request.php';
 
-class RequestTest extends \PHPUnit_Framework_TestCase
+class RequestTest extends TestCase
 {
     /**
      * Make sure we have everything we need - in this case the config
