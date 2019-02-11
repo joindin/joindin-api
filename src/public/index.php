@@ -1,8 +1,6 @@
 <?php
 // @codingStandardsIgnoreFile
-include '../inc/Autoloader.php';
-include '../inc/Request.php';
-include '../inc/Header.php';
+include __DIR__ . '/../../vendor/autoload.php';
 if (!function_exists('apache_request_headers')) {
     include '../inc/nginx-helper.php';
 }
