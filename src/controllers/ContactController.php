@@ -62,7 +62,7 @@ class ContactController extends BaseApiController
                 $this->config['akismet']['blog']
             );
             $isValid          = $spamCheckService->isCommentAcceptable(
-                $data['comment'],
+                ['comment' => $data['comment']],
                 $request->getClientIP(),
                 $request->getClientUserAgent()
             );
