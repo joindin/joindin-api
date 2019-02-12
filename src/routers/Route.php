@@ -105,16 +105,17 @@ class Route
      *
      * @param Request $request The Request to process
      * @param PDO $db The Database object
-     * @param mixed $config The application configuration
+     * @param \Psr\Container\ContainerInterface $container The application configuration
      *
      * @return mixed
      */
-    public function dispatch(Request $request, $db, $config)
+    public function dispatch(Request $request, $db, $container)
     {
         $className = $this->getController();
         $method    = $this->getAction();
-        if (class_exists($className)) {
-            $controller = new $className($config);
+
+        if ($container->has($className)) {
+            $controller = $container->get($className);
             if (method_exists($controller, $method)) {
                 return $controller->$method($request, $db);
             }

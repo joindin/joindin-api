@@ -5,9 +5,41 @@
  */
 class ContactController extends BaseApiController
 {
+    /**
+     * @var ContactEmailService
+     */
+    private $emailService;
+
+    /**
+     * @var SpamCheckService
+     */
+    private $spamCheckService;
+
     public function handle(Request $request, PDO $db)
     {
         // really need to not require this to be declared
+    }
+
+    /**
+     * @param ContactEmailService $emailService
+     *
+     * @return $this
+     */
+    public function setEmailService(ContactEmailService $emailService) {
+        $this->emailService = $emailService;
+
+        return $this;
+    }
+
+    /**
+     * @param SpamCheckService $spamCheckService
+     *
+     * @return $this
+     */
+    public function setSpamCheckService(SpamCheckService $spamCheckService) {
+        $this->spamCheckService = $spamCheckService;
+
+        return $this;
     }
 
     /**
@@ -46,6 +78,7 @@ class ContactController extends BaseApiController
             }
             $data[$name] = $value;
         }
+
         if (! empty($error)) {
             $message = 'The field';
             $message .= count($error) == 1 ? ' ' : 's ';
@@ -56,23 +89,19 @@ class ContactController extends BaseApiController
         }
 
         // run it by akismet if we have it
-        if (isset($this->config['akismet']['apiKey'], $this->config['akismet']['blog'])) {
-            $spamCheckService = new SpamCheckService(
-                $this->config['akismet']['apiKey'],
-                $this->config['akismet']['blog']
-            );
-            $isValid          = $spamCheckService->isCommentAcceptable(
+        if (isset($this->spamCheckService)) {
+            $isValid = $this->spamCheckService->isCommentAcceptable(
                 $data['comment'],
                 $request->getClientIP(),
                 $request->getClientUserAgent()
             );
+
             if (!$isValid) {
                 throw new Exception("Comment failed spam check", 400);
             }
         }
 
-        $emailService = new ContactEmailService($this->config);
-        $emailService->sendEmail($data);
+        $this->emailService->sendEmail($data);
 
         $view = $request->getView();
 
