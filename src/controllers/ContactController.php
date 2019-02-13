@@ -65,10 +65,6 @@ class ContactController extends BaseApiController
             throw new Exception("This client cannot perform this action", 403);
         }
 
-        if (! isset($this->emailService)) {
-            throw new RuntimeException('The emailservice has not been set');
-        }
-
         $fields = ['name', 'email', 'subject', 'comment'];
         $error  = [];
         $data   = [];
@@ -89,13 +85,11 @@ class ContactController extends BaseApiController
             throw new Exception($message, 400);
         }
 
-        $isValid = $this->spamCheckService->isCommentAcceptable(
+        if (!$this->spamCheckService->isCommentAcceptable(
             $data,
             $request->getClientIP(),
             $request->getClientUserAgent()
-        );
-
-        if (!$isValid) {
+        )) {
             throw new Exception("Comment failed spam check", 400);
         }
 
