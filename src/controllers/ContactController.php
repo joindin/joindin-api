@@ -37,7 +37,7 @@ class ContactController extends BaseApiController
      *
      * @return $this
      */
-    public function setSpamCheckService(SpamCheckService $spamCheckService)
+    public function setSpamCheckService(SpamCheckService $spamCheckService = null)
     {
         $this->spamCheckService = $spamCheckService;
 
