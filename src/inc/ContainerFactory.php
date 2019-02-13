@@ -22,7 +22,7 @@ class ContainerFactory
         if (!isset(static::$container) || $rebuild) {
             $container = new Container();
 
-            $container[SpamCheckServiceInterface::class] = function($c) {
+            $container[SpamCheckServiceInterface::class] = function ($c) {
                 return new NullSpamCheckService();
             };
 
