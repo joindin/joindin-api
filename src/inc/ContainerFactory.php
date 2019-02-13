@@ -42,9 +42,9 @@ class ContainerFactory
 
             $container[ContactController::class] = $container->factory(function (Container $c) use ($config) {
                 return new ContactController(
-                    $config,
                     $c[ContactEmailService::class],
-                    $c[SpamCheckServiceInterface::class]
+                    $c[SpamCheckServiceInterface::class],
+                    $config
                 );
             });
 

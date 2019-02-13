@@ -64,10 +64,11 @@ class ContainerFactoryTest extends TestCase
      * @test
      * @covers ContainerFactory::build
      */
-    public function spamCheckServiceIsNotAvailableWhenDisabled()
+    public function spamCheckServiceIsNullCheckerWhenDisabled()
     {
         $container = \ContainerFactory::build([], true);
-        $this->assertFalse($container->has(\SpamCheckService::class));
+        $this->assertTrue($container->has(\SpamCheckServiceInterface::class));
+        $this->assertInstanceOf(\NullSpamCheckService::class, $container->get(\SpamCheckServiceInterface::class));
     }
 
     /**
@@ -79,7 +80,7 @@ class ContainerFactoryTest extends TestCase
     {
         return [
             [\ContactController::class],
-            [\SpamCheckService::class],
+            [\SpamCheckServiceInterface::class],
             [\ContactEmailService::class],
             [\ApplicationsController::class],
             [\DefaultController::class],
