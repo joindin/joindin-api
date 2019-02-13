@@ -1,5 +1,7 @@
 <?php
 
+use Psr\Container\ContainerInterface;
+
 /**
  * Represents a Controller and action to dispatch a Request to.
  */
@@ -105,11 +107,11 @@ class Route
      *
      * @param Request $request The Request to process
      * @param PDO $db The Database object
-     * @param \Psr\Container\ContainerInterface $container The application configuration
+     * @param ContainerInterface $container The application configuration
      *
      * @return mixed
      */
-    public function dispatch(Request $request, $db, $container)
+    public function dispatch(Request $request, $db, ContainerInterface $container)
     {
         $className = $this->getController();
         $method    = $this->getAction();
