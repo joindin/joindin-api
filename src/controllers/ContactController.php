@@ -15,33 +15,27 @@ class ContactController extends BaseApiController
      */
     private $spamCheckService;
 
+    /**
+     * ContactController constructor.
+     *
+     * @param ContactEmailService       $emailService
+     * @param SpamCheckServiceInterface $spamCheckService
+     * @param array                     $config
+     */
+    public function __construct(
+        ContactEmailService $emailService,
+        SpamCheckServiceInterface $spamCheckService,
+        array $config = []
+    ) {
+        $this->emailService = $emailService;
+        $this->spamCheckService = $spamCheckService;
+
+        parent::__construct($config);
+    }
+
     public function handle(Request $request, PDO $db)
     {
         // really need to not require this to be declared
-    }
-
-    /**
-     * @param ContactEmailService $emailService
-     *
-     * @return $this
-     */
-    public function setEmailService(ContactEmailService $emailService)
-    {
-        $this->emailService = $emailService;
-
-        return $this;
-    }
-
-    /**
-     * @param SpamCheckService $spamCheckService
-     *
-     * @return $this
-     */
-    public function setSpamCheckService(SpamCheckService $spamCheckService = null)
-    {
-        $this->spamCheckService = $spamCheckService;
-
-        return $this;
     }
 
     /**
@@ -95,17 +89,14 @@ class ContactController extends BaseApiController
             throw new Exception($message, 400);
         }
 
-        // run it by akismet if we have it
-        if (isset($this->spamCheckService)) {
-            $isValid          = $this->spamCheckService->isCommentAcceptable(
-                $data,
-                $request->getClientIP(),
-                $request->getClientUserAgent()
-            );
+        $isValid = $this->spamCheckService->isCommentAcceptable(
+            $data,
+            $request->getClientIP(),
+            $request->getClientUserAgent()
+        );
 
-            if (!$isValid) {
-                throw new Exception("Comment failed spam check", 400);
-            }
+        if (!$isValid) {
+            throw new Exception("Comment failed spam check", 400);
         }
 
         $this->emailService->sendEmail($data);

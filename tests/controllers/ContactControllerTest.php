@@ -10,20 +10,26 @@ class ContactControllerTest extends TestCase
      * @dataProvider dataProvider
      * @test
      *
+     * @param bool  $isClientPermittedPasswordGrant
+     * @param array $returnValueMap
+     * @param bool  $isCommentAcceptable
+     * @param null  $expectedException
+     * @param null  $expectedExceptionMessage
+     * @param bool  $spamShouldBeChecked
+     * @param bool  $emailShouldBeSent
+     *
+     * @throws \Exception
      */
     public function contactWorksAsExpected(
         $isClientPermittedPasswordGrant,
         array $returnValueMap = [],
         $isCommentAcceptable = false,
-        $spamCheckServiceIsSet = false,
-        $emailServiceIsSet = false,
         $expectedException = null,
         $expectedExceptionMessage = null,
+        $spamShouldBeChecked = false,
         $emailShouldBeSent = false
     ) {
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
-
-        $contactController = new \ContactController();
 
         $oauthModel = $this->getMockBuilder('\OAuthModel')->disableOriginalConstructor()->getMock();
         $oauthModel->expects($this->once())->method('isClientPermittedPasswordGrant')->willReturn($isClientPermittedPasswordGrant);
@@ -37,26 +43,22 @@ class ContactControllerTest extends TestCase
 
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
 
-        if ($spamCheckServiceIsSet) {
-            $spamCheckService = $this->getMockBuilder(\SpamCheckService::class)
-                                     ->disableOriginalConstructor()
-                                     ->getMock();
+        $spamCheckService = $this->getMockBuilder(\SpamCheckServiceInterface::class)
+                                 ->disableOriginalConstructor()
+                                 ->getMock();
 
+        if ($spamShouldBeChecked) {
             $spamCheckService
                 ->expects($this->once())
                 ->method('isCommentAcceptable')
                 ->willReturn($isCommentAcceptable);
-
-            $contactController->setSpamCheckService($spamCheckService);
         }
 
-        if ($emailServiceIsSet) {
-            $emailService = $this->getMockBuilder(\ContactEmailService::class)
-                                 ->disableOriginalConstructor()
-                                 ->getMock();
+        $emailService = $this->getMockBuilder(\ContactEmailService::class)
+                             ->disableOriginalConstructor()
+                             ->getMock();
 
-            $contactController->setEmailService($emailService);
-        }
+        $contactController = new \ContactController($emailService, $spamCheckService);
 
         if (null !== $expectedException) {
             $this->expectException($expectedException);
@@ -102,11 +104,10 @@ class ContactControllerTest extends TestCase
                 'isClientPermittedPasswordGrant' => false,
                 'returnValueMap'                 => [],
                 'isCommentAcceptable'            => false,
-                'spamCheckServiceIsSet'          => false,
-                'emailCheckServiceIsSet'         => false,
                 'exceptedException'              => 'Exception',
                 'expectedExceptionMessage'       => 'This client cannot perform this action',
-                'emailShouldBeSent'              => false
+                'emailShouldBeSent'              => false,
+                'spamShouldBeChecked'            => false
             ],
             //Not all required fields are set
             [
@@ -120,8 +121,6 @@ class ContactControllerTest extends TestCase
                     ['comment', '', '']
                 ],
                 'isCommentAcceptable'            => false,
-                'spamCheckServiceIsSet'          => false,
-                'emailCheckServiceIsSet'         => true,
                 'exceptedException'              => \Exception::class,
                 'expectedExceptionMessage'       => "The fields 'name', 'email', 'subject', 'comment' are required",
             ],
@@ -138,28 +137,9 @@ class ContactControllerTest extends TestCase
                 ],
 
                 'isCommentAcceptable'      => false,
-                'spamCheckServiceIsSet'    => true,
-                'emailCheckServiceIsSet'   => true,
                 'exceptedException'        => \Exception::class,
                 'expectedExceptionMessage' => 'Comment failed spam check',
-            ],
-            //EmailService check throws an exception
-            [
-                'isClientPermittedPasswordGrant' => true,
-                'returnValueMap'                 => [
-                    ['client_id', '', 'client_id'],
-                    ['client_secret', '', 'client_secret'],
-                    ['name', '', 'name'],
-                    ['email', '', 'email'],
-                    ['subject', '', 'subject'],
-                    ['comment', '', 'comment']
-                ],
-                'isCommentAcceptable'            => true,
-                'spamCheckServiceIsSet'          => false,
-                'emailCheckServiceIsSet'         => false,
-                'exceptedException'              => \RuntimeException::class,
-                'expectedExceptionMessage'       => 'The emailservice has not been set',
-                'emailShouldBeSent'              => false
+                'spamShouldBeChecked'            => true,
             ],
             //Email is sent without spamcheck
             [
@@ -173,10 +153,9 @@ class ContactControllerTest extends TestCase
                     ['comment', '', 'comment']
                 ],
                 'isCommentAcceptable'            => true,
-                'spamCheckServiceIsSet'          => false,
-                'emailCheckServiceIsSet'         => true,
                 'exceptedException'              => null,
                 'expectedExceptionMessage'       => null,
+                'spamShouldBeChecked'            => true,
                 'emailShouldBeSent'              => true
             ],
             //All is good email should be sent
@@ -191,10 +170,9 @@ class ContactControllerTest extends TestCase
                     ['comment', '', 'comment']
                 ],
                 'isCommentAcceptable'            => true,
-                'spamCheckServiceIsSet'          => true,
-                'emailCheckServiceIsSet'         => true,
                 'exceptedException'              => null,
                 'expectedExceptionMessage'       => null,
+                'spamShouldBeChecked'            => true,
                 'emailShouldBeSent'              => true
             ]
         ];
