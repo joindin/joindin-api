@@ -33,7 +33,7 @@ set_exception_handler('handle_exception');
 define('BASEPATH', '.');
 include '../config.php';
 
-$container = require_once __DIR__ . '/../inc/container.php';
+$container = ContainerFactory::build($config);
 
 if ($config['mode'] == "development") {
     ini_set("html_errors", 0);

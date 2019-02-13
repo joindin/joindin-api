@@ -25,7 +25,8 @@ class ContactController extends BaseApiController
      *
      * @return $this
      */
-    public function setEmailService(ContactEmailService $emailService) {
+    public function setEmailService(ContactEmailService $emailService)
+    {
         $this->emailService = $emailService;
 
         return $this;
@@ -36,7 +37,8 @@ class ContactController extends BaseApiController
      *
      * @return $this
      */
-    public function setSpamCheckService(SpamCheckService $spamCheckService) {
+    public function setSpamCheckService(SpamCheckService $spamCheckService)
+    {
         $this->spamCheckService = $spamCheckService;
 
         return $this;
