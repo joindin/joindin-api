@@ -4,7 +4,7 @@
  * A class that lets you check against an external service (Akismet)
  * for spam in your content
  */
-class SpamCheckService
+class SpamCheckService implements SpamCheckServiceInterface
 {
     protected $akismetUrl;
 
@@ -27,7 +27,7 @@ class SpamCheckService
      * @param string $userIp
      * @param string $userAgent
      *
-     * @return Boolean true if the comment is okay, false if it got rated as spam
+     * @return bool true if the comment is okay, false if it got rated as spam
      */
     public function isCommentAcceptable(array $data, $userIp, $userAgent)
     {
