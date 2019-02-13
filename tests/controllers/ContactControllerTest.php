@@ -161,6 +161,24 @@ class ContactControllerTest extends TestCase
                 'expectedExceptionMessage'       => 'The emailservice has not been set',
                 'emailShouldBeSent'              => false
             ],
+            //Email is sent without spamcheck
+            [
+                'isClientPermittedPasswordGrant' => true,
+                'returnValueMap'                 => [
+                    ['client_id', '', 'client_id'],
+                    ['client_secret', '', 'client_secret'],
+                    ['name', '', 'name'],
+                    ['email', '', 'email'],
+                    ['subject', '', 'subject'],
+                    ['comment', '', 'comment']
+                ],
+                'isCommentAcceptable'            => true,
+                'spamCheckServiceIsSet'          => false,
+                'emailCheckServiceIsSet'         => true,
+                'exceptedException'              => null,
+                'expectedExceptionMessage'       => null,
+                'emailShouldBeSent'              => true
+            ],
             //All is good email should be sent
             [
                 'isClientPermittedPasswordGrant' => true,
