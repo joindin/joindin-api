@@ -22,9 +22,13 @@ class ContainerFactory
         if (!isset(static::$container) || $rebuild) {
             $container = new Container();
 
+            $container[SpamCheckServiceInterface::class] = function($c) {
+                return new NullSpamCheckService();
+            };
+
             //add $config
             if (isset($config['akismet']['apiKey'], $config['akismet']['blog'])) {
-                $container[SpamCheckService::class] = function ($c) use ($config) {
+                $container[SpamCheckServiceInterface::class] = function ($c) use ($config) {
                     return new SpamCheckService(
                         $config['akismet']['apiKey'],
                         $config['akismet']['blog']
@@ -37,11 +41,11 @@ class ContainerFactory
             };
 
             $container[ContactController::class] = $container->factory(function (Container $c) use ($config) {
-                $contactController = (new ContactController($config))
-                    ->setEmailService($c[ContactEmailService::class])
-                    ->setSpamCheckService(isset($c[SpamCheckService::class]) ? $c[SpamCheckService::class] : null);
-
-                return $contactController;
+                return new ContactController(
+                    $config,
+                    $c[ContactEmailService::class],
+                    $c[SpamCheckServiceInterface::class]
+                );
             });
 
             $container[ApplicationsController::class] = $container->factory(function ($c) use ($config) {
