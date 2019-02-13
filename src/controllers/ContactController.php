@@ -69,6 +69,10 @@ class ContactController extends BaseApiController
             throw new Exception("This client cannot perform this action", 403);
         }
 
+        if (! isset($this->emailService)) {
+            throw new RuntimeException('The emailservice has not been set');
+        }
+
         $fields = ['name', 'email', 'subject', 'comment'];
         $error  = [];
         $data   = [];
