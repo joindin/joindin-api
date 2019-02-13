@@ -7,24 +7,67 @@ use Psr\Container\ContainerInterface;
 
 class ContainerFactoryTest extends TestCase
 {
+    private $config = [
+        'akismet' => [
+            'apiKey' => 'key',
+            'blog'   => 'blog'
+        ],
+        'email' => [
+            'contact' => 'excample@example.com',
+            "from" => "example@example.com",
+            'smtp' => [
+                'host'     => 'localhost',
+                'port'     => 25,
+                'username' => 'username',
+                'password' => 'ChangeMeSeymourChangeMe',
+                'security' => null,
+            ],
+        ],
+        'website_url' => 'www.example.com'
+    ];
+
     /**
      * @test
      */
     public function containerIsCreated()
     {
-        $this->assertInstanceOf(ContainerInterface::class, \ContainerFactory::build([]));
+        $this->assertInstanceOf(ContainerInterface::class, \ContainerFactory::build($this->config));
     }
 
     /**
      * @test
+     * @covers ContainerFactory::build
      *
      * @dataProvider dataProvider
      * @param string $service
      */
     public function serviceIsDefined($service)
     {
-        $container = \ContainerFactory::build([]);
+        $container = \ContainerFactory::build($this->config, true);
         $this->assertTrue($container->has($service));
+    }
+
+    /**
+     * @test
+     * @covers ContainerFactory::build
+     *
+     * @dataProvider dataProvider
+     * @param string $service
+     */
+    public function servicesCanBeCreated($service)
+    {
+        $container = \ContainerFactory::build($this->config, true);
+        $this->assertInstanceOf($service, $container->get($service));
+    }
+
+    /**
+     * @test
+     * @covers ContainerFactory::build
+     */
+    public function spamCheckServiceIsNotAvailableWhenDisabled()
+    {
+        $container = \ContainerFactory::build([], true);
+        $this->assertFalse($container->has(\SpamCheckService::class));
     }
 
     /**

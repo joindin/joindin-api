@@ -13,34 +13,33 @@ class ContainerFactory
      * Builds a Psr11 compatible container
      *
      * @param array $config
+     * @param bool  $rebuild
      *
      * @return \Psr\Container\ContainerInterface
      */
-    public static function build(array $config)
+    public static function build(array $config, $rebuild = false)
     {
-        if (!isset(static::$container)) {
+        if (!isset(static::$container) || $rebuild) {
             $container = new Container();
 
             //add $config
-            $container[SpamCheckService::class] = function ($c) use ($config) {
-                if (isset($config['akismet']['apiKey'], $config['akismet']['blog'])) {
-                    return null;
-                }
-
-                return new SpamCheckService(
-                    $config['akismet']['apiKey'],
-                    $config['akismet']['blog']
-                );
-            };
+            if (isset($config['akismet']['apiKey'], $config['akismet']['blog'])) {
+                $container[SpamCheckService::class] = function ($c) use ($config) {
+                    return new SpamCheckService(
+                        $config['akismet']['apiKey'],
+                        $config['akismet']['blog']
+                    );
+                };
+            }
 
             $container[ContactEmailService::class] = function ($c) use ($config) {
                 return new ContactEmailService($config);
             };
 
-            $container[ContactController::class] = $container->factory(function ($c) use ($config) {
+            $container[ContactController::class] = $container->factory(function (Container $c) use ($config) {
                 $contactController = (new ContactController($config))
                     ->setEmailService($c[ContactEmailService::class])
-                    ->setSpamCheckService($c[SpamCheckService::class]);
+                    ->setSpamCheckService(isset($c[SpamCheckService::class]) ? $c[SpamCheckService::class] : null);
 
                 return $contactController;
             });
@@ -52,6 +51,7 @@ class ContainerFactory
             $container[DefaultController::class] = $container->factory(function ($c) use ($config) {
                 return new DefaultController($config);
             });
+
             $container[EmailsController::class]  = $container->factory(function ($c) use ($config) {
                 return new EmailsController($config);
             });
