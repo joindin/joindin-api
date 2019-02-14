@@ -10,12 +10,13 @@
         "source" : "https://github.com/joindin/joindin-api"
     },
     "require" : {
-        "ext-pdo": "*",
         "ext-json": "*",
-        "swiftmailer/swiftmailer": "^v5.4.9",
-        "michelf/php-markdown": "^1.8",
+        "ext-pdo": "*",
         "guzzlehttp/guzzle": "^4.2.4",
-        "guzzlehttp/oauth-subscriber": "0.1.*"
+        "guzzlehttp/oauth-subscriber": "0.1.*",
+        "michelf/php-markdown": "^1.8",
+        "pimple/pimple": "^3.2",
+        "swiftmailer/swiftmailer": "^v5.4.9"
     },
     "require-dev": {
         "exussum12/coverage-checker": "^0.11.0",

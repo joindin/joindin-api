@@ -5,6 +5,34 @@
  */
 class ContactController extends BaseApiController
 {
+    /**
+     * @var ContactEmailService
+     */
+    private $emailService;
+
+    /**
+     * @var SpamCheckService
+     */
+    private $spamCheckService;
+
+    /**
+     * ContactController constructor.
+     *
+     * @param ContactEmailService       $emailService
+     * @param SpamCheckServiceInterface $spamCheckService
+     * @param array                     $config
+     */
+    public function __construct(
+        ContactEmailService $emailService,
+        SpamCheckServiceInterface $spamCheckService,
+        array $config = []
+    ) {
+        $this->emailService = $emailService;
+        $this->spamCheckService = $spamCheckService;
+
+        parent::__construct($config);
+    }
+
     public function handle(Request $request, PDO $db)
     {
         // really need to not require this to be declared
@@ -32,13 +60,14 @@ class ContactController extends BaseApiController
         // only trusted clients can contact us to save on spam
         $clientId         = $request->getParameter('client_id');
         $clientSecret     = $request->getParameter('client_secret');
-        $this->oauthModel = $request->getOauthModel($db);
-        if (! $this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
+        $oauthModel = $request->getOauthModel($db);
+        if (! $oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
             throw new Exception("This client cannot perform this action", 403);
         }
 
         $fields = ['name', 'email', 'subject', 'comment'];
         $error  = [];
+        $data   = [];
         foreach ($fields as $name) {
             $value = $request->getParameter($name);
             if (empty($value)) {
@@ -46,6 +75,7 @@ class ContactController extends BaseApiController
             }
             $data[$name] = $value;
         }
+
         if (! empty($error)) {
             $message = 'The field';
             $message .= count($error) == 1 ? ' ' : 's ';
@@ -55,24 +85,15 @@ class ContactController extends BaseApiController
             throw new Exception($message, 400);
         }
 
-        // run it by akismet if we have it
-        if (isset($this->config['akismet']['apiKey'], $this->config['akismet']['blog'])) {
-            $spamCheckService = new SpamCheckService(
-                $this->config['akismet']['apiKey'],
-                $this->config['akismet']['blog']
-            );
-            $isValid          = $spamCheckService->isCommentAcceptable(
-                $data['comment'],
-                $request->getClientIP(),
-                $request->getClientUserAgent()
-            );
-            if (!$isValid) {
-                throw new Exception("Comment failed spam check", 400);
-            }
+        if (!$this->spamCheckService->isCommentAcceptable(
+            $data,
+            $request->getClientIP(),
+            $request->getClientUserAgent()
+        )) {
+            throw new Exception("Comment failed spam check", 400);
         }
 
-        $emailService = new ContactEmailService($this->config);
-        $emailService->sendEmail($data);
+        $this->emailService->sendEmail($data);
 
         $view = $request->getView();
 

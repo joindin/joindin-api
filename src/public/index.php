@@ -32,6 +32,9 @@ set_exception_handler('handle_exception');
 // config setup
 define('BASEPATH', '.');
 include '../config.php';
+
+$container = ContainerFactory::build($config);
+
 if ($config['mode'] == "development") {
     ini_set("html_errors", 0);
 }
@@ -65,7 +68,7 @@ $routers = [
 $router = new ApiRouter($config, $routers, ['2']);
 
 $route = $router->getRoute($request);
-$return_data = $route->dispatch($request, $ji_db, $config);
+$return_data = $route->dispatch($request, $ji_db, $container);
 
 if ($return_data && isset($request->user_id)) {
     $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;

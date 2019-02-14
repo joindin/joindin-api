@@ -97,7 +97,7 @@ class RouteTest extends TestCase
                 'action' => 'action2',
                 'request' => $this->getRequest('v1'),
                 'expectedException' => 'Exception',
-                'expectedExceptionCode' => 500
+                'expectedExceptionCode' => 500,
             ),
             array( // #2
                 'config' => array('config'),
@@ -105,7 +105,8 @@ class RouteTest extends TestCase
                 'action' => 'action2',
                 'request' => $this->getRequest('v1'),
                 'expectedException' => 'Exception',
-                'expectedExceptionCode' => 400
+                'expectedExceptionCode' => 400,
+                'controllerExists' => false
             )
         );
     }
@@ -124,14 +125,29 @@ class RouteTest extends TestCase
      *
      * @throws Exception
      */
-    public function testDispatch(array $config, $controller, $action, Request $request, $expectedException = false, $expectedExceptionCode = false)
+    public function testDispatch(array $config, $controller, $action, Request $request, $expectedException = false, $expectedExceptionCode = false, $controllerExists = true)
     {
         $db = 'database';
+        $container = $this->getMockBuilder(\Psr\Container\ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $container
+            ->expects($this->atLeastOnce())
+            ->method('has')
+            ->willReturn($controllerExists);
+
+        if ($controllerExists) {
+            $container
+                ->expects($this->atLeastOnce())
+                ->method('get')
+                ->willReturn(new $controller);
+        }
 
         $route = new Route($controller, $action);
 
         try {
-            $this->assertEquals('val', $route->dispatch($request, $db, $config));
+            $this->assertEquals('val', $route->dispatch($request, $db, $container));
         } catch (Exception $ex) {
             if (!$expectedException) {
                 throw $ex;
