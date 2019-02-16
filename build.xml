@@ -46,7 +46,7 @@
  </target>
 
  <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
-     <exec command="composer smell"/>
+     <exec command="composer sniff"/>
  </target>
 
  <target name="phpcs-human-summary" description="Generate human-readable Codesniffer output">
