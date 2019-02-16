@@ -15,4 +15,4 @@ before_script:
   - git remote set-branches --add origin master
   - git fetch
 script:
-  - composer test
+  - composer check
