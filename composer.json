@@ -61,6 +61,7 @@
             "diffFilter --phpunit diff.txt build/logs/clover.xml 80"
         ],
         "build": [
+            "mkdir -p build/logs",
             "@lint",
             "@smell",
             "@security",
