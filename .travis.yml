@@ -12,5 +12,7 @@ matrix:
 before_script:
   - composer install
   - cp src/config.php.dist src/config.php
+  - git diff origin/master... > diff.txt
 script:
   - composer build
+  - composer diff
