@@ -52,7 +52,7 @@
         ]
     },
     "scripts": {
-        "test": "phpunit -c . tests/",
+        "unit": "phpunit -c . tests/",
         "lint": "parallel-lint --exclude vendor .",
         "smell": "phpcs --standard=tools/codesniffer/JoindInPSR2/ruleset.xml --ignore=**/config.php,**/database.php,vendor,tools,tests/bootstrap.php --extensions=php --report-checkstyle=build/logs/checkstyle.xml --runtime-set ignore_warnings_on_exit true -p .",
         "security": "security-checker security:check composer.lock",
@@ -60,12 +60,12 @@
             "git diff origin/master... -- > diff.txt",
             "diffFilter --phpunit diff.txt build/logs/clover.xml 80"
         ],
-        "build": [
+        "test": [
             "mkdir -p build/logs",
             "@lint",
             "@smell",
             "@security",
-            "@test",
+            "@unit",
             "@diff"
         ]
     },
