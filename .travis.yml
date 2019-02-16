@@ -12,7 +12,7 @@ matrix:
 before_script:
   - composer install
   - cp src/config.php.dist src/config.php
-  - git diff origin/master... -- > diff.txt
+  - git remote set-branches --add origin master
+  - git fetch
 script:
   - composer build
-  - composer diff
