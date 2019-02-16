@@ -63,7 +63,7 @@
         "check": [
             "mkdir -p build/logs",
             "@lint",
-            "@snill",
+            "@sniff",
             "@security",
             "@test",
             "@diff"
