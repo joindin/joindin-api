@@ -4,6 +4,13 @@
  <property name="apiv2source" value="src" />
  <property name="basedir" value="."/>
 
+<target name="initialize" description="Do Some initial setup.">
+    <exec command="wget https://raw.githubusercontent.com/composer/getcomposer.org/cb19f2aa3aeaa2006c0cd69a7ef011eb31463067/web/installer -O - -q | php -- --quiet" logoutput="true" checkreturn="true" />
+    <exec command="sudo mv composer.phar /usr/bin/composer"/>
+    <exec command="composer install"/>
+</target>
+
+
  <target name="clean" description="Clean up and create artifact directories">
   <delete dir="${basedir}/build/api"/>
   <delete dir="${basedir}/build/coverage"/>
@@ -18,12 +25,12 @@
  </target>
 
  <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
-  <exec command="phpunit -c tests/phpunit.xml" logoutput="true" checkreturn="true" />
+  <exec command="composer test" logoutput="true" checkreturn="true" />
  </target>
 
  <target name="buildTasks" description="Run the phpmd, phpcs, phploc and lint tasks.">
    <phingcall target="phpcs"/>
-   <phingcall target="phplint"/>
+   <phingcall target="lint"/>
  </target>
 
  <target name="frisby" description="Run API tests in Frisby">
@@ -39,16 +46,7 @@
  </target>
 
  <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
-  <phpcodesniffer standard="tools/codesniffer/JoindInPSR2/" verbosity="0" haltonerror="true" haltonwarning="true">
-   <fileset dir="${apiv2source}">
-       <patternset>
-           <include name="**/*.php"/>
-           <exclude name="**/config.php" />
-           <exclude name="**/database.php" />
-       </patternset>
-   </fileset>
-   <formatter type="checkstyle" outfile="${basedir}/build/logs/checkstyle.xml" />
-  </phpcodesniffer>
+     <exec command="composer sniff"/>
  </target>
 
  <target name="phpcs-human-summary" description="Generate human-readable Codesniffer output">
@@ -77,17 +75,11 @@
     </phpcodesniffer>
 </target>
 
- <target name="phplint" description="Run php -l over the fileset">
-   <phplint haltonfailure="true">
-     <fileset dir="${apiv2source}">
-       <patternset>
-         <include name="**/*.php"/>
-       </patternset>
-     </fileset>
-   </phplint>
+ <target name="lint" description="Run linter over the fileset">
+     <exec command="composer lint" logoutput="true" checkreturn="true" />
  </target>
 
- <target name="build" depends="clean,buildTasks,phpunit"/>
+ <target name="build" depends="initialize,clean,buildTasks,phpunit"/>
 
  <target name="launch">
   <exec command="scripts/jenkinslaunch.sh" checkreturn="true" logoutput="true" />
