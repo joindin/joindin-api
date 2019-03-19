@@ -28,7 +28,7 @@ class TwitterController extends BaseApiController
 
         // API call to twitter, get request token
         $client = new Client([
-            'base_url' => 'https://api.twitter.com/',
+            'base_uri' => 'https://api.twitter.com/',
             'defaults' => ['auth' => 'oauth'],
             'handler' => $stack
         ]);
@@ -87,7 +87,7 @@ class TwitterController extends BaseApiController
         ]);
         $stack->push($oauth);
         $client = new Client([
-            'base_url' => 'https://api.twitter.com/',
+            'base_uri' => 'https://api.twitter.com/',
             'defaults' => ['auth' => 'oauth'],
             'handler' => $stack
         ]);
@@ -112,7 +112,7 @@ class TwitterController extends BaseApiController
                 ]);
                 $stack1->push($oauth1);
                 $client1 = new Client([
-                    'base_url' => 'https://api.twitter.com/',
+                    'base_uri' => 'https://api.twitter.com/',
                     'defaults' => ['auth' => 'oauth'],
                     'handler' => $stack1
                 ]);
