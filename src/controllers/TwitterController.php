@@ -92,7 +92,7 @@ class TwitterController extends BaseApiController
             'handler' => $stack
         ]);
 
-        $res = $client->post('oauth/access_token', ['body' => ['oauth_verifier' => $verifier]]);
+        $res = $client->post('oauth/access_token', ['form_params' => ['oauth_verifier' => $verifier]]);
         if ($res->getStatusCode() == 200) {
             parse_str($res->getBody(), $data);
 
