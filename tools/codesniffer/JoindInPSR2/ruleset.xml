@@ -8,6 +8,6 @@
  -->
  <rule ref="PSR2">
   <!-- Exclude the "Each class must be in a namespace of at least one level"  -->
-  <exclude name="PSR1.Classes.ClassDeclaration"/>
+  <!-- <exclude name="PSR1.Classes.ClassDeclaration"/> -->
  </rule>
 </ruleset>

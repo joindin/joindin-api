@@ -1,5 +1,11 @@
 <?php
 // @codingStandardsIgnoreFile
+use Joindin\Api\ContainerFactory;
+use Joindin\Api\Request;
+use Joindin\Api\Router\ApiRouter;
+use Joindin\Api\Router\DefaultRouter;
+use Joindin\Api\Router\VersionedRouter;
+
 include __DIR__ . '/../../vendor/autoload.php';
 if (!function_exists('apache_request_headers')) {
     include '../inc/nginx-helper.php';

@@ -1,458 +1,458 @@
 [
     {    "path": "/events(/[^/]+)*/hosts",
-        "controller": "Event_hostsController",
+        "controller": "Joindin\\Api\\Controller\\EventHostsController",
         "action": "listHosts",
         "verbs": ["GET"]
     },
     {   "path": "/events/[\\d]+/hosts",
-        "controller": "Event_hostsController",
+        "controller": "Joindin\\Api\\Controller\\EventHostsController",
         "action": "addHost",
         "verbs": ["POST"]
     },
     {   "path": "/events/[\\d]+/hosts/[\\d]+",
-        "controller": "Event_hostsController",
+        "controller": "Joindin\\Api\\Controller\\EventHostsController",
         "action": "removeHostFromEvent",
         "verbs": ["DELETE"]
     },
     {
         "path": "/events(/[^/]+)*/comments/reported",
-        "controller": "Event_commentsController",
+        "controller": "Joindin\\Api\\Controller\\EventCommentsController",
         "action": "getReported",
         "verbs": ["GET"]
     },
     {
         "path": "/events(/[\\d]+)/talk_comments/reported",
-        "controller": "Talk_commentsController",
+        "controller": "Joindin\\Api\\Controller\\TalkCommentsController",
         "action": "getReported",
         "verbs": ["GET"]
     },
     {
         "path": "/events/(\\d+)/claims$",
-        "controller": "EventsController",
+        "controller": "Joindin\\Api\\Controller\\EventsController",
         "action": "pendingClaims",
         "verbs": ["GET"]
     },
     {
         "path": "/events(/[^/]+)*/?$",
-        "controller": "EventsController",
+        "controller": "Joindin\\Api\\Controller\\EventsController",
         "action": "getAction",
         "verbs": ["GET"]
     },
     {
         "path": "/events/(\\d+)/tracks$",
-        "controller": "EventsController",
+        "controller": "Joindin\\Api\\Controller\\EventsController",
         "action": "createTrack",
         "verbs": ["POST"]
     },
     {
         "path": "/events/(\\d+)/approval$",
-        "controller": "EventsController",
+        "controller": "Joindin\\Api\\Controller\\EventsController",
         "action": "approveAction",
         "verbs": ["POST"]
     },
     {
         "path": "/events/(\\d+)/approval$",
-        "controller": "EventsController",
+        "controller": "Joindin\\Api\\Controller\\EventsController",
         "action": "rejectAction",
         "verbs": ["DELETE"]
     },
     {
         "path": "/events(/[^/]+)*/comments",
-        "controller": "Event_commentsController",
+        "controller": "Joindin\\Api\\Controller\\Event_commentsController",
         "action": "createComment",
         "verbs": ["POST"]
     },
     {
         "path": "/events(/[\\d]+)/images",
-        "controller": "EventImagesController",
+        "controller": "Joindin\\Api\\Controller\\EventImagesController",
         "action": "createImage",
         "verbs": ["POST"]
     },
     {
         "path": "/events(/[\\d]+)/images",
-        "controller": "EventImagesController",
+        "controller": "Joindin\\Api\\Controller\\EventImagesController",
         "action": "deleteImage",
         "verbs": ["DELETE"]
     },
     {
         "path": "/events(/[\\d]+)/talks",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "createTalkAction",
         "verbs": ["POST"]
     },
     {
         "path": "/events(/[^/]+)*/?$",
-        "controller": "EventsController",
+        "controller": "Joindin\\Api\\Controller\\EventsController",
         "action": "postAction",
         "verbs": ["POST"]
     },
     {
         "path": "/events(/[^/]+)*/?$",
-        "controller": "EventsController",
+        "controller": "Joindin\\Api\\Controller\\EventsController",
         "action": "putAction",
         "verbs": ["PUT"]
     },
     {
         "path": "/events(/[^/]+)*/?$",
-        "controller": "EventsController",
+        "controller": "Joindin\\Api\\Controller\\EventsController",
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
     {
         "path": "/talks(/[\\d]+)/links/?$",
-        "controller": "TalkLinkController",
+        "controller": "Joindin\\Api\\Controller\\TalkLinkController",
         "action": "getTalkLinks",
         "verbs": ["GET"]
     },
     {
         "path": "/talks(/[\\d]+)/links/?$",
-        "controller": "TalkLinkController",
+        "controller": "Joindin\\Api\\Controller\\TalkLinkController",
         "action": "addTalkLink",
         "verbs": ["POST"]
     },
     {
         "path": "/talks(/[\\d]+)/links(/[\\d]+)$",
-        "controller": "TalkLinkController",
+        "controller": "Joindin\\Api\\Controller\\TalkLinkController",
         "action": "getTalkLink",
         "verbs": ["GET"]
     },
     {
         "path": "/talks(/[\\d]+)/links(/[\\d]+)$",
-        "controller": "TalkLinkController",
+        "controller": "Joindin\\Api\\Controller\\TalkLinkController",
         "action": "removeTalkLink",
         "verbs": ["DELETE"]
     },
     {
         "path": "/talks(/[\\d]+)/links(/[\\d]+)$",
-        "controller": "TalkLinkController",
+        "controller": "Joindin\\Api\\Controller\\TalkLinkController",
         "action": "updateTalkLink",
         "verbs": ["PUT"]
     },
     {
         "path": "/talks(/[\\d]+)/speakers/?$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "getSpeakersForTalk",
         "verbs": ["GET"]
     },
     {
         "path": "/talks(/[\\d]+)/speakers/?$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "setSpeakerForTalk",
         "verbs": ["POST"]
     },
     {
         "path": "/talks(/[\\d]+)/speakers/?$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "removeSpeakerForTalk",
         "verbs": ["DELETE"]
     },
     {
         "path": "/talks(/[\\d]+)$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "editTalk",
         "verbs": ["PUT"]
     },
     {
         "path": "/talks/?$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "getTalkByKeyWord",
         "verbs": ["GET"]
     },
     {
         "path": "/talks/[\\d]+/comments/?$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "getTalkComments",
         "verbs": ["GET"]
     },
     {
         "path": "/talks/[\\d]+/starred/?$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "getTalkStarred",
         "verbs": ["GET"]
     },
     {
         "path": "/talks/[\\d]+/?$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "getAction",
         "verbs": ["GET"]
     },
     {
         "path": "/talks(/[\\d]+)/tracks$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "addTrackToTalk",
         "verbs": ["POST"]
     },
     {
         "path": "/talks(/[\\d]+)/tracks(/[\\d]+)$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "removeTrackFromTalk",
         "verbs": ["DELETE"]
     },
     {
         "path": "/talks(/[^/]+)*/?$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "postAction",
         "verbs": ["POST"]
     },
     {
         "path": "/talks(/[\\d]+)/speakers(/[\\d]+)$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "removeApprovedSpeakerFromTalk",
         "verbs": ["DELETE"]
     },
     {
         "path": "/talks/[\\d+]]/starred?",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "deleteAction",
         "verbs": ["DELETE"]
     },
     {
         "path": "/talks/[^\\d]/?$",
-        "controller": "TalksController",
+        "controller": "Joindin\\Api\\Controller\\TalksController",
         "action": "deleteTalk",
         "verbs": ["DELETE"]
     },
     {
         "path": "/token(/[^/]+)*/?$",
-        "controller": "TokenController",
+        "controller": "Joindin\\Api\\Controller\\TokenController",
         "action": "postAction",
         "verbs": ["POST"]
     },
     {
         "path": "/token/?$",
-        "controller": "TokenController",
+        "controller": "Joindin\\Api\\Controller\\TokenController",
         "action": "listTokensForUser",
         "verbs": ["GET"]
     },
     {
         "path": "/token(/[^/]+)/?$",
-        "controller": "TokenController",
+        "controller": "Joindin\\Api\\Controller\\TokenController",
         "action": "getToken",
         "verbs": ["GET"]
     },
     {
         "path": "/token(/[^/]+)*/?$",
-        "controller": "TokenController",
+        "controller": "Joindin\\Api\\Controller\\TokenController",
         "action": "revokeToken",
         "verbs": ["DELETE"]
     },
     {
         "path": "/tracks(/[^/]+)*/?$",
-        "controller": "TracksController",
+        "controller": "Joindin\\Api\\Controller\\TracksController",
         "action": "getAction",
         "verbs": ["GET"]
     },
     {
         "path": "/tracks(/[\\d]+)/?$",
-        "controller": "TracksController",
+        "controller": "Joindin\\Api\\Controller\\TracksController",
         "action": "editTrack",
         "verbs": ["PUT"]
     },
     {
         "path": "/tracks(/[\\d]+)/?$",
-        "controller": "TracksController",
+        "controller": "Joindin\\Api\\Controller\\TracksController",
         "action": "deleteTrack",
         "verbs": ["DELETE"]
     },
 
     {
         "path": "/users/passwords$",
-        "controller": "UsersController",
+        "controller": "Joindin\\Api\\Controller\\UsersController",
         "action": "passwordReset",
         "verbs": ["POST"]
     },
     {
         "path": "/users(/[0-9]+)/trusted?$",
-        "controller": "UsersController",
+        "controller": "Joindin\\Api\\Controller\\UsersController",
         "action": "setTrusted",
         "verbs": ["POST"]
     },
     {
         "path": "/users(/[^/]+)*/?$",
-        "controller": "UsersController",
+        "controller": "Joindin\\Api\\Controller\\UsersController",
         "action": "getAction",
         "verbs": ["GET"]
     },
 
     {
         "path": "/users(/[^/]+)*/?$",
-        "controller": "UsersController",
+        "controller": "Joindin\\Api\\Controller\\UsersController",
         "action": "postAction",
         "verbs": ["POST"]
     },
 
     {
         "path": "/users(/[^/]+)*/?$",
-        "controller": "UsersController",
+        "controller": "Joindin\\Api\\Controller\\UsersController",
         "action": "deleteUser",
         "verbs": ["DELETE"]
     },
 
     {
         "path": "/users(/[0-9]+)/?$",
-        "controller": "UsersController",
+        "controller": "Joindin\\Api\\Controller\\UsersController",
         "action": "updateUser",
         "verbs": ["PUT"]
     },
     {
         "path": "/event_comments(/[^/]+)*/?$",
-        "controller": "Event_commentsController",
+        "controller": "Joindin\\Api\\Controller\\EventCommentsController",
         "action": "getComments",
         "verbs": ["GET"]
     },
 
     {
         "path": "/event_comments(/[^/]+)*/reported?$",
-        "controller": "Event_commentsController",
+        "controller": "Joindin\\Api\\Controller\\EventCommentsController",
         "action": "reportComment",
         "verbs": ["POST"]
     },
 
     {
         "path": "/event_comments(/[^/]+)*/reported?$",
-        "controller": "Event_commentsController",
+        "controller": "Joindin\\Api\\Controller\\EventCommentsController",
         "action": "moderateReportedComment",
         "verbs": ["PUT"]
     },
 
     {
         "path": "/talk_comments(/[^/]+)*/?$",
-        "controller": "Talk_commentsController",
+        "controller": "Joindin\\Api\\Controller\\TalkCommentsController",
         "action": "getComments",
         "verbs": ["GET"]
     },
 
     {
         "path": "/talk_comments(/[^/]+)*/reported?$",
-        "controller": "Talk_commentsController",
+        "controller": "Joindin\\Api\\Controller\\TalkCommentsController",
         "action": "reportComment",
         "verbs": ["POST"]
     },
 
     {
         "path": "/talk_comments(/[^/]+)*/reported?$",
-        "controller": "Talk_commentsController",
+        "controller": "Joindin\\Api\\Controller\\TalkCommentsController",
         "action": "moderateReportedComment",
         "verbs": ["PUT"]
     },
 
     {
         "path": "/talk_comments(/[^/]+)*/?$",
-        "controller": "Talk_commentsController",
+        "controller": "Joindin\\Api\\Controller\\TalkCommentsController",
         "action": "updateComment",
         "verbs": ["PUT"]
     },
 
     {
         "path": "/emails/verifications",
-        "controller": "EmailsController",
+        "controller": "Joindin\\Api\\Controller\\EmailsController",
         "action": "verifications",
         "verbs": ["POST"]
     },
 
     {
         "path": "/emails/reminders/username",
-        "controller": "EmailsController",
+        "controller": "Joindin\\Api\\Controller\\EmailsController",
         "action": "usernameReminder",
         "verbs": ["POST"]
     },
 
     {
         "path": "/emails/reminders/password",
-        "controller": "EmailsController",
+        "controller": "Joindin\\Api\\Controller\\EmailsController",
         "action": "passwordReset",
         "verbs": ["POST"]
     },
 
     {
         "path": "/twitter/request_token",
-        "controller": "TwitterController",
+        "controller": "Joindin\\Api\\Controller\\TwitterController",
         "action": "getRequestToken",
         "verbs": ["POST"]
     },
 
     {
         "path": "/twitter/token",
-        "controller": "TwitterController",
+        "controller": "Joindin\\Api\\Controller\\TwitterController",
         "action": "logUserIn",
         "verbs": ["POST"]
     },
 
     {
         "path": "/languages?$",
-        "controller": "LanguagesController",
+        "controller": "Joindin\\Api\\Controller\\LanguagesController",
         "action": "getAllLanguages",
         "verbs": ["GET"]
     },
 
     {
         "path": "/languages(/[0-9]+)?/?$",
-        "controller": "LanguagesController",
+        "controller": "Joindin\\Api\\Controller\\LanguagesController",
         "action": "getLanguage",
         "verbs": ["GET"]
     },
 
     {
         "path": "/contact",
-        "controller": "ContactController",
+        "controller": "Joindin\\Api\\Controller\\ContactController",
         "action": "contact",
         "verbs": ["POST"]
     },
 
     {
         "path": "/talk_types/?$",
-        "controller": "TalkTypesController",
+        "controller": "Joindin\\Api\\Controller\\TalkTypesController",
         "action": "getAllTalkTypes",
         "verbs": ["GET"]
     },
 
     {
         "path": "/talk_types(/[0-9]+)?/?$",
-        "controller": "TalkTypesController",
+        "controller": "Joindin\\Api\\Controller\\TalkTypesController",
         "action": "getTalkType",
         "verbs": ["GET"]
     },
 
     {
         "path": "/facebook/token",
-        "controller": "FacebookController",
+        "controller": "Joindin\\Api\\Controller\\FacebookController",
         "action": "logUserIn",
         "verbs": ["POST"]
     },
     {
         "path" : "/applications$",
-        "controller" : "ApplicationsController",
+        "controller" : "Joindin\\Api\\Controller\\ApplicationsController",
         "action" : "listApplications",
         "verbs" : ["GET"]
     },
     {
         "path" : "/applications$",
-        "controller" : "ApplicationsController",
+        "controller" : "Joindin\\Api\\Controller\\ApplicationsController",
         "action" : "createApplication",
         "verbs" : ["POST"]
     },
     {
         "path" : "/applications(/[0-9]+)$",
-        "controller" : "ApplicationsController",
+        "controller" : "Joindin\\Api\\Controller\\ApplicationsController",
         "action" : "getApplication",
         "verbs" : ["GET"]
     },
     {
         "path" : "/applications(/[0-9]+)$",
-        "controller" : "ApplicationsController",
+        "controller" : "Joindin\\Api\\Controller\\ApplicationsController",
         "action" : "editApplication",
         "verbs" : ["PUT"]
     },
     {
         "path" : "/applications(/[0-9]+)$",
-        "controller" : "ApplicationsController",
+        "controller" : "Joindin\\Api\\Controller\\ApplicationsController",
         "action" : "deleteApplication",
         "verbs" : ["DELETE"]
     },
 
     {
         "path": "/?$",
-        "controller": "DefaultController",
+        "controller": "Joindin\\Api\\Controller\\DefaultController",
         "action": "handle"
     }
 ]
