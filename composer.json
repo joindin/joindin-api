@@ -69,7 +69,10 @@
             "@test"
         ]
     },
-    "config" : {
+    "config": {
+        "platform": {
+            "php": "7.3.2"
+        },
         "preferred-install": "dist",
         "sort-packages" : true,
         "optimize-autoloader" : true
