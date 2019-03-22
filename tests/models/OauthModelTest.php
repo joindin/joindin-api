@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 
 class OauthModelTest extends TestCase
 {
-    public function setup()
+    public function setup(): void
     {
         $this->pdo     = $this->getMockBuilder('PDO')
             ->disableOriginalConstructor()

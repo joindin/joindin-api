@@ -10,7 +10,7 @@ class TokenControllerTest extends TestCase
 
     private $pdo;
 
-    public function setup()
+    public function setup(): void
     {
         $this->request = $this->getMockBuilder('Request')->disableOriginalConstructor()->getMock();
         $this->pdo     = $this->getMockBuilder('PDO')->disableOriginalConstructor()->getMock();
