@@ -14,7 +14,7 @@ class TalksControllerTest extends TalkBase
 {
     private $config;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->config = [
             'email' => [

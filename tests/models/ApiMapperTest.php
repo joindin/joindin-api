@@ -8,7 +8,7 @@ require_once __DIR__ . '/TestApiMapper.php';
  */
 class ApiMapperTest extends TestCase
 {
-    public function setup()
+    public function setup(): void
     {
         $this->pdo     = $this->getMockBuilder('PDO')
             ->disableOriginalConstructor()
