@@ -4,6 +4,7 @@ namespace Joindin\Api\Test\Router;
 
 use Exception;
 use Joindin\Api\Request;
+use Joindin\Api\Router\ActionControllerRoute;
 use Joindin\Api\Router\VersionedRouter;
 use PHPUnit\Framework\TestCase;
 
@@ -178,5 +179,56 @@ class VersionedRouterTest extends TestCase
         $this->assertEquals($expectedController, $route->getController());
         $this->assertEquals($expectedAction, $route->getAction());
         $this->assertEquals($routeParams, $route->getParams());
+    }
+
+    /**
+     * @covers \Joindin\Api\Router\VersionedRouter::getRoute
+     * @dataProvider getActionRouteProvider
+     * @param $version
+     * @param array $rules
+     * @param $url
+     * @param $method
+     * @param $expectedController
+     * @param $expectedAction
+     * @param array $routeParams
+     * @param bool $expectedExceptionCode
+     * @throws Exception
+     */
+    public function testGetActionRoute($version, array $rules, $url, $method, $expectedController, array $routeParams = [], $expectedExceptionCode = false)
+    {
+        $request = new Request([], ['REQUEST_URI' => $url, 'REQUEST_METHOD' => $method]);
+        $router = new VersionedRouter($version, [], $rules);
+        try {
+            $route = $router->getRoute($request);
+            self::assertInstanceof(ActionControllerRoute::class, $route);
+        } catch (Exception $ex) {
+            if (!$expectedExceptionCode) {
+                throw $ex;
+            }
+            self::assertEquals($expectedExceptionCode, $ex->getCode());
+            return;
+        }
+        self::assertEquals($expectedController, $route->getController());
+        self::assertEquals('__invoke', $route->getAction());
+        self::assertEquals($routeParams, $route->getParams());
+    }
+
+    /**
+     * DataProvider for testGetRoute
+     *
+     * @return array
+     */
+    public function getActionRouteProvider()
+    {
+        return [[ // #0
+            'version' => '2.1',
+            'rules' => [[
+                'path' => '/foo',
+                'actioncontroller' => 'EventController',
+            ]],
+            'url' => '/v2.1/foo',
+            'method' => Request::HTTP_GET,
+            'expectedClass' => 'EventController',
+        ]];
     }
 }

@@ -1,13 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
+namespace Joindin\Api\Test\Router;
+
+use Exception;
+use Joindin\Api\Request;
+use Joindin\Api\Router\ActionControllerRoute;
+use PDO;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
 /**
  * Class to test Route
  *
- * @covers Route
+ * @covers \Joindin\Api\Router\Route
  */
-class ActionControllerRouteTest extends PHPUnit_Framework_TestCase
+class ActionControllerRouteTest extends TestCase
 {
-
     /**
      * DataProvider for testConstruct
      *
@@ -22,14 +33,14 @@ class ActionControllerRouteTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider constructProvider
-     * @covers Route::__construct
+     * @covers \Joindin\Api\Router\Route::__construct
      *
      * @param string $controller
      * @param array $params
      */
     public function testConstruct($controller, array $params)
     {
-        $route = new ActionControllerRoute($controller, $params);
+        $route = new ActionControllerRoute($controller, $params, new TestRequestModifier());
         $this->assertEquals($controller, $route->getController());
         $this->assertEquals('__invoke', $route->getAction());
         $this->assertEquals($params, $route->getParams());
@@ -49,19 +60,19 @@ class ActionControllerRouteTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getSetProvider
-     * @covers Route::getController
-     * @covers Route::setController
-     * @covers Route::getAction
-     * @covers Route::setAction
-     * @covers Route::getParams
-     * @covers Route::setParams
+     * @covers \Joindin\Api\Router\Route::getController
+     * @covers \Joindin\Api\Router\Route::setController
+     * @covers \Joindin\Api\Router\Route::getAction
+     * @covers \Joindin\Api\Router\Route::setAction
+     * @covers \Joindin\Api\Router\Route::getParams
+     * @covers \Joindin\Api\Router\Route::setParams
      *
      * @param string $controller
      * @param array $params
      */
     public function testGetSet($controller, array $params)
     {
-        $route = new ActionControllerRoute('a', ['b']);
+        $route = new ActionControllerRoute('a', ['b'], new TestRequestModifier());
 
         $route->setController($controller);
         $this->assertEquals($controller, $route->getController());
@@ -82,11 +93,11 @@ class ActionControllerRouteTest extends PHPUnit_Framework_TestCase
     {
         return [[ // #0
             'config' => ['config'],
-            'actioncontroller' => 'TestController5',
+            'actioncontroller' => TestController5::class,
             'request' => $this->getRequest('v2.1')
         ], [ // #1
             'config' => ['config'],
-            'actioncontroller' => 'TestController6',
+            'actioncontroller' => TestController6::class,
             'request' => $this->getRequest('v2.1'),
             'expectedException' => 'RuntimeException',
             'expectedExceptionCode' => 500
@@ -102,7 +113,7 @@ class ActionControllerRouteTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider dispatchProvider
      *
-     * @covers Route::dispatch
+     * @covers \Joindin\Api\Router\Route::dispatch
      *
      * @param array $config
      * @param string $controller
@@ -116,10 +127,10 @@ class ActionControllerRouteTest extends PHPUnit_Framework_TestCase
     {
         $db = new PDO('sqlite:memory:');
 
-        $route = new ActionControllerRoute($controller);
+        $route = new ActionControllerRoute($controller, [], new TestRequestModifier());
 
         try {
-            $this->assertEquals('val', $route->dispatch($request, $db, $config));
+            $this->assertInstanceof(ResponseInterface::class, $route->dispatch($request, $db, $config));
         } catch (Exception $ex) {
             if (!$expectedException) {
                 throw $ex;
@@ -140,7 +151,9 @@ class ActionControllerRouteTest extends PHPUnit_Framework_TestCase
      */
     private function getRequest($urlElement)
     {
-        $request = $this->getMock('Request', ['getUrlElement'], [], '', false);
+        $request = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $request->expects($this->any())
                 ->method('getUrlElement')
@@ -148,26 +161,5 @@ class ActionControllerRouteTest extends PHPUnit_Framework_TestCase
                 ->will($this->returnValue($urlElement));
 
         return $request;
-    }
-}
-
-class TestController5
-{
-    public function __construct($config, Request $request, PDO $db)
-    {
-        //
-    }
-
-    public function __invoke()
-    {
-        return 'val';
-    }
-}
-
-class TestController6
-{
-    public function __construct($config, Request $request, PDO $db)
-    {
-        //
     }
 }

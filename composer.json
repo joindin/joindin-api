@@ -15,7 +15,9 @@
         "guzzlehttp/guzzle": "^6.3",
         "guzzlehttp/oauth-subscriber": "^0.3.0",
         "michelf/php-markdown": "^1.8",
+        "nyholm/psr7": "^1.1",
         "pimple/pimple": "^3.2",
+        "psr/http-server-middleware": "^1.0",
         "swiftmailer/swiftmailer": "^v5.4.9"
     },
     "require-dev": {

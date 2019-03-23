@@ -59,6 +59,7 @@ $ji_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // collect URL and headers
 $request = new Request($config, $_SERVER);
+$psr7Request = \Joindin\Api\Inc\Psr7RequestFactory::create($_SERVER);
 
 // identify our user if applicable
 $headers = array_change_key_case(apache_request_headers(), CASE_LOWER);
