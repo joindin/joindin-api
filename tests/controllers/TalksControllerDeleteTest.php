@@ -16,6 +16,7 @@ class TalksControllerDeleteTest extends TalkBase
     public function removeStarFromTalkFailsWhenNotLoggedIn()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in to remove data');
         $this->expectExceptionCode(401);
 
         $request = new Request(
@@ -70,6 +71,7 @@ class TalksControllerDeleteTest extends TalkBase
     public function deleteTalkWhenNotLoggedIn()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in to remove data');
         $this->expectExceptionCode(401);
 
         $request = new Request(
@@ -133,6 +135,7 @@ class TalksControllerDeleteTest extends TalkBase
     public function deleteTalkWthNoAdmin()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You do not have permission to do that');
         $this->expectExceptionCode(400);
 
         $request = new Request(

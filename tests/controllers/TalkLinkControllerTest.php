@@ -15,6 +15,7 @@ class TalkLinkControllerTest extends TalkBase
     public function testDeleteTalkLinkWithInvalidID()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Talk Link ID not found');
         $this->expectExceptionCode(404);
 
         $this->makeRequest(
@@ -70,6 +71,7 @@ class TalkLinkControllerTest extends TalkBase
     public function testDeleteTalkLinkNoPermissions()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You do not have permission to add links to this talk');
         $this->expectExceptionCode(403);
 
         $this->makeRequest(
@@ -107,6 +109,7 @@ class TalkLinkControllerTest extends TalkBase
     public function testGetTalkLinkFails()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('ID not found');
         $this->expectExceptionCode(404);
 
         $this->makeRequest(
@@ -153,6 +156,7 @@ class TalkLinkControllerTest extends TalkBase
     public function testAddTalkLinkWithInvalidData()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Missing required fields URL OR Display Name');
         $this->expectExceptionCode(400);
 
         $this->makeRequest(
@@ -171,6 +175,7 @@ class TalkLinkControllerTest extends TalkBase
     public function testAddTalkLinkFails()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('The Link has not been inserted');
         $this->expectExceptionCode(400);
 
         $this->makeRequest(
@@ -218,6 +223,7 @@ class TalkLinkControllerTest extends TalkBase
     public function testUpdateTalkLinkFails()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Update of Link ID Failed');
         $this->expectExceptionCode(500);
 
         $this->makeRequest(

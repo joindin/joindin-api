@@ -37,6 +37,7 @@ class OauthModelTest extends TestCase
     public function testWrongUserThrowsException()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Not verified');
         $this->expectExceptionCode(401);
 
         $stmt = $this->getMockBuilder(PDOStatement::class)->getMock();

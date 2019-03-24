@@ -980,6 +980,7 @@ class TalksControllerTest extends TalkBase
     public function testNotLoggedInPostAction()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in to create data');
         $this->expectExceptionCode(401);
 
         $request = new Request(
@@ -998,6 +999,7 @@ class TalksControllerTest extends TalkBase
     public function testNotSendingMessage()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('The field "comment" is required');
         $this->expectExceptionCode(400);
 
         $request = new Request(
@@ -1029,6 +1031,7 @@ class TalksControllerTest extends TalkBase
     public function testNotSendingRating()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('The field "rating" is required');
         $this->expectExceptionCode(400);
 
         $request = new Request(
@@ -1320,6 +1323,7 @@ class TalksControllerTest extends TalkBase
     public function testGenericTalkList()
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Generic talks listing not supported');
         $this->expectExceptionCode(405);
 
         $request = new Request(
