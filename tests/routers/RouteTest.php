@@ -168,7 +168,7 @@ class RouteTest extends TestCase
      */
     private function getRequest($urlElement)
     {
-        $request = $this->getMock('Request', array('getUrlElement'), array(), '', false);
+        $request = $this->createMock('Request', array('getUrlElement'), array(), '', false);
 
         $request->expects($this->any())
                 ->method('getUrlElement')
