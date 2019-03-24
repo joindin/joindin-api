@@ -499,6 +499,7 @@ class RequestTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Db Must be provided to get Oauth Model');
+        $this->expectExceptionCode(0);
 
         $request = new \Request($this->config, []);
         $request->getOauthModel();

@@ -17,6 +17,7 @@ class UsersControllerTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to delete data');
+        $this->expectExceptionCode(401);
 
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
 
@@ -36,6 +37,7 @@ class UsersControllerTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You do not have permission to do that');
+        $this->expectExceptionCode(403);
 
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 2;
@@ -67,6 +69,7 @@ class UsersControllerTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('There was a problem trying to delete the user');
+        $this->expectExceptionCode(400);
 
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;

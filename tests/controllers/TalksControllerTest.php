@@ -40,6 +40,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to create data');
+        $this->expectExceptionCode(401);
 
         $request = new Request(
             [],
@@ -65,6 +66,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Talk not found');
+        $this->expectExceptionCode(404);
 
         $request = new Request(
             [],
@@ -107,6 +109,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must provide a display name and a username');
+        $this->expectExceptionCode(400);
 
         $request = new Request(
             [],
@@ -147,6 +150,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must provide a display name and a username');
+        $this->expectExceptionCode(400);
 
         $request = new Request(
             [],
@@ -186,6 +190,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('No speaker matching that name found');
+        $this->expectExceptionCode(422);
 
         $request = new Request(
             [],
@@ -232,6 +237,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Talk already claimed');
+        $this->expectExceptionCode(422);
 
         $request = new Request(
             [],
@@ -282,6 +288,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be the speaker or event admin to link a user to a talk');
+        $this->expectExceptionCode(401);
 
         $request = new Request(
             [],
@@ -350,6 +357,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Specified user not found');
+        $this->expectExceptionCode(404);
 
         $request = new Request(
             [],
@@ -535,6 +543,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You already have a pending claim for this talk. Please wait for an event admin to approve your claim.');
+        $this->expectExceptionCode(401);
 
         $request = new Request(
             [],
@@ -601,6 +610,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be an event admin to approve this claim');
+        $this->expectExceptionCode(401);
 
         $request = new Request(
             [],
@@ -668,6 +678,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be the talk speaker to approve this assignment');
+        $this->expectExceptionCode(401);
 
         $request = new Request(
             [],
