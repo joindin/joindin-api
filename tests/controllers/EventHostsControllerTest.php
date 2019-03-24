@@ -347,7 +347,7 @@ class EventHostsControllerTest extends TestCase
         $this->assertNull($constructor->removeHostFromEvent($request, $db));
     }
 
-    public function testThatGetingEventHostWapperMithoutSettingFirstWorksAsExpected()
+    public function testThatGettingEventHostWapperMithoutSettingFirstWorksAsExpected()
     {
         $controller = new \Event_hostsController();
 
@@ -362,7 +362,7 @@ class EventHostsControllerTest extends TestCase
         $this->assertSame($automatedEventHostMapper, $controller->getEventHostMapper($request, $db));
     }
 
-    public function testThatGetingUserMapperWithoutSettingFirstWorksAsExpected()
+    public function testThatGettingUserMapperWithoutSettingFirstWorksAsExpected()
     {
         $controller = new \Event_hostsController();
 
@@ -377,7 +377,7 @@ class EventHostsControllerTest extends TestCase
         $this->assertSame($automatedUserMapper, $controller->getUserMapper($request, $db));
     }
 
-    public function testThatGetingEventMapperWithoutSettingFirstWorksAsExpected()
+    public function testThatGettingEventMapperWithoutSettingFirstWorksAsExpected()
     {
         $controller = new \Event_hostsController();
 
