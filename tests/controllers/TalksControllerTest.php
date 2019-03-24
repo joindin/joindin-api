@@ -35,13 +35,12 @@ class TalksControllerTest extends TalkBase
      * an exception is thrown
      *
      * @return void
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must be logged in to create data
      */
     public function testClaimTalkWithNoUserIdThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in to create data');
+
         $request = new Request(
             [],
             [
@@ -61,12 +60,12 @@ class TalksControllerTest extends TalkBase
      * an exception is thrown
      *
      * @return void
-     *
-     * @expectedException        \Exception
-     * @expectedExceptionMessage Talk not found
      */
     public function testClaimNonExistantTalkThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Talk not found');
+
         $request = new Request(
             [],
             [
@@ -103,12 +102,12 @@ class TalksControllerTest extends TalkBase
      * an exception is thrown
      *
      * @return void
-     *
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must provide a display name and a username
      */
     public function testClaimTalkWithoutUsernameThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must provide a display name and a username');
+
         $request = new Request(
             [],
             [
@@ -143,12 +142,12 @@ class TalksControllerTest extends TalkBase
      * an exception is thrown
      *
      * @return void
-     *
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must provide a display name and a username
      */
     public function testClaimTalkWithoutDisplayNameThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must provide a display name and a username');
+
         $request = new Request(
             [],
             [
@@ -182,12 +181,12 @@ class TalksControllerTest extends TalkBase
      * display_name that doesn't match a talk speaker, an exception is thrown
      *
      * @return void
-     *
-     * @expectedException        \Exception
-     * @expectedExceptionMessage No speaker matching that name found
      */
     public function testClaimTalkWithInvalidSpeakerThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('No speaker matching that name found');
+
         $request = new Request(
             [],
             [
@@ -228,12 +227,12 @@ class TalksControllerTest extends TalkBase
      * that has been claimed already, and Exception is thrown
      *
      * @return void
-     *
-     * @expectedException        \Exception
-     * @expectedExceptionMessage Talk already claimed
      */
     public function testClaimTalkAlreadyClaimedThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Talk already claimed');
+
         $request = new Request(
             [],
             [
@@ -278,12 +277,12 @@ class TalksControllerTest extends TalkBase
      * that is different to the logged in user, an Exception is thrown
      *
      * @return void
-     *
-     * @expectedException        Exception
-     * @expectedExceptionMessage You must be the speaker or event admin to link a user to a talk
      */
     public function testClaimTalkForSomeoneElseThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be the speaker or event admin to link a user to a talk');
+
         $request = new Request(
             [],
             [
@@ -346,12 +345,12 @@ class TalksControllerTest extends TalkBase
      * that doesn't exist, an Exception is thrown
      *
      * @return void
-     *
-     * @expectedException        Exception
-     * @expectedExceptionMessage Specified user not found
      */
     public function testAssignTalkAsHostToNonExistentUserThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Specified user not found');
+
         $request = new Request(
             [],
             [
@@ -531,13 +530,12 @@ class TalksControllerTest extends TalkBase
     /**
      * Ensures that if the setSpeakerForTalk method is called by the same user who made the claim
      * then an exception is thrown
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You already have a pending claim for this talk. Please wait for an event admin to approve your claim.
      */
     public function testApproveAssignmentAsUserWhoClaimedThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You already have a pending claim for this talk. Please wait for an event admin to approve your claim.');
+
         $request = new Request(
             [],
             [
@@ -598,13 +596,12 @@ class TalksControllerTest extends TalkBase
     /**
      * Ensures that if the setSpeakerForTalk method is called by a non-admin user
      * then an exception is thrown
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must be an event admin to approve this claim
      */
     public function testApproveAssignmentAsNonAdminUserThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be an event admin to approve this claim');
+
         $request = new Request(
             [],
             [
@@ -666,13 +663,12 @@ class TalksControllerTest extends TalkBase
     /**
      * Ensures that if the setSpeakerForTalk method is called by the host who assigned the talk
      * then an exception is thrown
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must be the talk speaker to approve this assignment
      */
     public function testApproveClaimAsHostWhoAssignedThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be the talk speaker to approve this assignment');
+
         $request = new Request(
             [],
             [
@@ -981,12 +977,11 @@ class TalksControllerTest extends TalkBase
         ];
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionCode 401
-     */
     public function testNotLoggedInPostAction()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(401);
+
         $request = new Request(
             [],
             [
@@ -1000,12 +995,11 @@ class TalksControllerTest extends TalkBase
         $talks_controller->postAction($request, $db);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionCode 400
-     */
     public function testNotSendingMessage()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(400);
+
         $request = new Request(
             [],
             [
@@ -1032,12 +1026,11 @@ class TalksControllerTest extends TalkBase
         $talks_controller->postAction($request, $db);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionCode 400
-     */
     public function testNotSendingRating()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(400);
+
         $request = new Request(
             [],
             [
@@ -1324,12 +1317,11 @@ class TalksControllerTest extends TalkBase
         $this->assertSame($expected, $output);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionCode 405
-     */
     public function testGenericTalkList()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(405);
+
         $request = new Request(
             [],
             [

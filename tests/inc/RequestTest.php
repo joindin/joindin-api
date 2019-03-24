@@ -420,12 +420,13 @@ class RequestTest extends TestCase
      * @return void
      *
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid Authorization Header
-     * @expectedExceptionCode 400
      */
     public function ifIdentificationDoesNotHaveTwoPartsExceptionIsThrown()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid Authorization Header');
+        $this->expectExceptionCode(400);
+
         $request = new \Request($this->config, ['HTTPS' => 'on']);
         $request->identifyUser('This is a bad header');
     }
@@ -437,12 +438,13 @@ class RequestTest extends TestCase
      * @return void
      *
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Unknown Authorization Header Received
-     * @expectedExceptionCode 400
      */
     public function ifIdentificationHeaderDoesNotStartWithOauthThrowException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unknown Authorization Header Received');
+        $this->expectExceptionCode(400);
+
         $request = new \Request($this->config, ['HTTPS' => 'on']);
         $request->identifyUser('Auth Me');
     }
@@ -492,11 +494,12 @@ class RequestTest extends TestCase
      * @return void
      *
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Db Must be provided to get Oauth Model
      */
     public function callingGetOauthModelWithoutADatabaseAdapterThrowsAnException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Db Must be provided to get Oauth Model');
+
         $request = new \Request($this->config, []);
         $request->getOauthModel();
     }

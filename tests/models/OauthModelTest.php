@@ -34,12 +34,11 @@ class OauthModelTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionCode 401
-     */
     public function testWrongUserThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(401);
+
         $stmt = $this->getMockBuilder(PDOStatement::class)->getMock();
         $stmt->method('execute')->willReturn(true);
         $stmt->method('fetch')->willReturn(

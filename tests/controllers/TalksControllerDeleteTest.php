@@ -12,11 +12,12 @@ class TalksControllerDeleteTest extends TalkBase
 {
     /**
      * @test
-     * @expectedExceptionCode 401
-     * @expectedException \Exception
      */
     public function removeStarFromTalkFailsWhenNotLoggedIn()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(401);
+
         $request = new Request(
             [],
             [
@@ -65,11 +66,12 @@ class TalksControllerDeleteTest extends TalkBase
 
     /**
      * @test
-     * @expectedExceptionCode 401
-     * @expectedException \Exception
      */
     public function deleteTalkWhenNotLoggedIn()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(401);
+
         $request = new Request(
             [],
             [
@@ -127,11 +129,12 @@ class TalksControllerDeleteTest extends TalkBase
 
     /**
      * @test
-     * @expectedException \Exception
-     * @expectedExceptionCode 400
      */
     public function deleteTalkWthNoAdmin()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(400);
+
         $request = new Request(
             [],
             [

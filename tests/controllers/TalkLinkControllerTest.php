@@ -11,11 +11,12 @@ class TalkLinkControllerTest extends TalkBase
 
     /**
      * Test sending delete link where the link id is not found
-     * @expectedException \Exception
-     * @expectedExceptionCode 404
      */
     public function testDeleteTalkLinkWithInvalidID()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(404);
+
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
             'DELETE'
@@ -65,11 +66,12 @@ class TalkLinkControllerTest extends TalkBase
 
     /**
      * Test sending delete link with no permissions
-     * @expectedException \Exception
-     * @expectedExceptionCode 403
      */
     public function testDeleteTalkLinkNoPermissions()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(403);
+
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
             'DELETE'
@@ -102,12 +104,11 @@ class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 404
-     */
     public function testGetTalkLinkFails()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(404);
+
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
             'GET'
@@ -149,12 +150,11 @@ class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 400
-     */
     public function testAddTalkLinkWithInvalidData()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(400);
+
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
             'POST'
@@ -168,12 +168,11 @@ class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 400
-     */
     public function testAddTalkLinkFails()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(400);
+
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
             'POST'
@@ -216,12 +215,11 @@ class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 500
-     */
     public function testUpdateTalkLinkFails()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(500);
+
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
             'PUT'

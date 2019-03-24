@@ -12,13 +12,12 @@ class UsersControllerTest extends TestCase
      * an exception is thrown
      *
      * @return void
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must be logged in to delete data
      */
     public function testDeleteUserWithNoUserIdThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in to delete data');
+
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
 
         $usersController = new \UsersController();
@@ -32,13 +31,12 @@ class UsersControllerTest extends TestCase
      * non-admin, an exception is thrown
      *
      * @return void
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You do not have permission to do that
      */
     public function testDeleteUserWithNonAdminIdThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You do not have permission to do that');
+
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 2;
         $usersController = new \UsersController();
@@ -64,13 +62,12 @@ class UsersControllerTest extends TestCase
      * admin, but the delete fails, then an exception is thrown
      *
      * @return void
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage There was a problem trying to delete the user
      */
     public function testDeleteUserWithAdminAccessThrowsExceptionOnFailedDelete()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('There was a problem trying to delete the user');
+
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
         $usersController = new \UsersController();
@@ -236,14 +233,13 @@ class UsersControllerTest extends TestCase
      * an exception is thrown
      *
      * @return void
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must be logged in to change a user account
-     * @expectedExceptionCode 401
      */
     public function testSetTrustedWithNoUserIdThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in to change a user account');
+        $this->expectExceptionCode(401);
+
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
 
         $usersController = new \UsersController();
@@ -258,14 +254,13 @@ class UsersControllerTest extends TestCase
      * non-admin, an exception is thrown
      *
      * @return void
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must be an admin to change a user's trusted state
-     * @expectedExceptionCode 403
      */
     public function testSetTrustedWithNonAdminIdThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("You must be an admin to change a user's trusted state");
+        $this->expectExceptionCode(403);
+
         $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
         $request->user_id = 2;
         $usersController = new \UsersController();
@@ -291,14 +286,13 @@ class UsersControllerTest extends TestCase
      * but without a trusted state, an exception is thrown
      *
      * @return void
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must provide a trusted state
-     * @expectedExceptionCode 400
      */
     public function testSetTrustedWithoutStateThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must provide a trusted state');
+        $this->expectExceptionCode(400);
+
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
@@ -326,14 +320,13 @@ class UsersControllerTest extends TestCase
      * but the update fails, an exception is thrown
      *
      * @return void
-     *
-     * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage Unable to update status
-     * @expectedExceptionCode 500
      */
     public function testSetTrustedWithFailureThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Unable to update status');
+        $this->expectExceptionCode(500);
+
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
