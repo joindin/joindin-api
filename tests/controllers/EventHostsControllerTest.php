@@ -2,7 +2,6 @@
 
 namespace JoindinTest\Controller;
 
-use Mockery as M;
 use PHPUnit\Framework\TestCase;
 
 class EventHostsControllerTest extends TestCase
