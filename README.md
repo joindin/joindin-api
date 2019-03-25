@@ -34,20 +34,28 @@ We have tests that make HTTP requests from the outside of the API, functional te
 To run the frisby tests (frisby.js), you will first need to install node.js and
 npm on you computer.  Then run:
 
-        cd tests/frisby
-        npm install
+```bash
+cd tests/frisby
+npm install
+```
 
 To run the tests on your computer against your Vagrant VM, from the `tests/frisby` directory run:
 
-        npm test
+```bash
+npm test
+```
 
 We also have a set of "destructive" tests, these create, edit and delete data as well as just reading it.  These aren't safe to run on a live platform, but are very valuable in testing.  Before you run them, you will need to run this query against your database:
 
-        insert into oauth_consumers (consumer_key, consumer_secret, user_id, enable_password_grant) values ('0000', '1111', '1', '1');
+```sql
+insert into oauth_consumers (consumer_key, consumer_secret, user_id, enable_password_grant) values ('0000', '1111', '1', '1');
+```
 
 Then run:
 
-        npm run test_write
+```bash
+npm run test_write
+```
 
 
 #### Proxying the frisy tests
@@ -74,7 +82,9 @@ as any files that should not be included.
 
 If you need to include a new patch, then create the SQL needed and add it to the next patch number in the `db` directory. You need to include a line that looks like this at the end of your script:
 
-    INSERT INTO patch_history SET patch_number = 17;  
+```sql
+INSERT INTO patch_history SET patch_number = 17;
+```
 
 The number in that line should match the filename of your new patch number - check out the existing database patches in the project for examples.
 
@@ -85,7 +95,9 @@ Joind.in coding style. This is the PSR-2 coding standard with
 no namespaces. You can run php codesniffer using phing on an
 individual file like so:
 
-    phing phpcs-human -Dfilename.php
+```bash
+phing phpcs-human -Dfilename.php
+```
 
 This will run codesniffer on any file within the regular source for Joind.in or the
 API-v2 source. Wildcards work as does specifying part of the path in case the
@@ -93,7 +105,9 @@ filename alone results in sniffing more files than you wanted.
 
 To see a summary of the codesniff errors and warnings across the entire project, run
 
-    phing phpcs-human-summary
+```bash
+phing phpcs-human-summary
+```
 
 #### Inline Documentation
 
@@ -122,7 +136,9 @@ projects too.
 You can define the gitignore file with a command that looks like this, where the 
 last argument is the file that holds the patterns to ignore: 
 
-    $ git config --global core.excludesfile ~/.gitignore_global
+```bash
+git config --global core.excludesfile ~/.gitignore_global
+```
 
 Octocat gives [a good starting point](https://gist.github.com/octocat/9257657) for 
 what to include, but you can also ignore the files used by your editor:
