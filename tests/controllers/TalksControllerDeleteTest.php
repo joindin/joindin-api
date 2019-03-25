@@ -10,10 +10,7 @@ use TalksController;
 
 class TalksControllerDeleteTest extends TalkBase
 {
-    /**
-     * @test
-     */
-    public function removeStarFromTalkFailsWhenNotLoggedIn()
+    public function testRemoveStarFromTalkFailsWhenNotLoggedIn()
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
@@ -33,10 +30,7 @@ class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalkStarred($request, $db);
     }
 
-    /**
-     * @test
-     */
-    public function removeStarFromTalksWhenLoggedIn()
+    public function testRemoveStarFromTalksWhenLoggedIn()
     {
         $request = new Request(
             [],
@@ -65,10 +59,7 @@ class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalkStarred($request, $db);
     }
 
-    /**
-     * @test
-     */
-    public function deleteTalkWhenNotLoggedIn()
+    public function testDeleteTalkWhenNotLoggedIn()
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
@@ -88,10 +79,7 @@ class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalk($request, $db);
     }
 
-    /**
-     * @test
-     */
-    public function deleteTalkWhichDoesntExist()
+    public function testDeleteTalkWhichDoesntExist()
     {
         $httpRequest = [
             'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
@@ -129,10 +117,7 @@ class TalksControllerDeleteTest extends TalkBase
         $this->assertNull($talks_controller->deleteTalk($request, $db));
     }
 
-    /**
-     * @test
-     */
-    public function deleteTalkWthNoAdmin()
+    public function testDeleteTalkWthNoAdmin()
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You do not have permission to do that');
@@ -163,10 +148,7 @@ class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalk($request, $db);
     }
 
-    /**
-     * @test
-     */
-    public function deleteTalkWithAdmin()
+    public function testDeleteTalkWithAdmin()
     {
         $httpRequest = [
             'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
