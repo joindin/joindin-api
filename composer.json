@@ -66,7 +66,8 @@
             "@lint",
             "@sniff",
             "@security",
-            "@test"
+            "@test",
+            "@coverage"
         ]
     },
     "config": {
