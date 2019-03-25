@@ -18,14 +18,6 @@ class ApiMapperTest extends TestCase
             ->getMock();
     }
 
-    public function testThatMapperInstanceHasDependencies()
-    {
-        $mapper = new ApiMapper($this->pdo, $this->request);
-
-        $this->assertAttributeEquals($this->pdo, '_db', $mapper);
-        $this->assertAttributeEquals($this->request, '_request', $mapper);
-    }
-
     public function testThatApiMapperHasNoDefaultFields()
     {
         $mapper = new ApiMapper($this->pdo, $this->request);
