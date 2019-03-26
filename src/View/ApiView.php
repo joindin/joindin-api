@@ -74,6 +74,7 @@ class ApiView
      */
     public function render($content)
     {
+        ob_start();
         $body = '';
         if ($content && $this->noRender === false) {
             $body = $this->buildOutput($content);
@@ -87,7 +88,7 @@ class ApiView
         http_response_code($this->responseCode);
 
         echo $body;
-
+        ob_end_flush();
         return true;
     }
 
