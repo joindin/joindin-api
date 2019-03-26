@@ -35,7 +35,7 @@ abstract class BaseEmailService
     /**
      * Template path, can be changed when testing
      */
-    public $templatePath = "../Views/emails/";
+    public $templatePath = "../View/emails/";
 
     /**
      * Make a message to be sent later
