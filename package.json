@@ -1,0 +1,11 @@
+{
+  "name": "joindin-api-tests",
+  "scripts": {
+    "btest": "JOINDIN_API_BASE_URL=http://joindin-api.localhost ./node_modules/.bin/jasmine-node tests/frisby/api_spec.js",
+    "test": "JOINDIN_API_BASE_URL=http://joindin-api.localhost ./node_modules/.bin/jasmine-node tests/frisby/api_write_spec.js"
+  },
+  "dependencies": {
+    "frisby": "^0.8.5",
+    "jasmine-node": "^1.14.5"
+  }
+}
