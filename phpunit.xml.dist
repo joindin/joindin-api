@@ -22,15 +22,7 @@
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="false">
-            <directory suffix=".php">src/controllers</directory>
-            <directory suffix=".php">src/inc</directory>
-            <directory suffix=".php">src/models</directory>
-            <directory suffix=".php">src/services</directory>
-            <directory suffix=".php">src/views</directory>
-            <exclude>
-                <!-- excluded because it both defines symbols and has side effects -->
-                <file>inc/Autoloader.php</file>
-            </exclude>
+            <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
 </phpunit>
