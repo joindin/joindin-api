@@ -86,7 +86,7 @@ class Request
             $this->setVerb($server['REQUEST_METHOD']);
         }
 
-        if (isset($server['PATH_INFO'])) {
+        if (isset($server['PATH_INFO']) && !empty($server['PATH_INFO'])) {
             $this->setPathInfo($server['PATH_INFO']);
         } elseif (isset($server['REQUEST_URI'])) {
             $this->setPathInfo(parse_url($server['REQUEST_URI'], PHP_URL_PATH));

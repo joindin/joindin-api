@@ -25,18 +25,19 @@ class TwitterController extends BaseApiController
             throw new Exception("This client cannot perform this action", 403);
         }
 
-        // API call to twitter, get request token
-        $client = new Client([
-            'base_url' => 'https://api.twitter.com/',
-            'defaults' => ['auth' => 'oauth']
-
-        ]);
-
+        $stack = \GuzzleHttp\HandlerStack::create();
         $oauth = new Oauth1([
             'consumer_key'    => $this->config['twitter']['consumer_key'],
             'consumer_secret' => $this->config['twitter']['consumer_secret'],
         ]);
-        $client->getEmitter()->attach($oauth);
+        $stack->push($oauth);
+
+        // API call to twitter, get request token
+        $client = new Client([
+            'base_uri' => 'https://api.twitter.com/',
+            'auth' => 'oauth',
+            'handler' => $stack
+        ]);
 
         $res = $client->post('oauth/request_token');
         if ($res->getStatusCode() == 200) {
@@ -84,21 +85,20 @@ class TwitterController extends BaseApiController
         }
 
         // exchange request token for access token
-        $client = new Client(
-            [
-                'base_url' => 'https://api.twitter.com/',
-                'defaults' => ['auth' => 'oauth']
-            ]
-        );
-
+        $stack = \GuzzleHttp\HandlerStack::create();
         $oauth = new Oauth1([
             'consumer_key'    => $this->config['twitter']['consumer_key'],
             'consumer_secret' => $this->config['twitter']['consumer_secret'],
             'token'           => $request_token,
         ]);
-        $client->getEmitter()->attach($oauth);
+        $stack->push($oauth);
+        $client = new Client([
+            'base_uri' => 'https://api.twitter.com/',
+            'auth' => 'oauth',
+            'handler' => $stack
+        ]);
 
-        $res = $client->post('oauth/access_token', ['body' => ['oauth_verifier' => $verifier]]);
+        $res = $client->post('oauth/access_token', ['form_params' => ['oauth_verifier' => $verifier]]);
         if ($res->getStatusCode() == 200) {
             parse_str($res->getBody(), $data);
 
@@ -109,21 +109,19 @@ class TwitterController extends BaseApiController
             $result = $this->oauthModel->createAccessTokenFromTwitterUsername($clientId, $twitterUsername);
             if (!$result) {
                 // try to create the user.
-
-                $client1 = new Client(
-                    [
-                        'base_url' => 'https://api.twitter.com/',
-                        'defaults' => ['auth' => 'oauth']
-                    ]
-                );
-
+                $stack1 = \GuzzleHttp\HandlerStack::create();
                 $oauth1 = new Oauth1([
                     'consumer_key'    => $this->config['twitter']['consumer_key'],
                     'consumer_secret' => $this->config['twitter']['consumer_secret'],
                     'token'           => $data['oauth_token'],
                     'token_secret'    => $data['oauth_token_secret'],
                 ]);
-                $client1->getEmitter()->attach($oauth1);
+                $stack1->push($oauth1);
+                $client1 = new Client([
+                    'base_uri' => 'https://api.twitter.com/',
+                    'auth' => 'oauth',
+                    'handler' => $stack1
+                ]);
 
                 try {
                     $res = $client1->get('1.1/account/verify_credentials.json?include_email=true');
