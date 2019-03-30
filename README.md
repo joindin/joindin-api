@@ -24,7 +24,6 @@ There's more documentation here: http://joindin.github.io/joindin-api/ - it's po
 
 We are happy for you to make whatever use of the API you wish (bear in mind we run everything from a single donated server so please implement some caching on your side and be considerate of the traffic levels you send to us). Please mention the source of your data, but do not use "joind.in" in your project name or imply that the joind.in project endorses your project.
 
-
 ## Tools and Tests
 
 ### API Tests
@@ -57,15 +56,13 @@ Then run:
 npm run test_write
 ```
 
-
-#### Proxying the frisy tests
+#### Proxying the frisby tests
 
 If you want to proxy the frisby tests via Charles or another proxy, then export `HTTP_PROXY` first:
 
     export HTTP_PROXY=http://localhost:8888
 
 You can now run `npm run test_write` or `npm test` as required and all the network requests will go via the proxy.
-
 
 ### Unit Tests
 
