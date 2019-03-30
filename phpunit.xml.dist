@@ -3,7 +3,6 @@
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
          beStrictAboutTestsThatDoNotTestAnything="true"
-         checkForUnintentionallyCoveredCode="false"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTestSize="true"
          bootstrap="./tests/bootstrap.php"
