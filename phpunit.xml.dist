@@ -4,7 +4,7 @@
          backupStaticAttributes="false"
          beStrictAboutTestsThatDoNotTestAnything="true"
          beStrictAboutOutputDuringTests="true"
-         beStrictAboutTestSize="true"
+         enforceTimeLimit="true"
          bootstrap="./tests/bootstrap.php"
          colors="true"
          verbose="true">
