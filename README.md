@@ -92,11 +92,11 @@ The number in that line should match the filename of your new patch number - che
 
 Please do your best to ensure that any code you contributed adheres to the
 Joind.in coding style. This is the PSR-2 coding standard with
-no namespaces. You can run php codesniffer using phing on an
+no namespaces. You can run php codesniffer on an
 individual file like so:
 
 ```bash
-phing phpcs-human -Dfilename.php
+vendor/bin/phpcs path/of/filename.php
 ```
 
 This will run codesniffer on any file within the regular source for Joind.in or the
