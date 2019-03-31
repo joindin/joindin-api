@@ -5,13 +5,12 @@ namespace JoindinTest\Controller;
 use EventMapper;
 use JoindinTest\Inc\mockPDO;
 use OAuthModel;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Request;
 use TalkCommentMapper;
 use TalkMapper;
 use TalkModel;
 use UserMapper;
-use PHPUnit\Framework\TestCase;
 
 class TalkBase extends TestCase
 {
