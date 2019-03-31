@@ -64,16 +64,25 @@ If you want to proxy the frisby tests via Charles or another proxy, then export 
 
 You can now run `npm run test_write` or `npm test` as required and all the network requests will go via the proxy.
 
-### Unit Tests
-
-There are some tests set up, which use PHPUnit; these can be found in the
-tests directory.  There is a phing task
-configured to run them - from the root directory simply run `phing phpunit` to run
-the tests. Unfortunately, there will be no output about whether the tests passed
-or failed from the phing target. A better way to test when you are developing is
-to run the tests from within the tests directory by just typing
-`phpunit`. The phpunit.xml in each directory will configure the bootstrap as well
-as any files that should not be included.
+### Testing Code
+We use [PHPUnit](https://phpunit.de/documentation.html) for running unit tests against the joindin-api codebase.
+To run PHPUnit tests, you can go the classic route:
+```bash
+vendor/bin/phpunit -c . tests/
+```
+You can also use composer to run your tests:
+```bash
+composer test
+```
+### Code Coverage
+Code coverage requires that [xdebug](https://xdebug.org/) be running. If you are using the joindin-vm Vagrant box, you can run your tests from within vagrant:
+```bash
+vagrant ssh
+xon # note: this turns on xdebug
+cd ~/joindin-vm/joindin-api
+composer test
+```
+You can see your code coverage report by going to http://localhost:63342/joindin-api/build/coverage/index.html
 
 ### Database Patches
 
