@@ -14,14 +14,14 @@ use UserMapper;
 
 class TalkBase extends TestCase
 {
-    protected function createTalkMapper(mockPDO $db, Request $request, $expetcedCalls = 1)
+    protected function createTalkMapper(mockPDO $db, Request $request, $expectedCalls = 1)
     {
         $talk_mapper = $this->getMockBuilder(TalkMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
         $talk_mapper
-            ->expects($this->exactly($expetcedCalls))
+            ->expects($this->exactly($expectedCalls))
             ->method('getTalkById')
             ->will(
                 $this->returnValue(
