@@ -108,7 +108,7 @@ composer sniff
 To see a summary of the codesniff errors and warnings across the entire project, run
 
 ```bash
-phing phpcs-human-summary
+composer sniff -- --report=summary
 ```
 
 #### Inline Documentation
