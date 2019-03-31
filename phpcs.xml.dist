@@ -6,6 +6,13 @@
 >
  <description>The Joind.in coding standard (PSR2, no namespace).</description>
 
+ <exclude-pattern>**/config.php</exclude-pattern>
+ <exclude-pattern>**/database.php</exclude-pattern>
+ <exclude-pattern>build</exclude-pattern>
+ <exclude-pattern>tools</exclude-pattern>
+ <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+ <exclude-pattern>vendor</exclude-pattern>
+
  <!--
     Include all sniffs in the PSR2 standard except these which we override
     to turn off certain requirements

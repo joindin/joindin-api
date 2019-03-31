@@ -55,7 +55,7 @@
     "scripts": {
         "test": "phpunit -c . tests/",
         "lint": "parallel-lint --exclude vendor .",
-        "sniff": "phpcs --ignore=**/config.php,**/database.php,vendor,tools,tests/bootstrap.php --extensions=php --runtime-set ignore_warnings_on_exit true -p .",
+        "sniff": "phpcs --extensions=php --runtime-set ignore_warnings_on_exit true -p .",
         "security": "security-checker security:check composer.lock",
         "coverage": [
             "git diff origin/master... -- > diff.txt",
