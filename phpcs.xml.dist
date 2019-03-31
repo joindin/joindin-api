@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
-<ruleset name="JoindIn">
+<ruleset
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        name="JoindIn"
+        xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd"
+>
  <description>The Joind.in coding standard (PSR2, no namespace).</description>
 
  <!--
