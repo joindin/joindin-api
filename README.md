@@ -99,6 +99,12 @@ This will run codesniffer on any file within the regular source for Joind.in or 
 API-v2 source. Wildcards work as does specifying part of the path in case the
 filename alone results in sniffing more files than you wanted.
 
+To see the codesniff errors and warnings across the entire project, run
+
+```bash
+composer sniff
+```
+
 To see a summary of the codesniff errors and warnings across the entire project, run
 
 ```bash
