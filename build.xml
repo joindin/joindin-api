@@ -46,34 +46,8 @@
  </target>
 
  <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
-     <exec command="composer sniff"/>
+     <exec command="vendor/bin/phpcs --extensions=php --report-checkstyle=build/logs/checkstyle.xml --runtime-set ignore_warnings_on_exit true -p ."/>
  </target>
-
- <target name="phpcs-human-summary" description="Generate human-readable Codesniffer output">
-  <phpcodesniffer standard="tools/codesniffer/JoindInPSR2/">
-   <fileset dir="${apiv2source}">
-       <patternset>
-           <include name="**/*.php"/>
-           <exclude name="**/config.php" />
-           <exclude name="**/database.php" />
-       </patternset>
-   </fileset>
-   <formatter type="summary" usefile="false" />
-  </phpcodesniffer>
- </target>
- 
-<target name="phpcs-human" description="Check codes style with PHP_CodeSniffer">
-    <phpcodesniffer standard="tools/codesniffer/JoindInPSR2/">
-        <fileset dir="${apiv2source}">
-          <patternset>
-              <include name="**/*.php"/>
-              <exclude name="**/config.php" />
-              <exclude name="**/database.php" />
-          </patternset>
-        </fileset>
-        <formatter type="full" usefile="false" />
-    </phpcodesniffer>
-</target>
 
  <target name="lint" description="Run linter over the fileset">
      <exec command="composer lint" logoutput="true" checkreturn="true" />
