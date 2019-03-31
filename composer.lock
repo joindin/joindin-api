@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "474fba3bfb184cc3704c63440eb59f08",
+    "content-hash": "aa39c44bc21c5240443f9824530e6297",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -643,16 +643,16 @@
         },
         {
             "name": "exussum12/coverage-checker",
-            "version": "0.11.0",
+            "version": "0.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/exussum12/coverageChecker.git",
-                "reference": "de7f6731220b0b321bff755c44a131d5d7c39583"
+                "reference": "7dc187771389ad0fa80c154e4477154ec91a8692"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/exussum12/coverageChecker/zipball/de7f6731220b0b321bff755c44a131d5d7c39583",
-                "reference": "de7f6731220b0b321bff755c44a131d5d7c39583",
+                "url": "https://api.github.com/repos/exussum12/coverageChecker/zipball/7dc187771389ad0fa80c154e4477154ec91a8692",
+                "reference": "7dc187771389ad0fa80c154e4477154ec91a8692",
                 "shasum": ""
             },
             "require": {
@@ -686,7 +686,7 @@
                 }
             ],
             "description": "Allows checking the code coverage of a single pull request",
-            "time": "2018-08-30T18:15:26+00:00"
+            "time": "2019-03-18T18:49:09+00:00"
         },
         {
             "name": "jakub-onderka/php-parallel-lint",
@@ -786,24 +786,24 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v3.1.5",
+            "version": "v4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "bb87e28e7d7b8d9a7fda231d37457c9210faf6ce"
+                "reference": "5221f49a608808c1e4d436df32884cbc1b821ac0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/bb87e28e7d7b8d9a7fda231d37457c9210faf6ce",
-                "reference": "bb87e28e7d7b8d9a7fda231d37457c9210faf6ce",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/5221f49a608808c1e4d436df32884cbc1b821ac0",
+                "reference": "5221f49a608808c1e4d436df32884cbc1b821ac0",
                 "shasum": ""
             },
             "require": {
                 "ext-tokenizer": "*",
-                "php": ">=5.5"
+                "php": ">=7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0|~5.0"
+                "phpunit/phpunit": "^6.5 || ^7.0"
             },
             "bin": [
                 "bin/php-parse"
@@ -811,7 +811,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "4.2-dev"
                 }
             },
             "autoload": {
@@ -833,7 +833,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2018-02-28T20:30:58+00:00"
+            "time": "2019-02-16T20:54:15+00:00"
         },
         {
             "name": "phar-io/manifest",
