@@ -1,12 +1,4 @@
 <?php
-/**
- * HeaderTest.php
- * User: adear
- * Date: 9/14/14
- * Time: 12:24 PM
- *
- *
- */
 
 namespace JoindinTest\Inc;
 
