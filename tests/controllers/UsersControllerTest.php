@@ -53,7 +53,7 @@ class UsersControllerTest extends TestCase
         $userMapper
             ->expects($this->once())
             ->method('isSiteAdmin')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $usersController->setUserMapper($userMapper);
         $usersController->deleteUser($request, $db);
@@ -85,12 +85,12 @@ class UsersControllerTest extends TestCase
         $userMapper
             ->expects($this->once())
             ->method('isSiteAdmin')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $userMapper
             ->expects($this->once())
             ->method('delete')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $usersController->setUserMapper($userMapper);
         $usersController->deleteUser($request, $db);
@@ -119,12 +119,12 @@ class UsersControllerTest extends TestCase
         $userMapper
             ->expects($this->once())
             ->method('isSiteAdmin')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $userMapper
             ->expects($this->once())
             ->method('delete')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $usersController->setUserMapper($userMapper);
         $this->assertNull($usersController->deleteUser($request, $db));
@@ -276,7 +276,7 @@ class UsersControllerTest extends TestCase
         $userMapper
             ->expects($this->once())
             ->method('isSiteAdmin')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $usersController->setUserMapper($userMapper);
         $usersController->setTrusted($request, $db);
@@ -346,7 +346,7 @@ class UsersControllerTest extends TestCase
         $userMapper
             ->expects($this->once())
             ->method('isSiteAdmin')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $userMapper
             ->expects($this->once())
@@ -396,7 +396,7 @@ class UsersControllerTest extends TestCase
         $userMapper
             ->expects($this->once())
             ->method('isSiteAdmin')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $userMapper
             ->expects($this->once())

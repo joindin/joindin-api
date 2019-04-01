@@ -23,26 +23,22 @@ class TalkBase extends TestCase
         $talk_mapper
             ->expects($this->exactly($expectedCalls))
             ->method('getTalkById')
-            ->will(
-                $this->returnValue(
-                    new TalkModel(
-                        [
-                            'talk_title'              => 'talk_title',
-                            'url_friendly_talk_title' => 'url_friendly_talk_title',
-                            'talk_description'        => 'talk_desc',
-                            'type'                    => 'talk_type',
-                            'start_date'              => 'date_given',
-                            'duration'                => 'duration',
-                            'stub'                    => 'stub',
-                            'average_rating'          => 'avg_rating',
-                            'comments_enabled'        => 'comments_enabled',
-                            'comment_count'           => 'comment_count',
-                            'starred'                 => 'starred',
-                            'starred_count'           => 'starred_count',
-                            'event_id'                => 1
-                        ]
-                    )
-                )
+            ->willReturn(
+                new TalkModel([
+                    'talk_title' => 'talk_title',
+                    'url_friendly_talk_title' => 'url_friendly_talk_title',
+                    'talk_description' => 'talk_desc',
+                    'type' => 'talk_type',
+                    'start_date' => 'date_given',
+                    'duration' => 'duration',
+                    'stub' => 'stub',
+                    'average_rating' => 'avg_rating',
+                    'comments_enabled' => 'comments_enabled',
+                    'comment_count' => 'comment_count',
+                    'starred' => 'starred',
+                    'starred_count' => 'starred_count',
+                    'event_id' => 1
+                ])
             );
 
         return $talk_mapper;
@@ -57,31 +53,27 @@ class TalkBase extends TestCase
         $talk_mapper
             ->expects($this->once())
             ->method('getTalkById')
-            ->will(
-                $this->returnValue(
-                    new TalkModel(
-                        [
-                            'talk_title'              => 'talk_title',
-                            'url_friendly_talk_title' => 'url_friendly_talk_title',
-                            'talk_description'        => 'talk_desc',
-                            'type'                    => 'talk_type',
-                            'start_date'              => 'date_given',
-                            'duration'                => 'duration',
-                            'stub'                    => 'stub',
-                            'average_rating'          => 'avg_rating',
-                            'comments_enabled'        => 'comments_enabled',
-                            'comment_count'           => 'comment_count',
-                            'starred'                 => 'starred',
-                            'starred_count'           => 'starred_count',
-                            'event_id'                => 1,
-                            'slides_link'             => 'http://slideshare.net',
-                            'talk_media'              => [
-                                ['slides_link'  =>  'http://slideshare.net'],
-                                ['code_link'    =>  'https://github.com'],
-                            ],
-                        ]
-                    )
-                )
+            ->willReturn(
+                new TalkModel([
+                    'talk_title' => 'talk_title',
+                    'url_friendly_talk_title' => 'url_friendly_talk_title',
+                    'talk_description' => 'talk_desc',
+                    'type' => 'talk_type',
+                    'start_date' => 'date_given',
+                    'duration' => 'duration',
+                    'stub' => 'stub',
+                    'average_rating' => 'avg_rating',
+                    'comments_enabled' => 'comments_enabled',
+                    'comment_count' => 'comment_count',
+                    'starred' => 'starred',
+                    'starred_count' => 'starred_count',
+                    'event_id' => 1,
+                    'slides_link' => 'http://slideshare.net',
+                    'talk_media' => [
+                        ['slides_link' => 'http://slideshare.net'],
+                        ['code_link' => 'https://github.com'],
+                    ],
+                ])
             );
 
         return $talk_mapper;
@@ -96,18 +88,14 @@ class TalkBase extends TestCase
         $user_mapper
             ->expects($this->atLeastOnce())
             ->method('getUserById')
-            ->will(
-                $this->returnValue(
+            ->willReturn([
+                'users' => [
                     [
-                        'users' => [
-                            [
-                                'username'  => 'janebloggs',
-                                'full_name' => 'Jane Bloggs'
-                            ]
-                        ]
+                        'username' => 'janebloggs',
+                        'full_name' => 'Jane Bloggs'
                     ]
-                )
-            );
+                ]
+            ]);
 
         return $user_mapper;
     }
@@ -120,27 +108,19 @@ class TalkBase extends TestCase
 
         $event_mapper
             ->method('getEventById')
-            ->will(
-                $this->returnValue(
+            ->willReturn([
+                'events' => [
                     [
-                        'events' => [
-                            [
-                                'name'  => 'Test Event'
-                            ]
-                        ]
+                        'name' => 'Test Event'
                     ]
-                )
-            );
+                ]
+            ]);
 
         $event_mapper
             ->method('getHostsEmailAddresses')
-            ->will(
-                $this->returnValue(
-                    [
-                        'none@example.com'
-                    ]
-                )
-            );
+            ->willReturn([
+                'none@example.com',
+            ]);
 
         return $event_mapper;
     }
@@ -161,11 +141,9 @@ class TalkBase extends TestCase
 
         $oathModel
             ->method('getConsumerName')
-            ->willReturn(
-                [
-                    $consumerName
-                ]
-            );
+            ->willReturn([
+                $consumerName
+            ]);
 
         return $oathModel;
     }

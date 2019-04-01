@@ -89,7 +89,7 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getTalkById')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $talks_controller->setTalkMapper($talk_mapper);
 
@@ -213,9 +213,7 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(false)
-            );
+            ->willReturn(false);
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
@@ -259,14 +257,10 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => 1,
-                        'ID'          => 1
-                    ]
-                )
-            );
+            ->willReturn([
+                'speaker_id' => 1,
+                'ID' => 1
+            ]);
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
@@ -310,25 +304,21 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => null,
-                        'ID'          => 1
-                    ]
-                )
-            );
+            ->willReturn([
+                'speaker_id' => null,
+                'ID' => 1
+            ]);
         $talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
-            ->will($this->returnValue(6));
+            ->willReturn(6);
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
@@ -337,7 +327,7 @@ class TalksControllerTest extends TalkBase
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
@@ -379,21 +369,17 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => null,
-                        'ID'          => 1
-                    ]
-                )
-            );
+            ->willReturn([
+                'speaker_id' => null,
+                'ID' => 1
+            ]);
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         $talks_controller->setUserMapper($user_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
@@ -430,21 +416,17 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => null,
-                        'ID'          => 1
-                    ]
-                )
-            );
+            ->willReturn([
+                'speaker_id' => null,
+                'ID' => 1
+            ]);
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
@@ -453,12 +435,12 @@ class TalksControllerTest extends TalkBase
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimTalkAsSpeaker')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
@@ -495,25 +477,21 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => null,
-                        'ID'          => 1
-                    ]
-                )
-            );
+            ->willReturn([
+                'speaker_id' => null,
+                'ID' => 1
+            ]);
         $talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
@@ -522,11 +500,11 @@ class TalksControllerTest extends TalkBase
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('assignTalkAsHost')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
@@ -565,25 +543,21 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => null,
-                        'ID'          => 1
-                    ]
-                )
-            );
+            ->willReturn([
+                'speaker_id' => null,
+                'ID' => 1
+            ]);
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
         $talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
@@ -592,7 +566,7 @@ class TalksControllerTest extends TalkBase
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->will($this->returnValue(\PendingTalkClaimMapper::SPEAKER_CLAIM));
+            ->willReturn(\PendingTalkClaimMapper::SPEAKER_CLAIM);
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
@@ -632,25 +606,21 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => null,
-                        'ID'          => 1
-                    ]
-                )
-            );
+            ->willReturn([
+                'speaker_id' => null,
+                'ID' => 1
+            ]);
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
-            ->will($this->returnValue(3));
+            ->willReturn(3);
         $talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
@@ -659,7 +629,7 @@ class TalksControllerTest extends TalkBase
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->will($this->returnValue(\PendingTalkClaimMapper::SPEAKER_CLAIM));
+            ->willReturn(\PendingTalkClaimMapper::SPEAKER_CLAIM);
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
@@ -700,21 +670,17 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => null,
-                        'ID'          => 1
-                    ]
-                )
-            );
+            ->willReturn([
+                'speaker_id' => null,
+                'ID' => 1
+            ]);
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
@@ -723,7 +689,7 @@ class TalksControllerTest extends TalkBase
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->will($this->returnValue(\PendingTalkClaimMapper::HOST_ASSIGN));
+            ->willReturn(\PendingTalkClaimMapper::HOST_ASSIGN);
 
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
@@ -759,25 +725,21 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => null,
-                        'ID'          => 1
-                    ]
-                )
-            );
+            ->willReturn([
+                'speaker_id' => null,
+                'ID' => 1
+            ]);
         $talk_mapper
             ->expects($this->once())
             ->method('assignTalkToSpeaker')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $talks_controller->setTalkMapper($talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
@@ -786,11 +748,11 @@ class TalksControllerTest extends TalkBase
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->will($this->returnValue(\PendingTalkClaimMapper::HOST_ASSIGN));
+            ->willReturn(\PendingTalkClaimMapper::HOST_ASSIGN);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('approveAssignmentAsSpeaker')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
 
 
@@ -829,22 +791,18 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => null,
-                        'ID'          => 1
-                    ]
-                )
-            );
+            ->willReturn([
+                'speaker_id' => null,
+                'ID' => 1
+            ]);
         $talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
         $talk_mapper
             ->expects($this->once())
             ->method('assignTalkToSpeaker')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $talks_controller->setTalkMapper($talk_mapper);
 
@@ -852,7 +810,7 @@ class TalksControllerTest extends TalkBase
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
@@ -861,11 +819,11 @@ class TalksControllerTest extends TalkBase
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->will($this->returnValue(\PendingTalkClaimMapper::SPEAKER_CLAIM));
+            ->willReturn(\PendingTalkClaimMapper::SPEAKER_CLAIM);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('approveClaimAsHost')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
@@ -1098,18 +1056,16 @@ class TalksControllerTest extends TalkBase
         $talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
-            ->will(
-                $this->returnValue(
-                    [
-                        'speaker_id'  => null,
-                        'ID'          => 1
-                    ]
-                )
+            ->willReturn(
+                [
+                    'speaker_id' => null,
+                    'ID' => 1
+                ]
             );
         $talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $talks_controller->setTalkMapper($talk_mapper);
 
@@ -1120,7 +1076,7 @@ class TalksControllerTest extends TalkBase
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder('\PendingTalkClaimMapper')
@@ -1129,11 +1085,11 @@ class TalksControllerTest extends TalkBase
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->will($this->returnValue(\PendingTalkClaimMapper::SPEAKER_CLAIM));
+            ->willReturn(\PendingTalkClaimMapper::SPEAKER_CLAIM);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('rejectClaimAsHost')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);

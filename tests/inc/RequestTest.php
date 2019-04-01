@@ -296,7 +296,7 @@ class RequestTest extends TestCase
             ->getMock();
         $request->expects($this->once())
             ->method('getRawBody')
-            ->will($this->returnValue($body));
+            ->willReturn($body);
 
         $request->setVerb($method);
         $request->parseParameters($server);
@@ -514,7 +514,7 @@ class RequestTest extends TestCase
         $mockOauth->expects($this->once())
             ->method('verifyAccessToken')
             ->with('authPart')
-            ->will($this->returnValue('TheUserId'));
+            ->willReturn('TheUserId');
 
         $request->setOauthModel($mockOauth);
 
@@ -537,7 +537,7 @@ class RequestTest extends TestCase
         $mockOauth->expects($this->once())
             ->method('verifyAccessToken')
             ->with('authPart')
-            ->will($this->returnValue('TheUserId'));
+            ->willReturn('TheUserId');
 
         $request->setOauthModel($mockOauth);
 

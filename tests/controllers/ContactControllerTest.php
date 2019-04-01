@@ -36,9 +36,7 @@ class ContactControllerTest extends TestCase
         $request
             ->expects($this->any())
             ->method('getParameter')
-            ->will(
-                $this->returnValueMap($returnValueMap)
-            );
+            ->willReturnMap($returnValueMap);
 
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
 
