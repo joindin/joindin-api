@@ -47,14 +47,12 @@ class TalksControllerDeleteTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talkMapper = $this->createTalkMapper($db, $request, 0);
-        $talkMapper->method('setUserNonStarred')
+        $this->talkMapper = $this->createTalkMapper($db, $request, 0);
+        $this->talkMapper->method('setUserNonStarred')
             ->willReturn(true);
 
         $talks_controller = new TalksController();
-        $talks_controller->setTalkMapper(
-            $talkMapper
-        );
+        $talks_controller->setTalkMapper($this->talkMapper);
 
         $talks_controller->deleteTalkStarred($request, $db);
     }
@@ -97,16 +95,12 @@ class TalksControllerDeleteTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->getMockBuilder(TalkMapper::class)
-            ->setConstructorArgs([$db,$request])
-            ->getMock();
-
-        $talk_mapper
+        $this->talk_mapper
             ->method('getTalkById')
             ->willReturn(false);
 
         $talks_controller = new TalksController();
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $view = $this->getMockBuilder(ApiView::class)->getMock();
         $request->method('getView')->willReturn($view);
@@ -166,13 +160,12 @@ class TalksControllerDeleteTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper
             ->method('thisUserHasAdminOn')
             ->willReturn(true);
 
         $talks_controller = new TalksController();
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $view = $this->getMockBuilder(ApiView::class)->getMock();
         $request->method('getView')->willReturn($view);

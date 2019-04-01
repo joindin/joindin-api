@@ -82,16 +82,16 @@ class TalksControllerTest extends TalkBase
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
 
-        $talk_mapper = $this->getMockBuilder(TalkMapper::class)
+        $this->talk_mapper = $this->getMockBuilder(TalkMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
-        $talk_mapper
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getTalkById')
             ->willReturn(false);
 
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
@@ -127,8 +127,8 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController();
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $talks_controller->setUserMapper($user_mapper);
@@ -168,8 +168,8 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController();
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $talks_controller->setUserMapper($user_mapper);
@@ -209,12 +209,12 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController();
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn(false);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $talks_controller->setUserMapper($user_mapper);
@@ -253,15 +253,15 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController();
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn([
                 'speaker_id' => 1,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $talks_controller->setUserMapper($user_mapper);
@@ -300,19 +300,19 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController();
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn([
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talk_mapper
+        $this->talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
             ->willReturn(false);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
@@ -365,15 +365,15 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController();
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn([
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
@@ -412,15 +412,15 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController($this->config);
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn([
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
@@ -473,19 +473,19 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController($this->config);
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn([
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talk_mapper
+        $this->talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
             ->willReturn(true);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
@@ -539,22 +539,22 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController();
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn([
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->willReturn(2);
-        $talk_mapper
+        $this->talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
             ->willReturn(false);
@@ -602,22 +602,22 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController();
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn([
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->willReturn(3);
-        $talk_mapper
+        $this->talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
             ->willReturn(false);
@@ -666,15 +666,15 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController();
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn([
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
@@ -721,19 +721,19 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController();
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn([
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talk_mapper
+        $this->talk_mapper
             ->expects($this->once())
             ->method('assignTalkToSpeaker')
             ->willReturn(true);
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
@@ -787,24 +787,24 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController($this->config);
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn([
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talk_mapper
+        $this->talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
             ->willReturn(true);
-        $talk_mapper
+        $this->talk_mapper
             ->expects($this->once())
             ->method('assignTalkToSpeaker')
             ->willReturn(true);
 
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
@@ -879,14 +879,14 @@ class TalksControllerTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
 
-        $talk_mapper
+        $this->talk_mapper
             ->method('getSpeakerEmailsByTalkId')
             ->willReturn($speakerEmails);
 
         $talks_controller->setTalkMapper(
-            $talk_mapper
+            $this->talk_mapper
         );
 
         $talk_comment = $this->createTalkCommentMapper($db, $request);
@@ -986,13 +986,11 @@ class TalksControllerTest extends TalkBase
         ];
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
 
         $talks_controller = new TalksController();
 
-        $talks_controller->setTalkMapper(
-            $talk_mapper
-        );
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $talks_controller->postAction($request, $db);
     }
@@ -1018,13 +1016,11 @@ class TalksControllerTest extends TalkBase
         ];
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
 
         $talks_controller = new TalksController();
 
-        $talks_controller->setTalkMapper(
-            $talk_mapper
-        );
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $talks_controller->postAction($request, $db);
     }
@@ -1052,8 +1048,8 @@ class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController($this->config);
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn(
@@ -1062,12 +1058,12 @@ class TalksControllerTest extends TalkBase
                     'ID' => 1
                 ]
             );
-        $talk_mapper
+        $this->talk_mapper
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
             ->willReturn(true);
 
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->getMockBuilder('\UserMapper')
             ->setConstructorArgs(array($db,$request))
@@ -1112,19 +1108,19 @@ class TalksControllerTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
+        $this->talk_mapper = $this->createTalkMapper($db, $request);
 
         $expected = [
             ['slides_link' => 'http://slideshare.net'],
             ['code_link' => 'https://github.com/link/to/repo'],
         ];
 
-        $talk_mapper
+        $this->talk_mapper
             ->method('getTalkMediaLinks')
             ->willReturn($expected);
 
         $talks_controller = new TalkLinkController();
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $output = $talks_controller->getTalkLinks($request, $db);
         $this->assertSame(
@@ -1149,7 +1145,7 @@ class TalksControllerTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createVerboseTalkMapper($db, $request);
+        $this->talk_mapper = $this->createVerboseTalkMapper($db, $request);
 
         $expected = [
             ['slides_link' => 'http://slideshare.net'],
@@ -1157,7 +1153,7 @@ class TalksControllerTest extends TalkBase
         ];
 
         $talks_controller = new TalksController();
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $output = $talks_controller->getAction($request, $db);
 
