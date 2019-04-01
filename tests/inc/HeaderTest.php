@@ -37,8 +37,8 @@ class HeaderTest extends TestCase
         $header->setGlue(',');
         $header->parseParams();
         $entityArray = $header->buildEntityArray();
-        $this->assertEquals(3, count($entityArray['For']));
-        $this->assertEquals(3, count($entityArray['User-agent']));
+        $this->assertCount(3, $entityArray['For']);
+        $this->assertCount(3, $entityArray['User-agent']);
     }
     public function testBuildEntityArrayWithValueOnly()
     {
@@ -49,6 +49,6 @@ class HeaderTest extends TestCase
         $partsArray = $header->toArray();
         $this->assertEquals('10.0.0.1', $partsArray[0]);
         $entityArray = $header->buildEntityArray();
-        $this->assertEquals(3, count($entityArray[0]));
+        $this->assertCount(3, $entityArray[0]);
     }
 }
