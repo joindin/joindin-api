@@ -105,7 +105,7 @@ class TalksControllerTest extends TalkBase
      *
      * @return void
      */
-    public function testClaimTalkWithoutUsernameThrowsException()
+    public function testClaimTalkWithoutUsernameThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must provide a display name and a username');
