@@ -3,6 +3,8 @@
 namespace Joindin\Api\Test;
 
 use Joindin\Api\ContainerFactory;
+use Joindin\Api\Controller;
+use Joindin\Api\Service;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
@@ -68,8 +70,8 @@ class ContainerFactoryTest extends TestCase
     public function spamCheckServiceIsNullCheckerWhenDisabled()
     {
         $container = ContainerFactory::build([], true);
-        $this->assertTrue($container->has(\Joindin\Api\Service\SpamCheckServiceInterface::class));
-        $this->assertInstanceOf(\Joindin\Api\Service\NullSpamCheckService::class, $container->get(\Joindin\Api\Service\SpamCheckServiceInterface::class));
+        $this->assertTrue($container->has(Service\SpamCheckServiceInterface::class));
+        $this->assertInstanceOf(Service\NullSpamCheckService::class, $container->get(Service\SpamCheckServiceInterface::class));
     }
 
     /**
@@ -80,26 +82,26 @@ class ContainerFactoryTest extends TestCase
     public function dataProvider()
     {
         return [
-            [\Joindin\Api\Controller\ContactController::class],
-            [\Joindin\Api\Service\SpamCheckServiceInterface::class],
-            [\Joindin\Api\Service\ContactEmailService::class],
-            [\Joindin\Api\Controller\ApplicationsController::class],
-            [\Joindin\Api\Controller\DefaultController::class],
-            [\Joindin\Api\Controller\EmailsController::class] ,
-            [\Joindin\Api\Controller\EventCommentsController::class],
-            [\Joindin\Api\Controller\EventHostsController::class],
-            [\Joindin\Api\Controller\EventImagesController::class],
-            [\Joindin\Api\Controller\EventsController::class],
-            [\Joindin\Api\Controller\FacebookController::class],
-            [\Joindin\Api\Controller\LanguagesController::class],
-            [\Joindin\Api\Controller\TalkCommentsController::class],
-            [\Joindin\Api\Controller\TalkLinkController::class],
-            [\Joindin\Api\Controller\TalksController::class],
-            [\Joindin\Api\Controller\TalkTypesController::class],
-            [\Joindin\Api\Controller\TokenController::class],
-            [\Joindin\Api\Controller\TracksController::class],
-            [\Joindin\Api\Controller\TwitterController::class],
-            [\Joindin\Api\Controller\UsersController::class]
+            [Controller\ContactController::class],
+            [Service\SpamCheckServiceInterface::class],
+            [Service\ContactEmailService::class],
+            [Controller\ApplicationsController::class],
+            [Controller\DefaultController::class],
+            [Controller\EmailsController::class] ,
+            [Controller\EventCommentsController::class],
+            [Controller\EventHostsController::class],
+            [Controller\EventImagesController::class],
+            [Controller\EventsController::class],
+            [Controller\FacebookController::class],
+            [Controller\LanguagesController::class],
+            [Controller\TalkCommentsController::class],
+            [Controller\TalkLinkController::class],
+            [Controller\TalksController::class],
+            [Controller\TalkTypesController::class],
+            [Controller\TokenController::class],
+            [Controller\TracksController::class],
+            [Controller\TwitterController::class],
+            [Controller\UsersController::class]
         ];
     }
 }
