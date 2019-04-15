@@ -8,10 +8,10 @@ namespace Joindin\Api;
 
 use InvalidArgumentException;
 use Joindin\Api\Model\OAuthModel;
-use Joindin\Api\View\JsonView;
-use Joindin\Api\View\JsonPView;
 use Joindin\Api\View\ApiView;
 use Joindin\Api\View\HtmlView;
+use Joindin\Api\View\JsonPView;
+use Joindin\Api\View\JsonView;
 use PDO;
 
 class Request
