@@ -7,7 +7,6 @@
 namespace Joindin\Api;
 
 use InvalidArgumentException;
-use Joindin\Api\Header;
 use Joindin\Api\Model\OAuthModel;
 use Joindin\Api\View\JsonView;
 use Joindin\Api\View\JsonPView;
