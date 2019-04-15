@@ -9,7 +9,10 @@ namespace Joindin\Api;
 use InvalidArgumentException;
 use Joindin\Api\Header;
 use Joindin\Api\Model\OAuthModel;
+use Joindin\Api\View\JsonView;
+use Joindin\Api\View\JsonPView;
 use Joindin\Api\View\ApiView;
+use Joindin\Api\View\HtmlView;
 use PDO;
 
 class Request
@@ -287,7 +290,7 @@ class Request
             switch ($format) {
                 case self::CONTENT_TYPE_HTML:
                 case self::FORMAT_HTML:
-                    $this->view = new \Joindin\Api\View\HtmlView();
+                    $this->view = new HtmlView();
                     break;
 
                 case self::CONTENT_TYPE_JSON:
@@ -296,9 +299,9 @@ class Request
                     // JSONP?
                     $callback = filter_var($this->getParameter('callback'), FILTER_SANITIZE_STRING);
                     if ($callback) {
-                        $this->view = new \Joindin\Api\View\JsonPView($callback);
+                        $this->view = new JsonPView($callback);
                     } else {
-                        $this->view = new \Joindin\Api\View\JsonView();
+                        $this->view = new JsonView();
                     }
             }
         }
@@ -309,9 +312,9 @@ class Request
     /**
      * Sets this Request's View object
      *
-     * @param \Joindin\Api\View\ApiView $view
+     * @param ApiView $view
      */
-    public function setView(\Joindin\Api\View\ApiView $view)
+    public function setView(ApiView $view)
     {
         $this->view = $view;
     }
