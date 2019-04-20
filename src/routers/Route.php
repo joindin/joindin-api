@@ -8,32 +8,32 @@ use Psr\Container\ContainerInterface;
 class Route
 {
     /**
-     * The name of the Controller this Route will target
+     * The name of the Controller this Route will target.
      *
      * @var string
      */
     private $controller;
 
     /**
-     * The method name this Route will target
+     * The method name this Route will target.
      *
      * @var string
      */
     private $action;
 
     /**
-     * Parameters derived from the URL this Route was created from
+     * Parameters derived from the URL this Route was created from.
      *
      * @var array
      */
     private $params;
 
     /**
-     * Constructs a new Route
+     * Constructs a new Route.
      *
      * @param string $controller The name of the controller this Route is for
-     * @param string $action The name of the action this Route is for
-     * @param array $params Parameters as determined from the URL
+     * @param string $action     The name of the action this Route is for
+     * @param array  $params     Parameters as determined from the URL
      */
     public function __construct($controller, $action, array $params = [])
     {
@@ -43,7 +43,7 @@ class Route
     }
 
     /**
-     * Gets the name of the controller this Route is for
+     * Gets the name of the controller this Route is for.
      *
      * @return string
      */
@@ -53,7 +53,7 @@ class Route
     }
 
     /**
-     * Sets the name of the controller this Route is for
+     * Sets the name of the controller this Route is for.
      *
      * @param string $controller
      */
@@ -63,7 +63,7 @@ class Route
     }
 
     /**
-     * Gets the action this Route is for
+     * Gets the action this Route is for.
      *
      * @return string
      */
@@ -73,7 +73,7 @@ class Route
     }
 
     /**
-     * Sets the action this Route is for
+     * Sets the action this Route is for.
      *
      * @param string $action
      */
@@ -83,7 +83,7 @@ class Route
     }
 
     /**
-     * Gets the parameters for this Route
+     * Gets the parameters for this Route.
      *
      * @return array
      */
@@ -93,7 +93,7 @@ class Route
     }
 
     /**
-     * Sets the parameters for this Route
+     * Sets the parameters for this Route.
      *
      * @param array $params
      */
@@ -103,10 +103,10 @@ class Route
     }
 
     /**
-     * Dispatches the Request to the specified Route
+     * Dispatches the Request to the specified Route.
      *
-     * @param Request $request The Request to process
-     * @param PDO $db The Database object
+     * @param Request            $request   The Request to process
+     * @param PDO                $db        The Database object
      * @param ContainerInterface $container The application configuration
      *
      * @return mixed
@@ -114,15 +114,17 @@ class Route
     public function dispatch(Request $request, $db, ContainerInterface $container)
     {
         $className = $this->getController();
-        $method    = $this->getAction();
+        $method = $this->getAction();
 
         if ($container->has($className)) {
             $controller = $container->get($className);
             if (method_exists($controller, $method)) {
                 return $controller->$method($request, $db);
             }
+
             throw new RuntimeException('Action not found', 500);
         }
-        throw new RuntimeException('Unknown controller ' . $request->url_elements[2], 400);
+
+        throw new RuntimeException('Unknown controller '.$request->url_elements[2], 400);
     }
 }

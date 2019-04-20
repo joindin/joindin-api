@@ -1,18 +1,19 @@
 <?php
+
 // Load and register autoloader
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 //We are unit testing
 define('UNIT_TEST', 1);
 
 /**
- * Class to allow for mocking PDO to send to the OAuthModel
+ * Class to allow for mocking PDO to send to the OAuthModel.
  */
 class mockPDO extends \PDO
 {
     /**
      * Constructor that does nothing but helps us test with fake database
-     * adapters
+     * adapters.
      */
     public function __construct()
     {

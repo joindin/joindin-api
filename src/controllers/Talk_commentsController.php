@@ -12,7 +12,7 @@ class Talk_commentsController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start          = $this->getStart($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         if (!$comment_id) {
@@ -33,18 +33,19 @@ class Talk_commentsController extends BaseApiController
     {
         $event_id = $this->getItemId($request);
         if (empty($event_id)) {
-            throw new UnexpectedValueException("Event not found", 404);
+            throw new UnexpectedValueException('Event not found', 404);
         }
 
-        $event_mapper   = new EventMapper($db, $request);
+        $event_mapper = new EventMapper($db, $request);
         $comment_mapper = new TalkCommentMapper($db, $request);
 
-        if (! isset($request->user_id) || empty($request->user_id)) {
-            throw new Exception("You must log in to do that", 401);
+        if (!isset($request->user_id) || empty($request->user_id)) {
+            throw new Exception('You must log in to do that', 401);
         }
 
         if ($event_mapper->thisUserHasAdminOn($event_id)) {
             $list = $comment_mapper->getReportedCommentsByEventId($event_id);
+
             return $list->getOutputView($request);
         } else {
             throw new Exception("You don't have permission to do that", 403);
@@ -54,34 +55,34 @@ class Talk_commentsController extends BaseApiController
     public function reportComment(Request $request, PDO $db)
     {
         // must be logged in to report a comment
-        if (! isset($request->user_id) || empty($request->user_id)) {
+        if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to report a comment', 401);
         }
 
         $comment_mapper = new TalkCommentMapper($db, $request);
 
-        $commentId   = $this->getItemId($request);
+        $commentId = $this->getItemId($request);
         $commentInfo = $comment_mapper->getCommentInfo($commentId);
         if (false === $commentInfo) {
             throw new Exception('Comment not found', 404);
         }
 
-        $talkId  = $commentInfo['talk_id'];
+        $talkId = $commentInfo['talk_id'];
         $eventId = $commentInfo['event_id'];
 
         $comment_mapper->userReportedComment($commentId, $request->user_id);
 
         // notify event admins
-        $comment      = $comment_mapper->getCommentById($commentId, true, true);
+        $comment = $comment_mapper->getCommentById($commentId, true, true);
         $event_mapper = new EventMapper($db, $request);
-        $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
-        $event        = $event_mapper->getEventById($eventId, true, true);
+        $recipients = $event_mapper->getHostsEmailAddresses($eventId);
+        $event = $event_mapper->getEventById($eventId, true, true);
 
         $emailService = new CommentReportedEmailService($this->config, $recipients, $comment, $event);
         $emailService->sendEmail();
 
         // send them to the comments collection
-        $uri = $request->base . '/' . $request->version . '/talks/' . $talkId . "/comments";
+        $uri = $request->base.'/'.$request->version.'/talks/'.$talkId.'/comments';
 
         $view = $request->getView();
         $view->setHeader('Location', $uri);
@@ -98,14 +99,14 @@ class Talk_commentsController extends BaseApiController
      * means that the comment is viewable again.
      *
      * @param Request $request the request
-     * @param PDO $db the database adapter
+     * @param PDO     $db      the database adapter
      *
      * @throws Exception
      */
     public function moderateReportedComment(Request $request, PDO $db)
     {
         // must be logged in
-        if (! isset($request->user_id) || empty($request->user_id)) {
+        if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to moderate a comment', 401);
         }
 
@@ -130,8 +131,8 @@ class Talk_commentsController extends BaseApiController
 
         $comment_mapper->moderateReportedComment($decision, $commentId, $request->user_id);
 
-        $talk_id  = $commentInfo['talk_id'];
-        $uri = $request->base  . '/' . $request->version . '/talks/' . $talk_id . "/comments";
+        $talk_id = $commentInfo['talk_id'];
+        $uri = $request->base.'/'.$request->version.'/talks/'.$talk_id.'/comments';
 
         $view = $request->getView();
         $view->setHeader('Location', $uri);
@@ -168,7 +169,7 @@ class Talk_commentsController extends BaseApiController
         }
 
         if ($comment['date_made'] + ($max_comment_edit_minutes * 60) < time()) {
-            throw new Exception('Cannot edit the comment after ' . $max_comment_edit_minutes . ' minutes', 400);
+            throw new Exception('Cannot edit the comment after '.$max_comment_edit_minutes.' minutes', 400);
         }
 
         $updateSuccess = $comment_mapper->updateCommentBody($comment_id, $new_comment_body);

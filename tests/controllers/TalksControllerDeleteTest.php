@@ -20,8 +20,8 @@ class TalksControllerDeleteTest extends TalkBase
         $request = new Request(
             [],
             [
-                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79/starred',
-                'REQUEST_METHOD' => 'DELETE'
+                'REQUEST_URI'    => 'http://api.dev.joind.in/v2.1/talks/79/starred',
+                'REQUEST_METHOD' => 'DELETE',
             ]
         );
 
@@ -39,8 +39,8 @@ class TalksControllerDeleteTest extends TalkBase
         $request = new Request(
             [],
             [
-                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79/starred',
-                'REQUEST_METHOD' => 'DELETE'
+                'REQUEST_URI'    => 'http://api.dev.joind.in/v2.1/talks/79/starred',
+                'REQUEST_METHOD' => 'DELETE',
             ]
         );
         $request->user_id = 2;
@@ -73,8 +73,8 @@ class TalksControllerDeleteTest extends TalkBase
         $request = new Request(
             [],
             [
-                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
-                'REQUEST_METHOD' => 'DELETE'
+                'REQUEST_URI'    => 'http://api.dev.joind.in/v2.1/talks/79',
+                'REQUEST_METHOD' => 'DELETE',
             ]
         );
 
@@ -90,11 +90,11 @@ class TalksControllerDeleteTest extends TalkBase
     public function deleteTalkWhichDoesntExist()
     {
         $httpRequest = [
-            'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
-            'REQUEST_METHOD' => 'DELETE'
+            'REQUEST_URI'    => 'http://api.dev.joind.in/v2.1/talks/79',
+            'REQUEST_METHOD' => 'DELETE',
         ];
         $request = $this->getMockBuilder(Request::class)
-            ->setConstructorArgs([[], $httpRequest ])
+            ->setConstructorArgs([[], $httpRequest])
             ->getMock();
 
         $request->user_id = 2;
@@ -106,7 +106,7 @@ class TalksControllerDeleteTest extends TalkBase
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talk_mapper = $this->getMockBuilder(TalkMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $talk_mapper
@@ -135,8 +135,8 @@ class TalksControllerDeleteTest extends TalkBase
         $request = new Request(
             [],
             [
-                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
-                'REQUEST_METHOD' => 'DELETE'
+                'REQUEST_URI'    => 'http://api.dev.joind.in/v2.1/talks/79',
+                'REQUEST_METHOD' => 'DELETE',
             ]
         );
 
@@ -153,7 +153,6 @@ class TalksControllerDeleteTest extends TalkBase
         $talks_controller = new TalksController();
         $talks_controller->setTalkMapper($talk_mapper);
 
-
         $talks_controller->deleteTalk($request, $db);
     }
 
@@ -163,11 +162,11 @@ class TalksControllerDeleteTest extends TalkBase
     public function deleteTalkWithAdmin()
     {
         $httpRequest = [
-            'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
-            'REQUEST_METHOD' => 'DELETE'
+            'REQUEST_URI'    => 'http://api.dev.joind.in/v2.1/talks/79',
+            'REQUEST_METHOD' => 'DELETE',
         ];
         $request = $this->getMockBuilder(Request::class)
-            ->setConstructorArgs([[], $httpRequest ])
+            ->setConstructorArgs([[], $httpRequest])
             ->getMock();
 
         $request->user_id = 2;

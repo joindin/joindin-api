@@ -2,7 +2,6 @@
 
 class EventCommentReportedEmailService extends BaseEmailService
 {
-
     protected $comment;
     protected $event;
     protected $website_url;
@@ -20,16 +19,16 @@ class EventCommentReportedEmailService extends BaseEmailService
 
     public function sendEmail()
     {
-        $this->setSubject("Joind.in: A comment was reported");
+        $this->setSubject('Joind.in: A comment was reported');
 
         $byLine = '';
 
         if (isset($this->comment['user_display_name'])) {
-            $byLine = ' by ' . $this->comment['user_display_name'];
+            $byLine = ' by '.$this->comment['user_display_name'];
         }
 
         if (empty($byLine) && isset($this->comment['username'])) {
-            $byLine = ' by' . $this->comment['username'];
+            $byLine = ' by'.$this->comment['username'];
         }
 
         if (empty($byLine)) {
@@ -41,15 +40,15 @@ class EventCommentReportedEmailService extends BaseEmailService
             $rating = 'Not rated';
         }
 
-        $replacements = array(
-            "name"    => $this->event['name'],
-            "rating"  => $rating,
-            "comment" => $this->comment['comment'],
-            "byline"  => $byLine,
-            "link"    => $this->linkToReportedCommentsForEvent()
-        );
+        $replacements = [
+            'name'    => $this->event['name'],
+            'rating'  => $rating,
+            'comment' => $this->comment['comment'],
+            'byline'  => $byLine,
+            'link'    => $this->linkToReportedCommentsForEvent(),
+        ];
 
-        $messageBody = $this->parseEmail("eventCommentReported.md", $replacements);
+        $messageBody = $this->parseEmail('eventCommentReported.md', $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);
 
         $this->setBody($this->htmlToPlainText($messageHTML));
@@ -60,10 +59,10 @@ class EventCommentReportedEmailService extends BaseEmailService
 
     private function linkToReportedCommentsForEvent()
     {
-        return '[' . $this->website_url
-            . '/event/' . $this->event['url_friendly_name']
-            . '/reported-comments' . '](' . $this->website_url
-            . '/event/' . $this->event['url_friendly_name']
-            . '/reported-comments' . ')';
+        return '['.$this->website_url
+            .'/event/'.$this->event['url_friendly_name']
+            .'/reported-comments'.']('.$this->website_url
+            .'/event/'.$this->event['url_friendly_name']
+            .'/reported-comments'.')';
     }
 }

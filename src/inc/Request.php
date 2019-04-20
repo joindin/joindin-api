@@ -6,21 +6,20 @@
 
 class Request
 {
-
     /**
-     * Output formats
+     * Output formats.
      */
     const FORMAT_JSON = 'json';
     const FORMAT_HTML = 'html';
 
     /**
-     * Content-types for the Accepts header
+     * Content-types for the Accepts header.
      */
     const CONTENT_TYPE_JSON = 'application/json';
     const CONTENT_TYPE_HTML = 'text/html';
 
     /**
-     * HTTP Verbs
+     * HTTP Verbs.
      */
     const HTTP_GET = 'GET';
     const HTTP_POST = 'POST';
@@ -33,9 +32,9 @@ class Request
     protected $verb;
     public $url_elements;
     public $path_info;
-    public $accept = array();
+    public $accept = [];
     public $host;
-    public $parameters = array();
+    public $parameters = [];
     public $user_id;
     public $access_token;
     public $version;
@@ -53,22 +52,22 @@ class Request
     /**
      * @var array The priority-ordered list of format choices
      */
-    protected $formatChoices = array(self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML);
+    protected $formatChoices = [self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML];
 
     /**
-     * A list of parameters provided from a Route
+     * A list of parameters provided from a Route.
      *
      * @var array
      */
-    protected $routeParams = array();
+    protected $routeParams = [];
 
     /**
-     * Builds the request object
+     * Builds the request object.
      *
-     * @param array|false $config The application configuration
-     * @param array $server The $_SERVER global, injected for testability
-     * @param bool $parseParams Set to false to skip parsing parameters on
-     *                                   construction
+     * @param array|false $config      The application configuration
+     * @param array       $server      The $_SERVER global, injected for testability
+     * @param bool        $parseParams Set to false to skip parsing parameters on
+     *                                 construction
      */
     public function __construct($config, array $server, $parseParams = true)
     {
@@ -92,13 +91,13 @@ class Request
             $this->setHost($server['HTTP_HOST']);
         }
 
-        if (isset($server['HTTPS']) && ($server['HTTPS'] == "on")) {
+        if (isset($server['HTTPS']) && ($server['HTTPS'] == 'on')) {
             $this->setScheme('https://');
         } else {
             $this->setScheme('http://');
         }
 
-        $this->setBase($this->getScheme() . $this->getHost());
+        $this->setBase($this->getScheme().$this->getHost());
 
         if ($parseParams) {
             $this->parseParameters($server);
@@ -110,7 +109,7 @@ class Request
      * Sets the IP address and User Agent of the requesting client. It checks for the presence of
      * a Forwarded or X-Forwarded-For header and, if present, it uses the left most address listed.
      * If both of these headers is present, the Forwarded header takes precedence.
-     * If the header is not present, it defaults to the REMOTE_ADDR value
+     * If the header is not present, it defaults to the REMOTE_ADDR value.
      */
     public function setClientInfo()
     {
@@ -134,14 +133,14 @@ class Request
             $header = new Header('X-Forwarded-For', $_SERVER['HTTP_X_FORWARDED_FOR'], ',');
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
-            $ipAddress    = count($elementArray) ? $elementArray[0][0] : null;
+            $ipAddress = count($elementArray) ? $elementArray[0][0] : null;
         }
-        $this->clientIP        = $ipAddress;
+        $this->clientIP = $ipAddress;
         $this->clientUserAgent = $userAgent;
     }
 
     /**
-     * Gets the priority-ordered list of output format choices
+     * Gets the priority-ordered list of output format choices.
      *
      * @return array
      */
@@ -151,7 +150,7 @@ class Request
     }
 
     /**
-     * Sets the priority-ordered list of output format choices
+     * Sets the priority-ordered list of output format choices.
      *
      * @param array $formatChoices
      */
@@ -161,7 +160,7 @@ class Request
     }
 
     /**
-     * Gets parameters as determined from the Route
+     * Gets parameters as determined from the Route.
      *
      * @return array
      */
@@ -171,7 +170,7 @@ class Request
     }
 
     /**
-     * Sets parameters as determined from the Route
+     * Sets parameters as determined from the Route.
      *
      * @param array $routeParams
      */
@@ -183,16 +182,16 @@ class Request
     /**
      * Retrieves the value of a parameter from the request. If a default
      * is provided and the parameter doesn't exist, the default value
-     * will be returned instead
+     * will be returned instead.
      *
-     * @param string $param Parameter to retrieve
+     * @param string $param   Parameter to retrieve
      * @param string $default Default to return if parameter doesn't exist
      *
      * @return mixed
      */
     public function getParameter($param, $default = '')
     {
-        if (! array_key_exists($param, $this->parameters)) {
+        if (!array_key_exists($param, $this->parameters)) {
             return $default;
         }
 
@@ -203,16 +202,16 @@ class Request
      * Retrieves a url element by numerical index. If it doesn't exist, and
      * a default is provided, the default value will be returned.
      *
-     * @param integer $index Index to retrieve
+     * @param int    $index   Index to retrieve
      * @param string $default
      *
      * @return string
      */
     public function getUrlElement($index, $default = '')
     {
-        $index   = (int) $index;
+        $index = (int) $index;
 
-        if (! isset($this->url_elements[$index])) {
+        if (!isset($this->url_elements[$index])) {
             return $default;
         }
 
@@ -221,7 +220,7 @@ class Request
 
     /**
      * Determines if the headers indicate that a particular MIME is accepted based
-     * on the browser headers
+     * on the browser headers.
      *
      * @param string $header Mime type to check for
      *
@@ -241,7 +240,7 @@ class Request
     /**
      * Determine if one of the accept headers matches one of the desired
      * formats and returns that format. If none of the desired formats
-     * are found, it will return 'json'
+     * are found, it will return 'json'.
      *
      * @param array|null $formats Formats that we want to serve; set to null to
      *                            use the default list
@@ -252,7 +251,7 @@ class Request
      */
     public function preferredContentTypeOutOf(array $formats = null)
     {
-        if (! $formats) {
+        if (!$formats) {
             $formats = $this->getFormatChoices();
         }
 
@@ -267,13 +266,13 @@ class Request
 
     /**
      * Gets the View object for this Request, initializing it as appropriate to
-     * the accepts header
+     * the accepts header.
      *
      * @return ApiView
      */
     public function getView()
     {
-        if (! $this->view) {
+        if (!$this->view) {
             $format = $this->getParameter('format', $this->preferredContentTypeOutOf());
 
             switch ($format) {
@@ -299,7 +298,7 @@ class Request
     }
 
     /**
-     * Sets this Request's View object
+     * Sets this Request's View object.
      *
      * @param \ApiView $view
      */
@@ -313,28 +312,29 @@ class Request
      * variable on the request.
      *
      * @param string $auth_header Authorization header to send into model
-     * @param PDO $db Database adapter (needed to put into OAuthModel if it's not set already)
+     * @param PDO    $db          Database adapter (needed to put into OAuthModel if it's not set already)
      *
      * @throws InvalidArgumentException
+     *
      * @return bool
      */
     public function identifyUser($auth_header, PDO $db = null)
     {
-        if (($this->getScheme() == "https://") ||
-            (isset($this->config['mode']) && $this->config['mode'] == "development")
+        if (($this->getScheme() == 'https://') ||
+            (isset($this->config['mode']) && $this->config['mode'] == 'development')
         ) {
             // identify the user
             $oauth_pieces = explode(' ', $auth_header);
-            if (count($oauth_pieces) <> 2) {
+            if (count($oauth_pieces) != 2) {
                 throw new InvalidArgumentException('Invalid Authorization Header', '400');
             }
 
             // token type must be either 'bearer' or 'oauth'
-            if (! in_array(strtolower($oauth_pieces[0]), ["bearer", 'oauth'])) {
+            if (!in_array(strtolower($oauth_pieces[0]), ['bearer', 'oauth'])) {
                 throw new InvalidArgumentException('Unknown Authorization Header Received', '400');
             }
             $oauth_model = $this->getOauthModel($db);
-            $user_id     = $oauth_model->verifyAccessToken($oauth_pieces[1]);
+            $user_id = $oauth_model->verifyAccessToken($oauth_pieces[1]);
             $this->setUserId($user_id);
             $this->setAccessToken($oauth_pieces[1]);
 
@@ -345,11 +345,11 @@ class Request
     }
 
     /**
-     * What format/method of request is this?  Figure it out and grab the parameters
+     * What format/method of request is this?  Figure it out and grab the parameters.
      *
      * @param array $server The $_SERVER global, injected for testability
      *
-     * @return boolean true
+     * @return bool true
      *
      * @todo Make paginationParameters part of this object, add tests for them
      */
@@ -363,18 +363,18 @@ class Request
             $this->paginationParameters = $parameters;
         }
 
-        if (! isset($this->paginationParameters['start'])) {
+        if (!isset($this->paginationParameters['start'])) {
             $this->paginationParameters['start'] = null;
         }
-        if (! isset($this->paginationParameters['resultsperpage'])) {
+        if (!isset($this->paginationParameters['resultsperpage'])) {
             $this->paginationParameters['resultsperpage'] = 20;
         }
 
         // now how about PUT/POST bodies? These override what we already had
         if ($this->getVerb() == 'POST' || $this->getVerb() == 'PUT') {
             $body = $this->getRawBody();
-            if ((isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] == "application/json")
-                || (isset($server['HTTP_CONTENT_TYPE']) && $server['HTTP_CONTENT_TYPE'] == "application/json")
+            if ((isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] == 'application/json')
+                || (isset($server['HTTP_CONTENT_TYPE']) && $server['HTTP_CONTENT_TYPE'] == 'application/json')
             ) {
                 $body_params = json_decode($body);
                 if ($body_params) {
@@ -391,7 +391,7 @@ class Request
     }
 
     /**
-     * Returns the raw body from POST or PUT calls
+     * Returns the raw body from POST or PUT calls.
      *
      * @return string
      */
@@ -401,7 +401,7 @@ class Request
     }
 
     /**
-     * Retrieves the verb of the request (method)
+     * Retrieves the verb of the request (method).
      *
      * @return string
      */
@@ -411,7 +411,7 @@ class Request
     }
 
     /**
-     * Allows for manually setting of the request verb
+     * Allows for manually setting of the request verb.
      *
      * @param string $verb Verb to set
      *
@@ -425,7 +425,7 @@ class Request
     }
 
     /**
-     * Returns the host from the request
+     * Returns the host from the request.
      *
      * @return string|null
      */
@@ -435,7 +435,7 @@ class Request
     }
 
     /**
-     * Sets the host on the request
+     * Sets the host on the request.
      *
      * @param string $host Host to set
      *
@@ -449,7 +449,7 @@ class Request
     }
 
     /**
-     * Returns the scheme for the request
+     * Returns the scheme for the request.
      *
      * @return string
      */
@@ -459,7 +459,7 @@ class Request
     }
 
     /**
-     * Sets the scheme for the request
+     * Sets the scheme for the request.
      *
      * @param string $scheme Scheme to set
      *
@@ -481,6 +481,7 @@ class Request
      * @param PDO $db [optional] PDO db adapter to put into OAuthModel object
      *
      * @throws InvalidArgumentException
+     *
      * @return OAuthModel
      */
     public function getOauthModel(PDO $db = null)
@@ -496,7 +497,7 @@ class Request
     }
 
     /**
-     * Sets an OAuthModel for the request to use should it need to
+     * Sets an OAuthModel for the request to use should it need to.
      *
      * @param OAuthModel $model Model to set
      *
@@ -510,7 +511,7 @@ class Request
     }
 
     /**
-     * Sets a user id
+     * Sets a user id.
      *
      * @param string $userId User id to set
      *
@@ -524,7 +525,7 @@ class Request
     }
 
     /**
-     * Retrieves the user id that's been set on the request
+     * Retrieves the user id that's been set on the request.
      *
      * @return string|null
      */
@@ -534,7 +535,7 @@ class Request
     }
 
     /**
-     * Sets the path info variable. Also explodes the path into url elements
+     * Sets the path info variable. Also explodes the path into url elements.
      *
      * @param string $pathInfo Path info to set
      *
@@ -542,14 +543,14 @@ class Request
      */
     public function setPathInfo($pathInfo)
     {
-        $this->path_info    = $pathInfo;
+        $this->path_info = $pathInfo;
         $this->url_elements = explode('/', $pathInfo);
 
         return $this;
     }
 
     /**
-     * Retrieves the original path info variable
+     * Retrieves the original path info variable.
      *
      * @return string
      */
@@ -559,7 +560,7 @@ class Request
     }
 
     /**
-     * Sets the accepts variable from the accept header
+     * Sets the accepts variable from the accept header.
      *
      * @param string $accepts Accepts header string
      *
@@ -573,7 +574,7 @@ class Request
     }
 
     /**
-     * Sets the URI base
+     * Sets the URI base.
      *
      * @param string $base Base to set
      *
@@ -587,7 +588,7 @@ class Request
     }
 
     /**
-     * Returns the url base
+     * Returns the url base.
      *
      * @return string
      */
@@ -597,7 +598,7 @@ class Request
     }
 
     /**
-     * Sets an access token
+     * Sets an access token.
      *
      * @param string $token Access token to store
      *
@@ -611,7 +612,7 @@ class Request
     }
 
     /**
-     * Retrieves the access token for this request
+     * Retrieves the access token for this request.
      *
      * @return string|null
      */
@@ -621,7 +622,7 @@ class Request
     }
 
     /**
-     * Retrieves the client's IP address
+     * Retrieves the client's IP address.
      *
      * @return mixed
      */
@@ -631,7 +632,7 @@ class Request
     }
 
     /**
-     * Retrieves the client's user agent
+     * Retrieves the client's user agent.
      *
      * @return mixed
      */
@@ -642,16 +643,16 @@ class Request
 
     /**
      * Fetch a config value by named key.  If the value doesn't exist then
-     * return the default value
+     * return the default value.
      *
-     * @param string $param Parameter to retrieve
+     * @param string $param   Parameter to retrieve
      * @param string $default Default to return if parameter doesn't exist
      *
      * @return string
      */
     public function getConfigValue($key, $default = '')
     {
-        if (! array_key_exists($key, $this->config)) {
+        if (!array_key_exists($key, $this->config)) {
             return $default;
         }
 

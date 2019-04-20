@@ -2,7 +2,6 @@
 
 class TalkClaimRejectedEmailService extends BaseEmailService
 {
-
     protected $event;
     /** @var TalkModel */
     protected $talk;
@@ -19,15 +18,14 @@ class TalkClaimRejectedEmailService extends BaseEmailService
 
     public function sendEmail()
     {
-        $this->setSubject("Joind.in: Your talk claim has been rejected");
+        $this->setSubject('Joind.in: Your talk claim has been rejected');
 
+        $replacements = [
+            'eventName' => $this->event['name'],
+            'talkTitle' => $this->talk->talk_title,
+        ];
 
-        $replacements = array(
-            "eventName" => $this->event['name'],
-            "talkTitle" => $this->talk->talk_title
-        );
-
-        $messageBody = $this->parseEmail("talkClaimRejected.md", $replacements);
+        $messageBody = $this->parseEmail('talkClaimRejected.md', $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);
 
         $this->setBody($this->htmlToPlainText($messageHTML));

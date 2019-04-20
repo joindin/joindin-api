@@ -7,10 +7,10 @@ class EventHostMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'host_name' => 'host_name',
             'host_uri'  => 'host_uri',
-        );
+        ];
     }
 
     /**
@@ -22,9 +22,9 @@ class EventHostMapper extends ApiMapper
     }
 
     /**
-     * @param int $event_id
-     * @param int $resultsperpage
-     * @param int $start
+     * @param int  $event_id
+     * @param int  $resultsperpage
+     * @param int  $start
      * @param bool $verbose
      *
      * @return false|array
@@ -35,16 +35,16 @@ class EventHostMapper extends ApiMapper
         $sql .= ' order by host_name ';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
-            ':event_id' => $event_id
-        ));
-        if (! $response) {
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([
+            ':event_id' => $event_id,
+        ]);
+        if (!$response) {
             return false;
         }
 
-        $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $results['total'] = $this->getTotalCount($sql, [':event_id' => $event_id]);
 
         return $this->transformResults($results, $verbose);
     }
@@ -66,7 +66,7 @@ class EventHostMapper extends ApiMapper
             ':type'     => 'event',
         ]);
 
-        if (! $response) {
+        if (!$response) {
             return false;
         }
 
@@ -92,31 +92,31 @@ class EventHostMapper extends ApiMapper
     }
 
     /**
-     * SQL for fetching event hosts, so it can be used in multiple places
+     * SQL for fetching event hosts, so it can be used in multiple places.
      *
      * @return string SQL to fetch hosts, containing an :event_id named parameter
      */
     protected function getHostSql()
     {
         return 'select a.uid as user_id, u.full_name as host_name '
-             . 'from user_admin a '
-             . 'inner join user u on u.ID = a.uid '
-             . 'where rid = :event_id and rtype="event" and (rcode!="pending" OR rcode is null)';
+             .'from user_admin a '
+             .'inner join user u on u.ID = a.uid '
+             .'where rid = :event_id and rtype="event" and (rcode!="pending" OR rcode is null)';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function transformResults(array $results, $verbose)
     {
         $total = $results['total'];
         unset($results['total']);
-        $list    = parent::transformResults($results, $verbose);
-        $base    = $this->_request->base;
+        $list = parent::transformResults($results, $verbose);
+        $base = $this->_request->base;
         $version = $this->_request->version;
 
         // add per-item links
-        if (! is_array($list)) {
+        if (!is_array($list)) {
             return [];
         }
 
@@ -127,12 +127,12 @@ class EventHostMapper extends ApiMapper
         foreach ($results as $key => $row) {
             // generate and store an inflected event name if there isn't one already
             $list[$key]['host_name'] = $row['host_name'];
-            $list[$key]['host_uri']  = $base . '/' . $version . '/users/' . $row['user_id'];
+            $list[$key]['host_uri'] = $base.'/'.$version.'/users/'.$row['user_id'];
         }
 
         return [
             'hosts' => $list,
-            'meta' => $this->getPaginationLinks($list, $total),
+            'meta'  => $this->getPaginationLinks($list, $total),
         ];
     }
 }

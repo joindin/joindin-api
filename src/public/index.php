@@ -1,10 +1,11 @@
 <?php
+
 // @codingStandardsIgnoreFile
-include __DIR__ . '/../../vendor/autoload.php';
+include __DIR__.'/../../vendor/autoload.php';
 if (!function_exists('apache_request_headers')) {
     include '../inc/nginx-helper.php';
 }
-if(!ini_get('date.timezone')) {
+if (!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
 }
 // Add exception handler
@@ -21,10 +22,10 @@ function handle_exception($e)
     }
 
     $message = $e->getMessage();
-    if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
-        $message = "Database error";
+    if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== 'development')) {
+        $message = 'Database error';
     }
-    $request->getView()->render(array($message));
+    $request->getView()->render([$message]);
 }
 
 set_exception_handler('handle_exception');
@@ -35,15 +36,15 @@ include '../config.php';
 
 $container = ContainerFactory::build($config);
 
-if ($config['mode'] == "development") {
-    ini_set("html_errors", 0);
+if ($config['mode'] == 'development') {
+    ini_set('html_errors', 0);
 }
 
 // database setup
 include '../database.php';
 $ji_db = new PDO(
-    'mysql:host=' . $db['default']['hostname'] .
-    ';dbname=' . $db['default']['database'] . ';charset=utf8mb4',
+    'mysql:host='.$db['default']['hostname'].
+    ';dbname='.$db['default']['database'].';charset=utf8mb4',
     $db['default']['username'],
     $db['default']['password']
 );
@@ -62,8 +63,8 @@ if (isset($headers['authorization'])) {
 $rules = json_decode(file_get_contents('../config/routes/2.1.json'), true);
 
 $routers = [
-    "v2.1" => new VersionedRouter('2.1', $config, $rules),
-    '' => new DefaultRouter($config),
+    'v2.1' => new VersionedRouter('2.1', $config, $rules),
+    ''     => new DefaultRouter($config),
 ];
 $router = new ApiRouter($config, $routers, ['2']);
 
@@ -71,7 +72,7 @@ $route = $router->getRoute($request);
 $return_data = $route->dispatch($request, $ji_db, $container);
 
 if ($return_data && isset($request->user_id)) {
-    $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;
+    $return_data['meta']['user_uri'] = $request->base.'/'.$request->version.'/users/'.$request->user_id;
 }
 
 // Handle output

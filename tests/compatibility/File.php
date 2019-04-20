@@ -13,7 +13,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use SebastianBergmann\CodeCoverage\Node\File as FileNode;
 use SebastianBergmann\CodeCoverage\Util;
 
-/**
+/*
  * This is a temporary fix for phpunit 5 coverage running in php 7
  * This will throw an exception requiring removal when phpunit is upgraded
  * past 6.1.1 that has the fix.
@@ -22,10 +22,10 @@ use SebastianBergmann\CodeCoverage\Util;
 if (PHP_MAJOR_VERSION >= 7) {
     if (class_exists('\PHPUnit\Runner\Version')) {
         $version = new \PHPUnit\Runner\Version();
-        $version = explode(".", $version->id());
+        $version = explode('.', $version->id());
         if ($version[0] >= 6 && $version[1] > 1) {
             throw new \Exception(
-                "This file is no longer needed with version of php and phpunit, please remove from composer.json"
+                'This file is no longer needed with version of php and phpunit, please remove from composer.json'
             );
         }
     }
@@ -71,12 +71,12 @@ class File extends Renderer
      */
     public function render(FileNode $node, $file)
     {
-        $template = new \Text_Template($this->templatePath . 'file.html', '{{', '}}');
+        $template = new \Text_Template($this->templatePath.'file.html', '{{', '}}');
 
         $template->setVar(
             [
                 'items' => $this->renderItems($node),
-                'lines' => $this->renderSource($node)
+                'lines' => $this->renderSource($node),
             ]
         );
 
@@ -92,10 +92,10 @@ class File extends Renderer
      */
     protected function renderItems(FileNode $node)
     {
-        $template = new \Text_Template($this->templatePath . 'file_item.html', '{{', '}}');
+        $template = new \Text_Template($this->templatePath.'file_item.html', '{{', '}}');
 
         $methodItemTemplate = new \Text_Template(
-            $this->templatePath . 'method_item.html',
+            $this->templatePath.'method_item.html',
             '{{',
             '}}'
         );
@@ -116,7 +116,7 @@ class File extends Renderer
                 'testedMethodsPercentAsString' => $node->getTestedMethodsPercent(),
                 'testedClassesPercent'         => $node->getTestedClassesAndTraitsPercent(false),
                 'testedClassesPercentAsString' => $node->getTestedClassesAndTraitsPercent(),
-                'crap'                         => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>'
+                'crap'                         => '<abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr>',
             ]
         );
 
@@ -156,7 +156,7 @@ class File extends Renderer
         $buffer = '';
 
         foreach ($items as $name => $item) {
-            $numMethods       = count($item['methods']);
+            $numMethods = count($item['methods']);
             $numTestedMethods = 0;
 
             foreach ($item['methods'] as $method) {
@@ -166,16 +166,16 @@ class File extends Renderer
             }
 
             if ($item['executableLines'] > 0) {
-                $numClasses                   = 1;
-                $numTestedClasses             = $numTestedMethods == $numMethods ? 1 : 0;
+                $numClasses = 1;
+                $numTestedClasses = $numTestedMethods == $numMethods ? 1 : 0;
                 $linesExecutedPercentAsString = Util::percent(
                     $item['executedLines'],
                     $item['executableLines'],
                     true
                 );
             } else {
-                $numClasses                   = 'n/a';
-                $numTestedClasses             = 'n/a';
+                $numClasses = 'n/a';
+                $numTestedClasses = 'n/a';
                 $linesExecutedPercentAsString = 'n/a';
             }
 
@@ -215,7 +215,7 @@ class File extends Renderer
                         1,
                         true
                     ),
-                    'crap'                         => $item['crap']
+                    'crap'                         => $item['crap'],
                 ]
             );
 
@@ -298,7 +298,7 @@ class File extends Renderer
                     1,
                     true
                 ),
-                'crap'                         => $item['crap']
+                'crap'                         => $item['crap'],
             ]
         );
     }
@@ -311,15 +311,15 @@ class File extends Renderer
     protected function renderSource(FileNode $node)
     {
         $coverageData = $node->getCoverageData();
-        $testData     = $node->getTestData();
-        $codeLines    = $this->loadFile($node->getPath());
-        $lines        = '';
-        $i            = 1;
+        $testData = $node->getTestData();
+        $codeLines = $this->loadFile($node->getPath());
+        $lines = '';
+        $i = 1;
 
         foreach ($codeLines as $line) {
-            $trClass        = '';
+            $trClass = '';
             $popoverContent = '';
-            $popoverTitle   = '';
+            $popoverTitle = '';
 
             if (array_key_exists($i, $coverageData)) {
                 $numTests = ($coverageData[$i] ? count($coverageData[$i]) : 0);
@@ -329,13 +329,13 @@ class File extends Renderer
                 } elseif ($numTests == 0) {
                     $trClass = ' class="danger"';
                 } else {
-                    $lineCss        = 'covered-by-large-tests';
+                    $lineCss = 'covered-by-large-tests';
                     $popoverContent = '<ul>';
 
                     if ($numTests > 1) {
-                        $popoverTitle = $numTests . ' tests cover line ' . $i;
+                        $popoverTitle = $numTests.' tests cover line '.$i;
                     } else {
-                        $popoverTitle = '1 test covers line ' . $i;
+                        $popoverTitle = '1 test covers line '.$i;
                     }
 
                     foreach ($coverageData[$i] as $test) {
@@ -387,7 +387,7 @@ class File extends Renderer
                     }
 
                     $popoverContent .= '</ul>';
-                    $trClass         = ' class="' . $lineCss . ' popin"';
+                    $trClass = ' class="'.$lineCss.' popin"';
                 }
             }
 
@@ -402,7 +402,7 @@ class File extends Renderer
             }
 
             $lines .= sprintf(
-                '     <tr%s%s><td><div align="right"><a name="%d"></a><a href="#%d">%d</a></div></td><td class="codeLine">%s</td></tr>' . "\n",
+                '     <tr%s%s><td><div align="right"><a name="%d"></a><a href="#%d">%d</a></div></td><td class="codeLine">%s</td></tr>'."\n",
                 $trClass,
                 $popover,
                 $i,
@@ -424,11 +424,11 @@ class File extends Renderer
      */
     protected function loadFile($file)
     {
-        $buffer              = file_get_contents($file);
-        $tokens              = token_get_all($buffer);
-        $result              = [''];
-        $i                   = 0;
-        $stringFlag          = false;
+        $buffer = file_get_contents($file);
+        $tokens = token_get_all($buffer);
+        $result = [''];
+        $i = 0;
+        $stringFlag = false;
         $fileEndsWithNewLine = substr($buffer, -1) == "\n";
 
         unset($buffer);
@@ -561,7 +561,7 @@ class File extends Renderer
         }
 
         if ($fileEndsWithNewLine) {
-            unset($result[count($result)-1]);
+            unset($result[count($result) - 1]);
         }
 
         return $result;

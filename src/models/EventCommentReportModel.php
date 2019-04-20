@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Object that represents a reported event comment
+ * Object that represents a reported event comment.
  */
 class EventCommentReportModel extends BaseModel
 {
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -14,17 +14,17 @@ class EventCommentReportModel extends BaseModel
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'reporting_date'          => 'reporting_date',
             'decision'                => 'decision',
             'deciding_date'           => 'deciding_date',
             'reporting_user_username' => 'reporting_username',
             'deciding_user_username'  => 'deciding_username',
-        );
+        ];
     }
 
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -37,7 +37,7 @@ class EventCommentReportModel extends BaseModel
 
     /**
      * List of subresource keys that may be in the data set from the mapper
-     * but are not database columns that need to be in the output view
+     * but are not database columns that need to be in the output view.
      *
      * format: [public facing name => field in $this->data]
      *
@@ -52,23 +52,23 @@ class EventCommentReportModel extends BaseModel
 
     /**
      * @param Request $request
-     * @param bool $verbose
+     * @param bool    $verbose
      *
      * @return array with client-facing fields and hypermedia, ready for output
      */
     public function getOutputView(Request $request, $verbose = false)
     {
         $item = parent::getOutputView($request, $verbose);
-        
+
         // add Hypermedia
-        $base    = $request->base;
+        $base = $request->base;
         $version = $request->version;
 
-        $item['reporting_user_uri']       = $base . '/' . $version . '/users/' . $this->reporting_user_id;
+        $item['reporting_user_uri'] = $base.'/'.$version.'/users/'.$this->reporting_user_id;
         if (!empty($this->deciding_user_id)) {
-            $item['deciding_user_uri']        = $base . '/' . $version . '/users/' . $this->deciding_user_id;
+            $item['deciding_user_uri'] = $base.'/'.$version.'/users/'.$this->deciding_user_id;
         }
-        $item['event_uri']            = $base . '/' . $version . '/events/' . $this->event_id;
+        $item['event_uri'] = $base.'/'.$version.'/events/'.$this->event_id;
 
         return $item;
     }

@@ -1,13 +1,12 @@
 <?php
 
 /**
- * A Router to route versioned Routes
+ * A Router to route versioned Routes.
  */
 class VersionedRouter extends BaseRouter
 {
-
     /**
-     * The version this Router represents
+     * The version this Router represents.
      *
      * @var float
      */
@@ -19,14 +18,14 @@ class VersionedRouter extends BaseRouter
      *   - path: a regular expression (minus the regex delimiters) to match
      *   - controller: the controller to route the request to
      *   - action: the method on the controller to route to
-     *   - verbs: if specified, the HTTP Verbs allowed for this route
+     *   - verbs: if specified, the HTTP Verbs allowed for this route.
      *
      * @var array
      */
     protected $rules;
 
     /**
-     * Constructs a new V2_1Router
+     * Constructs a new V2_1Router.
      *
      * @param float $version
      * @param array $config
@@ -36,7 +35,7 @@ class VersionedRouter extends BaseRouter
     {
         parent::__construct($config);
         $this->version = $version;
-        $this->rules   = $rules;
+        $this->rules = $rules;
     }
 
     /**
@@ -46,8 +45,8 @@ class VersionedRouter extends BaseRouter
     {
         $badMethod = false;
         foreach ($this->rules as $rule) {
-            if (preg_match('%^/v' . $this->version . $rule['path'] . '%', $request->getPathInfo(), $matches)) {
-                if (isset($rule['verbs']) && ! in_array($request->getVerb(), $rule['verbs'])) {
+            if (preg_match('%^/v'.$this->version.$rule['path'].'%', $request->getPathInfo(), $matches)) {
+                if (isset($rule['verbs']) && !in_array($request->getVerb(), $rule['verbs'])) {
                     $badMethod = true;
                     continue;
                 }
@@ -55,7 +54,7 @@ class VersionedRouter extends BaseRouter
                 $exclude = array_filter(
                     array_keys($matches),
                     function ($val) {
-                        return is_integer($val);
+                        return is_int($val);
                     }
                 );
                 // Remove numeric keys from matches
@@ -68,6 +67,7 @@ class VersionedRouter extends BaseRouter
         if ($badMethod) {
             throw new Exception('Method not supported', 415);
         }
+
         throw new Exception('Endpoint not found', 404);
     }
 }

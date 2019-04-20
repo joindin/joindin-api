@@ -5,20 +5,19 @@ namespace JoindinTest\Controller;
 use EventMapper;
 use JoindinTest\Inc\mockPDO;
 use OAuthModel;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Request;
 use TalkCommentMapper;
 use TalkMapper;
 use TalkModel;
 use UserMapper;
-use PHPUnit\Framework\TestCase;
 
 class TalkBase extends TestCase
 {
     protected function createTalkMapper(mockPDO $db, Request $request, $expetcedCalls = 1)
     {
         $talk_mapper = $this->getMockBuilder(TalkMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $talk_mapper
@@ -40,7 +39,7 @@ class TalkBase extends TestCase
                             'comment_count'           => 'comment_count',
                             'starred'                 => 'starred',
                             'starred_count'           => 'starred_count',
-                            'event_id'                => 1
+                            'event_id'                => 1,
                         ]
                     )
                 )
@@ -51,8 +50,8 @@ class TalkBase extends TestCase
 
     protected function createVerboseTalkMapper(mockPDO $db, Request $request)
     {
-        $talk_mapper = $this->getMockBuilder(TalkMapper::Class)
-            ->setConstructorArgs([$db,$request])
+        $talk_mapper = $this->getMockBuilder(TalkMapper::class)
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $talk_mapper
@@ -78,7 +77,7 @@ class TalkBase extends TestCase
                             'slides_link'             => 'http://slideshare.net',
                             'talk_media'              => [
                                 ['slides_link'  =>  'http://slideshare.net'],
-                                ['code_link'    =>  'https://github.com'],
+                                ['code_link'    => 'https://github.com'],
                             ],
                         ]
                     )
@@ -90,8 +89,8 @@ class TalkBase extends TestCase
 
     protected function createUserMapper(mockPDO $db, Request $request)
     {
-        $user_mapper = $this->getMockBuilder(UserMapper::Class)
-            ->setConstructorArgs(array($db,$request))
+        $user_mapper = $this->getMockBuilder(UserMapper::class)
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $user_mapper
@@ -103,9 +102,9 @@ class TalkBase extends TestCase
                         'users' => [
                             [
                                 'username'  => 'janebloggs',
-                                'full_name' => 'Jane Bloggs'
-                            ]
-                        ]
+                                'full_name' => 'Jane Bloggs',
+                            ],
+                        ],
                     ]
                 )
             );
@@ -116,7 +115,7 @@ class TalkBase extends TestCase
     protected function createEventMapper(mockPDO $db, Request $request)
     {
         $event_mapper = $this->getMockBuilder(EventMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $event_mapper
@@ -126,9 +125,9 @@ class TalkBase extends TestCase
                     [
                         'events' => [
                             [
-                                'name'  => 'Test Event'
-                            ]
-                        ]
+                                'name'  => 'Test Event',
+                            ],
+                        ],
                     ]
                 )
             );
@@ -138,7 +137,7 @@ class TalkBase extends TestCase
             ->will(
                 $this->returnValue(
                     [
-                        'none@example.com'
+                        'none@example.com',
                     ]
                 )
             );
@@ -149,22 +148,21 @@ class TalkBase extends TestCase
     protected function createTalkCommentMapper(mockPDO $db, Request $request)
     {
         return $this->getMockBuilder(TalkCommentMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
     }
 
-    protected function createOathModel(mockPDO $db, Request $request, $consumerName = "")
+    protected function createOathModel(mockPDO $db, Request $request, $consumerName = '')
     {
-
         $oathModel = $this->getMockBuilder(OAuthModel::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $oathModel
             ->method('getConsumerName')
             ->willReturn(
                 [
-                    $consumerName
+                    $consumerName,
                 ]
             );
 

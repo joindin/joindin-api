@@ -9,8 +9,8 @@ class UserRegistrationEmailService extends BaseEmailService
     protected $website_url;
 
     /**
-     * @param array $config
-     * @param array $recipients
+     * @param array  $config
+     * @param array  $recipients
      * @param string $token
      */
     public function __construct(array $config, array $recipients, $token)
@@ -18,7 +18,7 @@ class UserRegistrationEmailService extends BaseEmailService
         // set up the common stuff first
         parent::__construct($config, $recipients);
 
-        $this->token       = $token;
+        $this->token = $token;
         $this->website_url = $config['website_url'];
     }
 
@@ -26,12 +26,12 @@ class UserRegistrationEmailService extends BaseEmailService
     {
         $this->setSubject('Welcome to joind.in');
 
-        $replacements = array(
-            "token"       => $this->token,
-            "website_url" => $this->website_url,
-        );
+        $replacements = [
+            'token'       => $this->token,
+            'website_url' => $this->website_url,
+        ];
 
-        $messageBody = $this->parseEmail("userRegistration.md", $replacements);
+        $messageBody = $this->parseEmail('userRegistration.md', $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);
 
         $this->setBody($this->htmlToPlainText($messageHTML));

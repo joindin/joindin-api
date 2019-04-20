@@ -3,7 +3,7 @@
 use Michelf\Markdown;
 
 /**
- * Base Email Class
+ * Base Email Class.
  *
  * This class provides a base for different email implementations
  *
@@ -12,36 +12,37 @@ use Michelf\Markdown;
 abstract class BaseEmailService
 {
     /**
-     * The SwiftMailer object
+     * The SwiftMailer object.
      */
     protected $mailer;
 
     /**
-     * The SwiftMessage object
+     * The SwiftMessage object.
      */
     protected $message;
 
     /**
-     * Array of email addresses to send to
+     * Array of email addresses to send to.
      */
     protected $recipients;
 
     /**
-     * Template path, can be changed when testing
+     * Template path, can be changed when testing.
      */
-    public $templatePath = "../views/emails/";
+    public $templatePath = '../views/emails/';
 
     /**
-     * Make a message to be sent later
+     * Make a message to be sent later.
      *
      * @param array $config     The system config
      * @param array $recipients An array of email addresses
+     *
      * @throws \Exception
      */
     public function __construct(array $config, array $recipients)
     {
         if (!isset($config['email']['smtp'])) {
-            throw new Exception("SMTP Server not properly set up.");
+            throw new Exception('SMTP Server not properly set up.');
         }
 
         $transport = Swift_SmtpTransport::newInstance(
@@ -52,11 +53,9 @@ abstract class BaseEmailService
 
         $transport
             ->setUsername($config['email']['smtp']['username'])
-            ->setPassword($config['email']['smtp']['password'])
-        ;
+            ->setPassword($config['email']['smtp']['password']);
 
-
-        $this->mailer  = Swift_Mailer::newInstance($transport);
+        $this->mailer = Swift_Mailer::newInstance($transport);
         $this->message = Swift_Message::newInstance();
 
         if (isset($config['email']['forward_all_to'])
@@ -72,7 +71,7 @@ abstract class BaseEmailService
 
     /**
      * Take the template and the replacements, return markdown
-     * with the correct values in it
+     * with the correct values in it.
      *
      * @param string $templateName
      * @param array  $replacements
@@ -93,7 +92,7 @@ abstract class BaseEmailService
     }
 
     /**
-     * Set the body of the message
+     * Set the body of the message.
      *
      * @param string $body
      *
@@ -107,7 +106,7 @@ abstract class BaseEmailService
     }
 
     /**
-     * Set the HTML body of the message
+     * Set the HTML body of the message.
      *
      * Call setBody first
      *
@@ -123,7 +122,7 @@ abstract class BaseEmailService
     }
 
     /**
-     * Send the email that we created
+     * Send the email that we created.
      */
     protected function dispatchEmail()
     {
@@ -134,7 +133,7 @@ abstract class BaseEmailService
     }
 
     /**
-     * Set the subject line of the email
+     * Set the subject line of the email.
      *
      * @param string $subject
      */
@@ -144,7 +143,7 @@ abstract class BaseEmailService
     }
 
     /**
-     * Set the reply to header
+     * Set the reply to header.
      *
      * @param string $email
      */
@@ -154,7 +153,7 @@ abstract class BaseEmailService
     }
 
     /**
-     * Get recipients list to check it
+     * Get recipients list to check it.
      *
      * @return array
      */
@@ -164,7 +163,7 @@ abstract class BaseEmailService
     }
 
     /**
-     * Markdown to HTML
+     * Markdown to HTML.
      *
      * @param string $markdown
      *

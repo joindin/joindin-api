@@ -13,23 +13,21 @@ abstract class BaseModel
     }
 
     /**
-     * Retrieve a single element from the model or null if it doesn't exist
+     * Retrieve a single element from the model or null if it doesn't exist.
      *
-     * @param  string $field
+     * @param string $field
      *
      * @return mixed
      */
     public function __get($field)
     {
-        if (isset($this->data[ $field ])) {
-            return $this->data[ $field ];
+        if (isset($this->data[$field])) {
+            return $this->data[$field];
         }
-
-        return null;
     }
 
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -38,7 +36,7 @@ abstract class BaseModel
     abstract protected function getDefaultFields();
 
     /**
-     * Verbose fields in the output view
+     * Verbose fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -48,7 +46,7 @@ abstract class BaseModel
 
     /**
      * List of subresource keys that may be in the data set from the mapper
-     * but are not database columns that need to be in the output view
+     * but are not database columns that need to be in the output view.
      *
      * format: [public facing name => field in $this->data]
      *
@@ -60,16 +58,16 @@ abstract class BaseModel
     }
 
     /**
-     * Return this object with client-facing fields and hypermedia, ready for output
+     * Return this object with client-facing fields and hypermedia, ready for output.
      *
      * @param Request $request
-     * @param bool $verbose
+     * @param bool    $verbose
      *
      * @return array
      */
     public function getOutputView(Request $request, $verbose = false)
     {
-        $item = array();
+        $item = [];
 
         if ($verbose) {
             $fields = $this->getVerboseFields();
@@ -81,7 +79,7 @@ abstract class BaseModel
 
         // special handling for dates
         if ($this->event_tz_place != '' && $this->event_tz_cont != '') {
-            $tz = new DateTimeZone($this->event_tz_cont . '/' . $this->event_tz_place);
+            $tz = new DateTimeZone($this->event_tz_cont.'/'.$this->event_tz_place);
         } else {
             $tz = new DateTimeZone('UTC');
         }
@@ -90,9 +88,9 @@ abstract class BaseModel
             $value = $this->$name;
 
             // override if it is a date
-            if (substr($output_name, - 5) == '_date' && ! empty($value)) {
+            if (substr($output_name, -5) == '_date' && !empty($value)) {
                 if (is_numeric($value)) {
-                    $value = '@' . $value;
+                    $value = '@'.$value;
                 }
                 $value = (new DateTime($value))->setTimezone($tz)->format('c');
             }

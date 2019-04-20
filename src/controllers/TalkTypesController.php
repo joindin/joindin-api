@@ -1,4 +1,5 @@
 <?php
+
 class TalkTypesController extends BaseApiController
 {
     public function getAllTalkTypes(Request $request, PDO $db)
@@ -27,6 +28,7 @@ class TalkTypesController extends BaseApiController
         if (count($list['talk_types']) == 0) {
             throw new Exception('Talk type not found', 404);
         }
+
         return $list;
     }
 }

@@ -10,12 +10,12 @@ class ContainerFactoryTest extends TestCase
     private $config = [
         'akismet' => [
             'apiKey' => 'key',
-            'blog'   => 'blog'
+            'blog'   => 'blog',
         ],
         'email' => [
             'contact' => 'excample@example.com',
-            "from" => "example@example.com",
-            'smtp' => [
+            'from'    => 'example@example.com',
+            'smtp'    => [
                 'host'     => 'localhost',
                 'port'     => 25,
                 'username' => 'username',
@@ -23,7 +23,7 @@ class ContainerFactoryTest extends TestCase
                 'security' => null,
             ],
         ],
-        'website_url' => 'www.example.com'
+        'website_url' => 'www.example.com',
     ];
 
     /**
@@ -39,6 +39,7 @@ class ContainerFactoryTest extends TestCase
      * @covers ContainerFactory::build
      *
      * @dataProvider dataProvider
+     *
      * @param string $service
      */
     public function serviceIsDefined($service)
@@ -52,6 +53,7 @@ class ContainerFactoryTest extends TestCase
      * @covers ContainerFactory::build
      *
      * @dataProvider dataProvider
+     *
      * @param string $service
      */
     public function servicesCanBeCreated($service)
@@ -72,7 +74,7 @@ class ContainerFactoryTest extends TestCase
     }
 
     /**
-     * List of services which must be defined
+     * List of services which must be defined.
      *
      * @return array
      */
@@ -84,7 +86,7 @@ class ContainerFactoryTest extends TestCase
             [\ContactEmailService::class],
             [\ApplicationsController::class],
             [\DefaultController::class],
-            [\EmailsController::class] ,
+            [\EmailsController::class],
             [\Event_commentsController::class],
             [\Event_hostsController::class],
             [\EventImagesController::class],
@@ -98,7 +100,7 @@ class ContainerFactoryTest extends TestCase
             [\TokenController::class],
             [\TracksController::class],
             [\TwitterController::class],
-            [\UsersController::class]
+            [\UsersController::class],
         ];
     }
 }

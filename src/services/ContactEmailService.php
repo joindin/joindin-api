@@ -8,7 +8,7 @@ class ContactEmailService extends BaseEmailService
     public function __construct(array $config)
     {
         $recipients = $config['email']['contact'];
-        if (! is_array($recipients)) {
+        if (!is_array($recipients)) {
             $recipients = (array) $recipients;
         }
 
@@ -23,16 +23,16 @@ class ContactEmailService extends BaseEmailService
      */
     public function sendEmail(array $data)
     {
-        $this->setSubject('Joind.in contact: ' . $data['subject']);
+        $this->setSubject('Joind.in contact: '.$data['subject']);
 
         $replyTo = $this->recipients;
         array_unshift($replyTo, $data['email']);
         $this->setReplyTo($replyTo);
 
-        $replacements                = $data;
-        $replacements["website_url"] = $this->website_url;
+        $replacements = $data;
+        $replacements['website_url'] = $this->website_url;
 
-        $messageBody = $this->parseEmail("contact.md", $replacements);
+        $messageBody = $this->parseEmail('contact.md', $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);
 
         $this->setBody($this->htmlToPlainText($messageHTML));

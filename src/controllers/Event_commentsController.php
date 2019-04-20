@@ -1,4 +1,5 @@
 <?php
+
 // @codingStandardsIgnoreStart
 class Event_commentsController extends BaseApiController
 // @codingStandardsIgnoreEnd
@@ -11,7 +12,7 @@ class Event_commentsController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start          = $this->getStart($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = new EventCommentMapper($db, $request);
@@ -31,21 +32,22 @@ class Event_commentsController extends BaseApiController
     {
         $event_id = $this->getItemId($request);
         if (empty($event_id)) {
-            throw new UnexpectedValueException("Event not found", 404);
+            throw new UnexpectedValueException('Event not found', 404);
         }
 
         // verbosity
         $verbose = $this->getVerbosity($request);
 
-        $event_mapper   = new EventMapper($db, $request);
+        $event_mapper = new EventMapper($db, $request);
         $comment_mapper = new EventCommentMapper($db, $request);
 
-        if (! isset($request->user_id) || empty($request->user_id)) {
-            throw new Exception("You must log in to do that", 401);
+        if (!isset($request->user_id) || empty($request->user_id)) {
+            throw new Exception('You must log in to do that', 401);
         }
 
         if ($event_mapper->thisUserHasAdminOn($event_id)) {
             $list = $comment_mapper->getReportedCommentsByEventId($event_id);
+
             return $list->getOutputView($request);
         } else {
             throw new Exception("You don't have permission to do that", 403);
@@ -54,22 +56,22 @@ class Event_commentsController extends BaseApiController
 
     public function createComment(Request $request, PDO $db)
     {
-        $comment             = array();
+        $comment = [];
         $comment['event_id'] = $this->getItemId($request);
         if (empty($comment['event_id'])) {
             throw new Exception(
-                "POST expects a comment representation sent to a specific event URL",
+                'POST expects a comment representation sent to a specific event URL',
                 400
             );
         }
 
         // no anonymous comments over the API
-        if (! isset($request->user_id) || empty($request->user_id)) {
+        if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to comment');
         }
         $user_mapper = new UserMapper($db, $request);
-        $users       = $user_mapper->getUserById($request->user_id);
-        $thisUser    = $users['users'][0];
+        $users = $user_mapper->getUserById($request->user_id);
+        $thisUser = $users['users'][0];
 
         $rating = $request->getParameter('rating', false);
         if (false === $rating) {
@@ -84,14 +86,14 @@ class Event_commentsController extends BaseApiController
         }
 
         // Get the API key reference to save against the comment
-        $oauth_model   = $request->getOauthModel($db);
+        $oauth_model = $request->getOauthModel($db);
         $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
         $comment['user_id'] = $request->user_id;
         $comment['comment'] = $commentText;
-        $comment['rating']  = $rating;
-        $comment['cname']   = $thisUser['full_name'];
-        $comment['source']  = $consumer_name;
+        $comment['rating'] = $rating;
+        $comment['cname'] = $thisUser['full_name'];
+        $comment['source'] = $consumer_name;
 
         // run it by akismet if we have it
         if (isset($this->config['akismet']['apiKey'], $this->config['akismet']['blog'])) {
@@ -99,17 +101,17 @@ class Event_commentsController extends BaseApiController
                 $this->config['akismet']['apiKey'],
                 $this->config['akismet']['blog']
             );
-            $isValid          = $spamCheckService->isCommentAcceptable(
+            $isValid = $spamCheckService->isCommentAcceptable(
                 $comment,
                 $request->getClientIP(),
                 $request->getClientUserAgent()
             );
-            if (! $isValid) {
-                throw new Exception("Comment failed spam check", 400);
+            if (!$isValid) {
+                throw new Exception('Comment failed spam check', 400);
             }
         }
 
-        $event_mapper   = new EventMapper($db, $request);
+        $event_mapper = new EventMapper($db, $request);
         $comment_mapper = new EventCommentMapper($db, $request);
 
         // should rating be allowed?
@@ -134,7 +136,7 @@ class Event_commentsController extends BaseApiController
         // Update the cache count for the number of event comments on this event
         $event_mapper->cacheCommentCount($comment['event_id']);
 
-        $uri = $request->base . '/' . $request->version . '/event_comments/' . $new_id;
+        $uri = $request->base.'/'.$request->version.'/event_comments/'.$new_id;
 
         $view = $request->getView();
         $view->setHeader('Location', $uri);
@@ -144,7 +146,7 @@ class Event_commentsController extends BaseApiController
     public function reportComment(Request $request, PDO $db)
     {
         // must be logged in to report a comment
-        if (! isset($request->user_id) || empty($request->user_id)) {
+        if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to report a comment', 401);
         }
 
@@ -155,22 +157,22 @@ class Event_commentsController extends BaseApiController
         if (false === $commentInfo) {
             throw new Exception('Comment not found', 404);
         }
-        
+
         $eventId = $commentInfo['event_id'];
 
         $comment_mapper->userReportedComment($commentId, $request->user_id);
 
         // notify event admins
-        $comment      = $comment_mapper->getCommentById($commentId, true, true);
+        $comment = $comment_mapper->getCommentById($commentId, true, true);
         $event_mapper = new EventMapper($db, $request);
-        $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
-        $event        = $event_mapper->getEventById($eventId, true, true);
+        $recipients = $event_mapper->getHostsEmailAddresses($eventId);
+        $event = $event_mapper->getEventById($eventId, true, true);
 
         $emailService = new EventCommentReportedEmailService($this->config, $recipients, $comment, $event);
         $emailService->sendEmail();
 
         // send them to the comments collection
-        $uri = $request->base . '/' . $request->version . '/events/' . $eventId . "/comments";
+        $uri = $request->base.'/'.$request->version.'/events/'.$eventId.'/comments';
 
         $view = $request->getView();
         $view->setHeader('Location', $uri);
@@ -187,14 +189,14 @@ class Event_commentsController extends BaseApiController
      * means that the comment is viewable again.
      *
      * @param Request $request the request
-     * @param PDO $db the database adapter
+     * @param PDO     $db      the database adapter
      *
      * @throws Exception
      */
     public function moderateReportedComment(Request $request, PDO $db)
     {
         // must be logged in
-        if (! isset($request->user_id) || empty($request->user_id)) {
+        if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to moderate a comment', 401);
         }
 
@@ -219,7 +221,7 @@ class Event_commentsController extends BaseApiController
 
         $comment_mapper->moderateReportedComment($decision, $commentId, $request->user_id);
 
-        $uri = $request->base  . '/' . $request->version . '/events/' . $event_id . "/comments";
+        $uri = $request->base.'/'.$request->version.'/events/'.$event_id.'/comments';
 
         $view = $request->getView();
         $view->setHeader('Location', $uri);

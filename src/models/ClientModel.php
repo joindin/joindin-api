@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Object that represents a talk
+ * Object that represents a talk.
  */
 class ClientModel extends BaseModel
 {
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -14,17 +14,17 @@ class ClientModel extends BaseModel
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'consumer_key' => 'consumer_key',
             'created_date' => 'created_date',
             'application'  => 'application',
             'description'  => 'description',
             'callback_url' => 'callback_url',
-        );
+        ];
     }
 
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -35,16 +35,16 @@ class ClientModel extends BaseModel
         $fields = $this->getDefaultFields();
 
         $fields['consumer_secret'] = 'consumer_secret';
-        $fields['user_id']         = 'user_id';
+        $fields['user_id'] = 'user_id';
 
         return $fields;
     }
 
     /**
-     * Return this object with client-facing fields and hypermedia, ready for output
+     * Return this object with client-facing fields and hypermedia, ready for output.
      *
      * @param Request $request
-     * @param bool $verbose
+     * @param bool    $verbose
      *
      * @return array
      */

@@ -4,8 +4,8 @@ class ApplicationsController extends BaseApiController
 {
     public function getApplication(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in', 401);
         }
 
         $mapper = $this->getClientMapper($db, $request);
@@ -20,8 +20,8 @@ class ApplicationsController extends BaseApiController
 
     public function listApplications(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in', 401);
         }
 
         $mapper = $this->getClientMapper($db, $request);
@@ -37,15 +37,15 @@ class ApplicationsController extends BaseApiController
 
     public function createApplication(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in', 401);
         }
 
-        $app    = array();
-        $errors = array();
+        $app = [];
+        $errors = [];
 
         $app['name'] = filter_var(
-            $request->getParameter("name"),
+            $request->getParameter('name'),
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
@@ -54,7 +54,7 @@ class ApplicationsController extends BaseApiController
         }
 
         $app['description'] = filter_var(
-            $request->getParameter("description"),
+            $request->getParameter('description'),
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
@@ -63,7 +63,7 @@ class ApplicationsController extends BaseApiController
         }
 
         $app['callback_url'] = filter_var(
-            $request->getParameter("callback_url"),
+            $request->getParameter('callback_url'),
             FILTER_SANITIZE_URL
         );
         if (empty($app['callback_url'])) {
@@ -71,15 +71,15 @@ class ApplicationsController extends BaseApiController
         }
 
         if ($errors) {
-            throw new Exception(implode(". ", $errors), 400);
+            throw new Exception(implode('. ', $errors), 400);
         }
 
-        $app['user_id']         = $request->user_id;
+        $app['user_id'] = $request->user_id;
 
         $clientMapper = $this->getClientMapper($db, $request);
         $clientId = $clientMapper->createClient($app);
 
-        $uri = $request->base . '/' . $request->version . '/applications/' . $clientId;
+        $uri = $request->base.'/'.$request->version.'/applications/'.$clientId;
         $request->getView()->setResponseCode(201);
         $request->getView()->setHeader('Location', $uri);
 
@@ -91,15 +91,15 @@ class ApplicationsController extends BaseApiController
 
     public function editApplication(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in', 401);
         }
 
-        $app    = array();
-        $errors = array();
+        $app = [];
+        $errors = [];
 
         $app['name'] = filter_var(
-            $request->getParameter("name"),
+            $request->getParameter('name'),
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
@@ -108,7 +108,7 @@ class ApplicationsController extends BaseApiController
         }
 
         $app['description'] = filter_var(
-            $request->getParameter("description"),
+            $request->getParameter('description'),
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
@@ -117,12 +117,12 @@ class ApplicationsController extends BaseApiController
         }
 
         $app['callback_url'] = filter_var(
-            $request->getParameter("callback_url"),
+            $request->getParameter('callback_url'),
             FILTER_SANITIZE_URL
         );
 
         if ($errors) {
-            throw new Exception(implode(". ", $errors), 400);
+            throw new Exception(implode('. ', $errors), 400);
         }
 
         $app['user_id'] = $request->user_id;
@@ -130,7 +130,7 @@ class ApplicationsController extends BaseApiController
         $clientMapper = $this->getClientMapper($db, $request);
         $clientId = $clientMapper->updateClient($this->getItemId($request), $app);
 
-        $uri = $request->base . '/' . $request->version . '/applications/' . $clientId;
+        $uri = $request->base.'/'.$request->version.'/applications/'.$clientId;
         $request->getView()->setResponseCode(201);
         $request->getView()->setHeader('Location', $uri);
 
@@ -141,8 +141,8 @@ class ApplicationsController extends BaseApiController
 
     public function deleteApplication(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in', 401);
         }
 
         $clientMapper = $this->getClientMapper($db, $request);
@@ -152,7 +152,7 @@ class ApplicationsController extends BaseApiController
             $request->user_id
         );
 
-        if (! $client->getClients()) {
+        if (!$client->getClients()) {
             throw new Exception('No application found', 404);
         }
 
@@ -166,12 +166,12 @@ class ApplicationsController extends BaseApiController
         $request->getView()->setResponseCode(204);
         $request->getView()->setHeader(
             'Location',
-            $request->base . '/' . $request->version . '/applications'
+            $request->base.'/'.$request->version.'/applications'
         );
     }
 
     /**
-     * @param PDO $db
+     * @param PDO     $db
      * @param Request $request
      *
      * @return ClientMapper

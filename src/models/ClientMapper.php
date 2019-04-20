@@ -4,9 +4,9 @@ class ClientMapper extends ApiMapper
 {
     /**
      * Iterate through results from the database to ensure data consistency and
-     * add sub-resource data
+     * add sub-resource data.
      *
-     * @param  array $results
+     * @param array $results
      *
      * @return array
      */
@@ -19,7 +19,7 @@ class ClientMapper extends ApiMapper
             return [];
         }
 
-        if (! count($results)) {
+        if (!count($results)) {
             // $results is an array but empty. So let's return an empty arra
             return [];
         }
@@ -28,11 +28,11 @@ class ClientMapper extends ApiMapper
     }
 
     /**
-     * Get all clients that are registered for a given user
+     * Get all clients that are registered for a given user.
      *
-     * @param int $user_id          The user to fetch clients for
-     * @param int $resultsperpage   How many results to return on each page
-     * @param int $start            Which result to start with
+     * @param int $user_id        The user to fetch clients for
+     * @param int $resultsperpage How many results to return on each page
+     * @param int $start          Which result to start with
      *
      * @return false|ClientModelCollection
      */
@@ -41,12 +41,12 @@ class ClientMapper extends ApiMapper
         $sql = 'SELECT * FROM oauth_consumers WHERE user_id = :user_id ';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
-            ':user_id' => $user_id
-        ));
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([
+            ':user_id' => $user_id,
+        ]);
 
-        if (! $response) {
+        if (!$response) {
             return false;
         }
 
@@ -58,7 +58,7 @@ class ClientMapper extends ApiMapper
     }
 
     /**
-     * Get a specific client with given ID and user
+     * Get a specific client with given ID and user.
      *
      * @param string $clientId
      * @param string $userId
@@ -70,13 +70,13 @@ class ClientMapper extends ApiMapper
         $sql = 'SELECT * FROM oauth_consumers WHERE user_id = :user_id and id = :client_id';
         $sql .= $this->buildLimit(1, 0);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
-            ':user_id' => $userId,
+            ':user_id'   => $userId,
             ':client_id' => $clientId,
         ]);
 
-        if (! $response) {
+        if (!$response) {
             return false;
         }
 
@@ -87,22 +87,23 @@ class ClientMapper extends ApiMapper
     }
 
     /**
-     * Create a new client and return the new ID
+     * Create a new client and return the new ID.
      *
      * @param array $data
      *
      * @throws Exception
+     *
      * @return int
      */
     public function createClient(array $data)
     {
         $clientSql = 'INSERT INTO oauth_consumers (consumer_key, consumer_secret,'
-                   . 'created_date, user_id, application, description, '
-                   . 'callback_url, enable_password_grant) VALUES (:consumer_key, '
-                   . ':consumer_secret, :created_date, :user_id, :application, '
-                   . ':description, :callback_url, :enable_password_grant);';
+                   .'created_date, user_id, application, description, '
+                   .'callback_url, enable_password_grant) VALUES (:consumer_key, '
+                   .':consumer_secret, :created_date, :user_id, :application, '
+                   .':description, :callback_url, :enable_password_grant);';
 
-        $stmt     = $this->_db->prepare($clientSql);
+        $stmt = $this->_db->prepare($clientSql);
         $stmt->execute([
             ':consumer_key'          => base64_encode(openssl_random_pseudo_bytes(48)),
             ':consumer_secret'       => base64_encode(openssl_random_pseudo_bytes(48)),
@@ -114,7 +115,7 @@ class ClientMapper extends ApiMapper
             ':enable_password_grant' => 1,
         ]);
 
-        $clientId  = $this->_db->lastInsertId();
+        $clientId = $this->_db->lastInsertId();
 
         if (0 == $clientId) {
             throw new Exception('There has been an error storing the application');
@@ -124,19 +125,20 @@ class ClientMapper extends ApiMapper
     }
 
     /**
-     * Update an existing Client
+     * Update an existing Client.
      *
      * @param int   $clientId
      * @param array $data
      *
      * @throws Exception
+     *
      * @return int
      */
     public function updateClient($clientId, array $data)
     {
         $clientSql = 'UPDATE oauth_consumers SET '
-                   . 'application = :application, description = :description, '
-                   . 'callback_url = :callback_url WHERE id = :client_id;';
+                   .'application = :application, description = :description, '
+                   .'callback_url = :callback_url WHERE id = :client_id;';
 
         $stmt = $this->_db->prepare($clientSql);
 
@@ -147,7 +149,7 @@ class ClientMapper extends ApiMapper
             ':client_id'    => $clientId,
         ]);
 
-        if (! $result) {
+        if (!$result) {
             throw new Exception('There has been an error updating the application');
         }
 
@@ -155,7 +157,7 @@ class ClientMapper extends ApiMapper
     }
 
     /**
-     * Delete an existing client
+     * Delete an existing client.
      *
      * @param int $clientId
      *
@@ -167,7 +169,7 @@ class ClientMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($clientSql);
 
-        if (! $stmt->execute([':client_id' => $clientId])) {
+        if (!$stmt->execute([':client_id' => $clientId])) {
             throw new Exception('There has been an error updating the application');
         }
     }

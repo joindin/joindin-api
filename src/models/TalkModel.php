@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Object that represents a talk
+ * Object that represents a talk.
  */
 class TalkModel extends BaseModel
 {
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -14,7 +14,7 @@ class TalkModel extends BaseModel
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'talk_title'              => 'talk_title',
             'url_friendly_talk_title' => 'url_friendly_talk_title',
             'talk_description'        => 'talk_desc',
@@ -27,11 +27,11 @@ class TalkModel extends BaseModel
             'comment_count'           => 'comment_count',
             'starred'                 => 'starred',
             'starred_count'           => 'starred_count',
-        );
+        ];
     }
 
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -42,8 +42,8 @@ class TalkModel extends BaseModel
         $fields = $this->getDefaultFields();
 
         $fields['slides_link'] = 'slides_link';
-        $fields['talk_media']  = 'talk_media';
-        $fields['language']    = 'lang_name';
+        $fields['talk_media'] = 'talk_media';
+        $fields['language'] = 'lang_name';
         $fields['user_rating'] = 'user_rating';
 
         return $fields;
@@ -51,7 +51,7 @@ class TalkModel extends BaseModel
 
     /**
      * List of subresource keys that may be in the data set from the mapper
-     * but are not database columns that need to be in the output view
+     * but are not database columns that need to be in the output view.
      *
      * format: [public facing name => field in $this->data]
      *
@@ -66,37 +66,37 @@ class TalkModel extends BaseModel
     }
 
     /**
-     * Return this object with client-facing fields and hypermedia, ready for output
+     * Return this object with client-facing fields and hypermedia, ready for output.
      *
      * @param Request $request
-     * @param bool $verbose
+     * @param bool    $verbose
      *
      * @return array
      */
     public function getOutputView(Request $request, $verbose = false)
     {
         $item = parent::getOutputView($request, $verbose);
-        
+
         // add Hypermedia
-        $base    = $request->base;
+        $base = $request->base;
         $version = $request->version;
 
-        $item['uri']                  = $base . '/' . $version . '/talks/' . $this->ID;
-        $item['verbose_uri']          = $base . '/' . $version . '/talks/' . $this->ID . '?verbose=yes';
-        $item['website_uri']          = $this->getWebsiteUrl($request->getConfigValue('website_url'));
-        $item['starred_uri']          = $base . '/' . $version . '/talks/' . $this->ID . '/starred';
-        $item['tracks_uri']           = $base . '/' . $version . '/talks/' . $this->ID . '/tracks';
-        $item['comments_uri']         = $base . '/' . $version . '/talks/' . $this->ID . '/comments';
-        $item['verbose_comments_uri'] = $base . '/' . $version . '/talks/' . $this->ID
-                                        . '/comments?verbose=yes';
-        $item['event_uri']            = $base . '/' . $version . '/events/' . $this->event_id;
-        $item['speakers_uri']         = $base . '/' . $version . '/talks/' . $this->ID . '/speakers';
+        $item['uri'] = $base.'/'.$version.'/talks/'.$this->ID;
+        $item['verbose_uri'] = $base.'/'.$version.'/talks/'.$this->ID.'?verbose=yes';
+        $item['website_uri'] = $this->getWebsiteUrl($request->getConfigValue('website_url'));
+        $item['starred_uri'] = $base.'/'.$version.'/talks/'.$this->ID.'/starred';
+        $item['tracks_uri'] = $base.'/'.$version.'/talks/'.$this->ID.'/tracks';
+        $item['comments_uri'] = $base.'/'.$version.'/talks/'.$this->ID.'/comments';
+        $item['verbose_comments_uri'] = $base.'/'.$version.'/talks/'.$this->ID
+                                        .'/comments?verbose=yes';
+        $item['event_uri'] = $base.'/'.$version.'/events/'.$this->event_id;
+        $item['speakers_uri'] = $base.'/'.$version.'/talks/'.$this->ID.'/speakers';
 
         return $item;
     }
 
     /**
-     * Get the URL on the website of this talk
+     * Get the URL on the website of this talk.
      *
      * @param string $website_url The URL to the main website (e.g. http://joind.in or http://test.joind.in)
      *
@@ -104,6 +104,6 @@ class TalkModel extends BaseModel
      **/
     public function getWebsiteUrl($website_url)
     {
-        return $website_url . "/talk/" . $this->stub;
+        return $website_url.'/talk/'.$this->stub;
     }
 }

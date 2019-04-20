@@ -2,7 +2,6 @@
 
 namespace JoindinTest\Controller;
 
-use Mockery as M;
 use PHPUnit\Framework\TestCase;
 
 class EventHostsControllerTest extends TestCase
@@ -17,7 +16,7 @@ class EventHostsControllerTest extends TestCase
         $controller = new \Event_hostsController();
 
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
-        $db      = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
+        $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
 
         $controller->addHost($request, $db);
     }
@@ -52,9 +51,9 @@ class EventHostsControllerTest extends TestCase
 
         $controller->setEventMapper($em);
 
-        $request               = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->url_elements = [3 => 'foo'];
-        $request->user_id      = 2;
+        $request->user_id = 2;
 
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
 
@@ -288,7 +287,6 @@ class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-
     /**
      * @expectedException \Exception
      * @expectedExceptionCode 400
@@ -367,7 +365,6 @@ class EventHostsControllerTest extends TestCase
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
 
-
         $this->assertAttributeEquals(null, 'eventHostMapper', $controller);
         $automatedEventHostMapper = $controller->getEventHostMapper($request, $db);
         $this->assertInstanceOf('EventHostMapper', $automatedEventHostMapper);
@@ -382,7 +379,6 @@ class EventHostsControllerTest extends TestCase
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
 
-
         $this->assertAttributeEquals(null, 'userMapper', $controller);
         $automatedUserMapper = $controller->getUserMapper($request, $db);
         $this->assertInstanceOf('UserMapper', $automatedUserMapper);
@@ -396,7 +392,6 @@ class EventHostsControllerTest extends TestCase
 
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
-
 
         $this->assertAttributeEquals(null, 'eventMapper', $controller);
         $automatedEventMapper = $controller->getEventMapper($request, $db);

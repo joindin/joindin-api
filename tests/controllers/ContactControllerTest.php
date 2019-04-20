@@ -94,7 +94,7 @@ class ContactControllerTest extends TestCase
     }
 
     /**
-     * Dataprovider for tests
+     * Dataprovider for tests.
      */
     public function dataProvider()
     {
@@ -107,7 +107,7 @@ class ContactControllerTest extends TestCase
                 'exceptedException'              => 'Exception',
                 'expectedExceptionMessage'       => 'This client cannot perform this action',
                 'emailShouldBeSent'              => false,
-                'spamShouldBeChecked'            => false
+                'spamShouldBeChecked'            => false,
             ],
             //Not all required fields are set
             [
@@ -118,7 +118,7 @@ class ContactControllerTest extends TestCase
                     ['name', '', ''],
                     ['email', '', ''],
                     ['subject', '', ''],
-                    ['comment', '', '']
+                    ['comment', '', ''],
                 ],
                 'isCommentAcceptable'            => false,
                 'exceptedException'              => \Exception::class,
@@ -133,12 +133,12 @@ class ContactControllerTest extends TestCase
                     ['name', '', 'name'],
                     ['email', '', 'email'],
                     ['subject', '', 'subject'],
-                    ['comment', '', 'comment']
+                    ['comment', '', 'comment'],
                 ],
 
-                'isCommentAcceptable'      => false,
-                'exceptedException'        => \Exception::class,
-                'expectedExceptionMessage' => 'Comment failed spam check',
+                'isCommentAcceptable'            => false,
+                'exceptedException'              => \Exception::class,
+                'expectedExceptionMessage'       => 'Comment failed spam check',
                 'spamShouldBeChecked'            => true,
             ],
             //Email is sent without spamcheck
@@ -150,13 +150,13 @@ class ContactControllerTest extends TestCase
                     ['name', '', 'name'],
                     ['email', '', 'email'],
                     ['subject', '', 'subject'],
-                    ['comment', '', 'comment']
+                    ['comment', '', 'comment'],
                 ],
                 'isCommentAcceptable'            => true,
                 'exceptedException'              => null,
                 'expectedExceptionMessage'       => null,
                 'spamShouldBeChecked'            => true,
-                'emailShouldBeSent'              => true
+                'emailShouldBeSent'              => true,
             ],
             //All is good email should be sent
             [
@@ -167,14 +167,14 @@ class ContactControllerTest extends TestCase
                     ['name', '', 'name'],
                     ['email', '', 'email'],
                     ['subject', '', 'subject'],
-                    ['comment', '', 'comment']
+                    ['comment', '', 'comment'],
                 ],
                 'isCommentAcceptable'            => true,
                 'exceptedException'              => null,
                 'expectedExceptionMessage'       => null,
                 'spamShouldBeChecked'            => true,
-                'emailShouldBeSent'              => true
-            ]
+                'emailShouldBeSent'              => true,
+            ],
         ];
     }
 }

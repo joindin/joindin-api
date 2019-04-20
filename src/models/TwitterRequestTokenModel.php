@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Object to represent a twitter request token
+ * Object to represent a twitter request token.
  */
 class TwitterRequestTokenModel extends BaseModel
 {
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -14,13 +14,13 @@ class TwitterRequestTokenModel extends BaseModel
      */
     protected function getDefaultFields()
     {
-        return array(
+        return [
             'token' => 'token',
-        );
+        ];
     }
 
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -28,18 +28,17 @@ class TwitterRequestTokenModel extends BaseModel
      */
     protected function getVerboseFields()
     {
-        return array(
+        return [
             'token'  => 'token',
             'secret' => 'secret',
-        );
+        ];
     }
 
-
     /**
-     * Return this object with client-facing fields and hypermedia, ready for output
+     * Return this object with client-facing fields and hypermedia, ready for output.
      *
      * @param Request $request
-     * @param bool $verbose
+     * @param bool    $verbose
      *
      * @return array
      */
@@ -48,11 +47,11 @@ class TwitterRequestTokenModel extends BaseModel
         $item = parent::getOutputView($request, $verbose);
 
         // add Hypermedia
-        $base    = $request->base;
+        $base = $request->base;
         $version = $request->version;
 
-        $item['uri']         = $base . '/' . $version . '/twitter/request_tokens/' . $this->ID;
-        $item['verbose_uri'] = $base . '/' . $version . '/twitter/request_tokens/' . $this->ID . '?verbose=yes';
+        $item['uri'] = $base.'/'.$version.'/twitter/request_tokens/'.$this->ID;
+        $item['verbose_uri'] = $base.'/'.$version.'/twitter/request_tokens/'.$this->ID.'?verbose=yes';
 
         return $item;
     }

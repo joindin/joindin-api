@@ -1,27 +1,28 @@
 <?php
+
 // @codingStandardsIgnoreFile
 /**
- * Autoloader
+ * Autoloader.
  *
  * PHP version 5
  *
  * @category Inc
- * @package  APIv2_Tests
+ *
  * @author   Rob Allen <rob@akrabat.com>
  * @license  BSD see doc/LICENSE
+ *
  * @link     http://github.com/joindin/joind.in
  */
-
-include __DIR__ . '/../../vendor/autoload.php';
+include __DIR__.'/../../vendor/autoload.php';
 
 spl_autoload_register('apiv2Autoload');
 
 /**
- * Autoloader
+ * Autoloader.
  *
  * @param string $classname name of class to load
  *
- * @return boolean
+ * @return bool
  */
 function apiv2Autoload($classname)
 {
@@ -31,29 +32,29 @@ function apiv2Autoload($classname)
     }
 
     $filename = false;
-    if (strpos($classname, "JoindinTest" ) === 0) {
+    if (strpos($classname, 'JoindinTest') === 0) {
         $rename = [
-            'Controller' => 'controllers',
-            '\\' => DIRECTORY_SEPARATOR,
-            'JoindinTest' => __DIR__ . '/../../tests',
+            'Controller'  => 'controllers',
+            '\\'          => DIRECTORY_SEPARATOR,
+            'JoindinTest' => __DIR__.'/../../tests',
         ];
-        $filename = str_replace(array_keys($rename), $rename, $classname) . ".php";
+        $filename = str_replace(array_keys($rename), $rename, $classname).'.php';
     }
 
     if (preg_match('/[a-zA-Z]+Controller$/', $classname)) {
-        $filename = __DIR__ . '/../controllers/' . $classname . '.php';
+        $filename = __DIR__.'/../controllers/'.$classname.'.php';
     } elseif (preg_match('/[a-zA-Z]+Mapper$/', $classname)) {
-        $filename = __DIR__ . '/../models/' . $classname . '.php';
+        $filename = __DIR__.'/../models/'.$classname.'.php';
     } elseif (preg_match('/[a-zA-Z]+Model$/', $classname)) {
-        $filename = __DIR__ . '/../models/' . $classname . '.php';
+        $filename = __DIR__.'/../models/'.$classname.'.php';
     } elseif (preg_match('/[a-zA-Z]+ModelCollection$/', $classname)) {
-        $filename = __DIR__ . '/../models/' . $classname . '.php';
+        $filename = __DIR__.'/../models/'.$classname.'.php';
     } elseif (preg_match('/[a-zA-Z]+View$/', $classname)) {
-        $filename = __DIR__ . '/../views/' . $classname . '.php';
+        $filename = __DIR__.'/../views/'.$classname.'.php';
     } elseif (preg_match('/[a-zA-Z]+Service$/', $classname)) {
-        $filename = __DIR__ . '/../services/' . $classname . '.php';
+        $filename = __DIR__.'/../services/'.$classname.'.php';
     } elseif (preg_match('/Router?$/', $classname)) {
-        $filename = __DIR__ . '/../routers/' . $classname . '.php';
+        $filename = __DIR__.'/../routers/'.$classname.'.php';
     }
 
     if (file_exists($filename)) {

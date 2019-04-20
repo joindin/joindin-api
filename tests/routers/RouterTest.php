@@ -2,28 +2,27 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/../../src/inc/Request.php';
+require_once __DIR__.'/../../src/inc/Request.php';
 
 /**
- * A class to test DefaultRouter
+ * A class to test DefaultRouter.
  *
  * @covers BaseRouter
  */
 class RouterTest extends TestCase
 {
-
     /**
-     * DataProvider for testConstruct
+     * DataProvider for testConstruct.
      *
      * @return array
      */
     public function constructProvider()
     {
-        return array(
-            array( // #0
-                'config' => array('xyz')
-            )
-        );
+        return [
+            [ // #0
+                'config' => ['xyz'],
+            ],
+        ];
     }
 
     /**
@@ -43,8 +42,6 @@ class RouterTest extends TestCase
 
 class TestRouter3 extends BaseRouter
 {
-
-
     /**
      * {@inheritdoc}
      */

@@ -7,28 +7,27 @@ use PHPUnit\Framework\TestCase;
  */
 class JsonViewTest extends TestCase
 {
-
     /**
-     * DataProvider for testBuildOutput
+     * DataProvider for testBuildOutput.
      *
      * @return array
      */
     public function buildOutputProvider()
     {
-        return array(
-            array( // #0
-                'input' => array('a' => 'b', 'c' => 10),
-                'expected' => '{"a":"b","c":10}'
-            ),
-            array( // #1
-                'input' => array('stub' => '10', 'b' => array('c', 'd')),
-                'expected' => '{"stub":"10","b":["c","d"],"meta":{"count":2}}'
-            ),
-            array( // #2 - JOINDIN-519
-                'input' => false,
-                'expected' => 'false'
-            ),
-        );
+        return [
+            [ // #0
+                'input'    => ['a' => 'b', 'c' => 10],
+                'expected' => '{"a":"b","c":10}',
+            ],
+            [ // #1
+                'input'    => ['stub' => '10', 'b' => ['c', 'd']],
+                'expected' => '{"stub":"10","b":["c","d"],"meta":{"count":2}}',
+            ],
+            [ // #2 - JOINDIN-519
+                'input'    => false,
+                'expected' => 'false',
+            ],
+        ];
     }
 
     /**
@@ -36,7 +35,7 @@ class JsonViewTest extends TestCase
      *
      * @covers JsonView::buildOutput
      *
-     * @param mixed $input
+     * @param mixed  $input
      * @param string $expected
      */
     public function testBuildOutput($input, $expected)

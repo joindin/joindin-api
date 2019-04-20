@@ -1,12 +1,12 @@
 <?php
+
 namespace JoindinTest\Model;
 
 use JoindinTest\Inc\mockPDO;
 use PDOStatement;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Request;
 use TalkMapper;
-use PHPUnit\Framework\TestCase;
 
 class TalkMapperTest extends TestCase
 {
@@ -15,19 +15,19 @@ class TalkMapperTest extends TestCase
         $request = new Request(
             [],
             [
-                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/3?verbose=yes',
-                'REQUEST_METHOD' => 'GET'
+                'REQUEST_URI'    => 'http://api.dev.joind.in/v2.1/talks/3?verbose=yes',
+                'REQUEST_METHOD' => 'GET',
             ]
         );
 
         $mockdb = $this->getMockBuilder(mockPDO::class)->getMock();
         $stmt = $this->getMockBuilder(PDOStatement::class)
-                ->setMethods(["execute", 'fetchAll'])
+                ->setMethods(['execute', 'fetchAll'])
                 ->getMock();
 
-        $stmt->method("execute")->willReturn(true);
+        $stmt->method('execute')->willReturn(true);
 
-        $stmt->method("fetchAll")->willReturn(
+        $stmt->method('fetchAll')->willReturn(
             $this->getValidMediaRows()
         );
 
@@ -38,7 +38,7 @@ class TalkMapperTest extends TestCase
         $talk = [
             [
                 'ID' => 3,
-            ]
+            ],
         ];
         $talk = $talk_mapper->addTalkMediaTypes($talk);
 
@@ -57,13 +57,13 @@ class TalkMapperTest extends TestCase
     {
         return [
             [
-                'display_name' => "slides_link",
-                'url' => "https://slideshare.net",
+                'display_name' => 'slides_link',
+                'url'          => 'https://slideshare.net',
             ],
             [
-                'display_name' => "video_link",
-                'url' => "https://youtube.com",
-            ]
+                'display_name' => 'video_link',
+                'url'          => 'https://youtube.com',
+            ],
         ];
     }
 
@@ -72,7 +72,7 @@ class TalkMapperTest extends TestCase
         $transformedRows = [];
 
         foreach ($rows as $row) {
-               $transformedRows[] = [$row['display_name'] => $row['url']];
+            $transformedRows[] = [$row['display_name'] => $row['url']];
         }
 
         return $transformedRows;
@@ -219,7 +219,6 @@ class TalkMapperTest extends TestCase
 
         $this->assertFalse($mapper->delete(12));
     }
-
 
     public function testThatWorkingTalkDeletionCommits()
     {

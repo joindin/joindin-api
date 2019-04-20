@@ -4,9 +4,9 @@
 interface SpamCheckServiceInterface
 {
     /**
-     * Check your comment against the spam check service
+     * Check your comment against the spam check service.
      *
-     * @param array $data
+     * @param array  $data
      * @param string $userIp
      * @param string $userAgent
      *

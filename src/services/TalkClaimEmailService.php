@@ -2,7 +2,6 @@
 
 class TalkClaimEmailService extends BaseEmailService
 {
-
     protected $event;
     /** @var TalkModel */
     protected $talk;
@@ -21,16 +20,15 @@ class TalkClaimEmailService extends BaseEmailService
 
     public function sendEmail()
     {
-        $this->setSubject("Joind.in: A talk has been claimed");
+        $this->setSubject('Joind.in: A talk has been claimed');
 
+        $replacements = [
+            'eventName' => $this->event['name'],
+            'talkTitle' => $this->talk->talk_title,
+            'link'      => $this->linkToPendingClaimsForEvent(),
+        ];
 
-        $replacements = array(
-            "eventName" => $this->event['name'],
-            "talkTitle" => $this->talk->talk_title,
-            "link"      => $this->linkToPendingClaimsForEvent()
-        );
-
-        $messageBody = $this->parseEmail("talkClaimed.md", $replacements);
+        $messageBody = $this->parseEmail('talkClaimed.md', $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);
 
         $this->setBody($this->htmlToPlainText($messageHTML));
@@ -44,11 +42,10 @@ class TalkClaimEmailService extends BaseEmailService
      */
     private function linkToPendingClaimsForEvent()
     {
-
-        return '[' . $this->website_url
-            . '/event/' . $this->event['url_friendly_name']
-            . '/claims' . '](' . $this->website_url
-            . '/event/' . $this->event['url_friendly_name']
-            . '/claims' . ')';
+        return '['.$this->website_url
+            .'/event/'.$this->event['url_friendly_name']
+            .'/claims'.']('.$this->website_url
+            .'/event/'.$this->event['url_friendly_name']
+            .'/claims'.')';
     }
 }

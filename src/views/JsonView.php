@@ -13,7 +13,7 @@ class JsonView extends ApiView
     }
 
     /**
-     *  Function to build output, can be used by JSON and JSONP
+     *  Function to build output, can be used by JSON and JSONP.
      */
     public function buildOutput($content)
     {
@@ -22,7 +22,7 @@ class JsonView extends ApiView
         // Don't use JSON_NUMERIC_CHECK because it eats things (e.g. talk stubs)
 
         // Specify a list of fields to NOT convert to numbers
-        $this->string_fields = array("stub", "track_name", "comment", "username");
+        $this->string_fields = ['stub', 'track_name', 'comment', 'username'];
 
         $output = $this->numericCheck($content);
 
@@ -31,10 +31,10 @@ class JsonView extends ApiView
 
     protected function numericCheck($data)
     {
-        if (! is_array($data)) {
+        if (!is_array($data)) {
             return $this->scalarNumericCheck('', $data);
         }
-        $output = array();
+        $output = [];
         foreach ($data as $key => $value) {
             // recurse as needed
             if (is_array($value)) {
@@ -49,7 +49,7 @@ class JsonView extends ApiView
 
     protected function scalarNumericCheck($key, $value)
     {
-        if (is_numeric($value) && ! in_array($key, $this->string_fields) && $value < PHP_INT_MAX) {
+        if (is_numeric($value) && !in_array($key, $this->string_fields) && $value < PHP_INT_MAX) {
             return (float) $value;
         }
 

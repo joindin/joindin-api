@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Object that represents a token
+ * Object that represents a token.
  */
 class TokenModel extends BaseModel
 {
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -14,17 +14,17 @@ class TokenModel extends BaseModel
      */
     public function getDefaultFields()
     {
-        return array(
-            'token' => 'id',
-            'application' => 'application',
-            'created_date'  => 'created_date',
-            'last_used_date'  => 'last_used_date',
+        return [
+            'token'             => 'id',
+            'application'       => 'application',
+            'created_date'      => 'created_date',
+            'last_used_date'    => 'last_used_date',
             'application_owner' => 'full_name',
-        );
+        ];
     }
 
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -36,10 +36,10 @@ class TokenModel extends BaseModel
     }
 
     /**
-     * Return this object with client-facing fields and hypermedia, ready for output
+     * Return this object with client-facing fields and hypermedia, ready for output.
      *
      * @param Request $request
-     * @param bool $verbose
+     * @param bool    $verbose
      *
      * @return array
      */

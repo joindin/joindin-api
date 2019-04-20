@@ -6,10 +6,9 @@ use PHPUnit\Framework\TestCase;
 
 class UsersControllerTest extends TestCase
 {
-
     /**
      * Ensures that if the deleteUser method is called and no user_id is set,
-     * an exception is thrown
+     * an exception is thrown.
      *
      * @return void
      *
@@ -19,7 +18,7 @@ class UsersControllerTest extends TestCase
      */
     public function testDeleteUserWithNoUserIdThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
+        $request = new \Request([], ['REQUEST_URI' => 'http://api.dev.joind.in/v2.1/users/3', 'REQUEST_METHOD' => 'DELETE']);
 
         $usersController = new \UsersController();
         $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
@@ -29,7 +28,7 @@ class UsersControllerTest extends TestCase
 
     /**
      * Ensures that if the deleteUser method is called and user_id is a,
-     * non-admin, an exception is thrown
+     * non-admin, an exception is thrown.
      *
      * @return void
      *
@@ -39,15 +38,14 @@ class UsersControllerTest extends TestCase
      */
     public function testDeleteUserWithNonAdminIdThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
+        $request = new \Request([], ['REQUEST_URI' => 'http://api.dev.joind.in/v2.1/users/3', 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 2;
         $usersController = new \UsersController();
-
 
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -61,7 +59,7 @@ class UsersControllerTest extends TestCase
 
     /**
      * Ensures that if the deleteUser method is called and user_id is an
-     * admin, but the delete fails, then an exception is thrown
+     * admin, but the delete fails, then an exception is thrown.
      *
      * @return void
      *
@@ -71,7 +69,7 @@ class UsersControllerTest extends TestCase
      */
     public function testDeleteUserWithAdminAccessThrowsExceptionOnFailedDelete()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
+        $request = new \Request([], ['REQUEST_URI' => 'http://api.dev.joind.in/v2.1/users/3', 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
         $usersController = new \UsersController();
         // Please see below for explanation of why we're mocking a "mock" PDO
@@ -79,7 +77,7 @@ class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -96,16 +94,15 @@ class UsersControllerTest extends TestCase
         $usersController->deleteUser($request, $db);
     }
 
-
     /**
      * Ensures that if the deleteUser method is called and user_id is an
-     * admin, but the delete fails, then an exception is thrown
+     * admin, but the delete fails, then an exception is thrown.
      *
      * @return void
      */
     public function testDeleteUserWithAdminAccessDeletesSuccessfully()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
+        $request = new \Request([], ['REQUEST_URI' => 'http://api.dev.joind.in/v2.1/users/3', 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
         $usersController = new \UsersController();
         // Please see below for explanation of why we're mocking a "mock" PDO
@@ -113,7 +110,7 @@ class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -164,12 +161,12 @@ class UsersControllerTest extends TestCase
         $userMapper->expects($this->once())->method('checkPasswordValidity')->with('pass"\'stuff')->willReturn(true);
         $userMapper->expects($this->once())->method('generateEmailVerificationTokenForUserId')->willReturn('token');
         $userMapper->expects($this->once())->method('createUser')->with([
-            'username' => 'user"\'stuff',
-            'full_name' => 'full"\'stuff',
-            'email' => 'mailstuff@example.com',
-            'password' => 'pass"\'stuff',
+            'username'         => 'user"\'stuff',
+            'full_name'        => 'full"\'stuff',
+            'email'            => 'mailstuff@example.com',
+            'password'         => 'pass"\'stuff',
             'twitter_username' => 'twitter"\'stuff',
-            'biography' => 'Bio"\'stuff'
+            'biography'        => 'Bio"\'stuff',
         ])->willReturn(true);
 
         $emailService = $this->getMockBuilder('\UserRegistrationEmailService')->disableOriginalConstructor()->getMock();
@@ -217,12 +214,12 @@ class UsersControllerTest extends TestCase
         $userMapper->expects($this->once())->method('getUserByUsername')->with('user"\'stuff')->willReturn(false);
         $userMapper->expects($this->once())->method('thisUserHasAdminOn')->willReturn(true);
         $userMapper->expects($this->once())->method('editUser')->with([
-            'username' => 'user"\'stuff',
-            'full_name' => 'full"\'stuff',
-            'email' => 'mailstuff@example.com',
+            'username'         => 'user"\'stuff',
+            'full_name'        => 'full"\'stuff',
+            'email'            => 'mailstuff@example.com',
             'twitter_username' => 'twitter"\'stuff',
-            'biography' => 'Bio"\'stuff',
-            'user_id' => false,
+            'biography'        => 'Bio"\'stuff',
+            'user_id'          => false,
         ])->willReturn(true);
 
         $controller = new \UsersController();
@@ -233,7 +230,7 @@ class UsersControllerTest extends TestCase
 
     /**
      * Ensures that if the setTrusted method is called and no user_id is set,
-     * an exception is thrown
+     * an exception is thrown.
      *
      * @return void
      *
@@ -244,7 +241,7 @@ class UsersControllerTest extends TestCase
      */
     public function testSetTrustedWithNoUserIdThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
+        $request = new \Request([], ['REQUEST_URI' => 'http://api.dev.joind.in/v2.1/users/4/trusted', 'REQUEST_METHOD' => 'POST']);
 
         $usersController = new \UsersController();
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
@@ -252,10 +249,9 @@ class UsersControllerTest extends TestCase
         $usersController->setTrusted($request, $db);
     }
 
-
     /**
      * Ensures that if the setTrsuted method is called and user_id is a,
-     * non-admin, an exception is thrown
+     * non-admin, an exception is thrown.
      *
      * @return void
      *
@@ -266,13 +262,13 @@ class UsersControllerTest extends TestCase
      */
     public function testSetTrustedWithNonAdminIdThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
+        $request = new \Request([], ['REQUEST_URI' => 'http://api.dev.joind.in/v2.1/users/4/trusted', 'REQUEST_METHOD' => 'POST']);
         $request->user_id = 2;
         $usersController = new \UsersController();
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -284,11 +280,9 @@ class UsersControllerTest extends TestCase
         $usersController->setTrusted($request, $db);
     }
 
-
-
     /**
      * Ensures that if the setTrusted method is called by an admin,
-     * but without a trusted state, an exception is thrown
+     * but without a trusted state, an exception is thrown.
      *
      * @return void
      *
@@ -302,14 +296,14 @@ class UsersControllerTest extends TestCase
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
-            ->with("trusted")
+            ->with('trusted')
             ->willReturn(null);
 
         $usersController = new \UsersController();
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -323,7 +317,7 @@ class UsersControllerTest extends TestCase
 
     /**
      * Ensures that if the setTrusted method is called by an admin,
-     * but the update fails, an exception is thrown
+     * but the update fails, an exception is thrown.
      *
      * @return void
      *
@@ -337,14 +331,14 @@ class UsersControllerTest extends TestCase
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
-            ->with("trusted")
+            ->with('trusted')
             ->willReturn(true);
 
         $usersController = new \UsersController();
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -354,17 +348,16 @@ class UsersControllerTest extends TestCase
 
         $userMapper
             ->expects($this->once())
-            ->method("setTrustedStatus")
+            ->method('setTrustedStatus')
             ->willReturn(false);
 
         $usersController->setUserMapper($userMapper);
         $usersController->setTrusted($request, $db);
     }
 
-
     /**
      * Ensures that if the setTrusted method is called by an admin,
-     * and the update succeeds, a view is created and null is returned
+     * and the update succeeds, a view is created and null is returned.
      *
      * @return void
      */
@@ -373,28 +366,28 @@ class UsersControllerTest extends TestCase
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
-            ->with("trusted")
+            ->with('trusted')
             ->willReturn(true);
 
         $view = $this->getMockBuilder(\JsonView::class)->getMock();
         $view->expects($this->once())
-            ->method("setHeader")
+            ->method('setHeader')
             ->willReturn(true);
 
         $view->expects($this->once())
-            ->method("setResponseCode")
+            ->method('setResponseCode')
             ->with(204)
             ->willReturn(true);
 
         $request->expects($this->once())
-            ->method("getView")
+            ->method('getView')
             ->willReturn($view);
 
         $usersController = new \UsersController();
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder('\UserMapper')
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -404,7 +397,7 @@ class UsersControllerTest extends TestCase
 
         $userMapper
             ->expects($this->once())
-            ->method("setTrustedStatus")
+            ->method('setTrustedStatus')
             ->willReturn(true);
 
         $usersController->setUserMapper($userMapper);

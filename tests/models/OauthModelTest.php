@@ -6,14 +6,14 @@ class OauthModelTest extends TestCase
 {
     public function setup()
     {
-        $this->pdo     = $this->getMockBuilder('PDO')
+        $this->pdo = $this->getMockBuilder('PDO')
             ->disableOriginalConstructor()
             ->getMock();
         $this->request = $this->getMockBuilder('Request')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->request->base = "";
-        $this->request->version = "2.1";
+        $this->request->base = '';
+        $this->request->version = '2.1';
 
         $this->oauth = new OAuthModel($this->pdo, $this->request);
     }
@@ -30,7 +30,7 @@ class OauthModelTest extends TestCase
         );
         $this->pdo->method('prepare')->willReturn($stmt);
         $this->assertFalse(
-            $this->oauth->createAccessTokenFromPassword("client", "testing", "password")
+            $this->oauth->createAccessTokenFromPassword('client', 'testing', 'password')
         );
     }
 
@@ -50,7 +50,7 @@ class OauthModelTest extends TestCase
 
         $this->pdo->method('prepare')->willReturn($stmt);
 
-        $this->oauth->createAccessTokenFromPassword("client", "testing", "password");
+        $this->oauth->createAccessTokenFromPassword('client', 'testing', 'password');
     }
 
     public function testLoggingInWorks()
@@ -62,11 +62,11 @@ class OauthModelTest extends TestCase
             [
                 'password' => password_hash(md5($pass), PASSWORD_BCRYPT),
                 'verified' => 1,
-                'ID' => 1234,
+                'ID'       => 1234,
             ]
         );
         $this->pdo->method('prepare')->willReturn($stmt);
-        $token = $this->oauth->createAccessTokenFromPassword("client", "testing", $pass);
+        $token = $this->oauth->createAccessTokenFromPassword('client', 'testing', $pass);
 
         $this->assertArrayHasKey('access_token', $token);
         $this->assertArrayHasKey('user_uri', $token);

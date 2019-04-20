@@ -8,7 +8,7 @@ class BaseTalkController extends BaseApiController
     protected $request;
 
     protected $classMappings = [
-        'talk' => TalkMapper::class,
+        'talk'        => TalkMapper::class,
         'talkcomment' => TalkCommentMapper::class,
     ];
 
@@ -17,16 +17,16 @@ class BaseTalkController extends BaseApiController
     protected function checkLoggedIn(Request $request)
     {
         $failMessages = [
-            'POST' => 'create data',
+            'POST'   => 'create data',
             'DELETE' => 'remove data',
-            'GET' => 'view data',
-            'PUT' => 'update data'
+            'GET'    => 'view data',
+            'PUT'    => 'update data',
         ];
 
         if (!isset($request->user_id)) {
             throw new Exception(
                 sprintf(
-                    "You must be logged in to %s",
+                    'You must be logged in to %s',
                     $failMessages[$request->getVerb()]
                 ),
                 401
@@ -55,13 +55,12 @@ class BaseTalkController extends BaseApiController
 
     public function getEventMapper(PDO $db, Request $request)
     {
-        if (! isset($this->event_mapper)) {
+        if (!isset($this->event_mapper)) {
             $this->event_mapper = new EventMapper($db, $request);
         }
 
         return $this->event_mapper;
     }
-
 
     public function setUserMapper(UserMapper $user_mapper)
     {
@@ -70,23 +69,23 @@ class BaseTalkController extends BaseApiController
 
     public function getUserMapper(PDO $db, Request $request)
     {
-        if (! isset($this->user_mapper)) {
+        if (!isset($this->user_mapper)) {
             $this->user_mapper = new UserMapper($db, $request);
         }
 
         return $this->user_mapper;
     }
 
-
     /**
-     * Get a single talk
+     * Get a single talk.
      *
-     * @param  Request  $request
-     * @param  PDO      $db
-     * @param  integer  $talk_id
-     * @param  boolean $verbose
+     * @param Request $request
+     * @param PDO     $db
+     * @param int     $talk_id
+     * @param bool    $verbose
      *
      * @throws Exception if the talk is not found
+     *
      * @return TalkModel
      */
     protected function getTalkById(
@@ -115,8 +114,8 @@ class BaseTalkController extends BaseApiController
     }
 
     /**
-     * @param string $type
-     * @param PDO|null $db
+     * @param string       $type
+     * @param PDO|null     $db
      * @param Request|null $request
      *
      * @return ApiMapper

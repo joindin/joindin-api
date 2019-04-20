@@ -4,9 +4,9 @@ class TokenMapper extends ApiMapper
 {
     /**
      * Iterate through results from the database to ensure data consistency and
-     * add sub-resource data
+     * add sub-resource data.
      *
-     * @param  array $results
+     * @param array $results
      *
      * @return array
      */
@@ -19,7 +19,7 @@ class TokenMapper extends ApiMapper
             return [];
         }
 
-        if (! count($results)) {
+        if (!count($results)) {
             // $results is an array but empty. So let's return an empty arra
             return [];
         }
@@ -28,29 +28,29 @@ class TokenMapper extends ApiMapper
     }
 
     /**
-     * Get all tokens that are registered for a given user
+     * Get all tokens that are registered for a given user.
      *
-     * @param int $user_id          The user to fetch clients for
-     * @param int $resultsperpage   How many results to return on each page
-     * @param int $start            Which result to start with
+     * @param int $user_id        The user to fetch clients for
+     * @param int $resultsperpage How many results to return on each page
+     * @param int $start          Which result to start with
      *
      * @return TokenModelCollection|false
      */
     public function getTokensForUser($user_id, $resultsperpage, $start)
     {
         $sql = 'SELECT a.id, b.application, a.created_date, a.last_used_date, c.full_name '
-             . 'FROM oauth_access_tokens AS a '
-             . 'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
-             . 'LEFT JOIN `user` as c ON b.user_id = c.id '
-             . 'WHERE a.user_id = :user_id ';
+             .'FROM oauth_access_tokens AS a '
+             .'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
+             .'LEFT JOIN `user` as c ON b.user_id = c.id '
+             .'WHERE a.user_id = :user_id ';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
-            ':user_id' => $user_id
-        ));
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([
+            ':user_id' => $user_id,
+        ]);
 
-        if (! $response) {
+        if (!$response) {
             return false;
         }
 
@@ -62,29 +62,29 @@ class TokenMapper extends ApiMapper
     }
 
     /**
-     * Get all tokens that are registered for a given user that can be revoked
+     * Get all tokens that are registered for a given user that can be revoked.
      *
-     * @param int $user_id          The user to fetch clients for
-     * @param int $resultsperpage   How many results to return on each page
-     * @param int $start            Which result to start with
+     * @param int $user_id        The user to fetch clients for
+     * @param int $resultsperpage How many results to return on each page
+     * @param int $start          Which result to start with
      *
      * @return TokenModelCollection|false
      */
     public function getRevokableTokensForUser($user_id, $resultsperpage, $start)
     {
         $sql = 'SELECT a.id, b.application, a.created_date, a.last_used_date, c.full_name '
-               . 'FROM oauth_access_tokens AS a '
-               . 'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
-               . 'LEFT JOIN `user` as c ON b.user_id = c.id '
-               . 'WHERE a.user_id = :user_id AND b.can_be_revoked = 1';
+               .'FROM oauth_access_tokens AS a '
+               .'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
+               .'LEFT JOIN `user` as c ON b.user_id = c.id '
+               .'WHERE a.user_id = :user_id AND b.can_be_revoked = 1';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
-            ':user_id' => $user_id
-        ));
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([
+            ':user_id' => $user_id,
+        ]);
 
-        if (! $response) {
+        if (!$response) {
             return false;
         }
 
@@ -95,10 +95,8 @@ class TokenMapper extends ApiMapper
         return new TokenModelCollection($results, $total);
     }
 
-
-
     /**
-     * Get a single token by id and user
+     * Get a single token by id and user.
      *
      * @param int $token_id The ID of the token
      * @param int $user_id  The user to fetch the token for
@@ -108,19 +106,19 @@ class TokenMapper extends ApiMapper
     public function getTokenByIdAndUser($token_id, $user_id)
     {
         $sql = 'SELECT a.id, b.application, a.created_date, a.last_used_date, c.full_name '
-               . 'FROM oauth_access_tokens AS a '
-               . 'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
-               . 'LEFT JOIN `user` as c ON b.user_id = c.id '
-               . 'WHERE a.user_id = :user_id AND a.id = :token_id';
+               .'FROM oauth_access_tokens AS a '
+               .'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
+               .'LEFT JOIN `user` as c ON b.user_id = c.id '
+               .'WHERE a.user_id = :user_id AND a.id = :token_id';
         $sql .= $this->buildLimit(1, 0);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([
             ':user_id'  => $user_id,
             ':token_id' => $token_id,
-        ));
+        ]);
 
-        if (! $response) {
+        if (!$response) {
             return new TokenModelCollection([], 1);
         }
 
@@ -130,9 +128,8 @@ class TokenMapper extends ApiMapper
         return new TokenModelCollection($results, 1);
     }
 
-
     /**
-     * Get a single token by id and user
+     * Get a single token by id and user.
      *
      * @param int $token_id The ID of the token
      * @param int $user_id  The user to fetch the token for
@@ -142,19 +139,19 @@ class TokenMapper extends ApiMapper
     public function getRevokableTokenByIdAndUser($token_id, $user_id)
     {
         $sql = 'SELECT a.id, b.application, a.created_date, a.last_used_date, c.full_name '
-               . 'FROM oauth_access_tokens AS a '
-               . 'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
-               . 'LEFT JOIN `user` as c ON b.user_id = c.id '
-               . 'WHERE a.user_id = :user_id AND a.id = :token_id AND b.can_be_revoked = 1';
+               .'FROM oauth_access_tokens AS a '
+               .'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
+               .'LEFT JOIN `user` as c ON b.user_id = c.id '
+               .'WHERE a.user_id = :user_id AND a.id = :token_id AND b.can_be_revoked = 1';
         $sql .= $this->buildLimit(1, 0);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([
             ':user_id'  => $user_id,
             ':token_id' => $token_id,
-        ));
+        ]);
 
-        if (! $response) {
+        if (!$response) {
             return new TokenModelCollection([], 1);
         }
 
@@ -165,11 +162,12 @@ class TokenMapper extends ApiMapper
     }
 
     /**
-     * Delete an existing token
+     * Delete an existing token.
      *
      * @param int $tokenId
      *
      * @throws Exception
+     *
      * @return bool
      */
     public function deleteToken($tokenId)
@@ -178,7 +176,7 @@ class TokenMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($tokenSql);
 
-        if (! $stmt->execute([':token_id' => $tokenId])) {
+        if (!$stmt->execute([':token_id' => $tokenId])) {
             throw new Exception('There has been an error removing the token');
         }
 
@@ -186,7 +184,7 @@ class TokenMapper extends ApiMapper
     }
 
     /**
-     * Check qwhether the given access token was issued by a trusted application
+     * Check qwhether the given access token was issued by a trusted application.
      *
      * @param string $accessToken
      *
@@ -195,17 +193,17 @@ class TokenMapper extends ApiMapper
     public function tokenBelongsToTrustedApplication($accessToken)
     {
         $sql = 'SELECT b.enable_password_grant '
-               . 'FROM oauth_access_tokens AS a '
-               . 'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
-               . 'WHERE a.access_token = :token';
+               .'FROM oauth_access_tokens AS a '
+               .'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '
+               .'WHERE a.access_token = :token';
         $sql .= $this->buildLimit(1, 0);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([
             ':token'  => $accessToken,
-        ));
+        ]);
 
-        if (! $response) {
+        if (!$response) {
             return false;
         }
 

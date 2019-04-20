@@ -4,9 +4,9 @@ class TalkMapper extends ApiMapper
 {
     /**
      * Iterate through results from the database to ensure data consistency and
-     * add sub-resource data
+     * add sub-resource data.
      *
-     * @param  array|false $results
+     * @param array|false $results
      *
      * @return array
      */
@@ -20,7 +20,7 @@ class TalkMapper extends ApiMapper
         }
 
         if (count($results)) {
-            $base    = $this->_request->base;
+            $base = $this->_request->base;
             $version = $this->_request->version;
             foreach ($results as $key => $row) {
                 // generate and store an inflected talk title if there isn't one
@@ -51,18 +51,19 @@ class TalkMapper extends ApiMapper
 
                 // add speakers & tracks
                 $results[$key]['speakers'] = $this->getSpeakers($row['ID']);
-                $results[$key]['tracks']   = $this->getTracks($row['ID']);
+                $results[$key]['tracks'] = $this->getTracks($row['ID']);
             }
         }
+
         return $results;
     }
 
     /**
-     * Get all the talks for this event
+     * Get all the talks for this event.
      *
-     * @param int $event_id         The event to fetch talks for
-     * @param int $resultsperpage   How many results to return on each page
-     * @param int $start            Which result to start with
+     * @param int $event_id       The event to fetch talks for
+     * @param int $resultsperpage How many results to return on each page
+     * @param int $start          Which result to start with
      *
      * @return false|TalkModelCollection
      */
@@ -73,13 +74,13 @@ class TalkMapper extends ApiMapper
         $sql .= ' order by t.date_given';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
-            ':event_id' => $event_id
-        ));
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([
+            ':event_id' => $event_id,
+        ]);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $total = $this->getTotalCount($sql, array(':event_id' => $event_id));
+            $total = $this->getTotalCount($sql, [':event_id' => $event_id]);
             $results = $this->processResults($results);
             foreach ($results as &$talk) {
                 $talk = $this->addTalkMediaTypes([$talk])[0];
@@ -92,10 +93,10 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * Retrieve a single talk
+     * Retrieve a single talk.
      *
-     * @param  integer $talk_id
-     * @param  bool $verbose
+     * @param int  $talk_id
+     * @param bool $verbose
      *
      * @return TalkModel|false
      */
@@ -103,8 +104,8 @@ class TalkMapper extends ApiMapper
     {
         $sql = $this->getBasicSQL();
         $sql .= ' and t.ID = :talk_id';
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array("talk_id" => $talk_id));
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(['talk_id' => $talk_id]);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
@@ -121,11 +122,11 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * Search talks by title
+     * Search talks by title.
      *
      * @param string $keyword
-     * @param int $resultsperpage
-     * @param int $start
+     * @param int    $resultsperpage
+     * @param int    $start
      *
      * @return TalkModelCollection|bool Result collection or false on failure
      */
@@ -136,11 +137,11 @@ class TalkMapper extends ApiMapper
         $sql .= ' order by t.date_given desc';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $data = array(
-            ':title' => "%" . strtolower($keyword) . "%"
-        );
+        $data = [
+            ':title' => '%'.strtolower($keyword).'%',
+        ];
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
 
         if ($response) {
@@ -148,6 +149,7 @@ class TalkMapper extends ApiMapper
             $total = $this->getTotalCount($sql, $data);
 
             $results = $this->processResults($results);
+
             return new TalkModelCollection($results, $total);
         }
 
@@ -168,7 +170,7 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * Set a user as starring a talk
+     * Set a user as starring a talk.
      *
      * @param int $talk_id The talk ID to update
      * @param int $user_id The user's ID
@@ -177,15 +179,15 @@ class TalkMapper extends ApiMapper
      */
     public function setUserStarred($talk_id, $user_id)
     {
-        $sql  = 'insert into user_talk_star (uid,tid) values (:uid, :tid)';
+        $sql = 'insert into user_talk_star (uid,tid) values (:uid, :tid)';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array('uid' => $user_id, 'tid' => $talk_id));
+        $stmt->execute(['uid' => $user_id, 'tid' => $talk_id]);
 
         return true;
     }
 
     /**
-     * Set a user as not starring a talk
+     * Set a user as not starring a talk.
      *
      * @param int $talk_id The talk ID
      * @param int $user_id The user's ID
@@ -194,9 +196,9 @@ class TalkMapper extends ApiMapper
      */
     public function setUserNonStarred($talk_id, $user_id)
     {
-        $sql  = 'delete from user_talk_star where uid = :uid and tid = :tid';
+        $sql = 'delete from user_talk_star where uid = :uid and tid = :tid';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array('uid' => $user_id, 'tid' => $talk_id));
+        $stmt->execute(['uid' => $user_id, 'tid' => $talk_id]);
 
         // we don't mind if the delete failed; the record didn't exist and that's fine
 
@@ -209,25 +211,25 @@ class TalkMapper extends ApiMapper
     public function getBasicSQL()
     {
         return 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
-               . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID
+               .'(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID
                 and tc.private = 0 and tc.active = 1)
                 as comment_count, '
-               . '(select get_talk_rating(t.ID)) as avg_rating, '
-               . '(select count(*) from user_talk_star where user_talk_star.tid = t.ID)
+               .'(select get_talk_rating(t.ID)) as avg_rating, '
+               .'(select count(*) from user_talk_star where user_talk_star.tid = t.ID)
                 as starred_count, '
-               . 'CASE WHEN (((t.date_given - 3600*24) < ' . mktime(0, 0, 0)
-               . ') and (t.date_given + (3*30*3600*24)) > ' . mktime(0, 0, 0)
-               . ') THEN 1 ELSE 0 END as comments_enabled, '
-               . 'c.cat_title as talk_type '
-               . 'from talks t '
-               . 'inner join events e on e.ID = t.event_id '
-               . 'inner join lang l on l.ID = t.lang '
-               . 'join talk_cat tc on tc.talk_id = t.ID '
-               . 'join categories c on c.ID = tc.cat_id '
-               . 'where t.active = 1 and '
-               . 'e.active = 1 and '
-               . '(e.pending = 0 or e.pending is NULL) and '
-               . '(e.private <> "y" or e.private is NULL)';
+               .'CASE WHEN (((t.date_given - 3600*24) < '.mktime(0, 0, 0)
+               .') and (t.date_given + (3*30*3600*24)) > '.mktime(0, 0, 0)
+               .') THEN 1 ELSE 0 END as comments_enabled, '
+               .'c.cat_title as talk_type '
+               .'from talks t '
+               .'inner join events e on e.ID = t.event_id '
+               .'inner join lang l on l.ID = t.lang '
+               .'join talk_cat tc on tc.talk_id = t.ID '
+               .'join categories c on c.ID = tc.cat_id '
+               .'where t.active = 1 and '
+               .'e.active = 1 and '
+               .'(e.pending = 0 or e.pending is NULL) and '
+               .'(e.private <> "y" or e.private is NULL)';
     }
 
     /**
@@ -237,14 +239,14 @@ class TalkMapper extends ApiMapper
      */
     protected function getSpeakers($talk_id)
     {
-        $base    = $this->_request->base;
+        $base = $this->_request->base;
         $version = $this->_request->version;
 
-        $speaker_sql  = 'select ts.*, user.full_name from talk_speaker ts '
-                        . 'left join user on user.ID = ts.speaker_id '
-                        . 'where ts.talk_id = :talk_id and ts.status IS NULL';
+        $speaker_sql = 'select ts.*, user.full_name from talk_speaker ts '
+                        .'left join user on user.ID = ts.speaker_id '
+                        .'where ts.talk_id = :talk_id and ts.status IS NULL';
         $speaker_stmt = $this->_db->prepare($speaker_sql);
-        $speaker_stmt->execute(array("talk_id" => $talk_id));
+        $speaker_stmt->execute(['talk_id' => $talk_id]);
         $speakers = $speaker_stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (!is_array($speakers)) {
@@ -253,10 +255,10 @@ class TalkMapper extends ApiMapper
 
         $retval = [];
         foreach ($speakers as $person) {
-            $entry = array();
+            $entry = [];
             if ($person['full_name']) {
                 $entry['speaker_name'] = $person['full_name'];
-                $entry['speaker_uri']  = $base . '/' . $version . '/users/' . $person['speaker_id'];
+                $entry['speaker_uri'] = $base.'/'.$version.'/users/'.$person['speaker_id'];
             } else {
                 $entry['speaker_name'] = $person['speaker_name'];
             }
@@ -273,14 +275,14 @@ class TalkMapper extends ApiMapper
      */
     protected function getTracks($talk_id)
     {
-        $base       = $this->_request->base;
-        $version    = $this->_request->version;
-        $track_sql  = 'select et.ID,et.track_name '
-                      . 'from talk_track tt '
-                      . 'inner join event_track et on et.ID = tt.track_id '
-                      . 'where tt.talk_id = :talk_id';
+        $base = $this->_request->base;
+        $version = $this->_request->version;
+        $track_sql = 'select et.ID,et.track_name '
+                      .'from talk_track tt '
+                      .'inner join event_track et on et.ID = tt.track_id '
+                      .'where tt.talk_id = :talk_id';
         $track_stmt = $this->_db->prepare($track_sql);
-        $track_stmt->execute(array("talk_id" => $talk_id));
+        $track_stmt->execute(['talk_id' => $talk_id]);
         $tracks = $track_stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (!is_array($tracks)) {
@@ -290,13 +292,13 @@ class TalkMapper extends ApiMapper
         $retval = [];
         foreach ($tracks as $track) {
             // Make the track_uri
-            $track_uri = $base . '/' . $version . '/tracks/' . $track['ID'];
-            $remove_track_uri = $base . '/' . $version . '/talks/' . $talk_id . '/tracks/' . $track['ID'];
-            $retval[] = array(
-                'track_name' => $track['track_name'],
-                'track_uri' => $track_uri,
+            $track_uri = $base.'/'.$version.'/tracks/'.$track['ID'];
+            $remove_track_uri = $base.'/'.$version.'/talks/'.$talk_id.'/tracks/'.$track['ID'];
+            $retval[] = [
+                'track_name'       => $track['track_name'],
+                'track_uri'        => $track_uri,
                 'remove_track_uri' => $remove_track_uri,
-            );
+            ];
         }
 
         return $retval;
@@ -313,31 +315,31 @@ class TalkMapper extends ApiMapper
     {
         // based on getBasicSQL() but needs the speaker table joins
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
-               . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
-               . '(select get_talk_rating(t.ID)) as avg_rating, '
-               . '(select count(*) from user_talk_star where user_talk_star.tid = t.ID) as starred_count, '
-               . 'CASE WHEN (((t.date_given - 3600*24) < ' . mktime(0, 0, 0)
-               . ') and (t.date_given + (3*30*3600*24)) > ' . mktime(0, 0, 0)
-               . ') THEN 1 ELSE 0 END as comments_enabled '
-               . 'from talks t '
-               . 'inner join events e on e.ID = t.event_id '
-               . 'inner join lang l on l.ID = t.lang '
-               . 'left join talk_speaker ts on t.id = ts.talk_id '
-               . 'where t.active = 1 and '
-               . 'e.active = 1 and '
-               . '(e.pending = 0 or e.pending is NULL) and '
-               . '(e.private <> "y" or e.private is NULL) and '
-               . 'ts.speaker_id = :user_id '
-               . 'order by t.date_given desc';
+               .'(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
+               .'(select get_talk_rating(t.ID)) as avg_rating, '
+               .'(select count(*) from user_talk_star where user_talk_star.tid = t.ID) as starred_count, '
+               .'CASE WHEN (((t.date_given - 3600*24) < '.mktime(0, 0, 0)
+               .') and (t.date_given + (3*30*3600*24)) > '.mktime(0, 0, 0)
+               .') THEN 1 ELSE 0 END as comments_enabled '
+               .'from talks t '
+               .'inner join events e on e.ID = t.event_id '
+               .'inner join lang l on l.ID = t.lang '
+               .'left join talk_speaker ts on t.id = ts.talk_id '
+               .'where t.active = 1 and '
+               .'e.active = 1 and '
+               .'(e.pending = 0 or e.pending is NULL) and '
+               .'(e.private <> "y" or e.private is NULL) and '
+               .'ts.speaker_id = :user_id '
+               .'order by t.date_given desc';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
-            ':user_id' => $user_id
-        ));
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([
+            ':user_id' => $user_id,
+        ]);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $total = $this->getTotalCount($sql, array(':user_id' => $user_id));
+            $total = $this->getTotalCount($sql, [':user_id' => $user_id]);
 
             return new TalkModelCollection($this->processResults($results), $total);
         }
@@ -363,6 +365,7 @@ class TalkMapper extends ApiMapper
      * @param array $data
      *
      * @throws Exception
+     *
      * @return string
      */
     public function createTalk(array $data)
@@ -376,16 +379,16 @@ class TalkMapper extends ApiMapper
               :date, :duration)
          ';
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute([
             ':event_id'         => $data['event_id'],
             ':talk_title'       => $data['title'],
             ':talk_description' => $data['description'],
             ':language'         => $data['language'],
             ':date'             => $data['date'],
             ':duration'         => $data['duration'],
-        ));
-        $talk_id  = $this->_db->lastInsertId();
+        ]);
+        $talk_id = $this->_db->lastInsertId();
 
         if (0 == $talk_id) {
             throw new Exception('There has been an error storing the talk');
@@ -401,7 +404,7 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * Edit a talk
+     * Edit a talk.
      *
      * The data-array is expected to have the following keys:
      *
@@ -415,13 +418,13 @@ class TalkMapper extends ApiMapper
      * - type_id (id of the talk's type)
      *
      * @param array $data
-     * @param int $talk_id
+     * @param int   $talk_id
      *
      * @throws Exception
      */
     public function editTalk(array $data, $talk_id)
     {
-        $sql = "UPDATE talks SET %s, url_friendly_talk_title = null WHERE ID = :talk_id";
+        $sql = 'UPDATE talks SET %s, url_friendly_talk_title = null WHERE ID = :talk_id';
 
         // get the list of columns => data key-name
         $fields = [
@@ -448,6 +451,7 @@ class TalkMapper extends ApiMapper
         $items['talk_id'] = $talk_id;
 
         $stmt = $this->_db->prepare(sprintf($sql, implode(', ', $pairs)));
+
         try {
             $stmt->execute($items);
         } catch (Exception $e) {
@@ -468,40 +472,40 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * Set the talk type for this talk
+     * Set the talk type for this talk.
      *
      * @param int    $talk_id
      * @param string $type_id
      *
-     * @return boolean
+     * @return bool
      */
     public function setType($talk_id, $type_id)
     {
-        $cat_sql  = 'select id from talk_cat where talk_id = :talk_id and cat_id = :type_id';
+        $cat_sql = 'select id from talk_cat where talk_id = :talk_id and cat_id = :type_id';
         $cat_stmt = $this->_db->prepare($cat_sql);
-        $cat_stmt->execute(array(
-            ':talk_id' => $talk_id,
+        $cat_stmt->execute([
+            ':talk_id'  => $talk_id,
             ':type_id'  => $type_id,
-        ));
+        ]);
 
         if (count($cat_stmt->fetchAll()) > 0) {
             return true;
         }
 
         // remove any other types set for this talk as we only support one type per talk
-        $cat_sql  = 'delete from talk_cat where talk_id = :talk_id';
+        $cat_sql = 'delete from talk_cat where talk_id = :talk_id';
         $cat_stmt = $this->_db->prepare($cat_sql);
-        $cat_stmt->execute(array(
+        $cat_stmt->execute([
             ':talk_id' => $talk_id,
-        ));
+        ]);
 
-        $cat_sql  = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, :type_id)';
+        $cat_sql = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, :type_id)';
         $cat_stmt = $this->_db->prepare($cat_sql);
 
-        return $cat_stmt->execute(array(
+        return $cat_stmt->execute([
             ':talk_id'     => $talk_id,
-            ':type_id' => $type_id,
-        ));
+            ':type_id'     => $type_id,
+        ]);
     }
 
     /**
@@ -513,8 +517,8 @@ class TalkMapper extends ApiMapper
      *
      * @note $speakers contains the display name for each speaker
      *
-     * @param  int   $talk_id
-     * @param  array $speakers
+     * @param int   $talk_id
+     * @param array $speakers
      *
      * @return void
      */
@@ -522,23 +526,23 @@ class TalkMapper extends ApiMapper
     {
         // get the current speakers
         $sql = 'select '
-             . 'if(ts.speaker_id,user.full_name, ts.speaker_name) as val '
-             . 'from talk_speaker AS ts '
-             . 'left join user on user.ID = ts.speaker_id '
-             . 'where ts.talk_id = :talk_id';
+             .'if(ts.speaker_id,user.full_name, ts.speaker_name) as val '
+             .'from talk_speaker AS ts '
+             .'left join user on user.ID = ts.speaker_id '
+             .'where ts.talk_id = :talk_id';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(['talk_id' => $talk_id]);
         $current_speakers = $stmt->fetchAll(PDO::FETCH_COLUMN);
         // add the speakers that aren't already attached to the talk
         $new_speakers = array_diff($speakers, $current_speakers);
-        $sql = "insert into talk_speaker
+        $sql = 'insert into talk_speaker
                     (talk_id, speaker_name, status)
                 values
-                    (:talk_id, :speaker_name, NULL)";
+                    (:talk_id, :speaker_name, NULL)';
         $stmt = $this->_db->prepare($sql);
         foreach ($new_speakers as $name) {
             $params = [
-                'talk_id' => $talk_id,
+                'talk_id'      => $talk_id,
                 'speaker_name' => $name,
             ];
             $stmt->execute($params);
@@ -547,13 +551,13 @@ class TalkMapper extends ApiMapper
         // remove speakers that are currently attached to the talk, but not
         // in the list provided
         $speakers_to_delete = array_diff($current_speakers, $speakers);
-        $sql = "delete from talk_speaker WHERE
+        $sql = 'delete from talk_speaker WHERE
                     talk_id = :talk_id
-                    and speaker_name = :speaker_name";
+                    and speaker_name = :speaker_name';
         $stmt = $this->_db->prepare($sql);
         foreach ($speakers_to_delete as $name) {
             $params = [
-                'talk_id' => $talk_id,
+                'talk_id'      => $talk_id,
                 'speaker_name' => $name,
             ];
             $stmt->execute($params);
@@ -570,9 +574,9 @@ class TalkMapper extends ApiMapper
      */
     protected function hasUserStarredTalk($talk_id, $user_id)
     {
-        $sql  = "select * from user_talk_star where tid = :talk_id and uid = :user_id";
+        $sql = 'select * from user_talk_star where tid = :talk_id and uid = :user_id';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("talk_id" => $talk_id, "user_id" => $user_id));
+        $stmt->execute(['talk_id' => $talk_id, 'user_id' => $user_id]);
         $result = $stmt->fetch();
 
         return is_array($result);
@@ -601,7 +605,7 @@ class TalkMapper extends ApiMapper
 
         $result = $stmt->fetch();
 
-        if (! $result) {
+        if (!$result) {
             return false;
         }
 
@@ -618,9 +622,9 @@ class TalkMapper extends ApiMapper
      */
     public function isUserASpeakerOnTalk($talk_id, $user_id)
     {
-        $sql  = "select ID from talk_speaker where talk_id = :talk_id and speaker_id = :user_id";
+        $sql = 'select ID from talk_speaker where talk_id = :talk_id and speaker_id = :user_id';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("talk_id" => (int) $talk_id, "user_id" => (int) $user_id));
+        $stmt->execute(['talk_id' => (int) $talk_id, 'user_id' => (int) $user_id]);
 
         if ($stmt->fetch()) {
             return true;
@@ -630,7 +634,7 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * This talk has no stub, so create, store and return one
+     * This talk has no stub, so create, store and return one.
      *
      * @param int $talk_id The talk that needs a new stub
      *
@@ -640,7 +644,8 @@ class TalkMapper extends ApiMapper
     {
         $i = 0;
         while ($i < 5) {
-            $stub   = substr(md5(mt_rand()), 3, 5);
+            $stub = substr(md5(mt_rand()), 3, 5);
+
             try {
                 $stored = $this->storeStub($stub, $talk_id);
                 // only return a value if we actually stored one
@@ -649,7 +654,7 @@ class TalkMapper extends ApiMapper
             } catch (Exception $e) {
                 // failed to store - try again
             }
-            $i ++;
+            $i++;
         }
 
         return $stored_stub;
@@ -658,20 +663,20 @@ class TalkMapper extends ApiMapper
     /**
      * Store the stub and return whether that was successful.
      * If not, we probably failed the unique check and the calling code can
-     * decide what to do next
+     * decide what to do next.
      *
-     * @param string $stub The stub for this talk
-     * @param int $talk_id The talk to store against
+     * @param string $stub    The stub for this talk
+     * @param int    $talk_id The talk to store against
      *
-     * @return boolean whether we stored it or not
+     * @return bool whether we stored it or not
      */
     protected function storeStub($stub, $talk_id)
     {
-        $sql = "update talks set stub = :stub
-            where ID = :talk_id";
+        $sql = 'update talks set stub = :stub
+            where ID = :talk_id';
 
-        $stmt   = $this->_db->prepare($sql);
-        $result = $stmt->execute(array("stub" => $stub, "talk_id" => $talk_id));
+        $stmt = $this->_db->prepare($sql);
+        $result = $stmt->execute(['stub' => $stub, 'talk_id' => $talk_id]);
 
         return $result;
     }
@@ -681,8 +686,8 @@ class TalkMapper extends ApiMapper
      * ensure uniqueness, by adding hour and then hour-minute to the inflected
      * title.
      *
-     * @param string $title The talk title
-     * @param int $talk_id The talk to store the title against
+     * @param string $title   The talk title
+     * @param int    $talk_id The talk to store the title against
      *
      * @return string The value we stored
      */
@@ -690,13 +695,13 @@ class TalkMapper extends ApiMapper
     {
         // Try to store without a suffix
         $inflected_title = $this->inflect($title);
-        $result          = $this->storeInflectedTitle($inflected_title, $talk_id);
+        $result = $this->storeInflectedTitle($inflected_title, $talk_id);
         if ($result) {
             return $inflected_title;
         }
 
         // If that doesn't work, try to store with the talk ID tacked on
-        $inflected_title .= '-' . $talk_id;
+        $inflected_title .= '-'.$talk_id;
         $result = $this->storeInflectedTitle($inflected_title, $talk_id);
         if ($result) {
             return $inflected_title;
@@ -707,7 +712,7 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * Try to store the inflected title against this talk
+     * Try to store the inflected title against this talk.
      *
      * A database constraint ensures uniqueness for url_friendly_talk_title
      * values per event, so you can have the same inflected talk title at two
@@ -715,25 +720,26 @@ class TalkMapper extends ApiMapper
      * update will fail.  The calling code catches this and picks a new title
      *
      * @param string $inflected_title
-     * @param int $talk_id
+     * @param int    $talk_id
      *
      * @return bool
      */
     protected function storeInflectedTitle($inflected_title, $talk_id)
     {
-        $sql = "update talks set url_friendly_talk_title = :inflected_title
-            where ID = :talk_id";
+        $sql = 'update talks set url_friendly_talk_title = :inflected_title
+            where ID = :talk_id';
 
-        $stmt   = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
 
         try {
-            $result = $stmt->execute(array(
-                "inflected_title" => $inflected_title,
-                "talk_id"         => $talk_id
-            ));
+            $result = $stmt->execute([
+                'inflected_title' => $inflected_title,
+                'talk_id'         => $talk_id,
+            ]);
         } catch (Exception $e) {
             return false;
         }
+
         return $result;
     }
 
@@ -744,12 +750,12 @@ class TalkMapper extends ApiMapper
      */
     public function getSpeakerEmailsByTalkId($talk_id)
     {
-        $speaker_sql  = 'select user.email, user.ID from talk_speaker ts '
-                        . 'left join user on user.ID = ts.speaker_id '
-                        . 'where ts.talk_id = :talk_id and ts.status IS NULL '
-                        . 'and email IS NOT null';
+        $speaker_sql = 'select user.email, user.ID from talk_speaker ts '
+                        .'left join user on user.ID = ts.speaker_id '
+                        .'where ts.talk_id = :talk_id and ts.status IS NULL '
+                        .'and email IS NOT null';
         $speaker_stmt = $this->_db->prepare($speaker_sql);
-        $speaker_stmt->execute(array("talk_id" => $talk_id));
+        $speaker_stmt->execute(['talk_id' => $talk_id]);
 
         return $speaker_stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -774,18 +780,18 @@ class TalkMapper extends ApiMapper
             }
 
             // is user an event admin?
-            $sql  = 'select a.uid as user_id, u.full_name'
-                    . ' from user_admin a '
-                    . ' inner join user u on u.ID = a.uid '
-                    . ' inner join talks t on t.event_id = rid '
-                    . ' where rtype="event" and (rcode!="pending" OR rcode is null)'
-                    . ' AND u.ID = :user_id'
-                    . ' AND t.ID = :talk_id';
+            $sql = 'select a.uid as user_id, u.full_name'
+                    .' from user_admin a '
+                    .' inner join user u on u.ID = a.uid '
+                    .' inner join talks t on t.event_id = rid '
+                    .' where rtype="event" and (rcode!="pending" OR rcode is null)'
+                    .' AND u.ID = :user_id'
+                    .' AND t.ID = :talk_id';
             $stmt = $this->_db->prepare($sql);
-            $stmt->execute(array(
-                "talk_id" => $talk_id,
-                "user_id" => $this->_request->user_id
-            ));
+            $stmt->execute([
+                'talk_id' => $talk_id,
+                'user_id' => $this->_request->user_id,
+            ]);
             $results = $stmt->fetchAll();
             if ($results) {
                 return true;
@@ -796,7 +802,7 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * Add talk to track
+     * Add talk to track.
      *
      * @param int $talk_id
      * @param int $track_id
@@ -807,7 +813,7 @@ class TalkMapper extends ApiMapper
     {
         $params = [
             'track_id' => $track_id,
-            'talk_id' => $talk_id,
+            'talk_id'  => $talk_id,
         ];
 
         // is this link in the database already?
@@ -824,20 +830,21 @@ class TalkMapper extends ApiMapper
 
             $talk_track_id = $this->_db->lastInsertId();
         }
+
         return $talk_track_id;
     }
 
     /**
-     * Remove talk from a track
+     * Remove talk from a track.
      *
-     * @param  int $talk_id
-     * @param  int $track_id
+     * @param int $talk_id
+     * @param int $track_id
      */
     public function removeTrackFromTalk($talk_id, $track_id)
     {
         $params = [
             'track_id' => $track_id,
-            'talk_id' => $talk_id,
+            'talk_id'  => $talk_id,
         ];
 
         $sql = 'delete from talk_track where track_id = :track_id and talk_id = :talk_id';
@@ -846,7 +853,7 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * Remove a talk from all tracks it's associated with
+     * Remove a talk from all tracks it's associated with.
      *
      * @param int $talk_id The ID of the talk to remove from the tracks
      *
@@ -877,25 +884,29 @@ class TalkMapper extends ApiMapper
     {
         $this->_db->beginTransaction();
 
-        if (! $this->removeAllTalkLinks($talk_id)) {
+        if (!$this->removeAllTalkLinks($talk_id)) {
             $this->_db->rollBack();
+
             return false;
         }
 
-        if (! $this->removeTalkFromAllTracks($talk_id)) {
+        if (!$this->removeTalkFromAllTracks($talk_id)) {
             $this->_db->rollBack();
+
             return false;
         }
 
-        if (! $this->removeAllSpeakersFromTalk($talk_id)) {
+        if (!$this->removeAllSpeakersFromTalk($talk_id)) {
             $this->_db->rollBack();
+
             return false;
         }
 
-        $sql  = "DELETE FROM talks WHERE ID = :talk_id";
+        $sql = 'DELETE FROM talks WHERE ID = :talk_id';
         $stmt = $this->_db->prepare($sql);
-        if (! $stmt->execute(array("talk_id" => $talk_id))) {
+        if (!$stmt->execute(['talk_id' => $talk_id])) {
             $this->_db->rollBack();
+
             return false;
         }
 
@@ -905,17 +916,17 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * @param int $talk_id
+     * @param int    $talk_id
      * @param string $display_name
      *
      * @return bool
      */
     public function getSpeakerFromTalk($talk_id, $display_name)
     {
-        $speaker_sql  = 'select ts.* from talk_speaker ts '
-            . 'where ts.talk_id = :talk_id and ts.speaker_name = :display_name';
+        $speaker_sql = 'select ts.* from talk_speaker ts '
+            .'where ts.talk_id = :talk_id and ts.speaker_name = :display_name';
         $speaker_stmt = $this->_db->prepare($speaker_sql);
-        $speaker_stmt->execute(array("talk_id" => $talk_id, "display_name" => $display_name));
+        $speaker_stmt->execute(['talk_id' => $talk_id, 'display_name' => $display_name]);
         $speakers = $speaker_stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return count($speakers) > 0 ? $speakers[0] : false;
@@ -931,7 +942,7 @@ class TalkMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(
             [
-                'talk_id' => $talk_id,
+                'talk_id'    => $talk_id,
                 'speaker_id' => $speaker_id,
             ]
         );
@@ -952,9 +963,9 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * @param int $talk_id
-     * @param int $claim_id
-     * @param int $speaker_id
+     * @param int    $talk_id
+     * @param int    $claim_id
+     * @param int    $speaker_id
      * @param string $speaker_name
      *
      * @return bool
@@ -966,18 +977,19 @@ class TalkMapper extends ApiMapper
                 speaker_name = :speaker_name
                 WHERE ID = :claim_id AND talk_id = :talk_id';
         $stmt = $this->_db->prepare($sql);
+
         return $stmt->execute(
             [
                 'speaker_id'    => $speaker_id,
                 'talk_id'       => $talk_id,
                 'claim_id'      => $claim_id,
-                'speaker_name'  => $speaker_name
+                'speaker_name'  => $speaker_name,
             ]
         );
     }
 
     /**
-     * @param int $talk_id
+     * @param int      $talk_id
      * @param int|null $link_id
      *
      * @return array
@@ -1003,7 +1015,7 @@ class TalkMapper extends ApiMapper
         ];
 
         if (is_numeric($link_id)) {
-            $sql .= "and tl.ID = :link_id";
+            $sql .= 'and tl.ID = :link_id';
             $params['link_id'] = $link_id;
         }
 
@@ -1038,13 +1050,13 @@ class TalkMapper extends ApiMapper
      */
     public function removeTalkLink($talk_id, $link_id)
     {
-        $sql = "
+        $sql = '
             DELETE
             FROM
               talk_links
             WHERE talk_id = :talk_id 
               AND id = :link_id 
-        ";
+        ';
 
         $stmt = $this->_db->prepare($sql);
 
@@ -1057,7 +1069,7 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * Remove all talk links foa a given talk
+     * Remove all talk links foa a given talk.
      *
      * @param int $talk_id The talk-ID
      *
@@ -1065,7 +1077,7 @@ class TalkMapper extends ApiMapper
      */
     public function removeAllTalkLinks($talk_id)
     {
-        $sql = "DELETE FROM talk_links WHERE talk_id = :talk_id";
+        $sql = 'DELETE FROM talk_links WHERE talk_id = :talk_id';
 
         $stmt = $this->_db->prepare($sql);
 
@@ -1082,7 +1094,7 @@ class TalkMapper extends ApiMapper
      */
     public function updateTalkLink($talk_id, $link_id, $display_name, $url)
     {
-        $sql = "
+        $sql = '
             UPDATE
               talk_links a
               INNER JOIN talk_link_types b
@@ -1091,16 +1103,16 @@ class TalkMapper extends ApiMapper
               a.`url` = :url
             WHERE a.`id` = :link_id
               AND a.`talk_id` = :talk_id 
-        ";
+        ';
 
         $stmt = $this->_db->prepare($sql);
 
         $stmt->execute(
             [
                 'display_name' => $display_name,
-                'link_id' => $link_id,
-                'talk_id' => $talk_id,
-                'url' => $url,
+                'link_id'      => $link_id,
+                'talk_id'      => $talk_id,
+                'url'          => $url,
             ]
         );
 
@@ -1108,7 +1120,7 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * @param int $talk_id
+     * @param int    $talk_id
      * @param string $display_name
      * @param string $url
      *
@@ -1116,7 +1128,7 @@ class TalkMapper extends ApiMapper
      */
     public function addTalkLink($talk_id, $display_name, $url)
     {
-        $sql = "
+        $sql = '
             INSERT INTO `talk_links` (`talk_id`, `talk_type`, `url`)
             SELECT
               :talk_id,
@@ -1125,22 +1137,23 @@ class TalkMapper extends ApiMapper
             FROM
               talk_link_types t
             WHERE t.`display_name` = :display_name
-        ";
+        ';
 
         $stmt = $this->_db->prepare($sql);
 
         $stmt->execute(
             [
-                'talk_id' => $talk_id,
+                'talk_id'      => $talk_id,
                 'display_name' => $display_name,
-                'url' => $url,
+                'url'          => $url,
             ]
         );
+
         return $this->_db->lastInsertId();
     }
 
     /**
-     * Used for adding back the slide link to the request
+     * Used for adding back the slide link to the request.
      *
      * @param array $talk
      * @param array $link
@@ -1149,7 +1162,7 @@ class TalkMapper extends ApiMapper
      */
     private function handleBackwardsCompatibleMedia(array $talk, array $link)
     {
-        if ($link['display_name'] == "slides_link") {
+        if ($link['display_name'] == 'slides_link') {
             $talk[0][$link['display_name']] = $link['url'];
         }
 

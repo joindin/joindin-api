@@ -7,7 +7,7 @@ abstract class BaseModelCollection
 
     /**
      * Adds count, total, and this_page links.  Also adds next_page and prev_page
-     * as appropriate
+     * as appropriate.
      *
      * @param Request $request
      *
@@ -17,10 +17,10 @@ abstract class BaseModelCollection
     {
         $meta['count'] = count($this->list);
 
-        $meta['total']     = $this->total;
-        $meta['this_page'] = $request->base . $request->path_info . '?' .
+        $meta['total'] = $this->total;
+        $meta['this_page'] = $request->base.$request->path_info.'?'.
                              http_build_query($request->paginationParameters);
-        
+
         $next_params = $prev_params = $counter_params = $request->paginationParameters;
 
         $firstOnNextPage = $counter_params['start'] + $counter_params['resultsperpage'];
@@ -28,14 +28,14 @@ abstract class BaseModelCollection
 
         if ($firstOnNextPage < $this->total) {
             $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
-            $meta['next_page']    = $request->base . $request->path_info . '?' . http_build_query($next_params);
+            $meta['next_page'] = $request->base.$request->path_info.'?'.http_build_query($next_params);
         }
         if (0 < $firstOnThisPage) {
             $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
             if ($prev_params['start'] < 0) {
                 $prev_params['start'] = 0;
             }
-            $meta['prev_page'] = $request->base . $request->path_info . '?' . http_build_query($prev_params);
+            $meta['prev_page'] = $request->base.$request->path_info.'?'.http_build_query($prev_params);
         }
 
         return $meta;

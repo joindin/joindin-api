@@ -2,7 +2,7 @@
 
 /**
  * Container for multiple Client objects, also handles
- * collection metadata such as pagination
+ * collection metadata such as pagination.
  */
 class ClientModelCollection extends BaseModelCollection
 {
@@ -13,10 +13,10 @@ class ClientModelCollection extends BaseModelCollection
     protected $total;
 
     /**
-     * Take arrays of data and create a collection of models; store metadata
+     * Take arrays of data and create a collection of models; store metadata.
      *
      * @param array $data
-     * @param int $total
+     * @param int   $total
      */
     public function __construct(array $data, $total)
     {
@@ -33,14 +33,14 @@ class ClientModelCollection extends BaseModelCollection
     }
 
     /**
-     * Present this collection ready for the output handlers
+     * Present this collection ready for the output handlers.
      *
      * This creates the expected output structure, converting each resource
      * to it's presentable representation and adding the meta fields for totals
      * and pagination
      *
      * @param Request $request
-     * @param bool $verbose
+     * @param bool    $verbose
      *
      * @return array
      */
@@ -60,7 +60,7 @@ class ClientModelCollection extends BaseModelCollection
     }
 
     /**
-     * Return the list of talks (internal representation)
+     * Return the list of talks (internal representation).
      *
      * @return array
      */

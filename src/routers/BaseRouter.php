@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The base Router class; contains configuration
+ * The base Router class; contains configuration.
  */
 abstract class BaseRouter
 {
@@ -11,7 +11,7 @@ abstract class BaseRouter
     protected $config;
 
     /**
-     * Constructs a new Router
+     * Constructs a new Router.
      *
      * @param array $config The application configuration
      */
@@ -21,7 +21,7 @@ abstract class BaseRouter
     }
 
     /**
-     * Gets this Router's config
+     * Gets this Router's config.
      *
      * @return array
      */
@@ -31,7 +31,7 @@ abstract class BaseRouter
     }
 
     /**
-     * Gets the Route appropriate to the passed Request
+     * Gets the Route appropriate to the passed Request.
      *
      * @param Request $request The Request to route
      *

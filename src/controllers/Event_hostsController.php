@@ -1,4 +1,5 @@
 <?php
+
 // @codingStandardsIgnoreStart
 class Event_hostsController extends BaseApiController
 // @codingStandardsIgnoreEnd
@@ -9,7 +10,7 @@ class Event_hostsController extends BaseApiController
     /** @var EventMapper */
     protected $eventMapper = null;
 
-    /** @var UserMapper  */
+    /** @var UserMapper */
     protected $userMapper = null;
 
     /**
@@ -17,6 +18,7 @@ class Event_hostsController extends BaseApiController
      * @param PDO     $db
      *
      * @throws Exception
+     *
      * @return array
      */
     public function listHosts(Request $request, PDO $db)
@@ -27,11 +29,11 @@ class Event_hostsController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start          = $this->getStart($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = $this->getEventHostMapper($request, $db);
-        if (! $event_id) {
+        if (!$event_id) {
             throw new Exception('Event not found', 404);
         }
 
@@ -51,12 +53,13 @@ class Event_hostsController extends BaseApiController
      * @uses host_name
      *
      * @throws Exception
+     *
      * @return void
      */
     public function addHost(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in to create data', 401);
         }
 
         $event_id = $this->getItemId($request);
@@ -69,7 +72,7 @@ class Event_hostsController extends BaseApiController
 
         $isAdmin = $eventMapper->thisUserHasAdminOn($event_id);
         if (!$isAdmin) {
-            throw new Exception("You do not have permission to add hosts to this event", 403);
+            throw new Exception('You do not have permission to add hosts to this event', 403);
         }
         $username = filter_var(
             $request->getParameter('host_name'),
@@ -99,8 +102,6 @@ class Event_hostsController extends BaseApiController
         $request->getView()->setHeader('Location', $uri);
         $request->getView()->setResponseCode(201);
         $request->getView()->setNoRender(true);
-
-        return;
     }
 
     /**
@@ -108,12 +109,13 @@ class Event_hostsController extends BaseApiController
      * @param PDO     $db
      *
      * @throws Exception
+     *
      * @return void
      */
     public function removeHostFromEvent(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to remove data", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in to remove data', 401);
         }
 
         $user_id = $request->url_elements[5];
@@ -131,7 +133,7 @@ class Event_hostsController extends BaseApiController
 
         $isAdmin = $eventMapper->thisUserHasAdminOn($event_id);
         if (!$isAdmin) {
-            throw new Exception("You do not have permission to remove hosts from this event", 403);
+            throw new Exception('You do not have permission to remove hosts from this event', 403);
         }
 
         $userMapper = $this->getUserMapper($request, $db);
@@ -157,8 +159,6 @@ class Event_hostsController extends BaseApiController
         $request->getView()->setHeader('Location', $uri);
         $request->getView()->setResponseCode(204);
         $request->getView()->setNoRender(true);
-
-        return;
     }
 
     /**

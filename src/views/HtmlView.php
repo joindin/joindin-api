@@ -1,17 +1,16 @@
 <?php
 
 /**
- * HTML View class: renders HTML 5
+ * HTML View class: renders HTML 5.
  *
  * @category View
- * @package  API
+ *
  * @author   Lorna Mitchel <lorna.mitchell@gmail.com>
  * @author   Rob Allen <rob@akrabat.com>
  * @license  BSD see doc/LICENSE
  */
 class HtmlView extends ApiView
 {
-
     /**
      * @param $content
      *
@@ -23,8 +22,9 @@ class HtmlView extends ApiView
 
         return parent::render($content);
     }
+
     /**
-     * Render the view
+     * Render the view.
      *
      * @param array $content data to be rendered
      *
@@ -41,12 +41,10 @@ class HtmlView extends ApiView
             $this->printUrlOrString($content);
         }
         $this->layoutStop();
-
-        return null;
     }
 
     /**
-     * Recursively render an array to an HTML list
+     * Recursively render an array to an HTML list.
      *
      * @param array $content data to be rendered
      *
@@ -58,7 +56,7 @@ class HtmlView extends ApiView
 
         // field name
         foreach ($content as $field => $value) {
-            echo "<li><strong>" . $field . ":</strong> ";
+            echo '<li><strong>'.$field.':</strong> ';
             if (is_array($value)) {
                 // recurse
                 $this->printArray($value);
@@ -73,7 +71,7 @@ class HtmlView extends ApiView
 
     /**
      * Renders the passed value, either raw or as a link (if prepended by http
-     * or https)
+     * or https).
      *
      * @param string $value
      *
@@ -86,20 +84,20 @@ class HtmlView extends ApiView
         }
         $value = htmlentities($value, ENT_COMPAT, 'UTF-8');
         if ((strpos($value, 'http://') === 0) || (strpos($value, 'https://') === 0)) {
-            echo "<a href=\"" . $value . "\">" . $value . "</a>";
+            echo '<a href="'.$value.'">'.$value.'</a>';
         } else {
             echo $value;
         }
     }
 
     /**
-     * Render start of HTML page
+     * Render start of HTML page.
      *
      * @return null
      */
     protected function layoutStart()
     {
-        echo <<<EOT
+        echo <<<'EOT'
 <!DOCTYPE html>
 <html>
 <head>
@@ -127,13 +125,13 @@ EOT;
     }
 
     /**
-     * Render end of HTML page
+     * Render end of HTML page.
      *
      * @return null
      */
     protected function layoutStop()
     {
-        echo <<<EOT
+        echo <<<'EOT'
 </body>
 </html>
 

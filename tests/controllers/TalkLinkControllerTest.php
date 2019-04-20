@@ -8,9 +8,9 @@ use TalkLinkController;
 
 class TalkLinkControllerTest extends TalkBase
 {
-
     /**
-     * Test sending delete link where the link id is not found
+     * Test sending delete link where the link id is not found.
+     *
      * @expectedException \Exception
      * @expectedExceptionCode 404
      */
@@ -25,9 +25,8 @@ class TalkLinkControllerTest extends TalkBase
 
         $this->talk_mapper
             ->expects($this->once())
-            ->method("removeTalkLink")
+            ->method('removeTalkLink')
             ->willReturn(false);
-
 
         $this->assertTrue(
             $this->talks_controller->removeTalkLink(
@@ -38,11 +37,10 @@ class TalkLinkControllerTest extends TalkBase
     }
 
     /**
-     * Test sending delete link
+     * Test sending delete link.
      */
     public function testDeleteTalkLink()
     {
-
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
             'DELETE'
@@ -52,7 +50,7 @@ class TalkLinkControllerTest extends TalkBase
 
         $this->talk_mapper
             ->expects($this->once())
-            ->method("removeTalkLink")
+            ->method('removeTalkLink')
             ->willReturn(true);
 
         $this->assertTrue(
@@ -64,7 +62,8 @@ class TalkLinkControllerTest extends TalkBase
     }
 
     /**
-     * Test sending delete link with no permissions
+     * Test sending delete link with no permissions.
+     *
      * @expectedException \Exception
      * @expectedExceptionCode 403
      */
@@ -86,14 +85,14 @@ class TalkLinkControllerTest extends TalkBase
         );
 
         $expected = [
-            'id' => 1234,
+            'id'           => 1234,
             'display_name' => 'slides_link',
-            'url' => 'http://url'
+            'url'          => 'http://url',
         ];
 
         $this->talk_mapper
             ->expects($this->once())
-            ->method("getTalkMediaLinks")
+            ->method('getTalkMediaLinks')
             ->willReturn([$expected]);
 
         $this->assertEquals(
@@ -115,7 +114,7 @@ class TalkLinkControllerTest extends TalkBase
 
         $this->talk_mapper
             ->expects($this->once())
-            ->method("getTalkMediaLinks")
+            ->method('getTalkMediaLinks')
             ->willReturn([]);
 
         $this->talks_controller->getTalkLink(
@@ -133,14 +132,14 @@ class TalkLinkControllerTest extends TalkBase
 
         $this->request->parameters = $this->request->parameters + [
             'display_name' => 'slides_link',
-            'url' => 'https://slides_url.com',
+            'url'          => 'https://slides_url.com',
         ];
 
         $this->authenticateAsSpeaker();
 
         $this->talk_mapper
             ->expects($this->once())
-            ->method("addTalkLink")
+            ->method('addTalkLink')
             ->willReturn(12);
 
         $this->talks_controller->addTalkLink(
@@ -181,12 +180,12 @@ class TalkLinkControllerTest extends TalkBase
 
         $this->request->parameters = $this->request->parameters + [
             'display_name' => 'slides_link',
-            'url' => 'https://slides_url.com',
+            'url'          => 'https://slides_url.com',
         ];
 
         $this->talk_mapper
             ->expects($this->once())
-            ->method("addTalkLink")
+            ->method('addTalkLink')
             ->willReturn(false);
 
         $this->authenticateAsSpeaker();
@@ -207,7 +206,7 @@ class TalkLinkControllerTest extends TalkBase
         $this->authenticateAsSpeaker();
         $this->talk_mapper
             ->expects($this->once())
-            ->method("updateTalkLink")
+            ->method('updateTalkLink')
             ->willReturn(true);
 
         $this->talks_controller->updateTalkLink(
@@ -240,15 +239,15 @@ class TalkLinkControllerTest extends TalkBase
         $this->request = new Request(
             [],
             [
-                'REQUEST_URI' => $url,
-                'REQUEST_METHOD' => $method
+                'REQUEST_URI'    => $url,
+                'REQUEST_METHOD' => $method,
             ]
         );
 
         $this->request->user_id = 2;
         $this->request->parameters = [
             'username'      => 'janebloggs',
-            'display_name'  =>  'P Sherman'
+            'display_name'  => 'P Sherman',
         ];
 
         $this->talks_controller = new TalkLinkController();
@@ -262,7 +261,7 @@ class TalkLinkControllerTest extends TalkBase
     {
         $this->talk_mapper
             ->expects($this->once())
-            ->method("isUserASpeakerOnTalk")
+            ->method('isUserASpeakerOnTalk')
             ->willReturn(true);
     }
 }

@@ -11,7 +11,7 @@ class TracksController extends BaseApiController
 
         if ($track_id) {
             $mapper = new TrackMapper($db, $request);
-            $list   = $mapper->getTrackById($track_id, $verbose);
+            $list = $mapper->getTrackById($track_id, $verbose);
             if (false === $list) {
                 throw new Exception('Track not found', 404);
             }
@@ -26,8 +26,8 @@ class TracksController extends BaseApiController
     public function editTrack(Request $request, PDO $db)
     {
         // Check for login
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to edit this track", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in to edit this track', 401);
         }
 
         $track_id = $this->getItemId($request);
@@ -35,13 +35,13 @@ class TracksController extends BaseApiController
         $track_mapper = new TrackMapper($db, $request);
         $tracks = $track_mapper->getTrackById($track_id, true);
         if (!$tracks) {
-            throw new Exception("Track not found", 404);
+            throw new Exception('Track not found', 404);
         }
 
         $event_mapper = new EventMapper($db, $request);
         $events = $event_mapper->getEventByTrackId($track_id, true, false, false);
         if (!$events || !$events[0]['ID']) {
-            throw new Exception("Associated event not found", 404);
+            throw new Exception('Associated event not found', 404);
         }
         $event_id = $events[0]['ID'];
         if (!$event_mapper->thisUserHasAdminOn($event_id)) {
@@ -51,7 +51,7 @@ class TracksController extends BaseApiController
         // validate fields
         $errors = [];
         $track['track_name'] = filter_var(
-            $request->getParameter("track_name"),
+            $request->getParameter('track_name'),
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
@@ -59,7 +59,7 @@ class TracksController extends BaseApiController
             $errors[] = "'track_name' is a required field";
         }
         $track['track_description'] = filter_var(
-            $request->getParameter("track_description"),
+            $request->getParameter('track_description'),
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
@@ -67,12 +67,12 @@ class TracksController extends BaseApiController
             $errors[] = "'track_description' is a required field";
         }
         if ($errors) {
-            throw new Exception(implode(". ", $errors), 400);
+            throw new Exception(implode('. ', $errors), 400);
         }
 
         $track_mapper->editEventTrack($track, $track_id);
 
-        $uri = $request->base  . '/' . $request->version . '/tracks/' . $track_id;
+        $uri = $request->base.'/'.$request->version.'/tracks/'.$track_id;
 
         $view = $request->getView();
         $view->setHeader('Location', $uri);
@@ -82,8 +82,8 @@ class TracksController extends BaseApiController
     public function deleteTrack(Request $request, PDO $db)
     {
         // Check for login
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete this track", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in to delete this track', 401);
         }
 
         $track_id = $this->getItemId($request);
@@ -91,13 +91,13 @@ class TracksController extends BaseApiController
         $track_mapper = new TrackMapper($db, $request);
         $tracks = $track_mapper->getTrackById($track_id, true);
         if (!$tracks) {
-            throw new Exception("Track not found", 404);
+            throw new Exception('Track not found', 404);
         }
 
         $event_mapper = new EventMapper($db, $request);
         $events = $event_mapper->getEventByTrackId($track_id, true, false, false);
         if (!$events || !$events[0]['ID']) {
-            throw new Exception("Associated event not found", 404);
+            throw new Exception('Associated event not found', 404);
         }
         $event_id = $events[0]['ID'];
         if (!$event_mapper->thisUserHasAdminOn($event_id)) {

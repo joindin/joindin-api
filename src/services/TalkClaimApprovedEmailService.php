@@ -2,7 +2,6 @@
 
 class TalkClaimApprovedEmailService extends BaseEmailService
 {
-
     protected $event;
     /** @var TalkModel */
     protected $talk;
@@ -20,16 +19,15 @@ class TalkClaimApprovedEmailService extends BaseEmailService
 
     public function sendEmail()
     {
-        $this->setSubject("Joind.in: Your talk claim has been approved");
+        $this->setSubject('Joind.in: Your talk claim has been approved');
 
+        $replacements = [
+            'eventName' => $this->event['name'],
+            'talkTitle' => $this->talk->talk_title,
+            'talkUri'   => $this->talk->getWebsiteUrl($this->website_url),
+        ];
 
-        $replacements = array(
-            "eventName" => $this->event['name'],
-            "talkTitle" => $this->talk->talk_title,
-            "talkUri"   => $this->talk->getWebsiteUrl($this->website_url),
-        );
-
-        $messageBody = $this->parseEmail("talkClaimApproved.md", $replacements);
+        $messageBody = $this->parseEmail('talkClaimApproved.md', $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);
 
         $this->setBody($this->htmlToPlainText($messageHTML));

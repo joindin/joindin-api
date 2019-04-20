@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Object that represents a talk
+ * Object that represents a talk.
  */
 class PendingTalkClaimModel extends BaseModel
 {
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -14,16 +14,16 @@ class PendingTalkClaimModel extends BaseModel
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'date_added'              => 'date_added',
             'display_name'            => 'display_name',
             'speaker_uri'             => 'speaker_uri',
             'talk_uri'                => 'talk_uri',
-        );
+        ];
     }
 
     /**
-     * Default fields in the output view
+     * Default fields in the output view.
      *
      * format: [public facing name => database column]
      *
@@ -38,21 +38,20 @@ class PendingTalkClaimModel extends BaseModel
         return $fields;
     }
 
-
     /**
-     * Return an array with client-facing fields and hypermedia, ready for output
+     * Return an array with client-facing fields and hypermedia, ready for output.
      *
      * @param Request $request
-     * @param bool $verbose
+     * @param bool    $verbose
      *
      * @return array
      */
     public function getOutputView(Request $request, $verbose = false)
     {
         $item = parent::getOutputView($request, $verbose);
-        
+
         // add Hypermedia
-        $base    = $request->base;
+        $base = $request->base;
         $version = $request->version;
 
         return $item;

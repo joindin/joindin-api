@@ -3,23 +3,22 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class to test Route
+ * Class to test Route.
  *
  * @covers Route
  */
 class RouteTest extends TestCase
 {
-
     /**
-     * DataProvider for testConstruct
+     * DataProvider for testConstruct.
      *
      * @return array
      */
     public function constructProvider()
     {
-        return array(
-            array('controller', 'action', array('a' => 'b'))
-        );
+        return [
+            ['controller', 'action', ['a' => 'b']],
+        ];
     }
 
     /**
@@ -28,7 +27,7 @@ class RouteTest extends TestCase
      *
      * @param string $controller
      * @param string $action
-     * @param array $params
+     * @param array  $params
      */
     public function testConstruct($controller, $action, array $params)
     {
@@ -39,15 +38,15 @@ class RouteTest extends TestCase
     }
 
     /**
-     * DataProvider for testGetSet
+     * DataProvider for testGetSet.
      *
      * @return array
      */
     public function getSetProvider()
     {
-        return array(
-            array('TestController', 'testAction', array('event_id' => 1))
-        );
+        return [
+            ['TestController', 'testAction', ['event_id' => 1]],
+        ];
     }
 
     /**
@@ -61,11 +60,11 @@ class RouteTest extends TestCase
      *
      * @param string $controller
      * @param string $action
-     * @param array $params
+     * @param array  $params
      */
     public function testGetSet($controller, $action, array $params)
     {
-        $route = new Route('a', 'b', array('c'));
+        $route = new Route('a', 'b', ['c']);
 
         $route->setController($controller);
         $this->assertEquals($controller, $route->getController());
@@ -78,37 +77,37 @@ class RouteTest extends TestCase
     }
 
     /**
-     * DataProvider for testDispatch
+     * DataProvider for testDispatch.
      *
      * @return array
      */
     public function dispatchProvider()
     {
-        return array(
-            array( // #0
-                'config' => array('config'),
+        return [
+            [ // #0
+                'config'     => ['config'],
                 'controller' => 'TestController3',
-                'action' => 'action',
-                'request' => $this->getRequest('v1')
-            ),
-            array( // #1
-                'config' => array('config'),
-                'controller' => 'TestController3',
-                'action' => 'action2',
-                'request' => $this->getRequest('v1'),
-                'expectedException' => 'Exception',
+                'action'     => 'action',
+                'request'    => $this->getRequest('v1'),
+            ],
+            [ // #1
+                'config'                => ['config'],
+                'controller'            => 'TestController3',
+                'action'                => 'action2',
+                'request'               => $this->getRequest('v1'),
+                'expectedException'     => 'Exception',
                 'expectedExceptionCode' => 500,
-            ),
-            array( // #2
-                'config' => array('config'),
-                'controller' => 'TestController4',
-                'action' => 'action2',
-                'request' => $this->getRequest('v1'),
-                'expectedException' => 'Exception',
+            ],
+            [ // #2
+                'config'                => ['config'],
+                'controller'            => 'TestController4',
+                'action'                => 'action2',
+                'request'               => $this->getRequest('v1'),
+                'expectedException'     => 'Exception',
                 'expectedExceptionCode' => 400,
-                'controllerExists' => false
-            )
-        );
+                'controllerExists'      => false,
+            ],
+        ];
     }
 
     /**
@@ -116,12 +115,12 @@ class RouteTest extends TestCase
      *
      * @covers Route::dispatch
      *
-     * @param array $config
-     * @param string $controller
-     * @param string $action
+     * @param array   $config
+     * @param string  $controller
+     * @param string  $action
      * @param Request $request
-     * @param string $expectedException
-     * @param integer $expectedExceptionCode
+     * @param string  $expectedException
+     * @param int     $expectedExceptionCode
      *
      * @throws Exception
      */
@@ -141,7 +140,7 @@ class RouteTest extends TestCase
             $container
                 ->expects($this->atLeastOnce())
                 ->method('get')
-                ->willReturn(new $controller);
+                ->willReturn(new $controller());
         }
 
         $route = new Route($controller, $action);
@@ -160,7 +159,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * Gets a Request for testing
+     * Gets a Request for testing.
      *
      * @param string $urlElement
      *
@@ -168,7 +167,7 @@ class RouteTest extends TestCase
      */
     private function getRequest($urlElement)
     {
-        $request = $this->getMock('Request', array('getUrlElement'), array(), '', false);
+        $request = $this->getMock('Request', ['getUrlElement'], [], '', false);
 
         $request->expects($this->any())
                 ->method('getUrlElement')

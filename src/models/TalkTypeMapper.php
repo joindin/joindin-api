@@ -7,10 +7,10 @@ class TalkTypeMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        return array(
-            'title' => 'cat_title',
+        return [
+            'title'       => 'cat_title',
             'description' => 'cat_desc',
-        );
+        ];
     }
 
     /**
@@ -18,15 +18,15 @@ class TalkTypeMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        return array(
-            'title' => 'cat_title',
+        return [
+            'title'       => 'cat_title',
             'description' => 'cat_desc',
-        );
+        ];
     }
 
     /**
-     * @param int $resultsperpage
-     * @param int $start
+     * @param int  $resultsperpage
+     * @param int  $start
      * @param bool $verbose
      *
      * @return false|array
@@ -37,45 +37,47 @@ class TalkTypeMapper extends ApiMapper
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
+
         return false;
     }
 
     /**
-     * @param int $talkType_id
+     * @param int  $talkType_id
      * @param bool $verbose
      *
      * @return false|array
      */
     public function getTalkTypeById($talkType_id, $verbose)
     {
-        $results = $this->getTalkTypes(1, 0, array('ID' => (int) $talkType_id));
+        $results = $this->getTalkTypes(1, 0, ['ID' => (int) $talkType_id]);
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
+
         return false;
     }
 
     /**
-     * @param int $resultsperpage
-     * @param int $start
+     * @param int   $resultsperpage
+     * @param int   $start
      * @param array $params
      *
      * @return false|array
      */
-    protected function getTalkTypes($resultsperpage, $start, $params = array())
+    protected function getTalkTypes($resultsperpage, $start, $params = [])
     {
-        $sql = 'select c.ID, c.cat_title, c.cat_desc ' .
+        $sql = 'select c.ID, c.cat_title, c.cat_desc '.
                'from categories as c ';
 
         if (count($params) > 0) {
             $value = reset($params);
             $key = key($params);
 
-            $sql .= 'where c.' . $key . ' = :' . $key . ' ';
+            $sql .= 'where c.'.$key.' = :'.$key.' ';
 
             if (count($params) > 1) {
                 foreach ($params as $key => $value) {
-                    $sql .= 'and c.' . $key . ' = :' . $key . ' ';
+                    $sql .= 'and c.'.$key.' = :'.$key.' ';
                 }
             }
         }
@@ -91,11 +93,12 @@ class TalkTypeMapper extends ApiMapper
 
             return $results;
         }
+
         return false;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function transformResults(array $results, $verbose)
     {
@@ -109,29 +112,29 @@ class TalkTypeMapper extends ApiMapper
 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                $list[$key]['uri'] = $base . '/' . $version . '/talk_types/' . $row['ID'];
-                $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_types/' . $row['ID'] . '?verbose=yes';
+                $list[$key]['uri'] = $base.'/'.$version.'/talk_types/'.$row['ID'];
+                $list[$key]['verbose_uri'] = $base.'/'.$version.'/talk_types/'.$row['ID'].'?verbose=yes';
             }
         }
 
-        return array(
+        return [
             'talk_types' => $list,
-            'meta'      => $this->getPaginationLinks($list, $total)
-        );
+            'meta'       => $this->getPaginationLinks($list, $total),
+        ];
     }
 
     /**
-     * Return a list of title against talk type ID
+     * Return a list of title against talk type ID.
      *
      * @return array
      */
     public function getTalkTypesLookupList()
     {
-        $sql = "select ID, cat_title from categories";
+        $sql = 'select ID, cat_title from categories';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute();
 
-        $list = array();
+        $list = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $lang) {
             $list[$lang['cat_title']] = $lang['ID'];
         }

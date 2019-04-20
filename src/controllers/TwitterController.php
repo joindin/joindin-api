@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Twitter-specific endpoints live here
+ * Twitter-specific endpoints live here.
  */
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 
@@ -12,11 +11,11 @@ class TwitterController extends BaseApiController
     public function getRequestToken(Request $request, PDO $db)
     {
         // only trusted clients can change account details
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId = $request->getParameter('client_id');
+        $clientSecret = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
-        if (! $this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
-            throw new Exception("This client cannot perform this action", 403);
+        if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
+            throw new Exception('This client cannot perform this action', 403);
         }
 
         $stack = \GuzzleHttp\HandlerStack::create();
@@ -29,8 +28,8 @@ class TwitterController extends BaseApiController
         // API call to twitter, get request token
         $client = new Client([
             'base_uri' => 'https://api.twitter.com/',
-            'auth' => 'oauth',
-            'handler' => $stack
+            'auth'     => 'oauth',
+            'handler'  => $stack,
         ]);
 
         $res = $client->post('oauth/request_token');
@@ -39,7 +38,7 @@ class TwitterController extends BaseApiController
 
             $requestTokenMapper = new TwitterRequestTokenMapper($db);
             // $tokens is instance of TwitterRequestTokenModelCollection
-            $tokens      = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
+            $tokens = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
             $output_list = $tokens->getOutputView($request);
             $request->getView()->setHeader('Location', $output_list['twitter_request_tokens'][0]['uri']);
             $request->getView()->setResponseCode(201);
@@ -47,35 +46,36 @@ class TwitterController extends BaseApiController
             return $output_list;
         }
 
-        throw new Exception("Twitter: no request token (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);
+        throw new Exception('Twitter: no request token ('.$res->getStatusCode().': '.$res->getBody().')', 500);
     }
 
     /**
      * Take the verification token from the client, send to twitter to get an access token,
      * this includes the user's screen name.  From that, look up who they are, create them a
-     * new access token and return the same format as we do when logging in a user
+     * new access token and return the same format as we do when logging in a user.
      *
      * @param Request $request
-     * @param PDO $db
+     * @param PDO     $db
      *
      * @throws Exception
+     *
      * @return array
      */
     public function logUserIn(Request $request, PDO $db)
     {
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId = $request->getParameter('client_id');
+        $clientSecret = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
-        if (! $this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
-            throw new Exception("This client cannot perform this action", 403);
+        if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
+            throw new Exception('This client cannot perform this action', 403);
         }
 
         // check incoming values
-        if (empty($request_token = $request->getParameter("token"))) {
-            throw new Exception("The request token must be supplied");
+        if (empty($request_token = $request->getParameter('token'))) {
+            throw new Exception('The request token must be supplied');
         }
-        if (empty($verifier = $request->getParameter("verifier"))) {
-            throw new Exception("The verifier code must be supplied");
+        if (empty($verifier = $request->getParameter('verifier'))) {
+            throw new Exception('The verifier code must be supplied');
         }
 
         // exchange request token for access token
@@ -88,8 +88,8 @@ class TwitterController extends BaseApiController
         $stack->push($oauth);
         $client = new Client([
             'base_uri' => 'https://api.twitter.com/',
-            'auth' => 'oauth',
-            'handler' => $stack
+            'auth'     => 'oauth',
+            'handler'  => $stack,
         ]);
 
         $res = $client->post('oauth/access_token', ['form_params' => ['oauth_verifier' => $verifier]]);
@@ -101,7 +101,7 @@ class TwitterController extends BaseApiController
             $twitterUsername = $data['screen_name'];
 
             $result = $this->oauthModel->createAccessTokenFromTwitterUsername($clientId, $twitterUsername);
-            if (! $result) {
+            if (!$result) {
                 // try to create the user.
                 $stack1 = \GuzzleHttp\HandlerStack::create();
                 $oauth1 = new Oauth1([
@@ -113,8 +113,8 @@ class TwitterController extends BaseApiController
                 $stack1->push($oauth1);
                 $client1 = new Client([
                     'base_uri' => 'https://api.twitter.com/',
-                    'auth' => 'oauth',
-                    'handler' => $stack1
+                    'auth'     => 'oauth',
+                    'handler'  => $stack1,
                 ]);
 
                 try {
@@ -128,17 +128,17 @@ class TwitterController extends BaseApiController
                 }
             }
 
-            if (! $result) {
-                throw new Exception("Could not sign in with Twitter", 403);
+            if (!$result) {
+                throw new Exception('Could not sign in with Twitter', 403);
             }
 
-                // clean up request token data
+            // clean up request token data
             $requestTokenMapper = new TwitterRequestTokenMapper($db);
             $requestTokenMapper->delete($request_token);
 
-            return array('access_token' => $result['access_token'], 'user_uri' => $result['user_uri']);
+            return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
         }
 
-        throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);
+        throw new Exception('Twitter: error ('.$res->getStatusCode().': '.$res->getBody().')', 500);
     }
 }

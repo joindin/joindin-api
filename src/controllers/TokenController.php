@@ -13,8 +13,8 @@ class TokenController extends BaseApiController
         // password for an access token. This is used by web2.
 
         $grantType = $request->getParameter('grant_type');
-        $username  = $request->getParameter('username');
-        $password  = $request->getParameter('password');
+        $username = $request->getParameter('username');
+        $password = $request->getParameter('password');
 
         // all fields are required or this makes no sense
         if (empty($grantType)) {
@@ -28,10 +28,10 @@ class TokenController extends BaseApiController
         if ($grantType == 'password') {
             // authenticate the user for web2
 
-            $clientId     = $request->getParameter('client_id');
+            $clientId = $request->getParameter('client_id');
             $clientSecret = $request->getParameter('client_secret');
-            if (! $this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
-                throw new Exception("This client cannot authenticate using the password grant type", 403);
+            if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
+                throw new Exception('This client cannot authenticate using the password grant type', 403);
             }
 
             // expire any old tokens
@@ -42,32 +42,32 @@ class TokenController extends BaseApiController
             // generate a temporary access token and then redirect back to the callback
             $username = $request->getParameter('username');
             $password = $request->getParameter('password');
-            $result   = $this->oauthModel->createAccessTokenFromPassword(
+            $result = $this->oauthModel->createAccessTokenFromPassword(
                 $clientId,
                 $username,
                 $password
             );
 
             if ($result) {
-                return array('access_token' => $result['access_token'], 'user_uri' => $result['user_uri']);
+                return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
             }
 
-            throw new Exception("Signin failed", 403);
+            throw new Exception('Signin failed', 403);
         }
 
-        throw new Exception("Grant type not recognised", 400);
+        throw new Exception('Grant type not recognised', 400);
     }
 
     public function listTokensForUser(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in', 401);
         }
 
         $mapper = $this->getTokenMapper($db, $request);
 
-        if (! $mapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
-            throw new Exception("You can not access the token list with this client", 403);
+        if (!$mapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
+            throw new Exception('You can not access the token list with this client', 403);
         }
 
         $tokens = $mapper->getRevokableTokensForUser(
@@ -81,14 +81,14 @@ class TokenController extends BaseApiController
 
     public function getToken(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in', 401);
         }
 
         $mapper = $this->getTokenMapper($db, $request);
 
-        if (! $mapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
-            throw new Exception("You can not access the token list with this client", 403);
+        if (!$mapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
+            throw new Exception('You can not access the token list with this client', 403);
         }
 
         $tokens = $mapper->getTokenByIdAndUser(
@@ -101,14 +101,14 @@ class TokenController extends BaseApiController
 
     public function revokeToken(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in', 401);
         }
 
         $tokenMapper = $this->getTokenMapper($db, $request);
 
-        if (! $tokenMapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
-            throw new Exception("You can not access the token list with this client", 403);
+        if (!$tokenMapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
+            throw new Exception('You can not access the token list with this client', 403);
         }
 
         $token = $tokenMapper->getRevokableTokenByIdAndUser(
@@ -116,7 +116,7 @@ class TokenController extends BaseApiController
             $request->user_id
         );
 
-        if (! $token->getTokens()) {
+        if (!$token->getTokens()) {
             throw new Exception('No tokens found', 404);
         }
 
@@ -130,13 +130,13 @@ class TokenController extends BaseApiController
         $request->getView()->setResponseCode(204);
         $request->getView()->setHeader(
             'Location',
-            $request->base . '/' . $request->version . '/token'
+            $request->base.'/'.$request->version.'/token'
         );
     }
 
     private function getTokenMapper(PDO $db, Request $request)
     {
-        if (! $this->tokenMapper) {
+        if (!$this->tokenMapper) {
             $this->tokenMapper = new TokenMapper($db, $request);
         }
 

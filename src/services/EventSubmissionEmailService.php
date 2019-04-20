@@ -6,9 +6,9 @@ class EventSubmissionEmailService extends BaseEmailService
     protected $comment;
 
     /**
-     * @param array $config
-     * @param array $recipients
-     * @param array $event
+     * @param array    $config
+     * @param array    $recipients
+     * @param array    $event
      * @param int|null $count
      */
     public function __construct(array $config, array $recipients, array $event, $count = null)
@@ -29,21 +29,21 @@ class EventSubmissionEmailService extends BaseEmailService
 
         $date = new DateTime($this->event['start_date']);
 
-        $replacements = array(
-            "title"        => $this->event['name'],
-            "description"  => $this->event['description'],
-            "date"         => $date->format('jS M, Y'),
-            "contact_name" => $this->event['contact_name'],
-            "website_url"  => $this->website_url,
-        );
+        $replacements = [
+            'title'        => $this->event['name'],
+            'description'  => $this->event['description'],
+            'date'         => $date->format('jS M, Y'),
+            'contact_name' => $this->event['contact_name'],
+            'website_url'  => $this->website_url,
+        ];
 
         if ($this->count) {
-            $replacements["count"] = "(" . $this->count . " events are pending)";
+            $replacements['count'] = '('.$this->count.' events are pending)';
         } else {
-            $replacements["count"] = "";
+            $replacements['count'] = '';
         }
 
-        $messageBody = $this->parseEmail("eventSubmission.md", $replacements);
+        $messageBody = $this->parseEmail('eventSubmission.md', $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);
 
         $this->setBody($this->htmlToPlainText($messageHTML));

@@ -10,7 +10,7 @@ class ContainerFactory
     private static $container;
 
     /**
-     * Builds a Psr11 compatible container
+     * Builds a Psr11 compatible container.
      *
      * @param array $config
      * @param bool  $rebuild
@@ -56,7 +56,7 @@ class ContainerFactory
                 return new DefaultController($config);
             });
 
-            $container[EmailsController::class]  = $container->factory(function ($c) use ($config) {
+            $container[EmailsController::class] = $container->factory(function ($c) use ($config) {
                 return new EmailsController($config);
             });
 

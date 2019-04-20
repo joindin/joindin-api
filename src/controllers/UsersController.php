@@ -2,7 +2,6 @@
 
 class UsersController extends BaseApiController
 {
-
     protected $user_mapper;
 
     private $user_registration_email_service;
@@ -15,26 +14,30 @@ class UsersController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start          = $this->getStart($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'talks':
                     $talk_mapper = new TalkMapper($db, $request);
-                    $talks       = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start);
+                    $talks = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start);
+
                     return $talks->getOutputView($request, $verbose);
 
                 case 'hosted':
                     $event_mapper = new EventMapper($db, $request);
+
                     return $event_mapper->getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose);
 
                 case 'attended':
                     $event_mapper = new EventMapper($db, $request);
+
                     return $event_mapper->getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose);
 
                 case 'talk_comments':
                     $talkComment_mapper = new TalkCommentMapper($db, $request);
+
                     return $talkComment_mapper->getCommentsByUserId(
                         $user_id,
                         $resultsperpage,
@@ -54,6 +57,7 @@ class UsersController extends BaseApiController
             if (count($list['users']) == 0) {
                 throw new Exception('User not found', 404);
             }
+
             return $list;
         }
 
@@ -67,6 +71,7 @@ class UsersController extends BaseApiController
             if ($list === false) {
                 throw new Exception('Username not found', 404);
             }
+
             return $list;
         }
 
@@ -76,6 +81,7 @@ class UsersController extends BaseApiController
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
+
             return $mapper->getUserByKeyword($keyword, $resultsperpage, $start, $verbose);
         }
 
@@ -89,18 +95,19 @@ class UsersController extends BaseApiController
             switch ($request->url_elements[3]) {
                 case 'verifications':
                     $user_mapper = new UserMapper($db, $request);
-                    $token       = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
+                    $token = filter_var($request->getParameter('token'), FILTER_SANITIZE_STRING);
                     if (empty($token)) {
-                        throw new Exception("Verification token must be supplied", 400);
+                        throw new Exception('Verification token must be supplied', 400);
                     } else {
                         $success = $user_mapper->verifyUser($token);
                         if ($success) {
                             $view = $request->getView();
                             $view->setHeader('Content-Length', 0);
                             $view->setResponseCode(204);
+
                             return;
                         } else {
-                            throw new Exception("Verification failed", 400);
+                            throw new Exception('Verification failed', 400);
                         }
                     }
                     break;
@@ -109,14 +116,14 @@ class UsersController extends BaseApiController
                     break;
             }
         } else {
-            $user   = array();
-            $errors = array();
+            $user = [];
+            $errors = [];
 
             $user_mapper = $this->getUserMapper($db, $request);
 
             // Required Fields
             $user['username'] = filter_var(
-                trim($request->getParameter("username")),
+                trim($request->getParameter('username')),
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
@@ -126,12 +133,12 @@ class UsersController extends BaseApiController
                 // does anyone else have this username?
                 $existing_user = $user_mapper->getUserByUsername($user['username']);
                 if ($existing_user['users']) {
-                    $errors[] = "That username is already in use. Choose another";
+                    $errors[] = 'That username is already in use. Choose another';
                 }
             }
 
             $user['full_name'] = filter_var(
-                trim($request->getParameter("full_name")),
+                trim($request->getParameter('full_name')),
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
@@ -140,7 +147,7 @@ class UsersController extends BaseApiController
             }
 
             $user['email'] = filter_var(
-                trim($request->getParameter("email")),
+                trim($request->getParameter('email')),
                 FILTER_VALIDATE_EMAIL,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
@@ -150,11 +157,11 @@ class UsersController extends BaseApiController
                 // does anyone else have this email?
                 $existing_user = $user_mapper->getUserByEmail($user['email']);
                 if ($existing_user['users']) {
-                    $errors[] = "That email is already associated with another account";
+                    $errors[] = 'That email is already associated with another account';
                 }
             }
 
-            $password = $request->getParameter("password");
+            $password = $request->getParameter('password');
             if (empty($password)) {
                 $errors[] = "'password' is a required field";
             } else {
@@ -171,30 +178,30 @@ class UsersController extends BaseApiController
 
             // Optional Fields
             $user['twitter_username'] = filter_var(
-                trim($request->getParameter("twitter_username")),
+                trim($request->getParameter('twitter_username')),
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
             $user['biography'] = filter_var(
-                trim($request->getParameter("biography")),
+                trim($request->getParameter('biography')),
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
 
             // How does it look?  With no errors, we can proceed
             if ($errors) {
-                throw new Exception(implode(". ", $errors), 400);
+                throw new Exception(implode('. ', $errors), 400);
             } else {
                 $user_id = $user_mapper->createUser($user);
                 $view = $request->getView();
-                $view->setHeader('Location', $request->base . $request->path_info . '/' . $user_id);
+                $view->setHeader('Location', $request->base.$request->path_info.'/'.$user_id);
                 $view->setResponseCode(201);
 
                 // autoverify for test platforms
                 if (isset($this->config['features']['allow_auto_verify_users'])
                     && $this->config['features']['allow_auto_verify_users']
                 ) {
-                    if ($request->getParameter("auto_verify_user") == "true") {
+                    if ($request->getParameter('auto_verify_user') == 'true') {
                         // the test suite sends this extra field, if we got
                         // this far then this platform supports this
                         $user_mapper->verifyThisTestUser($user_id);
@@ -204,7 +211,7 @@ class UsersController extends BaseApiController
                 // Generate a verification token and email it to the user
                 $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
 
-                $recipients   = array($user['email']);
+                $recipients = [$user['email']];
                 $emailService = $this->getUserRegistrationEmailService($this->config, $recipients, $token);
                 $emailService->sendEmail();
 
@@ -214,39 +221,40 @@ class UsersController extends BaseApiController
     }
 
     /**
-     * Allow a user to edit their own record
+     * Allow a user to edit their own record.
      *
      * @param Request $request the request.
      * @param PDO     $db      the database.
      *
      * @throws Exception
+     *
      * @return void
      */
     public function updateUser(Request $request, PDO $db)
     {
         if (false == ($request->getUserId())) {
-            throw new Exception("You must be logged in to change a user account", 401);
+            throw new Exception('You must be logged in to change a user account', 401);
         }
 
         $userId = $this->getItemId($request);
 
         $user_mapper = $this->getUserMapper($db, $request);
         if ($user_mapper->thisUserHasAdminOn($userId)) {
-            $oauthModel  = $request->getOauthModel($db);
+            $oauthModel = $request->getOauthModel($db);
             $accessToken = $request->getAccessToken();
 
             // only trusted clients can change account details
-            if (! $oauthModel->isAccessTokenPermittedPasswordGrant($accessToken)) {
-                throw new Exception("This client does not have permission to perform this operation", 403);
+            if (!$oauthModel->isAccessTokenPermittedPasswordGrant($accessToken)) {
+                throw new Exception('This client does not have permission to perform this operation', 403);
             }
 
             // start building up a representation of the user
-            $user   = array("user_id" => $userId);
-            $errors = array();
+            $user = ['user_id' => $userId];
+            $errors = [];
 
             // start with passwords
             $password = $request->getParameter('password');
-            if (! empty($password)) {
+            if (!empty($password)) {
                 // they must supply their old password to be allowed to set a new one
                 $old_password = $request->getParameter('old_password');
                 if (empty($old_password)) {
@@ -254,8 +262,8 @@ class UsersController extends BaseApiController
                 }
 
                 // is the old password correct before we proceed?
-                if (! $oauthModel->reverifyUserPassword($userId, $old_password)) {
-                    throw new Exception("The credentials could not be verified", 403);
+                if (!$oauthModel->reverifyUserPassword($userId, $old_password)) {
+                    throw new Exception('The credentials could not be verified', 403);
                 }
 
                 $validity = $user_mapper->checkPasswordValidity($password);
@@ -269,7 +277,7 @@ class UsersController extends BaseApiController
             }
 
             $user['full_name'] = filter_var(
-                trim($request->getParameter("full_name")),
+                trim($request->getParameter('full_name')),
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
@@ -278,7 +286,7 @@ class UsersController extends BaseApiController
             }
 
             $user['email'] = filter_var(
-                trim($request->getParameter("email")),
+                trim($request->getParameter('email')),
                 FILTER_VALIDATE_EMAIL,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
@@ -292,12 +300,12 @@ class UsersController extends BaseApiController
                     $old_user = $user_mapper->getUserById($userId);
                     if ($old_user['users'][0]['uri'] != $existing_user['users'][0]['uri']) {
                         // the email address exists and not on this user's account
-                        $errors[] = "That email is already associated with another account";
+                        $errors[] = 'That email is already associated with another account';
                     }
                 }
             }
 
-            $username = $request->getParameter("username", false);
+            $username = $request->getParameter('username', false);
             if (false !== $username) {
                 $user['username'] = filter_var(
                     trim($username),
@@ -311,13 +319,13 @@ class UsersController extends BaseApiController
                     $old_user = $user_mapper->getUserById($userId);
                     if ($old_user['users'][0]['uri'] != $existing_user['users'][0]['uri']) {
                         // the username exists and not on this user's account
-                        $errors[] = "That username is already associated with another account";
+                        $errors[] = 'That username is already associated with another account';
                     }
                 }
             }
 
             // Optional Fields
-            $twitter_username = $request->getParameter("twitter_username", false);
+            $twitter_username = $request->getParameter('twitter_username', false);
             if (false !== $twitter_username) {
                 $user['twitter_username'] = filter_var(
                     trim($twitter_username),
@@ -325,7 +333,7 @@ class UsersController extends BaseApiController
                     FILTER_FLAG_NO_ENCODE_QUOTES
                 );
             }
-            $biography = $request->getParameter("biography", false);
+            $biography = $request->getParameter('biography', false);
             if (false !== $biography) {
                 $user['biography'] = filter_var(
                     trim($biography),
@@ -335,37 +343,39 @@ class UsersController extends BaseApiController
             }
 
             if ($errors) {
-                throw new Exception(implode(". ", $errors), 400);
+                throw new Exception(implode('. ', $errors), 400);
             } else {
                 // now update the user
-                if (! $user_mapper->editUser($user, $userId)) {
-                    throw new Exception("User not updated", 400);
+                if (!$user_mapper->editUser($user, $userId)) {
+                    throw new Exception('User not updated', 400);
                 }
 
                 // we're good!
                 $view = $request->getView();
                 $view->setHeader('Content-Length', 0);
                 $view->setResponseCode(204);
+
                 return;
             }
         }
-        throw new Exception("Could not update user", 400);
+
+        throw new Exception('Could not update user', 400);
     }
 
     public function passwordReset(Request $request, PDO $db)
     {
-        $token = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
+        $token = filter_var($request->getParameter('token'), FILTER_SANITIZE_STRING);
         if (empty($token)) {
-            throw new Exception("Reset token must be supplied", 400);
+            throw new Exception('Reset token must be supplied', 400);
         }
 
-        $password = $request->getParameter("password");
+        $password = $request->getParameter('password');
         if (empty($password)) {
-            throw new Exception("New password must be supplied", 400);
+            throw new Exception('New password must be supplied', 400);
         }
         // now check the password complies with our rules
         $user_mapper = new UserMapper($db, $request);
-        $validity    = $user_mapper->checkPasswordValidity($password);
+        $validity = $user_mapper->checkPasswordValidity($password);
         if (true === $validity) {
             // OK, go ahead
             $success = $user_mapper->resetPassword($token, $password);
@@ -373,20 +383,21 @@ class UsersController extends BaseApiController
                 $view = $request->getView();
                 $view->setHeader('Content-Length', 0);
                 $view->setResponseCode(204);
+
                 return;
             } else {
-                throw new Exception("Password could not be reset", 400);
+                throw new Exception('Password could not be reset', 400);
             }
         } else {
             // the password wasn't acceptable, tell the user why
-            throw new Exception(implode(". ", $validity), 400);
+            throw new Exception(implode('. ', $validity), 400);
         }
     }
 
     public function deleteUser(Request $request, PDO $db)
     {
-        if (! isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 401);
+        if (!isset($request->user_id)) {
+            throw new Exception('You must be logged in to delete data', 401);
         }
         // delete the user
         $user_id = $this->getItemId($request);
@@ -394,12 +405,12 @@ class UsersController extends BaseApiController
         $user_mapper = $this->getUserMapper($db, $request);
 
         $is_admin = $user_mapper->isSiteAdmin($user_id);
-        if (! $is_admin) {
-            throw new Exception("You do not have permission to do that", 403);
+        if (!$is_admin) {
+            throw new Exception('You do not have permission to do that', 403);
         }
 
-        if (! $user_mapper->delete($user_id)) {
-            throw new Exception("There was a problem trying to delete the user", 400);
+        if (!$user_mapper->delete($user_id)) {
+            throw new Exception('There was a problem trying to delete the user', 400);
         }
 
         $view = $request->getView();
@@ -408,7 +419,7 @@ class UsersController extends BaseApiController
     }
 
     /**
-     * Allow users to be set as trusted
+     * Allow users to be set as trusted.
      *
      * @param $request Request
      * @param $db      PDO
@@ -418,7 +429,7 @@ class UsersController extends BaseApiController
     public function setTrusted(Request $request, PDO $db)
     {
         if (false == ($request->getUserId())) {
-            throw new Exception("You must be logged in to change a user account", 401);
+            throw new Exception('You must be logged in to change a user account', 401);
         }
 
         $user_mapper = $this->getUserMapper($db, $request);
@@ -427,12 +438,12 @@ class UsersController extends BaseApiController
         }
 
         $userId = $this->getItemId($request);
-        if (!is_bool($trustedStatus = $request->getParameter("trusted", null))) {
-            throw new Exception("You must provide a trusted state", 400);
+        if (!is_bool($trustedStatus = $request->getParameter('trusted', null))) {
+            throw new Exception('You must provide a trusted state', 400);
         }
 
         if (!$user_mapper->setTrustedStatus($trustedStatus, $userId)) {
-            throw new Exception("Unable to update status", 500);
+            throw new Exception('Unable to update status', 500);
         }
         $view = $request->getView();
         $view->setHeader('Content-Length', 0);
@@ -446,7 +457,7 @@ class UsersController extends BaseApiController
 
     public function getUserMapper(PDO $db, Request $request)
     {
-        if (! $this->user_mapper) {
+        if (!$this->user_mapper) {
             $this->user_mapper = new UserMapper($db, $request);
         }
 
@@ -460,7 +471,7 @@ class UsersController extends BaseApiController
 
     public function getUserRegistrationEmailService($config, $recipient, $token)
     {
-        if (! $this->user_registration_email_service) {
+        if (!$this->user_registration_email_service) {
             $this->user_registration_email_service = new UserRegistrationEmailService(
                 $config,
                 $recipient,

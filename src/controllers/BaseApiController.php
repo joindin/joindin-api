@@ -13,7 +13,7 @@ abstract class BaseApiController
     public function getItemId(Request $request)
     {
         // item ID
-        if (! empty($request->url_elements[3])
+        if (!empty($request->url_elements[3])
             && is_numeric($request->url_elements[3])
         ) {
             return (int) $request->url_elements[3];
@@ -24,7 +24,7 @@ abstract class BaseApiController
 
     public function getVerbosity(Request $request)
     {
-        if (! isset($request->parameters['verbose'])) {
+        if (!isset($request->parameters['verbose'])) {
             return false;
         }
 

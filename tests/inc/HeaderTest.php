@@ -3,20 +3,17 @@
  * HeaderTest.php
  * User: adear
  * Date: 9/14/14
- * Time: 12:24 PM
- *
- *
+ * Time: 12:24 PM.
  */
 
 namespace JoindinTest\Inc;
 
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/../../src/inc/Header.php';
+require_once __DIR__.'/../../src/inc/Header.php';
 
 class HeaderTest extends TestCase
 {
-
     public function testParseParamsWithEmbededSeparator()
     {
         $headerStr = 'For=10.0.0.1,For=10.0.0.2;user-agent="test;test;test;test";For=10.0.0.3';
@@ -25,6 +22,7 @@ class HeaderTest extends TestCase
         $header->parseParams();
         $this->assertEquals(3, $header->count());
     }
+
     public function testParseParamsWithTwoGlues()
     {
         $headerStr = 'For=10.0.0.1,For=10.0.0.2;user-agent="test;test;test;test";For=10.0.0.3;user-agent="secondLevel;some date"';
@@ -35,6 +33,7 @@ class HeaderTest extends TestCase
         $header->parseParams();
         $this->assertEquals(5, $header->count());
     }
+
     public function testBuildEntityArray()
     {
         $headerStr = 'For=10.0.0.1;user-agent="test;test;test;test";For=10.0.0.2;user-agent="secondLevel;
@@ -48,6 +47,7 @@ class HeaderTest extends TestCase
         $this->assertEquals(3, count($entityArray['For']));
         $this->assertEquals(3, count($entityArray['User-agent']));
     }
+
     public function testBuildEntityArrayWithValueOnly()
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';

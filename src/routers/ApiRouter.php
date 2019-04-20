@@ -1,11 +1,10 @@
 <?php
 
 /**
- * The main API Router; acts as the version selector
+ * The main API Router; acts as the version selector.
  */
 class ApiRouter extends BaseRouter
 {
-
     /**
      * @var array The configuration for this Router
      */
@@ -27,9 +26,9 @@ class ApiRouter extends BaseRouter
     private $latestVersion;
 
     /**
-     * Constructs a new Router
+     * Constructs a new Router.
      *
-     * @param array $config The application configuration
+     * @param array $config  The application configuration
      * @param array $routers
      * @param $oldVersions
      */
@@ -41,7 +40,7 @@ class ApiRouter extends BaseRouter
     }
 
     /**
-     * Sets the list of Router classes this ApiRouter uses
+     * Sets the list of Router classes this ApiRouter uses.
      *
      * @param array $routers A list of Routers indexed by version
      */
@@ -50,11 +49,11 @@ class ApiRouter extends BaseRouter
         $k = array_keys($routers);
         rsort($k);
         $this->latestVersion = current($k);
-        $this->routers       = $routers;
+        $this->routers = $routers;
     }
 
     /**
-     * Gets the list of Router classes this ApiRouter uses
+     * Gets the list of Router classes this ApiRouter uses.
      *
      * @return array
      */
@@ -69,7 +68,7 @@ class ApiRouter extends BaseRouter
     public function getRoute(Request $request)
     {
         $version = $request->getUrlElement(1);
-        if (! $version) {
+        if (!$version) {
             // empty version, set request to use the latest
             $request->version = $this->latestVersion;
         } else {
@@ -77,8 +76,8 @@ class ApiRouter extends BaseRouter
         }
 
         // now route on the original $version
-        if (isset($this->routers[ $version ])) {
-            $router = $this->routers[ $version ];
+        if (isset($this->routers[$version])) {
+            $router = $this->routers[$version];
 
             return $router->getRoute($request);
         }

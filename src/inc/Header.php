@@ -17,23 +17,23 @@
  */
 
 /**
- * Represents a header and all of the values stored by that header
+ * Represents a header and all of the values stored by that header.
  */
 class Header
 {
-    protected $values = array();
+    protected $values = [];
     protected $header;
     protected $glue;
 
     /**
-     * @param string $header Name of the header
+     * @param string       $header Name of the header
      * @param array|string $values Values of the header as an array or a scalar
-     * @param string $glue Glue used to combine multiple values into a string
+     * @param string       $glue   Glue used to combine multiple values into a string
      */
-    public function __construct($header, $values = array(), $glue = ',')
+    public function __construct($header, $values = [], $glue = ',')
     {
         $this->header = trim($header);
-        $this->glue   = $glue;
+        $this->glue = $glue;
 
         foreach ((array) $values as $value) {
             foreach ((array) $value as $v) {
@@ -44,7 +44,7 @@ class Header
 
     public function __toString()
     {
-        return implode($this->glue . ' ', $this->toArray());
+        return implode($this->glue.' ', $this->toArray());
     }
 
     public function getName()
@@ -83,10 +83,10 @@ class Header
     {
         $values = $this->toArray();
 
-        for ($i = 0, $total = count($values); $i < $total; $i ++) {
+        for ($i = 0, $total = count($values); $i < $total; $i++) {
             if (strpos($values[$i], $this->glue) !== false) {
                 // Explode on glue when the glue is not inside of a comma
-                foreach (preg_split('/' . preg_quote($this->glue) . '(?=([^"]*"[^"]*")*[^"]*$)/', $values[$i]) as $v) {
+                foreach (preg_split('/'.preg_quote($this->glue).'(?=([^"]*"[^"]*")*[^"]*$)/', $values[$i]) as $v) {
                     $values[] = trim($v);
                 }
                 unset($values[$i]);
@@ -134,21 +134,21 @@ class Header
 
     public function buildEntityArray()
     {
-        $assocArray = array();
+        $assocArray = [];
         foreach ($this->values as $value) {
             $parts = explode('=', $value);
-            $key   = ucwords($parts[0]);
+            $key = ucwords($parts[0]);
             if (count($parts) == 1) {
                 if (array_key_exists(0, $assocArray)) {
                     $assocArray[0][] = $parts[0];
                 } else {
-                    $assocArray[0]   = array();
+                    $assocArray[0] = [];
                     $assocArray[0][] = $parts[0];
                 }
             } elseif (array_key_exists($key, $assocArray)) {
                 $assocArray[$key][] = $parts[1];
             } else {
-                $assocArray[$key]   = array();
+                $assocArray[$key] = [];
                 $assocArray[$key][] = $parts[1];
             }
         }
@@ -158,17 +158,17 @@ class Header
 
     public function parseParams()
     {
-        $params   = $matches = array();
-        $callback = array($this, 'trimHeader');
+        $params = $matches = [];
+        $callback = [$this, 'trimHeader'];
 
         // Normalize the header into a single array and iterate over all values
         foreach ($this->normalize()->toArray() as $val) {
-            $part = array();
+            $part = [];
             foreach (preg_split('/;(?=([^"]*"[^"]*")*[^"]*$)/', $val) as $kvp) {
-                if (! preg_match_all('/<[^>]+>|[^=]+/', $kvp, $matches)) {
+                if (!preg_match_all('/<[^>]+>|[^=]+/', $kvp, $matches)) {
                     continue;
                 }
-                $pieces             = array_map($callback, $matches[0]);
+                $pieces = array_map($callback, $matches[0]);
                 $part[$pieces[0]] = isset($pieces[1]) ? $pieces[1] : '';
             }
             if ($part) {
@@ -180,7 +180,7 @@ class Header
     }
 
     /**
-     * Trim a header by removing excess spaces and wrapping quotes
+     * Trim a header by removing excess spaces and wrapping quotes.
      *
      * @param $str
      *

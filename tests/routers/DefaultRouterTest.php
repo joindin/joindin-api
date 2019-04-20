@@ -2,28 +2,27 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/../../src/inc/Request.php';
+require_once __DIR__.'/../../src/inc/Request.php';
 
 /**
- * A class to test DefaultRouter
+ * A class to test DefaultRouter.
  *
  * @covers DefaultRouter
  */
 class DefaultRouterTest extends TestCase
 {
-
     /**
-     * DataProvider for testGetRoute
+     * DataProvider for testGetRoute.
      *
      * @return array
      */
     public function getRouteProvider()
     {
-        return array(
-            array( // #0
-                'url' => '/v1/test'
-            )
-        );
+        return [
+            [ // #0
+                'url' => '/v1/test',
+            ],
+        ];
     }
 
     /**

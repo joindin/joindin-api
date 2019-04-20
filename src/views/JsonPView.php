@@ -20,6 +20,6 @@ class JsonPView extends JsonView
 
     public function buildOutput($content)
     {
-        return $this->callback . '(' . parent::buildOutput($content) . ');';
+        return $this->callback.'('.parent::buildOutput($content).');';
     }
 }

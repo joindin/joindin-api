@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Contact us end point
+ * Contact us end point.
  */
 class ContactController extends BaseApiController
 {
@@ -39,7 +39,7 @@ class ContactController extends BaseApiController
     }
 
     /**
-     * Send an email to feedback email address
+     * Send an email to feedback email address.
      *
      * Expected fields:
      *  - client_id
@@ -50,24 +50,25 @@ class ContactController extends BaseApiController
      *  - comment
      *
      * @param Request $request
-     * @param PDO $db
+     * @param PDO     $db
      *
      * @throws Exception
+     *
      * @return void
      */
     public function contact(Request $request, PDO $db)
     {
         // only trusted clients can contact us to save on spam
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId = $request->getParameter('client_id');
+        $clientSecret = $request->getParameter('client_secret');
         $oauthModel = $request->getOauthModel($db);
-        if (! $oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
-            throw new Exception("This client cannot perform this action", 403);
+        if (!$oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
+            throw new Exception('This client cannot perform this action', 403);
         }
 
         $fields = ['name', 'email', 'subject', 'comment'];
-        $error  = [];
-        $data   = [];
+        $error = [];
+        $data = [];
         foreach ($fields as $name) {
             $value = $request->getParameter($name);
             if (empty($value)) {
@@ -76,12 +77,13 @@ class ContactController extends BaseApiController
             $data[$name] = $value;
         }
 
-        if (! empty($error)) {
+        if (!empty($error)) {
             $message = 'The field';
             $message .= count($error) == 1 ? ' ' : 's ';
             $message .= implode(', ', $error);
             $message .= count($error) == 1 ? ' is ' : ' are ';
             $message .= 'required.';
+
             throw new Exception($message, 400);
         }
 
@@ -90,7 +92,7 @@ class ContactController extends BaseApiController
             $request->getClientIP(),
             $request->getClientUserAgent()
         )) {
-            throw new Exception("Comment failed spam check", 400);
+            throw new Exception('Comment failed spam check', 400);
         }
 
         $this->emailService->sendEmail($data);

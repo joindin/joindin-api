@@ -1,11 +1,10 @@
 <?php
 
 /**
- * The default API Router
+ * The default API Router.
  */
 class DefaultRouter extends BaseRouter
 {
-
     /**
      * {@inheritdoc}
      */

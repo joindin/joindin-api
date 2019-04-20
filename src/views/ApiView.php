@@ -28,7 +28,7 @@ class ApiView
         if (is_array($content)) {
             foreach ($content as $name => $item) {
                 // count what's in the non-meta element
-                if ($name == "meta") {
+                if ($name == 'meta') {
                     continue;
                 } elseif (is_array($item)) {
                     $content['meta']['count'] = count($item);
@@ -41,7 +41,6 @@ class ApiView
 
     /**
      * @param string $header
-     *
      * @param string $value
      */
     public function setHeader($header, $value)
@@ -80,7 +79,7 @@ class ApiView
             $this->responseCode = http_response_code();
         }
         foreach ($this->headers as $key => $value) {
-            header($key . ': ' . $value, true);
+            header($key.': '.$value, true);
         }
         http_response_code($this->responseCode);
 
@@ -91,6 +90,5 @@ class ApiView
 
     public function buildOutput($content)
     {
-        return null;
     }
 }

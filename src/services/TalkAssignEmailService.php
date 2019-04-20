@@ -2,17 +2,16 @@
 
 class TalkAssignEmailService extends BaseEmailService
 {
-
     protected $event;
     protected $talk;
     protected $website_url;
 
     /**
-     * @param array $config
-     * @param array $recipients
-     * @param array $event
+     * @param array     $config
+     * @param array     $recipients
+     * @param array     $event
      * @param TalkModel $talk
-     * @param string $username
+     * @param string    $username
      */
     public function __construct(array $config, array $recipients, array $event, TalkModel $talk, $username)
     {
@@ -28,16 +27,15 @@ class TalkAssignEmailService extends BaseEmailService
 
     public function sendEmail()
     {
-        $this->setSubject("Joind.in: A talk has been assigned to you");
+        $this->setSubject('Joind.in: A talk has been assigned to you');
 
+        $replacements = [
+            'eventName' => $this->event['name'],
+            'talkTitle' => $this->talk->talk_title,
+            'link'      => $this->linkToEditUserPage(),
+        ];
 
-        $replacements = array(
-            "eventName" => $this->event['name'],
-            "talkTitle" => $this->talk->talk_title,
-            "link"      => $this->linkToEditUserPage()
-        );
-
-        $messageBody = $this->parseEmail("talkAssigned.md", $replacements);
+        $messageBody = $this->parseEmail('talkAssigned.md', $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);
 
         $this->setBody($this->htmlToPlainText($messageHTML));
@@ -51,10 +49,10 @@ class TalkAssignEmailService extends BaseEmailService
      */
     private function linkToEditUserPage()
     {
-        return '[' . $this->website_url
-            . '/user/' . $this->username
-            . '/edit' . '](' . $this->website_url
-            . '/user/' . $this->username
-            . '/claims' . ')';
+        return '['.$this->website_url
+            .'/user/'.$this->username
+            .'/edit'.']('.$this->website_url
+            .'/user/'.$this->username
+            .'/claims'.')';
     }
 }

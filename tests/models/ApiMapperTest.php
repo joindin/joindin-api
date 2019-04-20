@@ -2,15 +2,13 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/TestApiMapper.php';
-/**
- *
- */
+require_once __DIR__.'/TestApiMapper.php';
+
 class ApiMapperTest extends TestCase
 {
     public function setup()
     {
-        $this->pdo     = $this->getMockBuilder('PDO')
+        $this->pdo = $this->getMockBuilder('PDO')
             ->disableOriginalConstructor()
             ->getMock();
         $this->request = $this->getMockBuilder('Request')
@@ -59,27 +57,27 @@ class ApiMapperTest extends TestCase
         return [
             [[
                 ['event_start_date' => '2016-09-19T05:54:18+00:00',
-                'event_tz_place' => null,
-                'event_tz_cont' => null,
-                'name' => null,
+                'event_tz_place'    => null,
+                'event_tz_cont'     => null,
+                'name'              => null,
                 ],
 
-            ],[
+            ], [
                 ['event_start_date' => 1474264458,
-                 'event_tz_place' => null,
-                 'event_tz_cont' => null,
-                ]
+                 'event_tz_place'   => null,
+                 'event_tz_cont'    => null,
+                ],
             ]],
             [[
                 ['event_start_date' => '2016-09-19T07:54:18+02:00',
-                'event_tz_place'   => 'Berlin',
-                'event_tz_cont'    => 'Europe',
-                 'name' => null,
-                ]
-            ],[
+                'event_tz_place'    => 'Berlin',
+                'event_tz_cont'     => 'Europe',
+                 'name'             => null,
+                ],
+            ], [
                 ['event_start_date' => 1474264458,
-                'event_tz_place'   => 'Berlin',
-                'event_tz_cont'    => 'Europe',]
+                'event_tz_place'    => 'Berlin',
+                'event_tz_cont'     => 'Europe', ],
             ]],
         ];
     }
@@ -89,10 +87,10 @@ class ApiMapperTest extends TestCase
         $mapper = new TestApiMapper($this->pdo, $this->request);
 
         $this->assertEquals([
-            'event_tz_place' => 'event_tz_place',
-            'event_tz_cont' => 'event_tz_cont',
+            'event_tz_place'   => 'event_tz_place',
+            'event_tz_cont'    => 'event_tz_cont',
             'event_start_date' => 'event_start_date',
-            'name' => 'name',
+            'name'             => 'name',
         ], $mapper->getDefaultFields());
     }
 
@@ -100,10 +98,9 @@ class ApiMapperTest extends TestCase
     {
         $mapper = new TestApiMapper($this->pdo, $this->request);
 
-
         $this->assertEquals('', $mapper->buildLimit(0, 12));
         $this->assertEquals(' LIMIT 12,1', $mapper->buildLimit(1, 12));
-        $this->assertEquals(' LIMIT 12,1', $mapper->buildLimit("1", "12"));
+        $this->assertEquals(' LIMIT 12,1', $mapper->buildLimit('1', '12'));
     }
 
     /** @dataProvider retrievingTotalCountFromQueryWorksProvider */
@@ -147,21 +144,21 @@ class ApiMapperTest extends TestCase
                 'select * from a LIMIT 12,1',
                 'SELECT count(*) AS count FROM (select * from a ) as counter',
                 [],
-                7
+                7,
             ],
             [
                 'select * from a WHERE x = :foo LIMIT 12,3',
                 'SELECT count(*) AS count FROM (select * from a WHERE x = :foo ) as counter',
                 ['foo' => 12],
-                6
+                6,
             ],
             [
                 'select * from a WHERE x = :foo LIMIT 12,3',
                 'SELECT count(*) AS count FROM (select * from a WHERE x = :foo ) as counter',
                 ['foo' => 12],
                 0,
-                true
-            ]
+                true,
+            ],
         ];
     }
 
@@ -178,7 +175,7 @@ class ApiMapperTest extends TestCase
             ['test', 'test'],
             ['äöüß', ''],
             ['test test', 'test-test'],
-            ['<-.,;:_+*#\'äÄöÖüÜ´`ß)(/&%$§"!>€@', '-']
+            ['<-.,;:_+*#\'äÄöÖüÜ´`ß)(/&%$§"!>€@', '-'],
         ];
     }
 }
