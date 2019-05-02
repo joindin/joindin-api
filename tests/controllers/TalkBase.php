@@ -58,7 +58,7 @@ class TalkBase extends TestCase
 
     protected function createVerboseTalkMapper(mockPDO $db, Request $request)
     {
-        $talk_mapper = $this->getMockBuilder(TalkMapper::Class)
+        $talk_mapper = $this->getMockBuilder(TalkMapper::class)
             ->setConstructorArgs([$db,$request])
             ->getMock();
 
@@ -93,7 +93,7 @@ class TalkBase extends TestCase
 
     protected function createUserMapper(mockPDO $db, Request $request)
     {
-        $user_mapper = $this->getMockBuilder(UserMapper::Class)
+        $user_mapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
