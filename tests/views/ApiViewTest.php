@@ -65,7 +65,7 @@ class ApiViewTest extends TestCase
         ];
 
         if (!function_exists('xdebug_get_headers')) {
-            $this->markTestSkipped('Test must be run with xdebug enabled');
+            $this->markTestSkipped('Test will run when xdebug enabled');
         }
         $this->assertEquals($expectedHeaders, xdebug_get_headers());
     }
@@ -77,7 +77,7 @@ class ApiViewTest extends TestCase
     public function testThatHeadersAreSetViaSetHeaders()
     {
         if (!function_exists('xdebug_get_headers')) {
-            $this->markTestSkipped('Test must be run with xdebug enabled');
+            $this->markTestSkipped('Test will run when xdebug enabled');
         }
 
         $view = new ApiView();
@@ -113,7 +113,7 @@ class ApiViewTest extends TestCase
         $this->assertEquals(201, http_response_code());
 
         if (!function_exists('xdebug_get_headers')) {
-            $this->markTestSkipped('Test must be run with xdebug enabled');
+            $this->markTestSkipped('Test will run when xdebug enabled');
         }
         $this->assertEquals($expectedHeaders, xdebug_get_headers());
     }
