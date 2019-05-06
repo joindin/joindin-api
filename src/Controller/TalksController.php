@@ -210,7 +210,7 @@ class TalksController extends BaseTalkController
         }
     }
 
-    public function deleteTalkStarred(Request $request, PDO $db)
+    public function removeStarFromTalk(Request $request, PDO $db)
     {
         $this->checkLoggedIn($request);
 
