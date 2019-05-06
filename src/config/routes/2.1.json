@@ -201,9 +201,9 @@
         "verbs": ["DELETE"]
     },
     {
-        "path": "/talks/[\\d+]]/starred?",
+        "path": "/talks/[\\d]+/starred/?$",
         "controller": "Joindin\\Api\\Controller\\TalksController",
-        "action": "deleteAction",
+        "action": "deleteTalkStarred",
         "verbs": ["DELETE"]
     },
     {
