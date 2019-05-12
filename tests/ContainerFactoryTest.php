@@ -36,7 +36,7 @@ class ContainerFactoryTest extends TestCase
     }
 
     /**
-     * @covers ContainerFactory::build
+     * @covers \Joindin\Api\ContainerFactory::build
      *
      * @dataProvider dataProvider
      * @param string $service
@@ -48,7 +48,7 @@ class ContainerFactoryTest extends TestCase
     }
 
     /**
-     * @covers ContainerFactory::build
+     * @covers \Joindin\Api\CContainerFactory::build
      *
      * @dataProvider dataProvider
      * @param string $service
@@ -60,7 +60,7 @@ class ContainerFactoryTest extends TestCase
     }
 
     /**
-     * @covers ContainerFactory::build
+     * @covers \Joindin\Api\CContainerFactory::build
      */
     public function testSpamCheckServiceIsNullCheckerWhenDisabled()
     {
