@@ -48,7 +48,7 @@ class ContainerFactoryTest extends TestCase
     }
 
     /**
-     * @covers \Joindin\Api\CContainerFactory::build
+     * @covers \Joindin\Api\ContainerFactory::build
      *
      * @dataProvider dataProvider
      * @param string $service
@@ -60,7 +60,7 @@ class ContainerFactoryTest extends TestCase
     }
 
     /**
-     * @covers \Joindin\Api\CContainerFactory::build
+     * @covers \Joindin\Api\ContainerFactory::build
      */
     public function testSpamCheckServiceIsNullCheckerWhenDisabled()
     {
