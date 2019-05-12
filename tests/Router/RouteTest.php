@@ -58,12 +58,12 @@ class RouteTest extends TestCase
 
     /**
      * @dataProvider getSetProvider
-     * @covers       Route::getController
-     * @covers       Route::setController
-     * @covers       Route::getAction
-     * @covers       Route::setAction
-     * @covers       Route::getParams
-     * @covers       Route::setParams
+     * @covers       \Joindin\Api\Router\Route::getController
+     * @covers       \Joindin\Api\Router\Route::setController
+     * @covers       \Joindin\Api\Router\Route::getAction
+     * @covers       \Joindin\Api\Router\Route::setAction
+     * @covers       \Joindin\Api\Router\Route::getParams
+     * @covers       \Joindin\Api\Router\Route::setParams
      *
      * @param string $controller
      * @param string $action
