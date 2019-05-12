@@ -1,68 +1,68 @@
 
 // Expose the methods outside of this module
 module.exports = {
-	checkEventData              : checkEventData,
-	checkVerboseEventData       : checkVerboseEventData,
-	checkEventCommentData       : checkEventCommentData,
-	checkVerboseEventComment    : checkVerboseEventComment,
-	checkTalkData               : checkTalkData,
-	checkUserData               : checkUserData,
+    checkEventData              : checkEventData,
+    checkVerboseEventData       : checkVerboseEventData,
+    checkEventCommentData       : checkEventCommentData,
+    checkVerboseEventComment    : checkVerboseEventComment,
+    checkTalkData               : checkTalkData,
+    checkUserData               : checkUserData,
     checkHostData               : checkHostData,
-	checkVerboseUserData        : checkVerboseUserData,
-	checkTrackData              : checkTrackData,
-	checkTalkCommentData        : checkTalkCommentData,
-	checkVerboseTalkCommentData : checkVerboseTalkCommentData,
+    checkVerboseUserData        : checkVerboseUserData,
+    checkTrackData              : checkTrackData,
+    checkTalkCommentData        : checkTalkCommentData,
+    checkVerboseTalkCommentData : checkVerboseTalkCommentData,
     checkLanguageData           : checkLanguageData
 }
 
 function checkEventData(ev) {
 
-	if (ev.href != null) {
-		expect(ev.href).toBeDefined();
-		expect(typeof ev.href).toBe('string');
-		if (ev.href != '') {
-		//expect(ev.href).toMatch(/^http/);
-		}
-	}
-	if (ev.icon != null) {
-		expect(ev.icon).toBeDefined();
-		expect(typeof ev.icon).toBe('string');
-	}
+    if (ev.href != null) {
+        expect(ev.href).toBeDefined();
+        expect(typeof ev.href).toBe('string');
+        if (ev.href != '') {
+        //expect(ev.href).toMatch(/^http/);
+        }
+    }
+    if (ev.icon != null) {
+        expect(ev.icon).toBeDefined();
+        expect(typeof ev.icon).toBe('string');
+    }
 
-	// Check required fields
-	expect(ev.name).toBeDefined();
-	expect(ev.start_date).toBeDefined();
-	expect(ev.end_date).toBeDefined();
-	expect(ev.tz_continent).toBeDefined();
-	expect(ev.tz_place).toBeDefined();
-	expect(ev.description).toBeDefined();
-	expect(ev.href).toBeDefined();
-	expect(ev.icon).toBeDefined();
-	expect(ev.attendee_count).toBeDefined();
-	expect(ev.uri).toBeDefined();
-	expect(ev.verbose_uri).toBeDefined();
+    // Check required fields
+    expect(ev.name).toBeDefined();
+    expect(ev.start_date).toBeDefined();
+    expect(ev.end_date).toBeDefined();
+    expect(ev.tz_continent).toBeDefined();
+    expect(ev.tz_place).toBeDefined();
+    expect(ev.description).toBeDefined();
+    expect(ev.href).toBeDefined();
+    expect(ev.icon).toBeDefined();
+    expect(ev.attendee_count).toBeDefined();
+    expect(ev.uri).toBeDefined();
+    expect(ev.verbose_uri).toBeDefined();
         if(typeof ev.average_rating != 'undefined') {
             expect(typeof ev.average_rating).toBe('number');
         }	
-	expect(ev.comments_uri).toBeDefined();
-	expect(ev.talks_uri).toBeDefined();
-	expect(ev.website_uri).toBeDefined();
-	expect(ev.attending_uri).toBeDefined();
-	expect(typeof ev.name).toBe('string');
-	expect(ev.event_comments_count).toBeDefined();
-	expect(ev.talks_count).toBeDefined();
-	expect(ev.tracks_count).toBeDefined();
-	checkDate(ev.start_date);
-	checkDate(ev.end_date);
-	expect(typeof ev.tz_continent).toBe('string');
-	expect(typeof ev.tz_place).toBe('string');
-	expect(typeof ev.description).toBe('string');
-	expect(typeof ev.attendee_count).toBe('number');
-	expect(typeof ev.uri).toBe('string');
-	expect(typeof ev.verbose_uri).toBe('string');
-	expect(typeof ev.comments_uri).toBe('string');
-	expect(typeof ev.talks_uri).toBe('string');
-	expect(typeof ev.website_uri).toBe('string');
+    expect(ev.comments_uri).toBeDefined();
+    expect(ev.talks_uri).toBeDefined();
+    expect(ev.website_uri).toBeDefined();
+    expect(ev.attending_uri).toBeDefined();
+    expect(typeof ev.name).toBe('string');
+    expect(ev.event_comments_count).toBeDefined();
+    expect(ev.talks_count).toBeDefined();
+    expect(ev.tracks_count).toBeDefined();
+    checkDate(ev.start_date);
+    checkDate(ev.end_date);
+    expect(typeof ev.tz_continent).toBe('string');
+    expect(typeof ev.tz_place).toBe('string');
+    expect(typeof ev.description).toBe('string');
+    expect(typeof ev.attendee_count).toBe('number');
+    expect(typeof ev.uri).toBe('string');
+    expect(typeof ev.verbose_uri).toBe('string');
+    expect(typeof ev.comments_uri).toBe('string');
+    expect(typeof ev.talks_uri).toBe('string');
+    expect(typeof ev.website_uri).toBe('string');
 }
 
 function checkVerboseEventData(evt) {
