@@ -26,10 +26,8 @@ class TalkCommentEmailServiceTest extends Testcase
 
     /**
      * Check that we can create the service
-     *
-     * @test
      */
-    public function createService()
+    public function testCreateService()
     {
         $recipients = ["test@joind.in"];
         $talk       = new TalkModel(["talk_title" => "sample talk"]);
@@ -41,10 +39,8 @@ class TalkCommentEmailServiceTest extends Testcase
 
     /**
      * Test email override
-     *
-     * @test
      */
-    public function createServiceWithEmailRedirect()
+    public function testCreateServiceWithEmailRedirect()
     {
         $config                   = $this->config;
         $config["email"]["forward_all_to"] = "blackhole@joind.in";
@@ -58,10 +54,8 @@ class TalkCommentEmailServiceTest extends Testcase
 
     /**
      * Test replacements work into templates
-     *
-     * @test
      */
-    public function templateReplacements()
+    public function testTemplateReplacements()
     {
         $recipients = ["test@joind.in"];
         $talk       = new TalkModel(["talk_title" => "sample talk"]);
@@ -86,10 +80,8 @@ Questions? Comments?  Get in touch: [feedback@joind.in](mailto:feedback@joind.in
 
     /**
      * Should be able to get markdown to HTML
-     *
-     * @test
      */
-    public function markdownTransform()
+    public function testMarkdownTransform()
     {
         $markdown   = "A *sunny* day";
         $recipients = ["test@joind.in"];

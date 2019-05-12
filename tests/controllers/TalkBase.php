@@ -5,45 +5,52 @@ namespace JoindinTest\Controller;
 use EventMapper;
 use JoindinTest\Inc\mockPDO;
 use OAuthModel;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Request;
 use TalkCommentMapper;
 use TalkMapper;
 use TalkModel;
 use UserMapper;
-use PHPUnit\Framework\TestCase;
 
 class TalkBase extends TestCase
 {
-    protected function createTalkMapper(mockPDO $db, Request $request, $expetcedCalls = 1)
+    protected $talk_mapper;
+
+    protected function setUp(): void
+    {
+        $this->talk_mapper = $this
+            ->getMockBuilder(TalkMapper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        parent::setUp();
+    }
+
+    protected function createTalkMapper(mockPDO $db, Request $request, $expectedCalls = 1)
     {
         $talk_mapper = $this->getMockBuilder(TalkMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
         $talk_mapper
-            ->expects($this->exactly($expetcedCalls))
+            ->expects($this->exactly($expectedCalls))
             ->method('getTalkById')
-            ->will(
-                $this->returnValue(
-                    new TalkModel(
-                        [
-                            'talk_title'              => 'talk_title',
-                            'url_friendly_talk_title' => 'url_friendly_talk_title',
-                            'talk_description'        => 'talk_desc',
-                            'type'                    => 'talk_type',
-                            'start_date'              => 'date_given',
-                            'duration'                => 'duration',
-                            'stub'                    => 'stub',
-                            'average_rating'          => 'avg_rating',
-                            'comments_enabled'        => 'comments_enabled',
-                            'comment_count'           => 'comment_count',
-                            'starred'                 => 'starred',
-                            'starred_count'           => 'starred_count',
-                            'event_id'                => 1
-                        ]
-                    )
-                )
+            ->willReturn(
+                new TalkModel([
+                    'talk_title' => 'talk_title',
+                    'url_friendly_talk_title' => 'url_friendly_talk_title',
+                    'talk_description' => 'talk_desc',
+                    'type' => 'talk_type',
+                    'start_date' => 'date_given',
+                    'duration' => 'duration',
+                    'stub' => 'stub',
+                    'average_rating' => 'avg_rating',
+                    'comments_enabled' => 'comments_enabled',
+                    'comment_count' => 'comment_count',
+                    'starred' => 'starred',
+                    'starred_count' => 'starred_count',
+                    'event_id' => 1
+                ])
             );
 
         return $talk_mapper;
@@ -51,38 +58,34 @@ class TalkBase extends TestCase
 
     protected function createVerboseTalkMapper(mockPDO $db, Request $request)
     {
-        $talk_mapper = $this->getMockBuilder(TalkMapper::Class)
+        $talk_mapper = $this->getMockBuilder(TalkMapper::class)
             ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $talk_mapper
             ->expects($this->once())
             ->method('getTalkById')
-            ->will(
-                $this->returnValue(
-                    new TalkModel(
-                        [
-                            'talk_title'              => 'talk_title',
-                            'url_friendly_talk_title' => 'url_friendly_talk_title',
-                            'talk_description'        => 'talk_desc',
-                            'type'                    => 'talk_type',
-                            'start_date'              => 'date_given',
-                            'duration'                => 'duration',
-                            'stub'                    => 'stub',
-                            'average_rating'          => 'avg_rating',
-                            'comments_enabled'        => 'comments_enabled',
-                            'comment_count'           => 'comment_count',
-                            'starred'                 => 'starred',
-                            'starred_count'           => 'starred_count',
-                            'event_id'                => 1,
-                            'slides_link'             => 'http://slideshare.net',
-                            'talk_media'              => [
-                                ['slides_link'  =>  'http://slideshare.net'],
-                                ['code_link'    =>  'https://github.com'],
-                            ],
-                        ]
-                    )
-                )
+            ->willReturn(
+                new TalkModel([
+                    'talk_title' => 'talk_title',
+                    'url_friendly_talk_title' => 'url_friendly_talk_title',
+                    'talk_description' => 'talk_desc',
+                    'type' => 'talk_type',
+                    'start_date' => 'date_given',
+                    'duration' => 'duration',
+                    'stub' => 'stub',
+                    'average_rating' => 'avg_rating',
+                    'comments_enabled' => 'comments_enabled',
+                    'comment_count' => 'comment_count',
+                    'starred' => 'starred',
+                    'starred_count' => 'starred_count',
+                    'event_id' => 1,
+                    'slides_link' => 'http://slideshare.net',
+                    'talk_media' => [
+                        ['slides_link' => 'http://slideshare.net'],
+                        ['code_link' => 'https://github.com'],
+                    ],
+                ])
             );
 
         return $talk_mapper;
@@ -90,25 +93,21 @@ class TalkBase extends TestCase
 
     protected function createUserMapper(mockPDO $db, Request $request)
     {
-        $user_mapper = $this->getMockBuilder(UserMapper::Class)
+        $user_mapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
         $user_mapper
             ->expects($this->atLeastOnce())
             ->method('getUserById')
-            ->will(
-                $this->returnValue(
+            ->willReturn([
+                'users' => [
                     [
-                        'users' => [
-                            [
-                                'username'  => 'janebloggs',
-                                'full_name' => 'Jane Bloggs'
-                            ]
-                        ]
+                        'username' => 'janebloggs',
+                        'full_name' => 'Jane Bloggs'
                     ]
-                )
-            );
+                ]
+            ]);
 
         return $user_mapper;
     }
@@ -121,27 +120,19 @@ class TalkBase extends TestCase
 
         $event_mapper
             ->method('getEventById')
-            ->will(
-                $this->returnValue(
+            ->willReturn([
+                'events' => [
                     [
-                        'events' => [
-                            [
-                                'name'  => 'Test Event'
-                            ]
-                        ]
+                        'name' => 'Test Event'
                     ]
-                )
-            );
+                ]
+            ]);
 
         $event_mapper
             ->method('getHostsEmailAddresses')
-            ->will(
-                $this->returnValue(
-                    [
-                        'none@example.com'
-                    ]
-                )
-            );
+            ->willReturn([
+                'none@example.com',
+            ]);
 
         return $event_mapper;
     }
@@ -162,11 +153,9 @@ class TalkBase extends TestCase
 
         $oathModel
             ->method('getConsumerName')
-            ->willReturn(
-                [
-                    $consumerName
-                ]
-            );
+            ->willReturn([
+                $consumerName
+            ]);
 
         return $oathModel;
     }

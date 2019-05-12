@@ -24,7 +24,6 @@ There's more documentation here: http://joindin.github.io/joindin-api/ - it's po
 
 We are happy for you to make whatever use of the API you wish (bear in mind we run everything from a single donated server so please implement some caching on your side and be considerate of the traffic levels you send to us). Please mention the source of your data, but do not use "joind.in" in your project name or imply that the joind.in project endorses your project.
 
-
 ## Tools and Tests
 
 ### API Tests
@@ -34,23 +33,30 @@ We have tests that make HTTP requests from the outside of the API, functional te
 To run the frisby tests (frisby.js), you will first need to install node.js and
 npm on you computer.  Then run:
 
-        cd tests/frisby
-        npm install
+```bash
+cd tests/frisby
+npm install
+```
 
 To run the tests on your computer against your Vagrant VM, from the `tests/frisby` directory run:
 
-        npm test
+```bash
+npm test
+```
 
 We also have a set of "destructive" tests, these create, edit and delete data as well as just reading it.  These aren't safe to run on a live platform, but are very valuable in testing.  Before you run them, you will need to run this query against your database:
 
-        insert into oauth_consumers (consumer_key, consumer_secret, user_id, enable_password_grant) values ('0000', '1111', '1', '1');
+```sql
+insert into oauth_consumers (consumer_key, consumer_secret, user_id, enable_password_grant) values ('0000', '1111', '1', '1');
+```
 
 Then run:
 
-        npm run test_write
+```bash
+npm run test_write
+```
 
-
-#### Proxying the frisy tests
+#### Proxying the frisby tests
 
 If you want to proxy the frisby tests via Charles or another proxy, then export `HTTP_PROXY` first:
 
@@ -58,42 +64,61 @@ If you want to proxy the frisby tests via Charles or another proxy, then export 
 
 You can now run `npm run test_write` or `npm test` as required and all the network requests will go via the proxy.
 
-
-### Unit Tests
-
-There are some tests set up, which use PHPUnit; these can be found in the
-tests directory.  There is a phing task
-configured to run them - from the root directory simply run `phing phpunit` to run
-the tests. Unfortunately, there will be no output about whether the tests passed
-or failed from the phing target. A better way to test when you are developing is
-to run the tests from within the tests directory by just typing
-`phpunit`. The phpunit.xml in each directory will configure the bootstrap as well
-as any files that should not be included.
+### Testing Code
+We use [PHPUnit](https://phpunit.de/documentation.html) for running unit tests against the joindin-api codebase.
+To run PHPUnit tests, you can go the classic route:
+```bash
+vendor/bin/phpunit -c . tests/
+```
+You can also use composer to run your tests:
+```bash
+composer test
+```
+### Code Coverage
+Code coverage requires that [xdebug](https://xdebug.org/) be running. If you are using the joindin-vm Vagrant box, you can run your tests from within vagrant:
+```bash
+vagrant ssh
+xon # note: this turns on xdebug
+cd ~/joindin-vm/joindin-api
+composer test
+```
+You can see your code coverage report by going to http://localhost:63342/joindin-api/build/coverage/index.html
 
 ### Database Patches
 
 If you need to include a new patch, then create the SQL needed and add it to the next patch number in the `db` directory. You need to include a line that looks like this at the end of your script:
 
-    INSERT INTO patch_history SET patch_number = 17;  
+```sql
+INSERT INTO patch_history SET patch_number = 17;
+```
 
 The number in that line should match the filename of your new patch number - check out the existing database patches in the project for examples.
 
 ### Coding Style
 
 Please do your best to ensure that any code you contributed adheres to the
-Joind.in coding style. This is the PSR-2 coding standard with
-no namespaces. You can run php codesniffer using phing on an
-individual file like so:
+Joind.in coding style -- this is the PSR-2 coding standard with no namespaces.
+You can run php codesniffer on an individual file like so:
 
-    phing phpcs-human -Dfilename.php
+```bash
+vendor/bin/phpcs path/of/filename.php
+```
 
 This will run codesniffer on any file within the regular source for Joind.in or the
 API-v2 source. Wildcards work as does specifying part of the path in case the
 filename alone results in sniffing more files than you wanted.
 
+To see the codesniff errors and warnings across the entire project, run
+
+```bash
+composer sniff
+```
+
 To see a summary of the codesniff errors and warnings across the entire project, run
 
-    phing phpcs-human-summary
+```bash
+composer sniff -- --report=summary
+```
 
 #### Inline Documentation
 
@@ -122,7 +147,9 @@ projects too.
 You can define the gitignore file with a command that looks like this, where the 
 last argument is the file that holds the patterns to ignore: 
 
-    $ git config --global core.excludesfile ~/.gitignore_global
+```bash
+git config --global core.excludesfile ~/.gitignore_global
+```
 
 Octocat gives [a good starting point](https://gist.github.com/octocat/9257657) for 
 what to include, but you can also ignore the files used by your editor:

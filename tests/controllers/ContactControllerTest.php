@@ -8,7 +8,6 @@ class ContactControllerTest extends TestCase
 {
     /**
      * @dataProvider dataProvider
-     * @test
      *
      * @param bool  $isClientPermittedPasswordGrant
      * @param array $returnValueMap
@@ -20,7 +19,7 @@ class ContactControllerTest extends TestCase
      *
      * @throws \Exception
      */
-    public function contactWorksAsExpected(
+    public function testContactWorksAsExpected(
         $isClientPermittedPasswordGrant,
         array $returnValueMap = [],
         $isCommentAcceptable = false,
@@ -37,9 +36,7 @@ class ContactControllerTest extends TestCase
         $request
             ->expects($this->any())
             ->method('getParameter')
-            ->will(
-                $this->returnValueMap($returnValueMap)
-            );
+            ->willReturnMap($returnValueMap);
 
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
 

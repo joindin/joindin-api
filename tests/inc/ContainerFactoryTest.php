@@ -26,45 +26,39 @@ class ContainerFactoryTest extends TestCase
         'website_url' => 'www.example.com'
     ];
 
-    /**
-     * @test
-     */
-    public function containerIsCreated()
+    public function testContainerIsCreated()
     {
         $this->assertInstanceOf(ContainerInterface::class, \ContainerFactory::build($this->config));
     }
 
     /**
-     * @test
      * @covers ContainerFactory::build
      *
      * @dataProvider dataProvider
      * @param string $service
      */
-    public function serviceIsDefined($service)
+    public function testServiceIsDefined($service)
     {
         $container = \ContainerFactory::build($this->config, true);
         $this->assertTrue($container->has($service));
     }
 
     /**
-     * @test
      * @covers ContainerFactory::build
      *
      * @dataProvider dataProvider
      * @param string $service
      */
-    public function servicesCanBeCreated($service)
+    public function testServicesCanBeCreated($service)
     {
         $container = \ContainerFactory::build($this->config, true);
         $this->assertInstanceOf($service, $container->get($service));
     }
 
     /**
-     * @test
      * @covers ContainerFactory::build
      */
-    public function spamCheckServiceIsNullCheckerWhenDisabled()
+    public function testSpamCheckServiceIsNullCheckerWhenDisabled()
     {
         $container = \ContainerFactory::build([], true);
         $this->assertTrue($container->has(\SpamCheckServiceInterface::class));

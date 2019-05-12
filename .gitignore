@@ -11,3 +11,5 @@ vendor/.git
 node_modules
 vendor
 diff.txt
+.phpunit.result.cache
+.phpcs-cache

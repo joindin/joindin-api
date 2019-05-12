@@ -19,9 +19,10 @@
         "swiftmailer/swiftmailer": "^v5.4.9"
     },
     "require-dev": {
-        "exussum12/coverage-checker": "^0.11.0",
+        "exussum12/coverage-checker": "^0.11.1",
         "jakub-onderka/php-parallel-lint": "^1.0",
-        "phpunit/phpunit": "^5.7",
+        "phpunit/php-invoker": "^2.0",
+        "phpunit/phpunit": "^8.1",
         "roave/security-advisories": "dev-master",
         "sensiolabs/security-checker": "^5.0",
         "squizlabs/php_codesniffer": "^3.4"
@@ -49,13 +50,12 @@
             "tests/models",
             "tests/routers",
             "tests/views"
-        ],
-        "files": ["tests/compatibility/File.php"]
+        ]
     },
     "scripts": {
         "test": "phpunit -c . tests/",
         "lint": "parallel-lint --exclude vendor .",
-        "sniff": "phpcs --standard=tools/codesniffer/JoindInPSR2/ruleset.xml --ignore=**/config.php,**/database.php,vendor,tools,tests/bootstrap.php --extensions=php --report-checkstyle=build/logs/checkstyle.xml --runtime-set ignore_warnings_on_exit true -p .",
+        "sniff": "phpcs --runtime-set ignore_warnings_on_exit true -p .",
         "security": "security-checker security:check composer.lock",
         "coverage": [
             "git diff origin/master... -- > diff.txt",
@@ -66,7 +66,8 @@
             "@lint",
             "@sniff",
             "@security",
-            "@test"
+            "@test",
+            "@coverage"
         ]
     },
     "config": {

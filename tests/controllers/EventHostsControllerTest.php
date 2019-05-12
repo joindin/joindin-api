@@ -2,18 +2,16 @@
 
 namespace JoindinTest\Controller;
 
-use Mockery as M;
 use PHPUnit\Framework\TestCase;
 
 class EventHostsControllerTest extends TestCase
 {
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 401
-     * @expectedExceptionMessage You must be logged in to create data
-     */
     public function testThatNotLoggedInUsersCanNotAddAHost()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in to create data');
+        $this->expectExceptionCode(401);
+
         $controller = new \Event_hostsController();
 
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
@@ -22,13 +20,12 @@ class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 401
-     * @expectedExceptionMessage You must be logged in to remove data
-     */
     public function testThatRemovingHostWithoutLoginFails()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in to remove data');
+        $this->expectExceptionCode(401);
+
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->user_id = null;
 
@@ -38,13 +35,12 @@ class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 404
-     * @expectedExceptionMessage Event not found
-     */
     public function testThatMissingEventThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Event not found');
+        $this->expectExceptionCode(404);
+
         $controller = new \Event_hostsController();
 
         $em = $this->getMockBuilder('EventMapper')->disableOriginalConstructor()->getMock();
@@ -61,13 +57,12 @@ class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage You are not allowed to remove yourself from the host-list
-     */
     public function testThatRemovingOneselfThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You are not allowed to remove yourself from the host-list');
+        $this->expectExceptionCode(403);
+
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
         $request->url_elements = [5 => 1];
@@ -78,13 +73,12 @@ class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 404
-     * @expectedExceptionMessage Event not found
-     */
     public function testThatInvalidEventThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Event not found');
+        $this->expectExceptionCode(404);
+
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
         $request->url_elements = [
@@ -103,13 +97,12 @@ class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage You do not have permission to add hosts to this event
-     */
     public function testThatExceptionIsThrownWhenNonAdminUserTriesToAddHostToEvent()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You do not have permission to add hosts to this event');
+        $this->expectExceptionCode(403);
+
         $controller = new \Event_hostsController();
 
         $em = $this->getMockBuilder('EventMapper')->disableOriginalConstructor()->getMock();
@@ -127,13 +120,12 @@ class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 403
-     * @expectedExceptionMessage You do not have permission to remove hosts from this event
-     */
     public function testThatUserThatIsNotAdminOnEventWillThrowException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You do not have permission to remove hosts from this event');
+        $this->expectExceptionCode(403);
+
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
         $request->url_elements = [
@@ -153,13 +145,12 @@ class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 404
-     * @expectedExceptionMessage No User found
-     */
     public function testThatExceptionIsThrownWhenUnknownUserShallBeAddedAsHostToEvent()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('No User found');
+        $this->expectExceptionCode(404);
+
         $controller = new \Event_hostsController();
 
         $em = $this->getMockBuilder('EventMapper')->disableOriginalConstructor()->getMock();
@@ -183,13 +174,12 @@ class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 404
-     * @expectedExceptionMessage No User found
-     */
     public function testThatSettingUnknownUserWillThrowException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('No User found');
+        $this->expectExceptionCode(404);
+
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
         $request->url_elements = [
@@ -213,13 +203,12 @@ class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 400
-     * @expectedExceptionMessage Something went wrong
-     */
     public function testThatExceptionIsThrownWhenEventHostMapperHasProblems()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Something went wrong');
+        $this->expectExceptionCode(400);
+
         $controller = new \Event_hostsController();
 
         $em = $this->getMockBuilder('EventMapper')->disableOriginalConstructor()->getMock();
@@ -288,14 +277,12 @@ class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionCode 400
-     * @expectedExceptionMessage Something went wrong
-     */
     public function testThatFailureWhileRemovingUserAsHostWillThrowException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Something went wrong');
+        $this->expectExceptionCode(400);
+
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
         $request->url_elements = [
@@ -360,48 +347,42 @@ class EventHostsControllerTest extends TestCase
         $this->assertNull($constructor->removeHostFromEvent($request, $db));
     }
 
-    public function testThatGetingEventHostWapperMithoutSettingFirstWorksAsExpected()
+    public function testThatGettingEventHostWapperMithoutSettingFirstWorksAsExpected()
     {
         $controller = new \Event_hostsController();
 
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
 
-
-        $this->assertAttributeEquals(null, 'eventHostMapper', $controller);
         $automatedEventHostMapper = $controller->getEventHostMapper($request, $db);
+
         $this->assertInstanceOf('EventHostMapper', $automatedEventHostMapper);
-        $this->assertAttributeSame($automatedEventHostMapper, 'eventHostMapper', $controller);
         $this->assertSame($automatedEventHostMapper, $controller->getEventHostMapper($request, $db));
     }
 
-    public function testThatGetingUserMapperWithoutSettingFirstWorksAsExpected()
+    public function testThatGettingUserMapperWithoutSettingFirstWorksAsExpected()
     {
         $controller = new \Event_hostsController();
 
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
 
-
-        $this->assertAttributeEquals(null, 'userMapper', $controller);
         $automatedUserMapper = $controller->getUserMapper($request, $db);
+
         $this->assertInstanceOf('UserMapper', $automatedUserMapper);
-        $this->assertAttributeSame($automatedUserMapper, 'userMapper', $controller);
         $this->assertSame($automatedUserMapper, $controller->getUserMapper($request, $db));
     }
 
-    public function testThatGetingEventMapperWithoutSettingFirstWorksAsExpected()
+    public function testThatGettingEventMapperWithoutSettingFirstWorksAsExpected()
     {
         $controller = new \Event_hostsController();
 
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
         $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
 
-
-        $this->assertAttributeEquals(null, 'eventMapper', $controller);
         $automatedEventMapper = $controller->getEventMapper($request, $db);
+
         $this->assertInstanceOf('EventMapper', $automatedEventMapper);
-        $this->assertAttributeSame($automatedEventMapper, 'eventMapper', $controller);
         $this->assertSame($automatedEventMapper, $controller->getEventMapper($request, $db));
     }
 }

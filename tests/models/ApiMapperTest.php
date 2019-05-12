@@ -8,7 +8,7 @@ require_once __DIR__ . '/TestApiMapper.php';
  */
 class ApiMapperTest extends TestCase
 {
-    public function setup()
+    public function setup(): void
     {
         $this->pdo     = $this->getMockBuilder('PDO')
             ->disableOriginalConstructor()
@@ -16,14 +16,6 @@ class ApiMapperTest extends TestCase
         $this->request = $this->getMockBuilder('Request')
             ->disableOriginalConstructor()
             ->getMock();
-    }
-
-    public function testThatMapperInstanceHasDependencies()
-    {
-        $mapper = new ApiMapper($this->pdo, $this->request);
-
-        $this->assertAttributeEquals($this->pdo, '_db', $mapper);
-        $this->assertAttributeEquals($this->request, '_request', $mapper);
     }
 
     public function testThatApiMapperHasNoDefaultFields()

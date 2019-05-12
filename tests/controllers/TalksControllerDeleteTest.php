@@ -10,13 +10,12 @@ use TalksController;
 
 class TalksControllerDeleteTest extends TalkBase
 {
-    /**
-     * @test
-     * @expectedExceptionCode 401
-     * @expectedException \Exception
-     */
-    public function removeStarFromTalkFailsWhenNotLoggedIn()
+    public function testRemoveStarFromTalkFailsWhenNotLoggedIn()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in to remove data');
+        $this->expectExceptionCode(401);
+
         $request = new Request(
             [],
             [
@@ -31,10 +30,7 @@ class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalkStarred($request, $db);
     }
 
-    /**
-     * @test
-     */
-    public function removeStarFromTalksWhenLoggedIn()
+    public function testRemoveStarFromTalksWhenLoggedIn()
     {
         $request = new Request(
             [],
@@ -51,25 +47,22 @@ class TalksControllerDeleteTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talkMapper = $this->createTalkMapper($db, $request, 0);
-        $talkMapper->method('setUserNonStarred')
+        $this->talkMapper = $this->createTalkMapper($db, $request, 0);
+        $this->talkMapper->method('setUserNonStarred')
             ->willReturn(true);
 
         $talks_controller = new TalksController();
-        $talks_controller->setTalkMapper(
-            $talkMapper
-        );
+        $talks_controller->setTalkMapper($this->talkMapper);
 
         $talks_controller->deleteTalkStarred($request, $db);
     }
 
-    /**
-     * @test
-     * @expectedExceptionCode 401
-     * @expectedException \Exception
-     */
-    public function deleteTalkWhenNotLoggedIn()
+    public function testDeleteTalkWhenNotLoggedIn()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in to remove data');
+        $this->expectExceptionCode(401);
+
         $request = new Request(
             [],
             [
@@ -84,10 +77,7 @@ class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalk($request, $db);
     }
 
-    /**
-     * @test
-     */
-    public function deleteTalkWhichDoesntExist()
+    public function testDeleteTalkWhichDoesntExist()
     {
         $httpRequest = [
             'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
@@ -105,16 +95,12 @@ class TalksControllerDeleteTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->getMockBuilder(TalkMapper::class)
-            ->setConstructorArgs([$db,$request])
-            ->getMock();
-
-        $talk_mapper
+        $this->talk_mapper
             ->method('getTalkById')
             ->willReturn(false);
 
         $talks_controller = new TalksController();
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $view = $this->getMockBuilder(ApiView::class)->getMock();
         $request->method('getView')->willReturn($view);
@@ -125,13 +111,12 @@ class TalksControllerDeleteTest extends TalkBase
         $this->assertNull($talks_controller->deleteTalk($request, $db));
     }
 
-    /**
-     * @test
-     * @expectedException \Exception
-     * @expectedExceptionCode 400
-     */
-    public function deleteTalkWthNoAdmin()
+    public function testDeleteTalkWthNoAdmin()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You do not have permission to do that');
+        $this->expectExceptionCode(400);
+
         $request = new Request(
             [],
             [
@@ -157,10 +142,7 @@ class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalk($request, $db);
     }
 
-    /**
-     * @test
-     */
-    public function deleteTalkWithAdmin()
+    public function testDeleteTalkWithAdmin()
     {
         $httpRequest = [
             'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
@@ -178,13 +160,12 @@ class TalksControllerDeleteTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talk_mapper = $this->createTalkMapper($db, $request);
-        $talk_mapper
+        $this->talk_mapper
             ->method('thisUserHasAdminOn')
             ->willReturn(true);
 
         $talks_controller = new TalksController();
-        $talks_controller->setTalkMapper($talk_mapper);
+        $talks_controller->setTalkMapper($this->talk_mapper);
 
         $view = $this->getMockBuilder(ApiView::class)->getMock();
         $request->method('getView')->willReturn($view);

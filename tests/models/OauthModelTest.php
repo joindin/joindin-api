@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 
 class OauthModelTest extends TestCase
 {
-    public function setup()
+    public function setup(): void
     {
         $this->pdo     = $this->getMockBuilder('PDO')
             ->disableOriginalConstructor()
@@ -34,12 +34,12 @@ class OauthModelTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionCode 401
-     */
     public function testWrongUserThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Not verified');
+        $this->expectExceptionCode(401);
+
         $stmt = $this->getMockBuilder(PDOStatement::class)->getMock();
         $stmt->method('execute')->willReturn(true);
         $stmt->method('fetch')->willReturn(

@@ -10,31 +10,29 @@ class TokenControllerTest extends TestCase
 
     private $pdo;
 
-    public function setup()
+    public function setup(): void
     {
         $this->request = $this->getMockBuilder('Request')->disableOriginalConstructor()->getMock();
         $this->pdo     = $this->getMockBuilder('PDO')->disableOriginalConstructor()->getMock();
     }
 
-    /**
-     * @expectedException        \Exception
-     * @expectedExceptionCode    401
-     * @expectedExceptionMessage You must be logged in
-     */
     public function testThatDeletingATokenWithoutLoginThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in');
+        $this->expectExceptionCode(401);
+
         $usersController = new \TokenController();
 
         $usersController->revokeToken($this->request, $this->pdo);
     }
 
-    /**
-     * @expectedException        \Exception
-     * @expectedExceptionCode    401
-     * @expectedExceptionMessage You must be logged in
-     */
     public function testThatRetrievingTokensWithoutLoginThrowsException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('You must be logged in');
+        $this->expectExceptionCode(401);
+
         $usersController = new \TokenController();
 
         $usersController->listTokensForUser($this->request, $this->pdo);
