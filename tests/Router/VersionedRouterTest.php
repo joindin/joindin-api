@@ -151,6 +151,7 @@ class VersionedRouterTest extends TestCase
      * @param string        $expectedAction
      * @param array         $routeParams
      * @param integer|false $expectedExceptionCode
+     * @throws Exception
      */
     public function testGetRoute(
         $version,

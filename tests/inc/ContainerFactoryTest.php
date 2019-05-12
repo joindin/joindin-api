@@ -2,6 +2,28 @@
 
 namespace JoindinTest\Inc;
 
+use Joindin\Api\ContainerFactory;
+use Joindin\Api\Controller\ApplicationsController;
+use Joindin\Api\Controller\ContactController;
+use Joindin\Api\Controller\DefaultController;
+use Joindin\Api\Controller\EmailsController;
+use Joindin\Api\Controller\EventCommentsController;
+use Joindin\Api\Controller\EventHostsController;
+use Joindin\Api\Controller\EventImagesController;
+use Joindin\Api\Controller\EventsController;
+use Joindin\Api\Controller\FacebookController;
+use Joindin\Api\Controller\LanguagesController;
+use Joindin\Api\Controller\TalkCommentsController;
+use Joindin\Api\Controller\TalkLinkController;
+use Joindin\Api\Controller\TalksController;
+use Joindin\Api\Controller\TalkTypesController;
+use Joindin\Api\Controller\TokenController;
+use Joindin\Api\Controller\TracksController;
+use Joindin\Api\Controller\TwitterController;
+use Joindin\Api\Controller\UsersController;
+use Joindin\Api\Service\ContactEmailService;
+use Joindin\Api\Service\NullSpamCheckService;
+use Joindin\Api\Service\SpamCheckServiceInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
@@ -28,7 +50,7 @@ class ContainerFactoryTest extends TestCase
 
     public function testContainerIsCreated()
     {
-        $this->assertInstanceOf(ContainerInterface::class, \ContainerFactory::build($this->config));
+        $this->assertInstanceOf(ContainerInterface::class, ContainerFactory::build($this->config));
     }
 
     /**
@@ -39,7 +61,7 @@ class ContainerFactoryTest extends TestCase
      */
     public function testServiceIsDefined($service)
     {
-        $container = \ContainerFactory::build($this->config, true);
+        $container = ContainerFactory::build($this->config, true);
         $this->assertTrue($container->has($service));
     }
 
@@ -51,7 +73,7 @@ class ContainerFactoryTest extends TestCase
      */
     public function testServicesCanBeCreated($service)
     {
-        $container = \ContainerFactory::build($this->config, true);
+        $container = ContainerFactory::build($this->config, true);
         $this->assertInstanceOf($service, $container->get($service));
     }
 
@@ -60,9 +82,9 @@ class ContainerFactoryTest extends TestCase
      */
     public function testSpamCheckServiceIsNullCheckerWhenDisabled()
     {
-        $container = \ContainerFactory::build([], true);
-        $this->assertTrue($container->has(\SpamCheckServiceInterface::class));
-        $this->assertInstanceOf(\NullSpamCheckService::class, $container->get(\SpamCheckServiceInterface::class));
+        $container = ContainerFactory::build([], true);
+        $this->assertTrue($container->has(SpamCheckServiceInterface::class));
+        $this->assertInstanceOf(NullSpamCheckService::class, $container->get(SpamCheckServiceInterface::class));
     }
 
     /**
@@ -73,26 +95,26 @@ class ContainerFactoryTest extends TestCase
     public function dataProvider()
     {
         return [
-            [\ContactController::class],
-            [\SpamCheckServiceInterface::class],
-            [\ContactEmailService::class],
-            [\ApplicationsController::class],
-            [\DefaultController::class],
-            [\EmailsController::class] ,
-            [\Event_commentsController::class],
-            [\Event_hostsController::class],
-            [\EventImagesController::class],
-            [\EventsController::class],
-            [\FacebookController::class],
-            [\LanguagesController::class],
-            [\Talk_commentsController::class],
-            [\TalkLinkController::class],
-            [\TalksController::class],
-            [\TalkTypesController::class],
-            [\TokenController::class],
-            [\TracksController::class],
-            [\TwitterController::class],
-            [\UsersController::class]
+            [ContactController::class],
+            [SpamCheckServiceInterface::class],
+            [ContactEmailService::class],
+            [ApplicationsController::class],
+            [DefaultController::class],
+            [EmailsController::class] ,
+            [EventCommentsController::class],
+            [EventHostsController::class],
+            [EventImagesController::class],
+            [EventsController::class],
+            [FacebookController::class],
+            [LanguagesController::class],
+            [TalkCommentsController::class],
+            [TalkLinkController::class],
+            [TalksController::class],
+            [TalkTypesController::class],
+            [TokenController::class],
+            [TracksController::class],
+            [TwitterController::class],
+            [UsersController::class]
         ];
     }
 }

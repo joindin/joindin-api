@@ -1,11 +1,10 @@
 <?php
 namespace Joindin\Api\Test\Model;
 
+use Joindin\Api\Model\TalkMapper;
+use Joindin\Api\Request;
 use JoindinTest\Inc\mockPDO;
 use PDOStatement;
-use PHPUnit_Framework_TestCase;
-use Joindin\Api\Request;
-use Joindin\Api\Model\TalkMapper;
 use PHPUnit\Framework\TestCase;
 
 class TalkMapperTest extends TestCase

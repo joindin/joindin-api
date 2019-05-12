@@ -2,6 +2,7 @@
 
 namespace Joindin\Api\Test\Router;
 
+use Joindin\Api\Controller\DefaultController;
 use Joindin\Api\Request;
 use Joindin\Api\Router\DefaultRouter;
 use PHPUnit\Framework\TestCase;
@@ -40,7 +41,7 @@ class DefaultRouterTest extends TestCase
         $request = new Request([], ['REQUEST_URI' => $url]);
         $router  = new DefaultRouter([]);
         $route   = $router->getRoute($request);
-        $this->assertEquals('Joindin\Api\Controller\DefaultController', $route->getController());
+        $this->assertEquals(DefaultController::class, $route->getController());
         $this->assertEquals('handle', $route->getAction());
     }
 }

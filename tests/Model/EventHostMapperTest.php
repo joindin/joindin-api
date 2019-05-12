@@ -3,13 +3,16 @@
 namespace Joindin\Api\Test\Model;
 
 use Joindin\Api\Model\EventHostMapper;
+use Joindin\Api\Request;
+use PDO;
+use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
 class EventHostMapperTest extends TestCase
 {
     public function testThatAddingHostToEventCallsExpectedInsert()
     {
-        $stmt = $this->getMockBuilder('PDOStatement')->disableOriginalConstructor()->getMock();
+        $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
              ->with([
                  ':host_id'  => 12,
@@ -17,14 +20,14 @@ class EventHostMapperTest extends TestCase
                  ':type'     => 'event'
              ])
              ->willReturn(true);
-        $pdo = $this->getMockBuilder('PDO')->disableOriginalConstructor()->getMock();
+        $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $pdo->method('prepare')
             ->with('INSERT INTO user_admin (uid, rid, rtype) VALUES (:host_id, :event_id, :type)')
             ->willReturn($stmt);
         $pdo->method('lastInsertId')
             ->willReturn(14);
 
-        $request = $this->getMockBuilder('Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
 
         $mapper = new EventHostMapper($pdo, $request);
 
@@ -33,7 +36,7 @@ class EventHostMapperTest extends TestCase
 
     public function testThatFailingExecuteResultsInFalseBeingReturned()
     {
-        $stmt = $this->getMockBuilder('PDOStatement')->disableOriginalConstructor()->getMock();
+        $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
              ->with([
                  ':host_id'  => 12,
@@ -41,12 +44,12 @@ class EventHostMapperTest extends TestCase
                  ':type'     => 'event'
              ])
              ->willReturn(false);
-        $pdo = $this->getMockBuilder('PDO')->disableOriginalConstructor()->getMock();
+        $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $pdo->method('prepare')
             ->with('INSERT INTO user_admin (uid, rid, rtype) VALUES (:host_id, :event_id, :type)')
             ->willReturn($stmt);
 
-        $request = $this->getMockBuilder('Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
 
         $mapper = new EventHostMapper($pdo, $request);
 
@@ -55,18 +58,18 @@ class EventHostMapperTest extends TestCase
 
     public function testThatGettingHostByEventIdReturnsSomethingSensibleWhenStatementReturnsFalse()
     {
-        $stmt = $this->getMockBuilder('PDOStatement')->disableOriginalConstructor()->getMock();
+        $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
              ->with([
                  ':event_id' => 12,
              ])
              ->willReturn(false);
-        $pdo = $this->getMockBuilder('PDO')->disableOriginalConstructor()->getMock();
+        $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $pdo->method('prepare')
             ->with('select a.uid as user_id, u.full_name as host_name from user_admin a inner join user u on u.ID = a.uid where rid = :event_id and rtype="event" and (rcode!="pending" OR rcode is null) order by host_name  LIMIT 0,10')
             ->willReturn($stmt);
 
-        $request = $this->getMockBuilder('Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
 
         $mapper = new EventHostMapper($pdo, $request);
 
@@ -75,7 +78,7 @@ class EventHostMapperTest extends TestCase
 
     public function testThatGettingHostByEventIdReturnsSomethingSensibleWhenStatementReturnsSingleValue()
     {
-        $stmt1 = $this->getMockBuilder('PDOStatement')->disableOriginalConstructor()->getMock();
+        $stmt1 = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt1->method('execute')
               ->with([
                   ':event_id' => 12,
@@ -85,7 +88,7 @@ class EventHostMapperTest extends TestCase
               ->willReturn([
                   ['user_id' => 8, 'host_name' => 'Karl Napp'],
               ]);
-        $stmt2 = $this->getMockBuilder('PDOStatement')->disableOriginalConstructor()->getMock();
+        $stmt2 = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt2->method('execute')
               ->with([
                   ':event_id' => 12,
@@ -93,7 +96,7 @@ class EventHostMapperTest extends TestCase
               ->willReturn(true);
         $stmt2->method('fetchAll')
               ->willReturn(1);
-        $pdo = $this->getMockBuilder('PDO')->disableOriginalConstructor()->getMock();
+        $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $pdo->expects($this->at(0))
             ->method('prepare')
             ->with('select a.uid as user_id, u.full_name as host_name from user_admin a inner join user u on u.ID = a.uid where rid = :event_id and rtype="event" and (rcode!="pending" OR rcode is null) order by host_name  LIMIT 0,10')
@@ -102,7 +105,7 @@ class EventHostMapperTest extends TestCase
             ->method('prepare')
             ->with('SELECT count(*) AS count FROM (select a.uid as user_id, u.full_name as host_name from user_admin a inner join user u on u.ID = a.uid where rid = :event_id and rtype="event" and (rcode!="pending" OR rcode is null) order by host_name  ) as counter')
             ->willReturn($stmt2);
-        $request                       = $this->getMockBuilder('Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request                       = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->base                 = 'test';
         $request->version              = '1';
         $request->path_info            = '2';
@@ -127,7 +130,7 @@ class EventHostMapperTest extends TestCase
 
     public function testThatRemovingAHostFromAnEventCallsTheExpectedMethods()
     {
-        $stmt1 = $this->getMockBuilder('PDOStatement')->disableOriginalConstructor()->getMock();
+        $stmt1 = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt1->method('execute')
               ->with([
                   ':user_id'  => 12,
@@ -136,13 +139,13 @@ class EventHostMapperTest extends TestCase
               ])
               ->willReturn(true);
 
-        $pdo = $this->getMockBuilder('PDO')->disableOriginalConstructor()->getMock();
+        $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $pdo->expects($this->once())
             ->method('prepare')
             ->with('DELETE FROM user_admin WHERE uid = :user_id AND rid = :event_id AND rtype = :type')
             ->willReturn($stmt1);
 
-        $request = $this->getMockBuilder('Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
 
         $mapper = new EventHostMapper($pdo, $request);
         $this->assertTrue($mapper->removeHostFromEvent(12, 14));

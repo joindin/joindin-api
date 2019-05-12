@@ -2,6 +2,14 @@
 
 namespace Joindin\Api\Test\Controller;
 
+use Exception;
+use Joindin\Api\Controller\ContactController;
+use Joindin\Api\Model\OAuthModel;
+use Joindin\Api\Request;
+use Joindin\Api\Service\ContactEmailService;
+use Joindin\Api\Service\SpamCheckServiceInterface;
+use Joindin\Api\View\ApiView;
+use PDO;
 use PHPUnit\Framework\TestCase;
 
 class ContactControllerTest extends TestCase
@@ -17,7 +25,7 @@ class ContactControllerTest extends TestCase
      * @param bool  $spamShouldBeChecked
      * @param bool  $emailShouldBeSent
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testContactWorksAsExpected(
         $isClientPermittedPasswordGrant,
@@ -28,9 +36,9 @@ class ContactControllerTest extends TestCase
         $spamShouldBeChecked = false,
         $emailShouldBeSent = false
     ) {
-        $request = $this->getMockBuilder('\Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
 
-        $oauthModel = $this->getMockBuilder('\Joindin\Api\Model\OAuthModel')->disableOriginalConstructor()->getMock();
+        $oauthModel = $this->getMockBuilder(OAuthModel::class)->disableOriginalConstructor()->getMock();
         $oauthModel->expects($this->once())->method('isClientPermittedPasswordGrant')->willReturn($isClientPermittedPasswordGrant);
         $request->expects($this->once())->method('getOauthModel')->willReturn($oauthModel);
         $request
@@ -38,9 +46,9 @@ class ContactControllerTest extends TestCase
             ->method('getParameter')
             ->willReturnMap($returnValueMap);
 
-        $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
-        $spamCheckService = $this->getMockBuilder(\Joindin\Api\Service\SpamCheckServiceInterface::class)
+        $spamCheckService = $this->getMockBuilder(SpamCheckServiceInterface::class)
                                  ->disableOriginalConstructor()
                                  ->getMock();
 
@@ -51,11 +59,11 @@ class ContactControllerTest extends TestCase
                 ->willReturn($isCommentAcceptable);
         }
 
-        $emailService = $this->getMockBuilder(\Joindin\Api\Service\ContactEmailService::class)
+        $emailService = $this->getMockBuilder(ContactEmailService::class)
                              ->disableOriginalConstructor()
                              ->getMock();
 
-        $contactController = new \Joindin\Api\Controller\ContactController($emailService, $spamCheckService);
+        $contactController = new ContactController($emailService, $spamCheckService);
 
         if (null !== $expectedException) {
             $this->expectException($expectedException);
@@ -66,7 +74,7 @@ class ContactControllerTest extends TestCase
         }
 
         if ($emailShouldBeSent) {
-            $viewMock = $this->getMockBuilder(\Joindin\Api\View\ApiView::class)
+            $viewMock = $this->getMockBuilder(ApiView::class)
                              ->disableOriginalConstructor()
                              ->getMock();
 
@@ -118,7 +126,7 @@ class ContactControllerTest extends TestCase
                     ['comment', '', '']
                 ],
                 'isCommentAcceptable'            => false,
-                'exceptedException'              => \Exception::class,
+                'exceptedException'              => Exception::class,
                 'expectedExceptionMessage'       => "The fields 'name', 'email', 'subject', 'comment' are required",
             ],
             //Spamcheck fails
@@ -134,7 +142,7 @@ class ContactControllerTest extends TestCase
                 ],
 
                 'isCommentAcceptable'      => false,
-                'exceptedException'        => \Exception::class,
+                'exceptedException'        => Exception::class,
                 'expectedExceptionMessage' => 'Comment failed spam check',
                 'spamShouldBeChecked'            => true,
             ],

@@ -2,6 +2,10 @@
 
 namespace Joindin\Api\Test\Controller;
 
+use Exception;
+use Joindin\Api\Controller\TokenController;
+use Joindin\Api\Request;
+use PDO;
 use PHPUnit\Framework\TestCase;
 
 class TokenControllerTest extends TestCase
@@ -12,28 +16,28 @@ class TokenControllerTest extends TestCase
 
     public function setup(): void
     {
-        $this->request = $this->getMockBuilder('Joindin\Api\Request')->disableOriginalConstructor()->getMock();
-        $this->pdo     = $this->getMockBuilder('PDO')->disableOriginalConstructor()->getMock();
+        $this->request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $this->pdo     = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
     }
 
     public function testThatDeletingATokenWithoutLoginThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in');
         $this->expectExceptionCode(401);
 
-        $usersController = new \Joindin\Api\Controller\TokenController();
+        $usersController = new TokenController();
 
         $usersController->revokeToken($this->request, $this->pdo);
     }
 
     public function testThatRetrievingTokensWithoutLoginThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in');
         $this->expectExceptionCode(401);
 
-        $usersController = new \Joindin\Api\Controller\TokenController();
+        $usersController = new TokenController();
 
         $usersController->listTokensForUser($this->request, $this->pdo);
     }

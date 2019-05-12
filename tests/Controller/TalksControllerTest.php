@@ -3,13 +3,15 @@
 namespace Joindin\Api\Test\Controller;
 
 use Exception;
-use JoindinTest\Inc\mockPDO;
-use Joindin\Api\Request;
-use Joindin\Api\Service\TalkCommentEmailService;
 use Joindin\Api\Controller\TalkLinkController;
+use Joindin\Api\Controller\TalksController;
+use Joindin\Api\Model\PendingTalkClaimMapper;
 use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Model\TalkModelCollection;
-use Joindin\Api\Controller\TalksController;
+use Joindin\Api\Model\UserMapper;
+use Joindin\Api\Request;
+use Joindin\Api\Service\TalkCommentEmailService;
+use JoindinTest\Inc\mockPDO;
 
 class TalksControllerTest extends TalkBase
 {
@@ -39,7 +41,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testClaimTalkWithNoUserIdThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to create data');
         $this->expectExceptionCode(401);
 
@@ -65,7 +67,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testClaimNonExistantTalkThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Talk not found');
         $this->expectExceptionCode(404);
 
@@ -108,7 +110,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testClaimTalkWithoutUsernameThrowsException(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must provide a display name and a username');
         $this->expectExceptionCode(400);
 
@@ -149,7 +151,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testClaimTalkWithoutDisplayNameThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must provide a display name and a username');
         $this->expectExceptionCode(400);
 
@@ -189,7 +191,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testClaimTalkWithInvalidSpeakerThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('No speaker matching that name found');
         $this->expectExceptionCode(422);
 
@@ -234,7 +236,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testClaimTalkAlreadyClaimedThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Talk already claimed');
         $this->expectExceptionCode(422);
 
@@ -281,7 +283,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testClaimTalkForSomeoneElseThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be the speaker or event admin to link a user to a talk');
         $this->expectExceptionCode(401);
 
@@ -322,7 +324,7 @@ class TalksControllerTest extends TalkBase
             ->willReturn(6);
         $talks_controller->setUserMapper($user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder('\Joindin\Api\Model\PendingTalkClaimMapper')
+        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
         $pending_talk_claim_mapper
@@ -346,7 +348,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testAssignTalkAsHostToNonExistentUserThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Specified user not found');
         $this->expectExceptionCode(404);
 
@@ -430,7 +432,7 @@ class TalksControllerTest extends TalkBase
             ->willReturn(2);
         $talks_controller->setUserMapper($user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder('\Joindin\Api\Model\PendingTalkClaimMapper')
+        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
         $pending_talk_claim_mapper
@@ -495,7 +497,7 @@ class TalksControllerTest extends TalkBase
             ->willReturn(1);
         $talks_controller->setUserMapper($user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder('\Joindin\Api\Model\PendingTalkClaimMapper')
+        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
         $pending_talk_claim_mapper
@@ -520,7 +522,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testApproveAssignmentAsUserWhoClaimedThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You already have a pending claim for this talk. Please wait for an event admin to approve your claim.');
         $this->expectExceptionCode(401);
 
@@ -561,13 +563,13 @@ class TalksControllerTest extends TalkBase
             ->willReturn(false);
         $talks_controller->setUserMapper($user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder('\Joindin\Api\Model\PendingTalkClaimMapper')
+        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->willReturn(\Joindin\Api\Model\PendingTalkClaimMapper::SPEAKER_CLAIM);
+            ->willReturn(PendingTalkClaimMapper::SPEAKER_CLAIM);
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
@@ -583,7 +585,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testApproveAssignmentAsNonAdminUserThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be an event admin to approve this claim');
         $this->expectExceptionCode(401);
 
@@ -624,13 +626,13 @@ class TalksControllerTest extends TalkBase
             ->willReturn(false);
         $talks_controller->setUserMapper($user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder('\Joindin\Api\Model\PendingTalkClaimMapper')
+        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->willReturn(\Joindin\Api\Model\PendingTalkClaimMapper::SPEAKER_CLAIM);
+            ->willReturn(PendingTalkClaimMapper::SPEAKER_CLAIM);
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
@@ -647,7 +649,7 @@ class TalksControllerTest extends TalkBase
      */
     public function testApproveClaimAsHostWhoAssignedThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be the talk speaker to approve this assignment');
         $this->expectExceptionCode(401);
 
@@ -684,13 +686,13 @@ class TalksControllerTest extends TalkBase
             ->willReturn(1);
         $talks_controller->setUserMapper($user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder('\Joindin\Api\Model\PendingTalkClaimMapper')
+        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->willReturn(\Joindin\Api\Model\PendingTalkClaimMapper::HOST_ASSIGN);
+            ->willReturn(PendingTalkClaimMapper::HOST_ASSIGN);
 
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
@@ -743,13 +745,13 @@ class TalksControllerTest extends TalkBase
             ->willReturn(2);
         $talks_controller->setUserMapper($user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder('\Joindin\Api\Model\PendingTalkClaimMapper')
+        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->willReturn(\Joindin\Api\Model\PendingTalkClaimMapper::HOST_ASSIGN);
+            ->willReturn(PendingTalkClaimMapper::HOST_ASSIGN);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('approveAssignmentAsSpeaker')
@@ -814,13 +816,13 @@ class TalksControllerTest extends TalkBase
             ->willReturn(1);
         $talks_controller->setUserMapper($user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder('\Joindin\Api\Model\PendingTalkClaimMapper')
+        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->willReturn(\Joindin\Api\Model\PendingTalkClaimMapper::SPEAKER_CLAIM);
+            ->willReturn(PendingTalkClaimMapper::SPEAKER_CLAIM);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('approveClaimAsHost')
@@ -949,7 +951,7 @@ class TalksControllerTest extends TalkBase
 
     public function testNotLoggedInPostAction()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to create data');
         $this->expectExceptionCode(401);
 
@@ -968,7 +970,7 @@ class TalksControllerTest extends TalkBase
 
     public function testNotSendingMessage()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('The field "comment" is required');
         $this->expectExceptionCode(400);
 
@@ -998,7 +1000,7 @@ class TalksControllerTest extends TalkBase
 
     public function testNotSendingRating()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('The field "rating" is required');
         $this->expectExceptionCode(400);
 
@@ -1066,7 +1068,7 @@ class TalksControllerTest extends TalkBase
 
         $talks_controller->setTalkMapper($this->talk_mapper);
 
-        $user_mapper = $this->getMockBuilder('\Joindin\Api\Model\UserMapper')
+        $user_mapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
@@ -1076,13 +1078,13 @@ class TalksControllerTest extends TalkBase
             ->willReturn(1);
         $talks_controller->setUserMapper($user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder('\Joindin\Api\Model\PendingTalkClaimMapper')
+        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
-            ->willReturn(\Joindin\Api\Model\PendingTalkClaimMapper::SPEAKER_CLAIM);
+            ->willReturn(PendingTalkClaimMapper::SPEAKER_CLAIM);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('rejectClaimAsHost')
@@ -1286,7 +1288,7 @@ class TalksControllerTest extends TalkBase
 
     public function testGenericTalkList()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Generic talks listing not supported');
         $this->expectExceptionCode(405);
 

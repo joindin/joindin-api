@@ -3,13 +3,13 @@
 namespace Joindin\Api\Test\Controller;
 
 use Joindin\Api\Model\EventMapper;
-use JoindinTest\Inc\mockPDO;
 use Joindin\Api\Model\OAuthModel;
-use Joindin\Api\Request;
 use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Model\TalkModel;
 use Joindin\Api\Model\UserMapper;
+use Joindin\Api\Request;
+use JoindinTest\Inc\mockPDO;
 use PHPUnit\Framework\TestCase;
 
 class TalkBase extends TestCase

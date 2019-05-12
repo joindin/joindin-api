@@ -2,6 +2,17 @@
 
 namespace Joindin\Api\Test\Controller;
 
+use Exception;
+use Joindin\Api\Controller\UsersController;
+use Joindin\Api\Model\OAuthModel;
+use Joindin\Api\Model\UserMapper;
+use Joindin\Api\Request;
+use Joindin\Api\Service\UserRegistrationEmailService;
+use Joindin\Api\View\ApiView;
+use Joindin\Api\View\JsonView;
+use JoindinTest\Inc\mockPDO;
+use PDO;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class UsersControllerTest extends TestCase
@@ -19,10 +30,12 @@ class UsersControllerTest extends TestCase
         $this->expectExceptionMessage('You must be logged in to delete data');
         $this->expectExceptionCode(401);
 
-        $request = new \Joindin\Api\Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
+        $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
 
-        $usersController = new \Joindin\Api\Controller\UsersController();
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $usersController = new UsersController();
+
+        /** @var PDO&MockObject $db */
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $usersController->deleteUser($request, $db);
     }
@@ -39,15 +52,15 @@ class UsersControllerTest extends TestCase
         $this->expectExceptionMessage('You do not have permission to do that');
         $this->expectExceptionCode(403);
 
-        $request = new \Joindin\Api\Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
+        $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 2;
-        $usersController = new \Joindin\Api\Controller\UsersController();
+        $usersController = new UsersController();
 
 
-        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\Joindin\Api\Model\UserMapper')
-            ->setConstructorArgs(array($db,$request))
+        $userMapper = $this->getMockBuilder(UserMapper::class)
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $userMapper
@@ -71,14 +84,14 @@ class UsersControllerTest extends TestCase
         $this->expectExceptionMessage('There was a problem trying to delete the user');
         $this->expectExceptionCode(400);
 
-        $request = new \Joindin\Api\Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
+        $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
         $usersController = new \Joindin\Api\Controller\UsersController();
         // Please see below for explanation of why we're mocking a "mock" PDO
         // class
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $userMapper = $this->getMockBuilder('\Joindin\Api\Model\UserMapper')
+        $userMapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
@@ -105,14 +118,14 @@ class UsersControllerTest extends TestCase
      */
     public function testDeleteUserWithAdminAccessDeletesSuccessfully()
     {
-        $request = new \Joindin\Api\Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
+        $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
-        $usersController = new \Joindin\Api\Controller\UsersController();
+        $usersController = new UsersController();
         // Please see below for explanation of why we're mocking a "mock" PDO
         // class
-        $db = $this->getMockBuilder('\JoindinTest\Inc\mockPDO')->getMock();
+        $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $userMapper = $this->getMockBuilder('\Joindin\Api\Model\UserMapper')
+        $userMapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
@@ -132,34 +145,35 @@ class UsersControllerTest extends TestCase
 
     public function testThatUserDataIsNotDoubleEscapedOnUserCreation()
     {
-        $request = $this->getMockBuilder('\Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
         $request->base = 'base';
         $request->path_info = 'path_info';
-        $request->method('getParameter')->withConsecutive(
-            ['username'],
-            ['full_name'],
-            ['email'],
-            ['password'],
-            ['twitter_username'],
-            ['biography']
-        )->willReturnOnConsecutiveCalls(
-            'user"\'stuff',
-            'full"\'stuff',
-            'mailstuff@example.com',
-            'pass"\'stuff',
-            'twitter"\'stuff',
-            'Bio"\'stuff'
-        );
+        $request->method('getParameter')
+            ->withConsecutive(
+                ['username'],
+                ['full_name'],
+                ['email'],
+                ['password'],
+                ['twitter_username'],
+                ['biography']
+            )->willReturnOnConsecutiveCalls(
+                'user"\'stuff',
+                'full"\'stuff',
+                'mailstuff@example.com',
+                'pass"\'stuff',
+                'twitter"\'stuff',
+                'Bio"\'stuff'
+            );
 
-        $view = $this->getMockBuilder('\Joindin\Api\View\ApiView')->disableOriginalConstructor()->getMock();
+        $view = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
         $view->expects($this->once())->method('setHeader')->with('Location', 'basepath_info/1');
         $view->expects($this->once())->method('setResponseCode')->with(201);
         $request->method('getView')->willReturn($view);
 
-        $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\Joindin\Api\Model\UserMapper')->disableOriginalConstructor()->getMock();
+        $userMapper = $this->getMockBuilder(UserMapper::class)->disableOriginalConstructor()->getMock();
         $userMapper->expects($this->once())->method('getUserByUsername')->with('user"\'stuff')->willReturn(false);
         $userMapper->expects($this->once())->method('checkPasswordValidity')->with('pass"\'stuff')->willReturn(true);
         $userMapper->expects($this->once())->method('generateEmailVerificationTokenForUserId')->willReturn('token');
@@ -172,10 +186,10 @@ class UsersControllerTest extends TestCase
             'biography' => 'Bio"\'stuff'
         ])->willReturn(true);
 
-        $emailService = $this->getMockBuilder('\Joindin\Api\Service\UserRegistrationEmailService')->disableOriginalConstructor()->getMock();
+        $emailService = $this->getMockBuilder(UserRegistrationEmailService::class)->disableOriginalConstructor()->getMock();
         $emailService->method('sendEmail');
 
-        $controller = new \Joindin\Api\Controller\UsersController();
+        $controller = new UsersController();
         $controller->setUserMapper($userMapper);
         $controller->setUserRegistrationEmailService($emailService);
 
@@ -184,7 +198,7 @@ class UsersControllerTest extends TestCase
 
     public function testThatUserDataIsNotDoubleEscapedOnUserEdit()
     {
-        $request = $this->getMockBuilder('\Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(1);
         $request->method('getParameter')->withConsecutive(
             ['password'],
@@ -202,18 +216,18 @@ class UsersControllerTest extends TestCase
             'Bio"\'stuff'
         );
 
-        $oauthmodel = $this->getMockBuilder('\Joindin\Api\Model\OAuthModel')->disableOriginalConstructor()->getMock();
+        $oauthmodel = $this->getMockBuilder(OAuthModel::class)->disableOriginalConstructor()->getMock();
         $oauthmodel->expects($this->once())->method('isAccessTokenPermittedPasswordGrant')->willReturn(true);
         $request->expects($this->once())->method('getOauthModel')->willReturn($oauthmodel);
 
-        $view = $this->getMockBuilder('\Joindin\Api\View\ApiView')->disableOriginalConstructor()->getMock();
+        $view = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
         $view->expects($this->once())->method('setHeader')->with('Content-Length', 0);
         $view->expects($this->once())->method('setResponseCode')->with(204);
         $request->method('getView')->willReturn($view);
 
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\Joindin\Api\Model\UserMapper')->disableOriginalConstructor()->getMock();
+        $userMapper = $this->getMockBuilder(UserMapper::class)->disableOriginalConstructor()->getMock();
         $userMapper->expects($this->once())->method('getUserByUsername')->with('user"\'stuff')->willReturn(false);
         $userMapper->expects($this->once())->method('thisUserHasAdminOn')->willReturn(true);
         $userMapper->expects($this->once())->method('editUser')->with([
@@ -225,7 +239,7 @@ class UsersControllerTest extends TestCase
             'user_id' => false,
         ])->willReturn(true);
 
-        $controller = new \Joindin\Api\Controller\UsersController();
+        $controller = new UsersController();
         $controller->setUserMapper($userMapper);
 
         $controller->updateUser($request, $db);
@@ -243,11 +257,10 @@ class UsersControllerTest extends TestCase
         $this->expectExceptionMessage('You must be logged in to change a user account');
         $this->expectExceptionCode(401);
 
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
-        $request = new \Joindin\Api\Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
-        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
-
+        $usersController = new UsersController();
         $usersController->setTrusted($request, $db);
     }
 
@@ -260,16 +273,16 @@ class UsersControllerTest extends TestCase
      */
     public function testSetTrustedWithNonAdminIdThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage("You must be an admin to change a user's trusted state");
         $this->expectExceptionCode(403);
 
-        $request = new \Joindin\Api\Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
         $request->user_id = 2;
-        $usersController = new \Joindin\Api\Controller\UsersController();
-        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
+        $usersController = new UsersController();
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\Joindin\Api\Model\UserMapper')
+        $userMapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
@@ -292,20 +305,20 @@ class UsersControllerTest extends TestCase
      */
     public function testSetTrustedWithoutStateThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must provide a trusted state');
         $this->expectExceptionCode(400);
 
-        $request = $this->getMockBuilder('\Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("trusted")
             ->willReturn(null);
 
-        $usersController = new \Joindin\Api\Controller\UsersController();
-        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
+        $usersController = new UsersController();
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\Joindin\Api\Model\UserMapper')
+        $userMapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
@@ -330,16 +343,16 @@ class UsersControllerTest extends TestCase
         $this->expectExceptionMessage('Unable to update status');
         $this->expectExceptionCode(500);
 
-        $request = $this->getMockBuilder('\Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("trusted")
             ->willReturn(true);
 
-        $usersController = new \Joindin\Api\Controller\UsersController();
-        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
+        $usersController = new UsersController();
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\Joindin\Api\Model\UserMapper')
+        $userMapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
@@ -366,13 +379,13 @@ class UsersControllerTest extends TestCase
      */
     public function testSetTrustedWithSuccessCreatesView()
     {
-        $request = $this->getMockBuilder('\Joindin\Api\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("trusted")
             ->willReturn(true);
 
-        $view = $this->getMockBuilder(\Joindin\Api\View\JsonView::class)->getMock();
+        $view = $this->getMockBuilder(JsonView::class)->getMock();
         $view->expects($this->once())
             ->method("setHeader")
             ->willReturn(true);
@@ -386,10 +399,10 @@ class UsersControllerTest extends TestCase
             ->method("getView")
             ->willReturn($view);
 
-        $usersController = new \Joindin\Api\Controller\UsersController();
-        $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
+        $usersController = new UsersController();
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\Joindin\Api\Model\UserMapper')
+        $userMapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 

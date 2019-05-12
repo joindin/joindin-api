@@ -25,11 +25,12 @@ use Joindin\Api\Service\NullSpamCheckService;
 use Joindin\Api\Service\SpamCheckService;
 use Joindin\Api\Service\SpamCheckServiceInterface;
 use Pimple\Container;
+use Psr\Container\ContainerInterface;
 
 class ContainerFactory
 {
     /**
-     * @var \Psr\Container\ContainerInterface
+     * @var ContainerInterface
      */
     private static $container;
 
@@ -39,9 +40,9 @@ class ContainerFactory
      * @param array $config
      * @param bool  $rebuild
      *
-     * @return \Psr\Container\ContainerInterface
+     * @return ContainerInterface
      */
-    public static function build(array $config, $rebuild = false)
+    public static function build(array $config, $rebuild = false): ContainerInterface
     {
         if (!isset(static::$container) || $rebuild) {
             $container = new Container();

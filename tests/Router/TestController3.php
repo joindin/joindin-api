@@ -8,7 +8,7 @@ class TestController3
 {
     public function action(Request $request, $db)
     {
-        if ($db == 'database') {
+        if ($db === 'database') {
             return 'val';
         }
     }

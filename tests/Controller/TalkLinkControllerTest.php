@@ -2,9 +2,10 @@
 
 namespace Joindin\Api\Test\Controller;
 
-use JoindinTest\Inc\mockPDO;
-use Joindin\Api\Request;
+use Exception;
 use Joindin\Api\Controller\TalkLinkController;
+use Joindin\Api\Request;
+use JoindinTest\Inc\mockPDO;
 
 class TalkLinkControllerTest extends TalkBase
 {
@@ -14,7 +15,7 @@ class TalkLinkControllerTest extends TalkBase
      */
     public function testDeleteTalkLinkWithInvalidID()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Talk Link ID not found');
         $this->expectExceptionCode(404);
 
@@ -70,7 +71,7 @@ class TalkLinkControllerTest extends TalkBase
      */
     public function testDeleteTalkLinkNoPermissions()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You do not have permission to add links to this talk');
         $this->expectExceptionCode(403);
 
@@ -108,7 +109,7 @@ class TalkLinkControllerTest extends TalkBase
 
     public function testGetTalkLinkFails()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('ID not found');
         $this->expectExceptionCode(404);
 
@@ -155,7 +156,7 @@ class TalkLinkControllerTest extends TalkBase
 
     public function testAddTalkLinkWithInvalidData()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Missing required fields URL OR Display Name');
         $this->expectExceptionCode(400);
 
@@ -174,7 +175,7 @@ class TalkLinkControllerTest extends TalkBase
 
     public function testAddTalkLinkFails()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('The Link has not been inserted');
         $this->expectExceptionCode(400);
 
@@ -222,7 +223,7 @@ class TalkLinkControllerTest extends TalkBase
 
     public function testUpdateTalkLinkFails()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Update of Link ID Failed');
         $this->expectExceptionCode(500);
 

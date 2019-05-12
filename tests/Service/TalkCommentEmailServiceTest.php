@@ -32,7 +32,7 @@ class TalkCommentEmailServiceTest extends Testcase
         $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
         $service = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
-        $this->assertInstanceOf('Joindin\Api\Service\TalkCommentEmailService', $service);
+        $this->assertInstanceOf(TalkCommentEmailService::class, $service);
     }
 
     /**
@@ -91,8 +91,7 @@ Questions? Comments?  Get in touch: [feedback@joind.in](mailto:feedback@joind.in
         $html = $service->markdownToHtml($markdown);
         $this->assertEquals(
             $html,
-            "<p>A <em>sunny</em> day</p>
-"
+            "<p>A <em>sunny</em> day</p>\n"
         );
     }
 }

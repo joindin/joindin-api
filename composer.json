@@ -36,8 +36,7 @@
     "autoload-dev" : {
         "psr-4" : {
             "Joindin\\Api\\Test\\" : "tests/"
-        },
-        "files": ["tests/compatibility/File.php"]
+        }
     },
     "scripts": {
         "test": "phpunit -c . tests/",

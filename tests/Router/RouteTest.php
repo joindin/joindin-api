@@ -6,6 +6,7 @@ use Exception;
 use Joindin\Api\Request;
 use Joindin\Api\Router\Route;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class to test Route
@@ -57,12 +58,12 @@ class RouteTest extends TestCase
 
     /**
      * @dataProvider getSetProvider
-     * @covers       \Joindin\Api\Router\Route::getController
-     * @covers       \Joindin\Api\Router\Route::setController
-     * @covers       \Joindin\Api\Router\Route::getAction
-     * @covers       \Joindin\Api\Router\Route::setAction
-     * @covers       \Joindin\Api\Router\Route::getParams
-     * @covers       \Joindin\Api\Router\Route::setParams
+     * @covers       Route::getController
+     * @covers       Route::setController
+     * @covers       Route::getAction
+     * @covers       Route::setAction
+     * @covers       Route::getParams
+     * @covers       Route::setParams
      *
      * @param string $controller
      * @param string $action
@@ -92,15 +93,15 @@ class RouteTest extends TestCase
         return array(
             array( // #0
                 'config'              => array('config'),
-                'controller'          => 'Joindin\Api\Test\Router\TestController3',
+                'controller'          => TestController3::class,
                 'action'              => 'action',
-                'Joindin\Api\Request' => $this->getRequest('v1')
+                Request::class => $this->getRequest('v1')
             ),
             array( // #1
                 'config'                => array('config'),
-                'controller'            => 'Joindin\Api\Test\Router\TestController3',
+                'controller'            => TestController3::class,
                 'action'                => 'action2',
-                'Joindin\Api\Request'   => $this->getRequest('v1'),
+                Request::class => $this->getRequest('v1'),
                 'expectedException'     => 'Exception',
                 'expectedExceptionCode' => 500,
             ),
@@ -108,7 +109,7 @@ class RouteTest extends TestCase
                 'config'                => array('config'),
                 'controller'            => 'TestController4',
                 'action'                => 'action2',
-                'Joindin\Api\Request'   => $this->getRequest('v1'),
+                Request::class => $this->getRequest('v1'),
                 'expectedException'     => 'Exception',
                 'expectedExceptionCode' => 400,
                 'controllerExists'      => false
@@ -121,14 +122,14 @@ class RouteTest extends TestCase
      *
      * @covers       \Joindin\Api\Router\Route::dispatch
      *
-     * @param array   $config
-     * @param string  $controller
-     * @param string  $action
+     * @param array $config
+     * @param $controller
+     * @param $action
      * @param Request $request
-     * @param string  $expectedException
-     * @param integer $expectedExceptionCode
-     *
-     * @throws Exception
+     * @param bool $expectedException
+     * @param bool $expectedExceptionCode
+     * @param bool $controllerExists
+     * @throws \ReflectionException
      */
     public function testDispatch(
         array $config,
@@ -140,7 +141,7 @@ class RouteTest extends TestCase
         $controllerExists = true
     ) {
         $db        = 'database';
-        $container = $this->getMockBuilder(\Psr\Container\ContainerInterface::class)
+        $container = $this->getMockBuilder(ContainerInterface::class)
                           ->disableOriginalConstructor()
                           ->getMock();
 
@@ -175,12 +176,12 @@ class RouteTest extends TestCase
      * Gets a Request for testing
      *
      * @param string $urlElement
-     *
-     * @return Request
+     * @return Request&MockObject
+     * @throws \ReflectionException
      */
     private function getRequest($urlElement)
     {
-        $request = $this->createMock('Joindin\Api\Request', ['getUrlElement'], [], '', false);
+        $request = $this->createMock(Request::class, ['getUrlElement'], [], '', false);
 
         $request->expects($this->any())
                 ->method('getUrlElement')

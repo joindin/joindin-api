@@ -4,6 +4,8 @@ namespace Joindin\Api\Test\Model;
 
 use Exception;
 use Joindin\Api\Model\OAuthModel;
+use Joindin\Api\Request;
+use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
@@ -11,10 +13,10 @@ class OauthModelTest extends TestCase
 {
     public function setup(): void
     {
-        $this->pdo              = $this->getMockBuilder('PDO')
+        $this->pdo              = $this->getMockBuilder(PDO::class)
                                        ->disableOriginalConstructor()
                                        ->getMock();
-        $this->request          = $this->getMockBuilder('Joindin\Api\Request')
+        $this->request          = $this->getMockBuilder(Request::class)
                                        ->disableOriginalConstructor()
                                        ->getMock();
         $this->request->base    = "";
@@ -41,7 +43,7 @@ class OauthModelTest extends TestCase
 
     public function testWrongUserThrowsException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Not verified');
         $this->expectExceptionCode(401);
 

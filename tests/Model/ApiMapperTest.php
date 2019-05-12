@@ -4,7 +4,9 @@ namespace Joindin\Api\Test\Model;
 
 use Exception;
 use Joindin\Api\Model\ApiMapper;
-use Joindin\Api\Test\Model\TestApiMapper;
+use Joindin\Api\Request;
+use PDO;
+use PDOStatement;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -15,10 +17,10 @@ class ApiMapperTest extends TestCase
 {
     public function setup(): void
     {
-        $this->pdo     = $this->getMockBuilder('PDO')
+        $this->pdo     = $this->getMockBuilder(PDO::class)
                               ->disableOriginalConstructor()
                               ->getMock();
-        $this->request = $this->getMockBuilder('Joindin\Api\Request')
+        $this->request = $this->getMockBuilder(Request::class)
                               ->disableOriginalConstructor()
                               ->getMock();
     }
@@ -117,7 +119,7 @@ class ApiMapperTest extends TestCase
     /** @dataProvider retrievingTotalCountFromQueryWorksProvider */
     public function testThatRetrievingTotalCountFromQueryWorks($query, $countquery, $data, $returns, $exception = false)
     {
-        $result = $this->getMockBuilder('PDOStatement')
+        $result = $this->getMockBuilder(PDOStatement::class)
                        ->disableOriginalConstructor()
                        ->getMock();
         if ($exception) {
@@ -132,7 +134,7 @@ class ApiMapperTest extends TestCase
                ->with($this->equalTo(0))
                ->willReturn($returns);
 
-        $pdo = $this->getMockBuilder('PDO')
+        $pdo = $this->getMockBuilder(PDO::class)
                     ->disableOriginalConstructor()
                     ->getMock();
         $pdo->method('prepare')
@@ -141,7 +143,7 @@ class ApiMapperTest extends TestCase
 
         $mapper = new ApiMapper($pdo, $this->request);
 
-        $obj    = new ReflectionClass('Joindin\Api\Model\ApiMapper');
+        $obj    = new ReflectionClass(ApiMapper::class);
         $method = $obj->getMethod('getTotalCount');
         $method->setAccessible(true);
 

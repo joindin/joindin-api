@@ -2,17 +2,17 @@
 
 namespace Joindin\Api\Test\Controller;
 
+use Exception;
+use Joindin\Api\Controller\TalksController;
+use Joindin\Api\Request;
 use Joindin\Api\View\ApiView;
 use JoindinTest\Inc\mockPDO;
-use Joindin\Api\Request;
-use Joindin\Api\Model\TalkMapper;
-use Joindin\Api\Controller\TalksController;
 
 class TalksControllerDeleteTest extends TalkBase
 {
     public function testRemoveStarFromTalkFailsWhenNotLoggedIn()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
         $this->expectExceptionCode(401);
 
@@ -59,7 +59,7 @@ class TalksControllerDeleteTest extends TalkBase
 
     public function testDeleteTalkWhenNotLoggedIn()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
         $this->expectExceptionCode(401);
 
@@ -113,7 +113,7 @@ class TalksControllerDeleteTest extends TalkBase
 
     public function testDeleteTalkWthNoAdmin()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('You do not have permission to do that');
         $this->expectExceptionCode(400);
 

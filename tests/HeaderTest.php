@@ -2,6 +2,7 @@
 
 namespace Joindin\Api\Test;
 
+use Joindin\Api\Header;
 use PHPUnit\Framework\TestCase;
 
 class HeaderTest extends TestCase
@@ -10,7 +11,7 @@ class HeaderTest extends TestCase
     public function testParseParamsWithEmbededSeparator()
     {
         $headerStr = 'For=10.0.0.1,For=10.0.0.2;user-agent="test;test;test;test";For=10.0.0.3';
-        $header = new \Joindin\Api\Header('Forwarded', $headerStr, ';');
+        $header = new Header('Forwarded', $headerStr, ';');
 
         $header->parseParams();
         $this->assertEquals(3, $header->count());
@@ -18,7 +19,7 @@ class HeaderTest extends TestCase
     public function testParseParamsWithTwoGlues()
     {
         $headerStr = 'For=10.0.0.1,For=10.0.0.2;user-agent="test;test;test;test";For=10.0.0.3;user-agent="secondLevel;some date"';
-        $header = new \Joindin\Api\Header('Forwarded', $headerStr, ';');
+        $header = new Header('Forwarded', $headerStr, ';');
 
         $header->parseParams();
         $header->setGlue(',');
@@ -29,7 +30,7 @@ class HeaderTest extends TestCase
     {
         $headerStr = 'For=10.0.0.1;user-agent="test;test;test;test";For=10.0.0.2;user-agent="secondLevel;
         some date";for=10.0.0.3;user-agent="thirdLevel"';
-        $header = new \Joindin\Api\Header('Forwarded', $headerStr, ';');
+        $header = new Header('Forwarded', $headerStr, ';');
 
         $header->parseParams();
         $header->setGlue(',');
@@ -41,7 +42,7 @@ class HeaderTest extends TestCase
     public function testBuildEntityArrayWithValueOnly()
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
-        $header = new \Joindin\Api\Header('X-Forwarded-For', $headerStr, ',');
+        $header = new Header('X-Forwarded-For', $headerStr, ',');
         $header->parseParams();
         $this->assertEquals(3, $header->count());
         $partsArray = $header->toArray();
