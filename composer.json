@@ -12,6 +12,7 @@
     "require" : {
         "ext-json": "*",
         "ext-pdo": "*",
+        "ext-intl" : "*",
         "guzzlehttp/guzzle": "^6.3",
         "guzzlehttp/oauth-subscriber": "^0.3.0",
         "michelf/php-markdown": "^1.8",

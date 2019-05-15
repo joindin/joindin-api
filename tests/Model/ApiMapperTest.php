@@ -186,9 +186,13 @@ class ApiMapperTest extends TestCase
     {
         return [
             ['test', 'test'],
-            ['äöüß', ''],
+            ['äöüß', 'aouss'],
             ['test test', 'test-test'],
-            ['<-.,;:_+*#\'äÄöÖüÜ´`ß)(/&%$§"!>€@', '-']
+            ['<-.,;:_+*#\'äÄöÖüÜ´`ß)(/&%$§"!>€@', '-aaoouuss'],
+            [
+                'Эволюция обработки вебхука Facebook: с нуля до 12\'500 в секунду',
+                'evolucia-obrabotki-vebhuka-facebook-s-nula-do-12500-v-sekundu'
+            ],
         ];
     }
 }
