@@ -78,11 +78,13 @@ class OauthModelTest extends TestCase
         $stmt->method('execute')->willReturn(true);
         $this->pdo->method('prepare')->willReturn($stmt);
 
-        $this->assertEquals(16, mb_strlen($this->oauth->createAccessToken('web2', '1')));
+        // no need for multibyte function as createAccessToken will return a hexadecimal number
+        $this->assertEquals(16, strlen($this->oauth->createAccessToken('web2', '1')));
     }
 
     public function testGenerateToken()
     {
-        $this->assertEquals(40, mb_strlen($this->oauth->generateToken()));
+        // no need for multibyte function as sha1() will returns a 40-character hexadecimal number
+        $this->assertEquals(40, strlen($this->oauth->generateToken()));
     }
 }
