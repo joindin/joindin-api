@@ -71,4 +71,18 @@ class OauthModelTest extends TestCase
         $this->assertArrayHasKey('access_token', $token);
         $this->assertArrayHasKey('user_uri', $token);
     }
+
+    public function testCreateAccessToken()
+    {
+        $stmt = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $stmt->method('execute')->willReturn(true);
+        $this->pdo->method('prepare')->willReturn($stmt);
+
+        $this->assertEquals(16, mb_strlen($this->oauth->createAccessToken('web2', '1')));
+    }
+
+    public function testGenerateToken()
+    {
+        $this->assertEquals(40, mb_strlen($this->oauth->generateToken()));
+    }
 }
