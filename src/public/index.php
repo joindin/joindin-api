@@ -8,7 +8,7 @@ if(!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
 }
 // Add exception handler
-function handle_exception($e)
+function handle_exception(\Throwable $e)
 {
     // pull the correct format before we bail
     global $request, $config;
@@ -19,6 +19,8 @@ function handle_exception($e)
     if ($status_code === 401) {
         $request->getView()->setHeader('WWW-Authenticate', 'Bearer realm="api.joind.in');
     }
+
+    error_log(get_class($e) . ': ' . $e->getMessage() . " -- " . $e->getTraceAsString());
 
     $message = $e->getMessage();
     if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
