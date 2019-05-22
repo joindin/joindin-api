@@ -4,7 +4,7 @@ include __DIR__ . '/../../vendor/autoload.php';
 if (!function_exists('apache_request_headers')) {
     include '../inc/nginx-helper.php';
 }
-if(!ini_get('date.timezone')) {
+if (!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
 }
 // Add exception handler
@@ -26,7 +26,7 @@ function handle_exception(\Throwable $e)
     if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
         $message = "Database error";
     }
-    $request->getView()->render(array($message));
+    $request->getView()->render([$message]);
 }
 
 set_exception_handler('handle_exception');
