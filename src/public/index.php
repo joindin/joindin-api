@@ -10,11 +10,11 @@ include __DIR__ . '/../../vendor/autoload.php';
 if (!function_exists('apache_request_headers')) {
     include '../inc/nginx-helper.php';
 }
-if(!ini_get('date.timezone')) {
+if (!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
 }
 // Add exception handler
-function handle_exception($e)
+function handle_exception(\Throwable $e)
 {
     // pull the correct format before we bail
     global $request, $config;
@@ -26,11 +26,13 @@ function handle_exception($e)
         $request->getView()->setHeader('WWW-Authenticate', 'Bearer realm="api.joind.in');
     }
 
+    error_log(get_class($e) . ': ' . $e->getMessage() . " -- " . $e->getTraceAsString());
+
     $message = $e->getMessage();
     if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
         $message = "Database error";
     }
-    $request->getView()->render(array($message));
+    $request->getView()->render([$message]);
 }
 
 set_exception_handler('handle_exception');
