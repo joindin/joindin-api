@@ -9,7 +9,7 @@ use Joindin\Api\Request;
  */
 class TalkCommentReportModelCollection extends BaseModelCollection
 {
-    /** @var array */
+    /** @var array|TalkCommentReportModel[] */
     protected $list;
 
     /** @var int */

@@ -10,7 +10,7 @@ use Joindin\Api\Request;
  */
 class ClientModelCollection extends BaseModelCollection
 {
-    /** @var array */
+    /** @var array|ClientModel[] */
     protected $list;
 
     /** @var int */

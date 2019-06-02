@@ -62,6 +62,8 @@ class TalksController extends BaseTalkController
     {
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
+
+        /** @var TalkMapper $mapper */
         $mapper  = $this->getMapper('talk');
 
         return $mapper->getUserStarred($talk_id, $this->request->user_id);
@@ -86,6 +88,7 @@ class TalksController extends BaseTalkController
         $start          = $this->getStart($this->request);
         $resultsperpage = $this->getResultsPerPage($this->request);
 
+        /** @var TalkMapper $mapper */
         $mapper = $this->getMapper('talk');
         $talks  = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
 
@@ -120,6 +123,7 @@ class TalksController extends BaseTalkController
                     $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
                     $talk_mapper    = $this->getTalkMapper($db, $request);
+                    /** @var TalkCommentMapper $comment_mapper */
                     $comment_mapper = $this->getMapper('talkcomment', $db, $request);
 
                     $data['user_id'] = $request->user_id;

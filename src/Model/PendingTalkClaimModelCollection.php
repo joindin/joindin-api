@@ -9,7 +9,7 @@ use Joindin\Api\Request;
  */
 class PendingTalkClaimModelCollection extends BaseModelCollection
 {
-    /** @var array */
+    /** @var array|PendingTalkClaimModel[] */
     protected $list;
 
     /** @var int */

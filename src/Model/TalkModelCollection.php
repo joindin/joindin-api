@@ -10,7 +10,7 @@ use Joindin\Api\Request;
  */
 class TalkModelCollection extends BaseModelCollection
 {
-    /** @var array */
+    /** @var array|TalkModel[] */
     protected $list;
 
     /** @var int */

@@ -10,7 +10,7 @@ use Joindin\Api\Request;
  */
 class TokenModelCollection extends BaseModelCollection
 {
-    /** @var array */
+    /** @var array|TokenModel[] */
     protected $list;
 
     /** @var int */

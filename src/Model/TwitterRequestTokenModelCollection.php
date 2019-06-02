@@ -10,6 +10,9 @@ use Joindin\Api\Request;
  */
 class TwitterRequestTokenModelCollection extends BaseModelCollection
 {
+    /** @var array|TwitterRequestTokenModel[] */
+    protected $list = [];
+
     /**
      * Take arrays of data and create a collection of models; store metadata
      *
