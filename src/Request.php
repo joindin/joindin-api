@@ -497,7 +497,7 @@ class Request
     {
         if (is_null($this->oauthModel)) {
             if (is_null($db)) {
-                throw new \InvalidArgumentException('Db Must be provided to get Oauth Model');
+                throw new InvalidArgumentException('Db Must be provided to get Oauth Model');
             }
             $this->oauthModel = new OAuthModel($db, $this);
         }

@@ -8,6 +8,7 @@ namespace Joindin\Api\Controller;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 use Joindin\Api\Model\TwitterRequestTokenMapper;
 use PDO;
@@ -25,7 +26,7 @@ class TwitterController extends BaseApiController
             throw new Exception("This client cannot perform this action", 403);
         }
 
-        $stack = \GuzzleHttp\HandlerStack::create();
+        $stack = HandlerStack::create();
         $oauth = new Oauth1([
             'consumer_key'    => $this->config['twitter']['consumer_key'],
             'consumer_secret' => $this->config['twitter']['consumer_secret'],
@@ -85,7 +86,7 @@ class TwitterController extends BaseApiController
         }
 
         // exchange request token for access token
-        $stack = \GuzzleHttp\HandlerStack::create();
+        $stack = HandlerStack::create();
         $oauth = new Oauth1([
             'consumer_key'    => $this->config['twitter']['consumer_key'],
             'consumer_secret' => $this->config['twitter']['consumer_secret'],
@@ -109,7 +110,7 @@ class TwitterController extends BaseApiController
             $result = $this->oauthModel->createAccessTokenFromTwitterUsername($clientId, $twitterUsername);
             if (!$result) {
                 // try to create the user.
-                $stack1 = \GuzzleHttp\HandlerStack::create();
+                $stack1 = HandlerStack::create();
                 $oauth1 = new Oauth1([
                     'consumer_key'    => $this->config['twitter']['consumer_key'],
                     'consumer_secret' => $this->config['twitter']['consumer_secret'],

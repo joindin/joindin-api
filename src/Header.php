@@ -18,6 +18,8 @@
 
 namespace Joindin\Api;
 
+use ArrayIterator;
+
 /**
  * Represents a header and all of the values stored by that header
  */
@@ -131,7 +133,7 @@ class Header
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->toArray());
+        return new ArrayIterator($this->toArray());
     }
 
     public function buildEntityArray()

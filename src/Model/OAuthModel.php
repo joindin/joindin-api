@@ -30,7 +30,7 @@ class OAuthModel
     }
 
     /**
-     * @return \PDO
+     * @return PDO
      */
     public function getDb()
     {
@@ -38,7 +38,7 @@ class OAuthModel
     }
 
     /**
-     * @param \PDO $db
+     * @param PDO $db
      */
     public function setDb(PDO $db)
     {

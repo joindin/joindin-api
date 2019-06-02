@@ -43,7 +43,7 @@ abstract class BaseEmailService
      * @param array $config     The system config
      * @param array $recipients An array of email addresses
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(array $config, array $recipients)
     {

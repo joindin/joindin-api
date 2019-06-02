@@ -494,7 +494,7 @@ class UserMapper extends ApiMapper
 
         $response = $select_stmt->execute($data);
         if ($response) {
-            $row = $select_stmt->fetch(\PDO::FETCH_ASSOC);
+            $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
             if ($row && is_array($row)) {
                 $user_id = $row['user_id'];
 
@@ -532,7 +532,7 @@ class UserMapper extends ApiMapper
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
         if ($response) {
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if (isset($row['ID'])) {
                 return $row['ID'];
             }
@@ -671,7 +671,7 @@ class UserMapper extends ApiMapper
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
         if ($response) {
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if (isset($row['ID'])) {
                 return $row['ID'];
             }
@@ -694,7 +694,7 @@ class UserMapper extends ApiMapper
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(["user_id" => $user_id]);
         if ($response) {
-            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if (isset($row['email'])) {
                 return $row['email'];
             }
@@ -754,7 +754,7 @@ class UserMapper extends ApiMapper
 
         $response = $select_stmt->execute($data);
         if ($response) {
-            $row = $select_stmt->fetch(\PDO::FETCH_ASSOC);
+            $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
             if ($row && is_array($row)) {
                 $user_id = $row['user_id'];
 
