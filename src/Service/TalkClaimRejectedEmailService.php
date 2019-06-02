@@ -6,7 +6,6 @@ use Joindin\Api\Model\TalkModel;
 
 class TalkClaimRejectedEmailService extends BaseEmailService
 {
-
     protected $event;
     /** @var TalkModel */
     protected $talk;
@@ -24,7 +23,6 @@ class TalkClaimRejectedEmailService extends BaseEmailService
     public function sendEmail()
     {
         $this->setSubject("Joind.in: Your talk claim has been rejected");
-
 
         $replacements = [
             "eventName" => $this->event['name'],
