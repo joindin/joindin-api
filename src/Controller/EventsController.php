@@ -126,6 +126,7 @@ class EventsController extends BaseApiController
 
                 if (isset($request->parameters['tags'])) {
                     // if it isn't an array, make it one
+                    $tags = [];
                     if (is_array($request->parameters['tags'])) {
                         foreach ($request->parameters['tags'] as $t) {
                             $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);

@@ -376,6 +376,8 @@ class UserMapper extends ApiMapper
         $fields["email"]    = "email";
         $fields["password"] = "password";
 
+        $pairs = [];
+
         foreach ($fields as $api_name => $column_name) {
             if (isset($user[$api_name])) {
                 $pairs[] = "$column_name = :$api_name";
@@ -636,6 +638,8 @@ class UserMapper extends ApiMapper
 
         // add the fields that we don't expose for users
         $fields["email"] = "email";
+
+        $pairs = [];
 
         foreach ($fields as $api_name => $column_name) {
             if (isset($user[$api_name])) {

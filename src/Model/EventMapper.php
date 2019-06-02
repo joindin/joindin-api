@@ -856,6 +856,7 @@ class EventMapper extends ApiMapper
         // get the list of column to API field name for all valid fields
         $fields = $this->getVerboseFields();
         $items  = [];
+        $pairs  = [];
 
         foreach ($fields as $api_name => $column_name) {
             // We don't change any activation stuff here!!
