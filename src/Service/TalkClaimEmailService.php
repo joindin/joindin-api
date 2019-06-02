@@ -6,7 +6,6 @@ use Joindin\Api\Model\TalkModel;
 
 class TalkClaimEmailService extends BaseEmailService
 {
-
     protected $event;
     /** @var TalkModel */
     protected $talk;
@@ -26,7 +25,6 @@ class TalkClaimEmailService extends BaseEmailService
     public function sendEmail()
     {
         $this->setSubject("Joind.in: A talk has been claimed");
-
 
         $replacements = [
             "eventName" => $this->event['name'],
@@ -48,7 +46,6 @@ class TalkClaimEmailService extends BaseEmailService
      */
     private function linkToPendingClaimsForEvent()
     {
-
         return '[' . $this->website_url
                . '/event/' . $this->event['url_friendly_name']
                . '/claims' . '](' . $this->website_url

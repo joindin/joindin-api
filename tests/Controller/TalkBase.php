@@ -146,7 +146,6 @@ class TalkBase extends TestCase
 
     protected function createOathModel(mockPDO $db, Request $request, $consumerName = "")
     {
-
         $oathModel = $this->getMockBuilder(OAuthModel::class)
             ->setConstructorArgs([$db,$request])
             ->getMock();

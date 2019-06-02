@@ -201,7 +201,6 @@ class TalksController extends BaseTalkController
 
     public function deleteTalkStarred(Request $request, PDO $db)
     {
-
         $this->checkLoggedIn($request);
 
         $talk_id     = $this->getItemId($request);

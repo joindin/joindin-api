@@ -4,7 +4,6 @@ namespace Joindin\Api\Service;
 
 class EventCommentReportedEmailService extends BaseEmailService
 {
-
     protected $comment;
     protected $event;
     protected $website_url;

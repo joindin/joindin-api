@@ -28,10 +28,10 @@ class UserRegistrationEmailService extends BaseEmailService
     {
         $this->setSubject('Welcome to joind.in');
 
-        $replacements = array(
+        $replacements = [
             "token"       => $this->token,
             "website_url" => $this->website_url,
-        );
+        ];
 
         $messageBody = $this->parseEmail("userRegistration.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);

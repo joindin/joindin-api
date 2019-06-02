@@ -6,7 +6,6 @@ use Joindin\Api\Model\TalkModel;
 
 class TalkAssignEmailService extends BaseEmailService
 {
-
     protected $event;
     protected $talk;
     protected $website_url;
@@ -33,7 +32,6 @@ class TalkAssignEmailService extends BaseEmailService
     public function sendEmail()
     {
         $this->setSubject("Joind.in: A talk has been assigned to you");
-
 
         $replacements = [
             "eventName" => $this->event['name'],

@@ -86,7 +86,7 @@ class EventsController extends BaseApiController
                 }
             } else {
                 // handle the filter parameters
-                $params = array();
+                $params = [];
 
                 // collection type filter
                 $filters = ["hot", "upcoming", "past", "cfp", "pending", "all"];

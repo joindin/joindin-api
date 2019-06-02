@@ -14,7 +14,6 @@ use Joindin\Api\Request;
 
 class UsersController extends BaseApiController
 {
-
     protected $user_mapper;
 
     private $user_registration_email_service;

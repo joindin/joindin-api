@@ -65,7 +65,6 @@ class TrackMapper extends ApiMapper
      */
     public function transformResults(array $results, $verbose)
     {
-
         $total = $results['total'];
         unset($results['total']);
         $list    = parent::transformResults($results, $verbose);

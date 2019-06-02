@@ -6,7 +6,6 @@ use Joindin\Api\Model\TalkModel;
 
 class TalkClaimApprovedEmailService extends BaseEmailService
 {
-
     protected $event;
     /** @var TalkModel */
     protected $talk;
@@ -25,7 +24,6 @@ class TalkClaimApprovedEmailService extends BaseEmailService
     public function sendEmail()
     {
         $this->setSubject("Joind.in: Your talk claim has been approved");
-
 
         $replacements = [
             "eventName" => $this->event['name'],

@@ -86,7 +86,6 @@ class EventCommentMapper extends ApiMapper
      */
     public function transformResults(array $results, $verbose)
     {
-
         $total = $results['total'];
         unset($results['total']);
 

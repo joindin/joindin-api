@@ -44,7 +44,6 @@ class TalkLinkControllerTest extends TalkBase
      */
     public function testDeleteTalkLink()
     {
-
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
             'DELETE'

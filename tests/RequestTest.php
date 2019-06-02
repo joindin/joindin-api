@@ -741,7 +741,6 @@ class RequestTest extends TestCase
         \Joindin\Api\View\ApiView $view = null,
         $skip = false
     ) {
-    
         if ($skip) {
             $this->markTestSkipped();
         }

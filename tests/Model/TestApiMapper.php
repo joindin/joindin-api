@@ -6,7 +6,6 @@ use Joindin\Api\Model\ApiMapper;
 
 class TestApiMapper extends ApiMapper
 {
-
     public function getDefaultFields()
     {
         return [
