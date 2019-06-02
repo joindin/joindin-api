@@ -21,6 +21,16 @@ use Joindin\Api\Request;
 
 class EventsController extends BaseApiController
 {
+    /**
+     * @var EventMapper
+     */
+    private $event_mapper;
+
+    /**
+     * @var PendingTalkClaimMapper
+     */
+    private $pending_talk_claim_mapper;
+
     public function getAction(Request $request, PDO $db)
     {
         $event_id = $this->getItemId($request);

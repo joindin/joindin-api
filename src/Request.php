@@ -73,6 +73,21 @@ class Request
     protected $routeParams = [];
 
     /**
+     * @var string
+     */
+    public $base;
+
+    /**
+     * @var array
+     */
+    public $paginationParameters = [];
+
+    /**
+     * @var string
+     */
+    public $scheme;
+
+    /**
      * Builds the request object
      *
      * @param array|false $config        The application configuration

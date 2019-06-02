@@ -10,12 +10,18 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
+use Joindin\Api\Model\OAuthModel;
 use Joindin\Api\Model\TwitterRequestTokenMapper;
-use PDO;
 use Joindin\Api\Request;
+use PDO;
 
 class TwitterController extends BaseApiController
 {
+    /**
+     * @var OAuthModel
+     */
+    private $oauthModel;
+
     public function getRequestToken(Request $request, PDO $db)
     {
         // only trusted clients can change account details

@@ -9,6 +9,10 @@ class TalkAssignEmailService extends BaseEmailService
     protected $event;
     protected $talk;
     protected $website_url;
+    /**
+     * @var string
+     */
+    protected $username;
 
     /**
      * @param array     $config

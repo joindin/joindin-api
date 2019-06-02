@@ -26,6 +26,11 @@ class BaseTalkController extends BaseApiController
 
     protected $classMaps = [];
 
+    /**
+     * @var EventMapper
+     */
+    protected $event_mapper;
+
     protected function checkLoggedIn(Request $request)
     {
         $failMessages = [

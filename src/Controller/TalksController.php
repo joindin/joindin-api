@@ -9,6 +9,7 @@ use Exception;
 use Joindin\Api\Model\EventMapper;
 use Joindin\Api\Model\LanguageMapper;
 use Joindin\Api\Model\PendingTalkClaimMapper;
+use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Model\TalkModelCollection;
 use Joindin\Api\Model\TalkTypeMapper;
@@ -23,6 +24,11 @@ use Joindin\Api\Request;
 
 class TalksController extends BaseTalkController
 {
+    /**
+     * @var PendingTalkClaimMapper
+     */
+    private $pending_talk_claim_mapper;
+
     public function getAction(Request $request, PDO $db)
     {
         $this->setDbAndRequest($db, $request);
@@ -46,6 +52,7 @@ class TalksController extends BaseTalkController
         $start          = $this->getStart($this->request);
         $resultsperpage = $this->getResultsPerPage($this->request);
 
+        /** @var TalkCommentMapper $comment_mapper */
         $comment_mapper = $this->getMapper('talkcomment');
 
         return $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);

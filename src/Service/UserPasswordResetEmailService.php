@@ -11,6 +11,11 @@ class UserPasswordResetEmailService extends BaseEmailService
     protected $website_url;
 
     /**
+     * @var string
+     */
+    protected $token;
+
+    /**
      * @param array  $config
      * @param array  $recipients
      * @param array  $user

@@ -11,6 +11,21 @@ use Joindin\Api\Request;
 class ApiMapper
 {
     /**
+     * @var PDO
+     */
+    protected $_db;
+
+    /**
+     * @var Request
+     */
+    protected $_request;
+
+    /**
+     * @var string
+     */
+    protected $website_url;
+
+    /**
      * Object constructor, sets up the db and some objects need request too
      *
      * @param PDO     $db      The database connection handle

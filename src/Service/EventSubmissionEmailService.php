@@ -8,6 +8,11 @@ class EventSubmissionEmailService extends BaseEmailService
 {
     protected $event;
     protected $comment;
+    protected $website_url;
+    /**
+     * @var int|null
+     */
+    protected $count;
 
     /**
      * @param array    $config
