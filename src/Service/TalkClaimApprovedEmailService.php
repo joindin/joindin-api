@@ -27,11 +27,11 @@ class TalkClaimApprovedEmailService extends BaseEmailService
         $this->setSubject("Joind.in: Your talk claim has been approved");
 
 
-        $replacements = array(
+        $replacements = [
             "eventName" => $this->event['name'],
             "talkTitle" => $this->talk->talk_title,
             "talkUri"   => $this->talk->getWebsiteUrl($this->website_url),
-        );
+        ];
 
         $messageBody = $this->parseEmail("talkClaimApproved.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);

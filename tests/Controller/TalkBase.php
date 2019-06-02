@@ -29,7 +29,7 @@ class TalkBase extends TestCase
     protected function createTalkMapper(mockPDO $db, Request $request, $expectedCalls = 1)
     {
         $talk_mapper = $this->getMockBuilder(TalkMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $talk_mapper
@@ -94,7 +94,7 @@ class TalkBase extends TestCase
     protected function createUserMapper(mockPDO $db, Request $request)
     {
         $user_mapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $user_mapper
@@ -115,7 +115,7 @@ class TalkBase extends TestCase
     protected function createEventMapper(mockPDO $db, Request $request)
     {
         $event_mapper = $this->getMockBuilder(EventMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $event_mapper
@@ -140,7 +140,7 @@ class TalkBase extends TestCase
     protected function createTalkCommentMapper(mockPDO $db, Request $request)
     {
         return $this->getMockBuilder(TalkCommentMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
     }
 
@@ -148,7 +148,7 @@ class TalkBase extends TestCase
     {
 
         $oathModel = $this->getMockBuilder(OAuthModel::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $oathModel

@@ -35,11 +35,11 @@ class TalkAssignEmailService extends BaseEmailService
         $this->setSubject("Joind.in: A talk has been assigned to you");
 
 
-        $replacements = array(
+        $replacements = [
             "eventName" => $this->event['name'],
             "talkTitle" => $this->talk->talk_title,
             "link"      => $this->linkToEditUserPage()
-        );
+        ];
 
         $messageBody = $this->parseEmail("talkAssigned.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);

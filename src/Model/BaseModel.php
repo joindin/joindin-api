@@ -75,7 +75,7 @@ abstract class BaseModel
      */
     public function getOutputView(Request $request, $verbose = false)
     {
-        $item = array();
+        $item = [];
 
         if ($verbose) {
             $fields = $this->getVerboseFields();

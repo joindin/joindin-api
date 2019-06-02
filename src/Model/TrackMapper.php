@@ -12,11 +12,11 @@ class TrackMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'track_name'        => 'track_name',
             'track_description' => 'track_desc',
             'talks_count'       => 'talks_count',
-        );
+        ];
     }
 
     /**
@@ -24,11 +24,11 @@ class TrackMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        return array(
+        return [
             'track_name'        => 'track_name',
             'track_description' => 'track_desc',
             'talks_count'       => 'talks_count',
-        );
+        ];
     }
 
     /**
@@ -47,12 +47,12 @@ class TrackMapper extends ApiMapper
         $sql .= $this->buildLimit($resultsperpage, $start);
 
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':event_id' => $event_id
-        ));
+        ]);
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
+            $results['total'] = $this->getTotalCount($sql, [':event_id' => $event_id]);
 
             return $this->transformResults($results, $verbose);
         }
@@ -98,11 +98,11 @@ class TrackMapper extends ApiMapper
         $sql      = $this->getBasicSQL();
         $sql      .= ' where t.ID = :track_id';
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array("track_id" => $track_id));
+        $response = $stmt->execute(["track_id" => $track_id]);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
-                $results['total'] = $this->getTotalCount($sql, array("track_id" => $track_id));
+                $results['total'] = $this->getTotalCount($sql, ["track_id" => $track_id]);
 
                 return $this->transformResults($results, $verbose);
             }
@@ -203,7 +203,7 @@ class TrackMapper extends ApiMapper
 
         // get the list of column to API field name for all valid fields
         $fields = $this->getVerboseFields();
-        $items  = array();
+        $items  = [];
 
         foreach ($fields as $api_name => $column_name) {
             // We don't change any activation stuff here!!

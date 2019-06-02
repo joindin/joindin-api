@@ -28,11 +28,11 @@ class TalkClaimEmailService extends BaseEmailService
         $this->setSubject("Joind.in: A talk has been claimed");
 
 
-        $replacements = array(
+        $replacements = [
             "eventName" => $this->event['name'],
             "talkTitle" => $this->talk->talk_title,
             "link"      => $this->linkToPendingClaimsForEvent()
-        );
+        ];
 
         $messageBody = $this->parseEmail("talkClaimed.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);

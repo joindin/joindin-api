@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class HeaderTest extends TestCase
 {
-
     public function testParseParamsWithEmbededSeparator()
     {
         $headerStr = 'For=10.0.0.1,For=10.0.0.2;user-agent="test;test;test;test";For=10.0.0.3';

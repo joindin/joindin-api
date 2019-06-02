@@ -11,10 +11,10 @@ class TalkTypeMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'title'       => 'cat_title',
             'description' => 'cat_desc',
-        );
+        ];
     }
 
     /**
@@ -22,10 +22,10 @@ class TalkTypeMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        return array(
+        return [
             'title'       => 'cat_title',
             'description' => 'cat_desc',
-        );
+        ];
     }
 
     /**
@@ -53,7 +53,7 @@ class TalkTypeMapper extends ApiMapper
      */
     public function getTalkTypeById($talkType_id, $verbose)
     {
-        $results = $this->getTalkTypes(1, 0, array('ID' => (int)$talkType_id));
+        $results = $this->getTalkTypes(1, 0, ['ID' => (int)$talkType_id]);
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
@@ -68,7 +68,7 @@ class TalkTypeMapper extends ApiMapper
      *
      * @return false|array
      */
-    protected function getTalkTypes($resultsperpage, $start, $params = array())
+    protected function getTalkTypes($resultsperpage, $start, $params = [])
     {
         $sql = 'select c.ID, c.cat_title, c.cat_desc ' .
                'from categories as c ';
@@ -121,10 +121,10 @@ class TalkTypeMapper extends ApiMapper
             }
         }
 
-        return array(
+        return [
             'talk_types' => $list,
             'meta'       => $this->getPaginationLinks($list, $total)
-        );
+        ];
     }
 
     /**
@@ -138,7 +138,7 @@ class TalkTypeMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $stmt->execute();
 
-        $list = array();
+        $list = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $lang) {
             $list[$lang['cat_title']] = $lang['ID'];
         }

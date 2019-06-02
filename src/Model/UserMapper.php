@@ -20,12 +20,12 @@ class UserMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             "username"         => "username",
             "full_name"        => "full_name",
             "biography"        => "biography",
             "twitter_username" => "twitter_username"
-        );
+        ];
     }
 
     /**
@@ -37,13 +37,13 @@ class UserMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        return array(
+        return [
             "username"         => "username",
             "full_name"        => "full_name",
             "twitter_username" => "twitter_username",
             "biography"        => "biography",
             "trusted"          => "trusted"
-        );
+        ];
     }
 
     /**
@@ -79,7 +79,7 @@ class UserMapper extends ApiMapper
         $sql .= $this->buildLimit(1, 0);
 
         $stmt = $this->_db->prepare($sql);
-        $data = array("username" => $username);
+        $data = ["username" => $username];
 
         $response = $stmt->execute($data);
         if ($response) {
@@ -116,9 +116,9 @@ class UserMapper extends ApiMapper
                . ' order by user.full_name asc';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $data = array(
+        $data = [
             ':keyword' => '%' . strtolower($keyword) . '%',
-        );
+        ];
 
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
@@ -339,7 +339,7 @@ class UserMapper extends ApiMapper
                       . "where ID = :user_id";
 
         $verify_stmt = $this->_db->prepare($verify_sql);
-        $verify_data = array("trusted_status" => (int)$trustedStatus, "user_id" => $user_id);
+        $verify_data = ["trusted_status" => (int)$trustedStatus, "user_id" => $user_id];
 
         return $verify_stmt->execute($verify_data);
     }
@@ -354,12 +354,12 @@ class UserMapper extends ApiMapper
     public function createUser($user)
     {
         // Sanity check: ensure all mandatory fields are present.
-        $mandatory_fields          = array(
+        $mandatory_fields          = [
             'username',
             'full_name',
             'email',
             'password',
-        );
+        ];
         $contains_mandatory_fields = ! array_diff($mandatory_fields, array_keys($user));
         if (!$contains_mandatory_fields) {
             throw new Exception("Missing mandatory fields");
@@ -411,7 +411,7 @@ class UserMapper extends ApiMapper
         $sql .= $this->buildLimit(1, 0);
 
         $stmt = $this->_db->prepare($sql);
-        $data = array("email" => $email);
+        $data = ["email" => $email];
 
         $response = $stmt->execute($data);
         if ($response) {
@@ -461,10 +461,10 @@ class UserMapper extends ApiMapper
                . "user_id = :user_id, token = :token";
 
         $stmt = $this->_db->prepare($sql);
-        $data = array(
+        $data = [
             "user_id" => $user_id,
             "token"   => $token
-        );
+        ];
 
         $response = $stmt->execute($data);
         if ($response) {
@@ -488,9 +488,9 @@ class UserMapper extends ApiMapper
                       . "where token = :token";
 
         $select_stmt = $this->_db->prepare($select_sql);
-        $data        = array(
+        $data        = [
             "token" => $token
-        );
+        ];
 
         $response = $select_stmt->execute($data);
         if ($response) {
@@ -528,7 +528,7 @@ class UserMapper extends ApiMapper
         $sql = "select ID from user "
                . "where email = :email and active = 1";
 
-        $data     = array("email" => $email);
+        $data     = ["email" => $email];
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
         if ($response) {
@@ -566,7 +566,7 @@ class UserMapper extends ApiMapper
                       . "where ID = :user_id";
 
         $verify_stmt = $this->_db->prepare($verify_sql);
-        $verify_data = array("user_id" => $user_id);
+        $verify_data = ["user_id" => $user_id];
 
         $verify_stmt->execute($verify_data);
 
@@ -614,10 +614,10 @@ class UserMapper extends ApiMapper
     public function editUser(array $user, $userId)
     {
         // Sanity check: ensure all mandatory fields are present.
-        $mandatory_fields          = array(
+        $mandatory_fields          = [
             'full_name',
             'email',
-        );
+        ];
         $contains_mandatory_fields = ! array_diff($mandatory_fields, array_keys($user));
         if (!$contains_mandatory_fields) {
             throw new Exception("Missing mandatory fields");
@@ -667,7 +667,7 @@ class UserMapper extends ApiMapper
     {
         $sql = "select ID from user where username = :username";
 
-        $data     = array("username" => $username);
+        $data     = ["username" => $username];
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
         if ($response) {
@@ -692,7 +692,7 @@ class UserMapper extends ApiMapper
     {
         $sql      = "select email from user where ID = :user_id";
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array("user_id" => $user_id));
+        $response = $stmt->execute(["user_id" => $user_id]);
         if ($response) {
             $row = $stmt->fetch(\PDO::FETCH_ASSOC);
             if (isset($row['email'])) {
@@ -720,10 +720,10 @@ class UserMapper extends ApiMapper
                . "user_id = :user_id, token = :token";
 
         $stmt = $this->_db->prepare($sql);
-        $data = array(
+        $data = [
             "user_id" => $user_id,
             "token"   => $token
-        );
+        ];
 
         $response = $stmt->execute($data);
         if ($response) {
@@ -750,7 +750,7 @@ class UserMapper extends ApiMapper
                       . "where token = :token";
 
         $select_stmt = $this->_db->prepare($select_sql);
-        $data        = array("token" => $token);
+        $data        = ["token" => $token];
 
         $response = $select_stmt->execute($data);
         if ($response) {
@@ -763,10 +763,10 @@ class UserMapper extends ApiMapper
                               . "where ID = :user_id";
 
                 $update_stmt     = $this->_db->prepare($update_sql);
-                $update_data     = array(
+                $update_data     = [
                     "password" => password_hash(md5($password), PASSWORD_DEFAULT),
                     "user_id"  => $user_id
-                );
+                ];
                 $update_response = $update_stmt->execute($update_data);
 
                 if ($update_response) {
@@ -775,7 +775,7 @@ class UserMapper extends ApiMapper
                                   . "where user_id = :user_id";
 
                     $stmt = $this->_db->prepare($delete_sql);
-                    $stmt->execute(array("user_id" => $user_id));
+                    $stmt->execute(["user_id" => $user_id]);
 
                     // all good
                     return true;
@@ -804,32 +804,32 @@ class UserMapper extends ApiMapper
             // Delete the user
             $sql  = "delete from user where ID = :user_id";
             $stmt = $this->_db->prepare($sql);
-            $stmt->execute(array("user_id" => $user_id));
+            $stmt->execute(["user_id" => $user_id]);
 
             // Unassign any talks
             $sql  = "update talk_speaker SET speaker_id = 0, status = NULL WHERE speaker_id = :speaker_id";
             $stmt = $this->_db->prepare($sql);
-            $stmt->execute(array("speaker_id" => $user_id));
+            $stmt->execute(["speaker_id" => $user_id]);
 
             // Remove any pending talk claims
             $sql  = "delete from pending_talk_claims where speaker_id = :speaker_id";
             $stmt = $this->_db->prepare($sql);
-            $stmt->execute(array("speaker_id" => $user_id));
+            $stmt->execute(["speaker_id" => $user_id]);
 
             // Anonymise any comments
             $sql  = "update talk_comments SET user_id = 0 WHERE user_id = :user_id";
             $stmt = $this->_db->prepare($sql);
-            $stmt->execute(array("user_id" => $user_id));
+            $stmt->execute(["user_id" => $user_id]);
 
             // Remove any starred talks
             $sql  = "delete from user_talk_star where uid = :user_id";
             $stmt = $this->_db->prepare($sql);
-            $stmt->execute(array("user_id" => $user_id));
+            $stmt->execute(["user_id" => $user_id]);
 
             // Remove user attendence
             $sql  = "delete from user_attend where uid = :user_id";
             $stmt = $this->_db->prepare($sql);
-            $stmt->execute(array("user_id" => $user_id));
+            $stmt->execute(["user_id" => $user_id]);
 
             $this->_db->commit();
 

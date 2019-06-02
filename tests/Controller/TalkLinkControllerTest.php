@@ -9,7 +9,6 @@ use JoindinTest\Inc\mockPDO;
 
 class TalkLinkControllerTest extends TalkBase
 {
-
     /**
      * Test sending delete link where the link id is not found
      */

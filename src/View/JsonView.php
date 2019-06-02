@@ -24,7 +24,7 @@ class JsonView extends ApiView
         // Don't use JSON_NUMERIC_CHECK because it eats things (e.g. talk stubs)
 
         // Specify a list of fields to NOT convert to numbers
-        $this->string_fields = array("stub", "track_name", "comment", "username");
+        $this->string_fields = ["stub", "track_name", "comment", "username"];
 
         $output = $this->numericCheck($content);
 
@@ -36,7 +36,7 @@ class JsonView extends ApiView
         if (!is_array($data)) {
             return $this->scalarNumericCheck('', $data);
         }
-        $output = array();
+        $output = [];
         foreach ($data as $key => $value) {
             // recurse as needed
             if (is_array($value)) {

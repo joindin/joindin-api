@@ -157,7 +157,7 @@ class TalksController extends BaseTalkController
                     if ($new_id) {
                         $comment    = $comment_mapper->getCommentById($new_id);
                         $speakers   = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
-                        $recipients = array();
+                        $recipients = [];
 
                         foreach ($speakers as $person) {
                             if ($request->user_id == $person['ID']) {

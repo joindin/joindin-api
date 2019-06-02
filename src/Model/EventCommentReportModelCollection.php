@@ -9,7 +9,7 @@ use Joindin\Api\Request;
  */
 class EventCommentReportModelCollection extends BaseModelCollection
 {
-    protected $list = array();
+    protected $list = [];
     protected $total;
 
     /**

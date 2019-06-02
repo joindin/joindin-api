@@ -67,7 +67,7 @@ class EventCommentsController extends BaseApiController
 
     public function createComment(Request $request, PDO $db)
     {
-        $comment             = array();
+        $comment             = [];
         $comment['event_id'] = $this->getItemId($request);
         if (empty($comment['event_id'])) {
             throw new Exception(

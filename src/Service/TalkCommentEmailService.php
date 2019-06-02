@@ -37,13 +37,13 @@ class TalkCommentEmailService extends BaseEmailService
             $byLine = ' by' . $this->comment['username'];
         }
 
-        $replacements = array(
+        $replacements = [
             "title"   => $this->talk->talk_title,
             "rating"  => $this->comment['rating'],
             "comment" => $this->comment['comment'],
             "url"     => $this->talk->getWebsiteUrl($this->config['website_url']),
             "byline"  => $byLine
-        );
+        ];
 
         $messageBody = $this->parseEmail("commentTalk.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);

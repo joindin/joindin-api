@@ -92,7 +92,7 @@ class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $userMapper
@@ -126,7 +126,7 @@ class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $userMapper
@@ -283,7 +283,7 @@ class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $userMapper
@@ -319,7 +319,7 @@ class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $userMapper
@@ -353,7 +353,7 @@ class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $userMapper
@@ -403,7 +403,7 @@ class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $userMapper

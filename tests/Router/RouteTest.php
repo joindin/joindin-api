@@ -23,9 +23,9 @@ class RouteTest extends TestCase
      */
     public function constructProvider()
     {
-        return array(
-            array('controller', 'action', array('a' => 'b'))
-        );
+        return [
+            ['controller', 'action', ['a' => 'b']]
+        ];
     }
 
     /**
@@ -51,9 +51,9 @@ class RouteTest extends TestCase
      */
     public function getSetProvider()
     {
-        return array(
-            array('TestController', 'testAction', array('event_id' => 1))
-        );
+        return [
+            ['TestController', 'testAction', ['event_id' => 1]]
+        ];
     }
 
     /**
@@ -71,7 +71,7 @@ class RouteTest extends TestCase
      */
     public function testGetSet($controller, $action, array $params)
     {
-        $route = new Route('a', 'b', array('c'));
+        $route = new Route('a', 'b', ['c']);
 
         $route->setController($controller);
         $this->assertEquals($controller, $route->getController());
@@ -90,31 +90,31 @@ class RouteTest extends TestCase
      */
     public function dispatchProvider()
     {
-        return array(
-            array( // #0
-                'config'              => array('config'),
+        return [
+            [ // #0
+                'config'              => ['config'],
                 'controller'          => TestController3::class,
                 'action'              => 'action',
                 Request::class => $this->getRequest('v1')
-            ),
-            array( // #1
-                'config'                => array('config'),
+            ],
+            [ // #1
+                'config'                => ['config'],
                 'controller'            => TestController3::class,
                 'action'                => 'action2',
                 Request::class => $this->getRequest('v1'),
                 'expectedException'     => 'Exception',
                 'expectedExceptionCode' => 500,
-            ),
-            array( // #2
-                'config'                => array('config'),
+            ],
+            [ // #2
+                'config'                => ['config'],
                 'controller'            => 'TestController4',
                 'action'                => 'action2',
                 Request::class => $this->getRequest('v1'),
                 'expectedException'     => 'Exception',
                 'expectedExceptionCode' => 400,
                 'controllerExists'      => false
-            )
-        );
+            ]
+        ];
     }
 
     /**

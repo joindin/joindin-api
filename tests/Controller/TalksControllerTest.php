@@ -86,7 +86,7 @@ class TalksControllerTest extends TalkBase
 
 
         $this->talk_mapper = $this->getMockBuilder(TalkMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $this->talk_mapper
@@ -325,7 +325,7 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -433,7 +433,7 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -498,7 +498,7 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -564,7 +564,7 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -627,7 +627,7 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -687,7 +687,7 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -746,7 +746,7 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -817,7 +817,7 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -1069,7 +1069,7 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $user_mapper
@@ -1079,7 +1079,7 @@ class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs(array($db,$request))
+            ->setConstructorArgs([$db,$request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())

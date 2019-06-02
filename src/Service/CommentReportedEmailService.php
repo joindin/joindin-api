@@ -42,14 +42,14 @@ class CommentReportedEmailService extends BaseEmailService
             $byLine = ' by (anonymous)';
         }
 
-        $replacements = array(
+        $replacements = [
             "eventName" => $this->event['name'],
             "title"     => $this->comment['talk_title'],
             "rating"    => $this->comment['rating'],
             "comment"   => $this->comment['comment'],
             "byline"    => $byLine,
             "link"      => $this->linkToReportedCommentsForEvent()
-        );
+        ];
 
         $messageBody = $this->parseEmail("commentReported.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);

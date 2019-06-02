@@ -23,7 +23,7 @@ namespace Joindin\Api;
  */
 class Header
 {
-    protected $values = array();
+    protected $values = [];
     protected $header;
     protected $glue;
 
@@ -32,7 +32,7 @@ class Header
      * @param array|string $values Values of the header as an array or a scalar
      * @param string       $glue   Glue used to combine multiple values into a string
      */
-    public function __construct($header, $values = array(), $glue = ',')
+    public function __construct($header, $values = [], $glue = ',')
     {
         $this->header = trim($header);
         $this->glue   = $glue;
@@ -136,7 +136,7 @@ class Header
 
     public function buildEntityArray()
     {
-        $assocArray = array();
+        $assocArray = [];
         foreach ($this->values as $value) {
             $parts = explode('=', $value);
             $key   = ucwords($parts[0]);
@@ -144,13 +144,13 @@ class Header
                 if (array_key_exists(0, $assocArray)) {
                     $assocArray[0][] = $parts[0];
                 } else {
-                    $assocArray[0]   = array();
+                    $assocArray[0]   = [];
                     $assocArray[0][] = $parts[0];
                 }
             } elseif (array_key_exists($key, $assocArray)) {
                 $assocArray[$key][] = $parts[1];
             } else {
-                $assocArray[$key]   = array();
+                $assocArray[$key]   = [];
                 $assocArray[$key][] = $parts[1];
             }
         }
@@ -160,12 +160,12 @@ class Header
 
     public function parseParams()
     {
-        $params   = $matches = array();
-        $callback = array($this, 'trimHeader');
+        $params   = $matches = [];
+        $callback = [$this, 'trimHeader'];
 
         // Normalize the header into a single array and iterate over all values
         foreach ($this->normalize()->toArray() as $val) {
-            $part = array();
+            $part = [];
             foreach (preg_split('/;(?=([^"]*"[^"]*")*[^"]*$)/', $val) as $kvp) {
                 if (!preg_match_all('/<[^>]+>|[^=]+/', $kvp, $matches)) {
                     continue;

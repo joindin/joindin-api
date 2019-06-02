@@ -81,7 +81,7 @@ class OAuthModel
         $sql  = 'select id, user_id from oauth_access_tokens'
                 . ' where access_token=:access_token';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("access_token" => $token));
+        $stmt->execute(["access_token" => $token]);
         $result = $stmt->fetch();
 
         // log that we used this token
@@ -89,7 +89,7 @@ class OAuthModel
                        . ' set last_used_date = NOW()'
                        . ' where id = :id';
         $update_stmt = $this->_db->prepare($update_sql);
-        $update_stmt->execute(array("id" => $result['id']));
+        $update_stmt->execute(["id" => $result['id']]);
 
         // return the user ID this token belongs to
         return $result['user_id'];
@@ -117,7 +117,7 @@ class OAuthModel
         // we also want to send back the logged in user's uri
         $userUri = $this->getUserUri($userId);
 
-        return array('access_token' => $accessToken, 'user_uri' => $userUri);
+        return ['access_token' => $accessToken, 'user_uri' => $userUri];
     }
 
     /**
@@ -134,7 +134,7 @@ class OAuthModel
         $sql  = 'SELECT ID, password, email, verified FROM user
             WHERE username=:username';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("username" => $username));
+        $stmt->execute(["username" => $username]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$result) {
@@ -186,11 +186,11 @@ class OAuthModel
 
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute(
-            array(
+            [
                 'access_token' => $accessToken,
                 'consumer_key' => $consumer_key,
                 'user_id'      => $user_id,
-            )
+            ]
         );
 
         if ($result) {
@@ -234,10 +234,10 @@ class OAuthModel
 
             $stmt = $this->_db->prepare($sql);
             $stmt->execute(
-                array(
+                [
                     'consumer_key' => $clientId,
                     'expiry_date'  => date('Y-m-d', strtotime('-1 day'))
-                )
+                ]
             );
         }
     }
@@ -258,7 +258,7 @@ class OAuthModel
                 . 'left join oauth_consumers c using (consumer_key) '
                 . 'where at.access_token=:access_token ';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("access_token" => $token));
+        $stmt->execute(["access_token" => $token]);
         $result = $stmt->fetch();
 
         // what did we get? Might have been an oauth app, a special one (like web2)
@@ -287,7 +287,7 @@ class OAuthModel
                 . 'and c.consumer_secret=:secret '
                 . 'and c.enable_password_grant = 1';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("key" => $key, "secret" => $secret));
+        $stmt->execute(["key" => $key, "secret" => $secret]);
 
         if ($stmt->fetch()) {
             return true;
@@ -312,7 +312,7 @@ class OAuthModel
                 . 'where at.access_token = :token '
                 . 'and c.enable_password_grant = 1';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("token" => $token));
+        $stmt->execute(["token" => $token]);
 
         if ($stmt->fetch()) {
             return true;
@@ -337,7 +337,7 @@ class OAuthModel
             WHERE ID = :user_id
             AND verified = 1';
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("user_id" => $userId));
+        $stmt->execute(["user_id" => $userId]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($result) {
             if (password_verify(md5($password), $result['password'])) {
@@ -364,7 +364,7 @@ class OAuthModel
                . "and verified = 1";
 
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("twitter_username" => $twitterUsername));
+        $stmt->execute(["twitter_username" => $twitterUsername]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$result) {
             return false;
@@ -377,7 +377,7 @@ class OAuthModel
         // we also want to send back the logged in user's uri
         $userUri = $this->getUserUri($userId);
 
-        return array('access_token' => $accessToken, 'user_uri' => $userUri);
+        return ['access_token' => $accessToken, 'user_uri' => $userUri];
     }
 
     /**
@@ -398,7 +398,7 @@ class OAuthModel
                . "where twitter_username = :twitter_username";
 
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("twitter_username" => $values['screen_name']));
+        $stmt->execute(["twitter_username" => $values['screen_name']]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($result) {
@@ -444,7 +444,7 @@ class OAuthModel
             AND verified = 1";
 
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array("email" => $email));
+        $stmt->execute(["email" => $email]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$result && $fullName && $userName) {
             $result = $this->createUserFromTrustedEmail($email, $fullName, $userName);
@@ -460,7 +460,7 @@ class OAuthModel
         // we also want to send back the logged in user's uri
         $userUri = $this->getUserUri($userId);
 
-        return array('access_token' => $accessToken, 'user_uri' => $userUri);
+        return ['access_token' => $accessToken, 'user_uri' => $userUri];
     }
 
     protected function createUserFromTrustedEmail($email, $fullName, $userName)

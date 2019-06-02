@@ -49,9 +49,9 @@ class ClientMapper extends ApiMapper
         $sql .= $this->buildLimit($resultsperpage, $start);
 
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':user_id' => $user_id
-        ));
+        ]);
 
         if (!$response) {
             return false;

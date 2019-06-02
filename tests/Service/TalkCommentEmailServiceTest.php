@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class TalkCommentEmailServiceTest extends Testcase
 {
-
     protected $config = [
         'email' => [
             "from" => "test@joind.in",

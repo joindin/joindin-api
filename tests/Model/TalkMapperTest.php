@@ -71,7 +71,7 @@ class TalkMapperTest extends TestCase
         $transformedRows = [];
 
         foreach ($rows as $row) {
-               $transformedRows[] = [$row['display_name'] => $row['url']];
+            $transformedRows[] = [$row['display_name'] => $row['url']];
         }
 
         return $transformedRows;

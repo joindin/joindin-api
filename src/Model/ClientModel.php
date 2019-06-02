@@ -18,13 +18,13 @@ class ClientModel extends BaseModel
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'consumer_key' => 'consumer_key',
             'created_date' => 'created_date',
             'application'  => 'application',
             'description'  => 'description',
             'callback_url' => 'callback_url',
-        );
+        ];
     }
 
     /**

@@ -18,20 +18,20 @@ class JsonViewTest extends TestCase
      */
     public function buildOutputProvider()
     {
-        return array(
-            array( // #0
-                'input'    => array('a' => 'b', 'c' => 10),
+        return [
+            [ // #0
+                'input'    => ['a' => 'b', 'c' => 10],
                 'expected' => '{"a":"b","c":10}'
-            ),
-            array( // #1
-                'input'    => array('stub' => '10', 'b' => array('c', 'd')),
+            ],
+            [ // #1
+                'input'    => ['stub' => '10', 'b' => ['c', 'd']],
                 'expected' => '{"stub":"10","b":["c","d"],"meta":{"count":2}}'
-            ),
-            array( // #2 - JOINDIN-519
+            ],
+            [ // #2 - JOINDIN-519
                 'input'    => false,
                 'expected' => 'false'
-            ),
-        );
+            ],
+        ];
     }
 
     /**

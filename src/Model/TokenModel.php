@@ -18,13 +18,13 @@ class TokenModel extends BaseModel
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'token'             => 'id',
             'application'       => 'application',
             'created_date'      => 'created_date',
             'last_used_date'    => 'last_used_date',
             'application_owner' => 'full_name',
-        );
+        ];
     }
 
     /**

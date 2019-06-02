@@ -18,7 +18,7 @@ class TalkModel extends BaseModel
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'talk_title'              => 'talk_title',
             'url_friendly_talk_title' => 'url_friendly_talk_title',
             'talk_description'        => 'talk_desc',
@@ -31,7 +31,7 @@ class TalkModel extends BaseModel
             'comment_count'           => 'comment_count',
             'starred'                 => 'starred',
             'starred_count'           => 'starred_count',
-        );
+        ];
     }
 
     /**

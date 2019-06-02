@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ApiRouterTest extends TestCase
 {
-
     /**
      * DataProvider for testGetSetRouters
      *
@@ -20,20 +19,20 @@ class ApiRouterTest extends TestCase
      */
     public function getSetRoutersProvider()
     {
-        return array(
-            array(
-                'routers'  => array(
+        return [
+            [
+                'routers'  => [
                     2 => 'B',
                     1 => 'A',
                     3 => 'C'
-                ),
-                'expected' => array(
+                ],
+                'expected' => [
                     1 => 'A',
                     2 => 'B',
                     3 => 'C'
-                )
-            )
-        );
+                ]
+            ]
+        ];
     }
 
     /**
@@ -47,7 +46,7 @@ class ApiRouterTest extends TestCase
      */
     public function testGetSetRouters(array $routers, array $expected)
     {
-        $obj = new ApiRouter(array(), array(), array());
+        $obj = new ApiRouter([], [], []);
         $obj->setRouters($routers);
         $this->assertEquals($expected, $obj->getRouters());
     }

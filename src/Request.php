@@ -43,9 +43,9 @@ class Request
     protected $verb;
     public $url_elements;
     public $path_info;
-    public $accept = array();
+    public $accept = [];
     public $host;
-    public $parameters = array();
+    public $parameters = [];
     public $user_id;
     public $access_token;
     public $version;
@@ -63,14 +63,14 @@ class Request
     /**
      * @var array The priority-ordered list of format choices
      */
-    protected $formatChoices = array(self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML);
+    protected $formatChoices = [self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML];
 
     /**
      * A list of parameters provided from a Route
      *
      * @var array
      */
-    protected $routeParams = array();
+    protected $routeParams = [];
 
     /**
      * Builds the request object

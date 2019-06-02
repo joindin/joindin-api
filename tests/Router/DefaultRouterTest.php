@@ -22,11 +22,11 @@ class DefaultRouterTest extends TestCase
      */
     public function getRouteProvider()
     {
-        return array(
-            array( // #0
+        return [
+            [ // #0
                 'url' => '/v1/test'
-            )
-        );
+            ]
+        ];
     }
 
     /**

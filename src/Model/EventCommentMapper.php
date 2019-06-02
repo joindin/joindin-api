@@ -10,21 +10,21 @@ class EventCommentMapper extends ApiMapper
     public function getDefaultFields()
     {
         // warning, users added in build array
-        return array(
+        return [
             'rating'       => 'rating',
             'comment'      => 'comment',
             'created_date' => 'date_made'
-        );
+        ];
     }
 
     public function getVerboseFields()
     {
-        return array(
+        return [
             'rating'       => 'rating',
             'comment'      => 'comment',
             'source'       => 'source',
             'created_date' => 'date_made',
-        );
+        ];
     }
 
     /**
@@ -41,12 +41,12 @@ class EventCommentMapper extends ApiMapper
         $sql      .= 'and event_id = :event_id order by date_made desc ';
         $sql      .= $this->buildLimit($resultsperpage, $start);
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':event_id' => $event_id
-        ));
+        ]);
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
+            $results['total'] = $this->getTotalCount($sql, [':event_id' => $event_id]);
 
             return $this->transformResults($results, $verbose);
         }
@@ -66,13 +66,13 @@ class EventCommentMapper extends ApiMapper
         $sql      = $this->getBasicSQL($include_hidden);
         $sql      .= 'and ec.ID = :comment_id ';
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':comment_id' => $comment_id
-        ));
+        ]);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($results) {
-                $results['total'] = $this->getTotalCount($sql, array(':comment_id' => $comment_id));
+                $results['total'] = $this->getTotalCount($sql, [':comment_id' => $comment_id]);
 
                 return $this->transformResults($results, $verbose);
             }
@@ -173,11 +173,11 @@ class EventCommentMapper extends ApiMapper
                     . 'where event_id = :event_id and user_id = :user_id and comment = :comment';
 
         $dupe_stmt = $this->_db->prepare($dupe_sql);
-        $dupe_stmt->execute(array(
+        $dupe_stmt->execute([
             ':event_id' => $data['event_id'],
             ':comment'  => $data['comment'],
             ':user_id'  => $data['user_id'],
-        ));
+        ]);
 
         // only proceed if we didn't already find a row like this
         if ($dupe_stmt->fetch()) {
@@ -189,14 +189,14 @@ class EventCommentMapper extends ApiMapper
                . 'values (:event_id, :rating, :comment, :user_id, :cname, :source, UNIX_TIMESTAMP(), 1)';
 
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':event_id' => $data['event_id'],
             ':rating'   => $data['rating'],
             ':comment'  => $data['comment'],
             ':cname'    => $data['cname'],
             ':user_id'  => $data['user_id'],
             ':source'   => $data['source'],
-        ));
+        ]);
 
         return $this->_db->lastInsertId();
     }
@@ -215,10 +215,10 @@ class EventCommentMapper extends ApiMapper
                . 'where event_id = :event_id and user_id = :user_id and rating > 0';
 
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute(array(
+        $stmt->execute([
             ':event_id' => $event_id,
             ':user_id'  => $user_id,
-        ));
+        ]);
 
         if ($stmt->fetch()) {
             return true;

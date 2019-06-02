@@ -12,10 +12,10 @@ class LanguageMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'name' => 'lang_name',
             'code' => 'lang_abbr',
-        );
+        ];
     }
 
     /**
@@ -23,10 +23,10 @@ class LanguageMapper extends ApiMapper
      */
     public function getVerboseFields()
     {
-        return array(
+        return [
             'name' => 'lang_name',
             'code' => 'lang_abbr',
-        );
+        ];
     }
 
     /**
@@ -37,7 +37,7 @@ class LanguageMapper extends ApiMapper
      */
     public function getLanguageById($language_id, $verbose = false)
     {
-        $results = $this->getLanguages(1, 0, array('ID' => (int)$language_id));
+        $results = $this->getLanguages(1, 0, ['ID' => (int)$language_id]);
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
@@ -82,10 +82,10 @@ class LanguageMapper extends ApiMapper
             }
         }
 
-        return array(
+        return [
             'languages' => $list,
             'meta'      => $this->getPaginationLinks($list, $total)
-        );
+        ];
     }
 
     /**
@@ -141,7 +141,7 @@ class LanguageMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($sql);
         try {
-            $stmt->execute(array(':language' => $language));
+            $stmt->execute([':language' => $language]);
         } catch (Exception $e) {
             return false;
         }

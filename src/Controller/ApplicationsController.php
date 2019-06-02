@@ -48,8 +48,8 @@ class ApplicationsController extends BaseApiController
             throw new Exception("You must be logged in", 401);
         }
 
-        $app    = array();
-        $errors = array();
+        $app    = [];
+        $errors = [];
 
         $app['name'] = filter_var(
             $request->getParameter("name"),
@@ -102,8 +102,8 @@ class ApplicationsController extends BaseApiController
             throw new Exception("You must be logged in", 401);
         }
 
-        $app    = array();
-        $errors = array();
+        $app    = [];
+        $errors = [];
 
         $app['name'] = filter_var(
             $request->getParameter("name"),

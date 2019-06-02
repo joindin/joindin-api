@@ -129,8 +129,8 @@ class UsersController extends BaseApiController
                     break;
             }
         } else {
-            $user   = array();
-            $errors = array();
+            $user   = [];
+            $errors = [];
 
             $user_mapper = $this->getUserMapper($db, $request);
 
@@ -224,7 +224,7 @@ class UsersController extends BaseApiController
                 // Generate a verification token and email it to the user
                 $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
 
-                $recipients   = array($user['email']);
+                $recipients   = [$user['email']];
                 $emailService = $this->getUserRegistrationEmailService($this->config, $recipients, $token);
                 $emailService->sendEmail();
 
@@ -261,8 +261,8 @@ class UsersController extends BaseApiController
             }
 
             // start building up a representation of the user
-            $user   = array("user_id" => $userId);
-            $errors = array();
+            $user   = ["user_id" => $userId];
+            $errors = [];
 
             // start with passwords
             $password = $request->getParameter('password');

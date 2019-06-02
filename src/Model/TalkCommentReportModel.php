@@ -18,13 +18,13 @@ class TalkCommentReportModel extends BaseModel
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'reporting_date'          => 'reporting_date',
             'decision'                => 'decision',
             'deciding_date'           => 'deciding_date',
             'reporting_user_username' => 'reporting_username',
             'deciding_user_username'  => 'deciding_username',
-        );
+        ];
     }
 
     /**

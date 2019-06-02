@@ -51,9 +51,9 @@ class TokenMapper extends ApiMapper
         $sql .= $this->buildLimit($resultsperpage, $start);
 
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':user_id' => $user_id
-        ));
+        ]);
 
         if (!$response) {
             return false;
@@ -85,9 +85,9 @@ class TokenMapper extends ApiMapper
         $sql .= $this->buildLimit($resultsperpage, $start);
 
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':user_id' => $user_id
-        ));
+        ]);
 
         if (!$response) {
             return false;
@@ -119,10 +119,10 @@ class TokenMapper extends ApiMapper
         $sql .= $this->buildLimit(1, 0);
 
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':user_id'  => $user_id,
             ':token_id' => $token_id,
-        ));
+        ]);
 
         if (!$response) {
             return new TokenModelCollection([], 1);
@@ -153,10 +153,10 @@ class TokenMapper extends ApiMapper
         $sql .= $this->buildLimit(1, 0);
 
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':user_id'  => $user_id,
             ':token_id' => $token_id,
-        ));
+        ]);
 
         if (!$response) {
             return new TokenModelCollection([], 1);
@@ -205,9 +205,9 @@ class TokenMapper extends ApiMapper
         $sql .= $this->buildLimit(1, 0);
 
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':token' => $accessToken,
-        ));
+        ]);
 
         if (!$response) {
             return false;

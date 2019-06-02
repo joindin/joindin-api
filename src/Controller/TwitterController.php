@@ -142,7 +142,7 @@ class TwitterController extends BaseApiController
             $requestTokenMapper = new TwitterRequestTokenMapper($db);
             $requestTokenMapper->delete($request_token);
 
-            return array('access_token' => $result['access_token'], 'user_uri' => $result['user_uri']);
+            return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
         }
 
         throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);

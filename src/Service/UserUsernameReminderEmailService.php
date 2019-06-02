@@ -25,11 +25,11 @@ class UserUsernameReminderEmailService extends BaseEmailService
     {
         $this->setSubject('Your joind.in username');
 
-        $replacements = array(
+        $replacements = [
             "full_name"   => $this->user['full_name'],
             "username"    => $this->user['username'],
             "website_url" => $this->website_url,
-        );
+        ];
 
         $messageBody = $this->parseEmail("userUsernameReminder.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);

@@ -88,7 +88,7 @@ class FacebookController extends BaseApiController
                 );
 
                 if ($result) {
-                    return array('access_token' => $result['access_token'], 'user_uri' => $result['user_uri']);
+                    return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
                 }
             }
 

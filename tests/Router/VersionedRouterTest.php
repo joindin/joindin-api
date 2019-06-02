@@ -22,121 +22,121 @@ class VersionedRouterTest extends TestCase
      */
     public function getRouteProvider()
     {
-        return array(
-            array( // #0
+        return [
+            [ // #0
                 'version'            => '2.1',
-                'rules'              => array(
-                    array(
+                'rules'              => [
+                    [
                         'path'       => '/events',
                         'controller' => 'EventController',
                         'action'     => 'getAction'
-                    )
-                ),
+                    ]
+                ],
                 'url'                => '/v2.1/events',
                 'method'             => Request::HTTP_GET,
                 'expectedController' => 'EventController',
                 'expectedAction'     => 'getAction'
-            ),
-            array( // #1
+            ],
+            [ // #1
                 'version'            => '2.1',
-                'rules'              => array(
-                    array(
+                'rules'              => [
+                    [
                         'path'       => '/aevents',
                         'controller' => 'AEventController',
                         'action'     => 'getSAction'
-                    ),
-                    array(
+                    ],
+                    [
                         'path'       => '/events',
                         'controller' => 'EventController',
                         'action'     => 'getAction'
-                    )
-                ),
+                    ]
+                ],
                 'url'                => '/v2.1/events',
                 'method'             => Request::HTTP_GET,
                 'expectedController' => 'EventController',
                 'expectedAction'     => 'getAction'
-            ),
-            array( // #2
+            ],
+            [ // #2
                 'version'            => '2.1',
-                'rules'              => array(
-                    array(
+                'rules'              => [
+                    [
                         'path'       => '/events',
                         'controller' => 'EventController',
                         'action'     => 'getAction',
-                        'verbs'      => array(Request::HTTP_POST)
-                    ),
-                    array(
+                        'verbs'      => [Request::HTTP_POST]
+                    ],
+                    [
                         'path'       => '/events',
                         'controller' => 'EventController2',
                         'action'     => 'getAction2',
-                        'verbs'      => array(Request::HTTP_GET, Request::HTTP_PUT)
-                    )
-                ),
+                        'verbs'      => [Request::HTTP_GET, Request::HTTP_PUT]
+                    ]
+                ],
                 'url'                => '/v2.1/events',
                 'method'             => Request::HTTP_GET,
                 'expectedController' => 'EventController2',
                 'expectedAction'     => 'getAction2'
-            ),
-            array( // #3
+            ],
+            [ // #3
                 'version'            => '2.1',
-                'rules'              => array(
-                    array(
+                'rules'              => [
+                    [
                         'path'       => '/events/(?P<event_id>\d+)$',
                         'controller' => 'EventController',
                         'action'     => 'getAction'
-                    ),
-                ),
+                    ],
+                ],
                 'url'                => '/v2.1/events/10',
                 'method'             => Request::HTTP_GET,
                 'expectedController' => 'EventController',
                 'expectedAction'     => 'getAction',
-                'routeParams'        => array('event_id' => 10)
-            ),
-            array( // #4
+                'routeParams'        => ['event_id' => 10]
+            ],
+            [ // #4
                 'version'               => '2.1',
-                'rules'                 => array(
-                    array(
+                'rules'                 => [
+                    [
                         'path'       => '/aevents',
                         'controller' => 'AEventController',
                         'action'     => 'getSAction'
-                    ),
-                    array(
+                    ],
+                    [
                         'path'       => '/events',
                         'controller' => 'EventController',
                         'action'     => 'getAction',
-                        'verbs'      => array(Request::HTTP_GET)
-                    )
-                ),
+                        'verbs'      => [Request::HTTP_GET]
+                    ]
+                ],
                 'url'                   => '/v2.1/events',
                 'method'                => Request::HTTP_POST,
                 'expectedController'    => 'N/A',
                 'expectedAction'        => 'N/A',
-                'routeParams'           => array(),
+                'routeParams'           => [],
                 'expectedExceptionCode' => 415
-            ),
-            array( // #5
+            ],
+            [ // #5
                 'version'               => '2.1',
-                'rules'                 => array(
-                    array(
+                'rules'                 => [
+                    [
                         'path'       => '/aevents',
                         'controller' => 'AEventController',
                         'action'     => 'getSAction'
-                    ),
-                    array(
+                    ],
+                    [
                         'path'       => '/events',
                         'controller' => 'EventController',
                         'action'     => 'getAction',
-                        'verbs'      => array(Request::HTTP_GET)
-                    )
-                ),
+                        'verbs'      => [Request::HTTP_GET]
+                    ]
+                ],
                 'url'                   => '/v2.2/events',
                 'method'                => Request::HTTP_GET,
                 'expectedController'    => 'N/A',
                 'expectedAction'        => 'N/A',
-                'routeParams'           => array(),
+                'routeParams'           => [],
                 'expectedExceptionCode' => 404
-            )
-        );
+            ]
+        ];
     }
 
     /**
@@ -160,7 +160,7 @@ class VersionedRouterTest extends TestCase
         $method,
         $expectedController,
         $expectedAction,
-        array $routeParams = array(),
+        array $routeParams = [],
         $expectedExceptionCode = false
     ) {
         $request = new Request([], ['REQUEST_URI' => $url, 'REQUEST_METHOD' => $method]);

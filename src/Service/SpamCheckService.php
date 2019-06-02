@@ -33,7 +33,7 @@ class SpamCheckService implements SpamCheckServiceInterface
      */
     public function isCommentAcceptable(array $data, $userIp, $userAgent)
     {
-        $comment = array();
+        $comment = [];
 
         // set some required fields
         $comment['blog'] = $this->blog;

@@ -29,12 +29,12 @@ class ApiMapper
 
     public function getDefaultFields()
     {
-        return array();
+        return [];
     }
 
     public function getVerboseFields()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -49,11 +49,11 @@ class ApiMapper
     public function transformResults(array $results, $verbose)
     {
         $fields = $verbose ? $this->getVerboseFields() : $this->getDefaultFields();
-        $retval = array();
+        $retval = [];
 
         // format results to only include named fields
         foreach ($results as $row) {
-            $entry = array();
+            $entry = [];
             foreach ($fields as $key => $value) {
                 // special handling for dates
                 if (substr($key, -5) == '_date' && ! empty($row[$value])) {
@@ -101,7 +101,7 @@ class ApiMapper
      *
      * @return int
      */
-    public function getTotalCount($sqlQuery, array $data = array())
+    public function getTotalCount($sqlQuery, array $data = [])
     {
         $limitPos = strrpos($sqlQuery, 'LIMIT');
         if (false !== $limitPos) {

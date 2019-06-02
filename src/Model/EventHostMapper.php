@@ -11,10 +11,10 @@ class EventHostMapper extends ApiMapper
      */
     public function getDefaultFields()
     {
-        return array(
+        return [
             'host_name' => 'host_name',
             'host_uri'  => 'host_uri',
-        );
+        ];
     }
 
     /**
@@ -40,15 +40,15 @@ class EventHostMapper extends ApiMapper
         $sql .= $this->buildLimit($resultsperpage, $start);
 
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(array(
+        $response = $stmt->execute([
             ':event_id' => $event_id
-        ));
+        ]);
         if (!$response) {
             return false;
         }
 
         $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $results['total'] = $this->getTotalCount($sql, array(':event_id' => $event_id));
+        $results['total'] = $this->getTotalCount($sql, [':event_id' => $event_id]);
 
         return $this->transformResults($results, $verbose);
     }

@@ -33,13 +33,13 @@ class EventSubmissionEmailService extends BaseEmailService
 
         $date = new DateTime($this->event['start_date']);
 
-        $replacements = array(
+        $replacements = [
             "title"        => $this->event['name'],
             "description"  => $this->event['description'],
             "date"         => $date->format('jS M, Y'),
             "contact_name" => $this->event['contact_name'],
             "website_url"  => $this->website_url,
-        );
+        ];
 
         if ($this->count) {
             $replacements["count"] = "(" . $this->count . " events are pending)";

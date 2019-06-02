@@ -19,11 +19,11 @@ class RouterTest extends TestCase
      */
     public function constructProvider()
     {
-        return array(
-            array( // #0
-                'config' => array('xyz')
-            )
-        );
+        return [
+            [ // #0
+                'config' => ['xyz']
+            ]
+        ];
     }
 
     /**

@@ -26,10 +26,10 @@ class RequestTest extends TestCase
     public function testGetParameterReturnsValueOfRequestedParameter()
     {
         $queryString = http_build_query(
-            array(
+            [
                  'foo' => 'bar',
                  'baz' => 'samoflange',
-            )
+            ]
         );
 
         $server = [
@@ -110,15 +110,15 @@ class RequestTest extends TestCase
      */
     public function methodProvider()
     {
-        return array(
-            array('GET'),
-            array('POST'),
-            array('PUT'),
-            array('DELETE'),
-            array('TRACE'),
-            array('HEAD'),
-            array('OPTIONS')
-        );
+        return [
+            ['GET'],
+            ['POST'],
+            ['PUT'],
+            ['DELETE'],
+            ['TRACE'],
+            ['HEAD'],
+            ['OPTIONS']
+        ];
     }
 
     /**
@@ -189,7 +189,7 @@ class RequestTest extends TestCase
         $request                = new Request($this->config, $server);
 
         $result = $request->preferredContentTypeOutOf(
-            array('text/html', 'application/json')
+            ['text/html', 'application/json']
         );
 
         $this->assertEquals('application/json', $result);
@@ -214,8 +214,8 @@ class RequestTest extends TestCase
         $request                = new Request($this->config, $server);
 
         $result = $request->preferredContentTypeOutOf(
-            array('text/html'),
-            array('application/xml')
+            ['text/html'],
+            ['application/xml']
         );
 
         $this->assertEquals('json', $result);
@@ -276,10 +276,10 @@ class RequestTest extends TestCase
     public function testJsonBodyIsParsedAsParameters($method)
     {
         $body = json_encode(
-            array(
+            [
                  'a'     => 'b',
-                 'array' => array('joind' => 'in')
-            )
+                 'array' => ['joind' => 'in']
+            ]
         );
 
         $inside        = new \stdClass();
@@ -290,7 +290,7 @@ class RequestTest extends TestCase
                   ];
         /* @var $request Request */
         $request = $this->getMockBuilder('\Joindin\Api\Request')
-            ->setMethods(array('getRawBody'))
+            ->setMethods(['getRawBody'])
             ->setConstructorArgs([[], $server])
             ->getMock();
         $request->expects($this->once())
@@ -311,10 +311,10 @@ class RequestTest extends TestCase
      */
     public function postPutProvider()
     {
-        return array(
-            array('POST'),
-            array('PUT')
-        );
+        return [
+            ['POST'],
+            ['PUT']
+        ];
     }
 
     /**
@@ -382,10 +382,10 @@ class RequestTest extends TestCase
      */
     public function schemeProvider()
     {
-        return array(
-            array('http://'),
-            array('https://'),
-        );
+        return [
+            ['http://'],
+            ['https://'],
+        ];
     }
 
     /**
@@ -427,7 +427,7 @@ class RequestTest extends TestCase
      */
     public function testIfRequestIsntHTTPSReturnsFalse()
     {
-        $config = array_merge($this->config, array('mode' => 'production'));
+        $config = array_merge($this->config, ['mode' => 'production']);
         $request = new Request($config, []);
         $request->setScheme('http://');
         $this->assertFalse($request->identifyUser('This is a bad header'));
@@ -667,58 +667,58 @@ class RequestTest extends TestCase
      */
     public function getViewProvider()
     {
-        return array(
-            array( // #0
-                'parameters' => array(),
+        return [
+            [ // #0
+                'parameters' => [],
                 'expectedClass' => '\Joindin\Api\View\JsonView'
-            ),
-            array( // #1
-                'parameters' => array('format' => 'html'),
+            ],
+            [ // #1
+                'parameters' => ['format' => 'html'],
                 'expectedClass' => 'Joindin\Api\View\HtmlView'
-            ),
-            array( // #2
-                'parameters' => array('callback' => 'dave'),
+            ],
+            [ // #2
+                'parameters' => ['callback' => 'dave'],
                 'expectedClass' => 'Joindin\Api\View\JsonPView'
-            ),
-            array( // #3
-                'parameters' => array('format' => 'html'),
+            ],
+            [ // #3
+                'parameters' => ['format' => 'html'],
                 'expectedClass' => 'Joindin\Api\View\HtmlView'
-            ),
-            array( // #4
-                'parameters' => array('format' => 'html'),
+            ],
+            [ // #4
+                'parameters' => ['format' => 'html'],
                 'expectedClass' => 'Joindin\Api\View\HtmlView',
                 'accepts' => 'text/html'
-            ),
-            array( // #5
-                'parameters' => array(),
+            ],
+            [ // #5
+                'parameters' => [],
                 'expectedClass' => 'Joindin\Api\View\JsonView',
                 'accepts' => 'application/json'
-            ),
-            array( // #6
-                'parameters' => array(),
+            ],
+            [ // #6
+                'parameters' => [],
                 'expectedClass' => 'Joindin\Api\View\JsonView',
                 'accepts' => 'application/json,text/html'
-            ),
-            array( // #7
-                'parameters' => array(),
+            ],
+            [ // #7
+                'parameters' => [],
                 'expectedClass' => 'Joindin\Api\View\HtmlView',
                 'accepts' => 'text/html,applicaton/json',
                 'view' => new \Joindin\Api\View\HtmlView(),
 //                'skip' => true // Currently we're not applying Accept correctly
 // Can @choult check what's the reason for the skip?
-            ),
-            array( // #8
-                'parameters' => array('format' => 'html'),
+            ],
+            [ // #8
+                'parameters' => ['format' => 'html'],
                 'expectedClass' => 'Joindin\Api\View\HtmlView',
                 'accepts' => 'applicaton/json,text/html'
-            ),
-            array( // #9
-                'parameters' => array(),
+            ],
+            [ // #9
+                'parameters' => [],
                 'expectedClass' => false,
                 'accepts' => '',
                 'view' => new \Joindin\Api\View\ApiView()
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -735,7 +735,7 @@ class RequestTest extends TestCase
      * @test
      */
     public function testGetView(
-        array $parameters = array(),
+        array $parameters = [],
         $expectedClass = '',
         $accept = '',
         \Joindin\Api\View\ApiView $view = null,
@@ -768,25 +768,28 @@ class RequestTest extends TestCase
      */
     public function getSetFormatChoicesProvider()
     {
-        return array(
-            array( // #0
-                'expected' => array(
+        return [
+            [ // #0
+                'expected' => [
                     Request::CONTENT_TYPE_JSON,
-                                    Request::CONTENT_TYPE_HTML),
-            ),
-            array( // #1
-                'expected' => array(
+                                    Request::CONTENT_TYPE_HTML
+                ],
+            ],
+            [ // #1
+                'expected' => [
                     Request::CONTENT_TYPE_HTML,
-                                    Request::CONTENT_TYPE_JSON),
-                'choices' => array(
+                                    Request::CONTENT_TYPE_JSON
+                ],
+                'choices' => [
                     Request::CONTENT_TYPE_HTML,
-                                    Request::CONTENT_TYPE_JSON),
-            ),
-            array( // #2
-                'expected' => array('a', 'b'),
-                'choices' => array('a', 'b'),
-            ),
-        );
+                                    Request::CONTENT_TYPE_JSON
+                ],
+            ],
+            [ // #2
+                'expected' => ['a', 'b'],
+                'choices' => ['a', 'b'],
+            ],
+        ];
     }
 
     /**
@@ -801,7 +804,6 @@ class RequestTest extends TestCase
         array $expected,
         array $choices = null
     ) {
-    
         $request = new Request($this->config, []);
         if ($choices) {
             $request->setFormatChoices($choices);
@@ -817,7 +819,7 @@ class RequestTest extends TestCase
     public function testGetSetRouteParams()
     {
         $request = new Request($this->config, []);
-        $params = array('event_id' => 10);
+        $params = ['event_id' => 10];
         $request->setRouteParams($params);
         $this->assertEquals($params, $request->getRouteParams());
     }
@@ -857,11 +859,11 @@ class RequestTest extends TestCase
 
     public function clientIpProvider()
     {
-            return [
-                    'remote_addr' => [['REMOTE_ADDR' => '192.168.1.1']],
-                    'x-forwarded-for' => [['HTTP_X_FORWARDED_FOR' => '192.168.1.1']],
-                    'http-forwarded' => [['HTTP_FORWARDED' => 'for=192.168.1.1, for=198.51.100.17']],
-                ];
+        return [
+                'remote_addr' => [['REMOTE_ADDR' => '192.168.1.1']],
+                'x-forwarded-for' => [['HTTP_X_FORWARDED_FOR' => '192.168.1.1']],
+                'http-forwarded' => [['HTTP_FORWARDED' => 'for=192.168.1.1, for=198.51.100.17']],
+            ];
     }
 
     /** @dataProvider gettingClientUserAgentProvider */

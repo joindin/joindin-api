@@ -23,14 +23,14 @@ class EventApprovedEmailService extends BaseEmailService
         $this->setSubject('Event approved');
 
         $date         = new DateTime($this->event['start_date']);
-        $replacements = array(
+        $replacements = [
             "title"        => $this->event['name'],
             "description"  => $this->event['description'],
             "date"         => $date->format('jS M, Y'),
             "contact_name" => $this->event['contact_name'],
             "website_url"  => $this->website_url,
             "event_url"    => $this->website_url . '/event/' . $this->event['url_friendly_name'],
-        );
+        ];
 
         $messageBody = $this->parseEmail("eventApproved.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);

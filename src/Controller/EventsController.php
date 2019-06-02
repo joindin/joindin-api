@@ -89,7 +89,7 @@ class EventsController extends BaseApiController
                 $params = array();
 
                 // collection type filter
-                $filters = array("hot", "upcoming", "past", "cfp", "pending", "all");
+                $filters = ["hot", "upcoming", "past", "cfp", "pending", "all"];
                 if (isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters)) {
                     $params["filter"] = $request->parameters['filter'];
 
@@ -131,13 +131,13 @@ class EventsController extends BaseApiController
                             $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                         }
                     } else {
-                        $tags = array(
+                        $tags = [
                             filter_var(
                                 trim($request->parameters['tags']),
                                 FILTER_SANITIZE_STRING,
                                 FILTER_FLAG_NO_ENCODE_QUOTES
                             )
-                        );
+                        ];
                     }
                     $params["tags"] = $tags;
                 }
@@ -190,8 +190,8 @@ class EventsController extends BaseApiController
             // Create a new event, pending unless user has privs
 
             // incoming data
-            $event  = array();
-            $errors = array();
+            $event  = [];
+            $errors = [];
 
             $event['name'] = filter_var(
                 $request->getParameter("name"),
@@ -435,8 +435,8 @@ class EventsController extends BaseApiController
             }
 
             // initialise a new set of fields to save
-            $event  = array("event_id" => $event_id);
-            $errors = array();
+            $event  = ["event_id" => $event_id];
+            $errors = [];
 
             $event['name'] = filter_var(
                 $request->getParameter("name"),
@@ -606,7 +606,7 @@ class EventsController extends BaseApiController
             throw new Exception("You must be logged in to create a track", 401);
         }
 
-        $track             = array();
+        $track             = [];
         $event_id          = $this->getItemId($request);
         $track['event_id'] = $event_id;
         if (empty($track['event_id'])) {

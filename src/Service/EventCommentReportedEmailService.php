@@ -43,13 +43,13 @@ class EventCommentReportedEmailService extends BaseEmailService
             $rating = 'Not rated';
         }
 
-        $replacements = array(
+        $replacements = [
             "name"    => $this->event['name'],
             "rating"  => $rating,
             "comment" => $this->comment['comment'],
             "byline"  => $byLine,
             "link"    => $this->linkToReportedCommentsForEvent()
-        );
+        ];
 
         $messageBody = $this->parseEmail("eventCommentReported.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);

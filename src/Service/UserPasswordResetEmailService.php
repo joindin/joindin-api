@@ -30,12 +30,12 @@ class UserPasswordResetEmailService extends BaseEmailService
     {
         $this->setSubject('Resetting your joind.in password');
 
-        $replacements = array(
+        $replacements = [
             "full_name"   => $this->user['full_name'],
             "username"    => $this->user['username'],
             "website_url" => $this->website_url,
             "token"       => $this->token,
-        );
+        ];
 
         $messageBody = $this->parseEmail("userPasswordReset.md", $replacements);
         $messageHTML = $this->markdownToHtml($messageBody);
