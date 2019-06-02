@@ -94,6 +94,8 @@ INSERT INTO patch_history SET patch_number = 17;
 
 The number in that line should match the filename of your new patch number - check out the existing database patches in the project for examples.
 
+Patches can be applied using either of the two patchdb scripts (PHP/Shell) in the `scripts` directory.
+
 ### Coding Style
 
 Please do your best to ensure that any code you contributed adheres to the
