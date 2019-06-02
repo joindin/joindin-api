@@ -16,6 +16,10 @@ class JsonView extends ApiView
 
     /**
      *  Function to build output, can be used by JSON and JSONP
+     *
+     * @param array $content data to be rendered
+     *
+     * @return false|string
      */
     public function buildOutput($content)
     {

@@ -110,7 +110,7 @@ class EventMapper extends ApiMapper
      * @param bool $activeEventsOnly
      * @param bool $transform
      *
-     * @return false|bool the event detail
+     * @return bool|array the event detail
      */
     public function getEventByTrackId($track_id, $verbose = false, $activeEventsOnly = true, $transform = true)
     {
@@ -1044,7 +1044,7 @@ class EventMapper extends ApiMapper
      * @param int   $event_id
      * @param array $tags
      *
-     * @return bool
+     * @return void
      */
     public function setTags($event_id, array $tags)
     {

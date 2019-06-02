@@ -669,7 +669,7 @@ class Request
      * Fetch a config value by named key.  If the value doesn't exist then
      * return the default value
      *
-     * @param string $param   Parameter to retrieve
+     * @param string $key     Parameter to retrieve
      * @param string $default Default to return if parameter doesn't exist
      *
      * @return string
