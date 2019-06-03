@@ -8,9 +8,9 @@ var datatest = require('./data');
 var baseURL;
 
 if (typeof process.env.JOINDIN_API_BASE_URL != 'undefined') {
-	baseURL = process.env.JOINDIN_API_BASE_URL;
+    baseURL = process.env.JOINDIN_API_BASE_URL;
 } else {
-	baseURL = "http://api.dev.joind.in";
+    baseURL = "http://api.dev.joind.in";
 }
 
 apitest.init(baseURL);
