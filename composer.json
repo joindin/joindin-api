@@ -29,28 +29,14 @@
     },
     "autoload" : {
         "psr-4" : {
+            "Joindin\\Api\\": "src/",
             "Joindin\\Modifier\\" : "src/Modifier/"
-        },
-        "classmap" : [
-            "src/controllers",
-            "src/inc",
-            "src/models",
-            "src/routers",
-            "src/services",
-            "src/views"
-        ]
+        }
     },
     "autoload-dev" : {
         "psr-4" : {
-            "JoindinTest\\" : "tests/"
-        },
-        "classmap" : [
-            "tests/controllers",
-            "tests/inc",
-            "tests/models",
-            "tests/routers",
-            "tests/views"
-        ]
+            "Joindin\\Api\\Test\\" : "tests/"
+        }
     },
     "scripts": {
         "test": "phpunit -c . tests/",
@@ -66,8 +52,7 @@
             "@lint",
             "@sniff",
             "@security",
-            "@test",
-            "@coverage"
+            "@test"
         ]
     },
     "config": {
