@@ -532,7 +532,7 @@ class TalksController extends BaseTalkController
         // When the language doesn't exist, the talk will not be found
         $language_mapper = new LanguageMapper($db, $request);
         if (!$language_mapper->isLanguageValid($talk['language'])) {
-            throw new Exception("The language '{$talk['type']}' is unknown", 400);
+            throw new Exception("The language '{$talk['language']}' is unknown", 400);
         }
 
         $talk['duration'] = filter_var(
