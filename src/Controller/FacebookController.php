@@ -43,7 +43,7 @@ class FacebookController extends BaseApiController
 
         // check incoming values
         if (empty($code = $request->getParameter("code"))) {
-            throw new Exception("The request code must be supplied");
+            throw new Exception("The request code must be supplied", 403);
         }
 
         // exchange code for access token
