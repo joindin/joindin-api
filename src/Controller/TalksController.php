@@ -210,7 +210,7 @@ class TalksController extends BaseTalkController
         }
     }
 
-    public function deleteTalkStarred(Request $request, PDO $db)
+    public function removeStarFromTalk(Request $request, PDO $db)
     {
         $this->checkLoggedIn($request);
 
@@ -219,8 +219,8 @@ class TalksController extends BaseTalkController
         $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
 
         $view = $request->getView();
-        $view->setHeader('Location', $request->base . $request->path_info);
-        $view->setResponseCode(200);
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(205);
     }
 
     public function deleteTalk(Request $request, PDO $db)
