@@ -60,12 +60,12 @@ class Generator_Data implements Generator_Data_Interface
     // Different types of sources from where comments are made. Adding duplicates will increase the chance of getting picked
     public function getCommentSourceData()
     {
-        return array("web", "web", "web", "api", "api", "iphone", "android");
+        return ["web", "web", "web", "api", "api", "iphone", "android"];
     }
 
     public function getTrackColorData()
     {
-        return array("red", "green", "blue", "black", "yellow", "white", "cyan", "gray");
+        return ["red", "green", "blue", "black", "yellow", "white", "cyan", "gray"];
     }
 
     public function getUserGeneratorData()
