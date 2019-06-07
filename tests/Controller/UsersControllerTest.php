@@ -86,7 +86,7 @@ class UsersControllerTest extends TestCase
 
         $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
-        $usersController = new \Joindin\Api\Controller\UsersController();
+        $usersController = new UsersController();
         // Please see below for explanation of why we're mocking a "mock" PDO
         // class
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -271,16 +271,17 @@ class UsersControllerTest extends TestCase
      * @return void
      *
      * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must be logged in to change a user account
-     * @expectedExceptionCode 401
      */
     public function testSetAdminWithNoUserIdThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/admin", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/admin", 'REQUEST_METHOD' => 'POST']);
 
-        $usersController = new \UsersController();
+        $usersController = new UsersController();
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
+
+        self::expectException(\Exception::class);
+        self::expectExceptionMessage('You must be logged in to change a user account');
+        self::expectExceptionCode(401);
 
         $usersController->setAdmin($request, $db);
     }
@@ -322,19 +323,16 @@ class UsersControllerTest extends TestCase
      * @return void
      *
      * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must be an admin to change a user's admin state
-     * @expectedExceptionCode 403
      */
     public function testSetAdminWithNonAdminIdThrowsException()
     {
-        $request = new \Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/admin", 'REQUEST_METHOD' => 'POST']);
+        $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/admin", 'REQUEST_METHOD' => 'POST']);
         $request->user_id = 2;
-        $usersController = new \UsersController();
+        $usersController = new UsersController();
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\UserMapper')
-            ->setConstructorArgs(array($db,$request))
+        $userMapper = $this->getMockBuilder(UserMapper::class)
+            ->setConstructorArgs([$db,$request])
             ->getMock();
 
         $userMapper
@@ -343,6 +341,11 @@ class UsersControllerTest extends TestCase
             ->will($this->returnValue(false));
 
         $usersController->setUserMapper($userMapper);
+
+        self::expectException(\Exception::class);
+        self::expectExceptionMessage('You must be an admin to change a user\'s admin state');
+        self::expectExceptionCode(403);
+
         $usersController->setAdmin($request, $db);
     }
 
@@ -387,22 +390,19 @@ class UsersControllerTest extends TestCase
      * @return void
      *
      * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage You must provide an admin state
-     * @expectedExceptionCode 400
      */
     public function testSetAdminWithoutStateThrowsException()
     {
-        $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("admin")
             ->willReturn(null);
 
-        $usersController = new \UsersController();
+        $usersController = new UsersController();
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\UserMapper')
+        $userMapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
@@ -412,6 +412,11 @@ class UsersControllerTest extends TestCase
             ->willReturn(true);
 
         $usersController->setUserMapper($userMapper);
+
+        self::expectException(\Exception::class);
+        self::expectExceptionMessage('You must provide an admin state');
+        self::expectExceptionCode(400);
+
         $usersController->setAdmin($request, $db);
     }
 
@@ -461,22 +466,19 @@ class UsersControllerTest extends TestCase
      * @return void
      *
      * @test
-     * @expectedException        \Exception
-     * @expectedExceptionMessage Unable to update status
-     * @expectedExceptionCode 500
      */
     public function testSetAdminWithFailureThrowsException()
     {
-        $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("admin")
             ->willReturn(true);
 
-        $usersController = new \UsersController();
+        $usersController = new UsersController();
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\UserMapper')
+        $userMapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
@@ -491,6 +493,11 @@ class UsersControllerTest extends TestCase
             ->willReturn(false);
 
         $usersController->setUserMapper($userMapper);
+
+        self::expectException(\Exception::class);
+        self::expectExceptionMessage('Unable to update status');
+        self::expectExceptionCode(500);
+
         $usersController->setAdmin($request, $db);
     }
 
@@ -553,13 +560,13 @@ class UsersControllerTest extends TestCase
      */
     public function testSetAdminWithSuccessCreatesView()
     {
-        $request = $this->getMockBuilder('\Request')->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("admin")
             ->willReturn(true);
 
-        $view = $this->getMockBuilder(\JsonView::class)->getMock();
+        $view = $this->getMockBuilder(JsonView::class)->getMock();
         $view->expects($this->once())
             ->method("setHeader")
             ->willReturn(true);
@@ -573,10 +580,10 @@ class UsersControllerTest extends TestCase
             ->method("getView")
             ->willReturn($view);
 
-        $usersController = new \UsersController();
+        $usersController = new UsersController();
         $db = $this->getMockBuilder(\PDO::class)->disableOriginalConstructor()->getMock();
 
-        $userMapper = $this->getMockBuilder('\UserMapper')
+        $userMapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs(array($db,$request))
             ->getMock();
 
