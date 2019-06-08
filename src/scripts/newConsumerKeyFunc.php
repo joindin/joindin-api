@@ -16,5 +16,5 @@ function new_consumer_key()
     $hash = sha1($entropy);  // sha1 gives us a 40-byte hash
     // The first 30 bytes should be plenty for the consumer_key
     // We use the last 10 for the shared secret
-    return array(substr($hash, 0, 30), substr($hash, 30, 10));
+    return [substr($hash, 0, 30), substr($hash, 30, 10)];
 }
