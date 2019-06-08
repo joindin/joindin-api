@@ -134,7 +134,7 @@ if (array_key_exists('i', $options)) {
 // First, look through the directory for patch123.sql files
 // and get all the {123} numbers, so we can run them all
 // in order.
-$matchedNums = array();
+$matchedNums = [];
 if ($dh = opendir($options['t'])) {
     while (($file = readdir($dh)) !== false) {
         preg_match("/patch([\d]+)\.sql/", $file, $matches);

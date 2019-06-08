@@ -22,10 +22,10 @@ class DataGenerator
     public function __construct(Generator_Data_Interface $data)
     {
         $this->_data            = $data;
-        $this->_existing_stubs  = array();
-        $this->_users_attending = array();
-        $this->_talk_comment_max_timestamp = array();
-        $this->_event_comment_max_timestamp = array();
+        $this->_existing_stubs  = [];
+        $this->_users_attending = [];
+        $this->_talk_comment_max_timestamp = [];
+        $this->_event_comment_max_timestamp = [];
     }
 
     /**
@@ -66,7 +66,7 @@ class DataGenerator
      *
      * @return Generator_Data_Interface
      */
-    function getData()
+    public function getData()
     {
         return $this->_data;
     }
@@ -538,7 +538,7 @@ class DataGenerator
                 $admin_count = rand(1, (COUNT_USERS < 5 ? COUNT_USERS : 5));    // Maximum of five. It's hardcoded.
             }
 
-            $userids = array();
+            $userids = [];
             for ($i=0; $i!=$admin_count; $i++) {
                 // Make sure we don't add the same user twice
                 do {
@@ -708,7 +708,7 @@ class DataGenerator
         echo "INSERT INTO `user` (`username`, `password`, `email`, `last_login`, `ID`, `verified`, `admin`, `full_name`, `active`, `twitter_username`, `request_code`) VALUES\n";
         echo "('imaadmin', '$password', 'ima@sampledomain.com', unix_timestamp(), 1, 1, 1, 'Ima Admin', 1, '', NULL)";
 
-        $usernames = array();
+        $usernames = [];
         $id = 2;
         while ($id < ($count+2)) {
             if ($id % 100 == 0) {
@@ -816,7 +816,7 @@ class DataGenerator
      *
      * @return string
      */
-    function _genTalkTitle()
+    protected function _genTalkTitle()
     {
         $data = $this->getData()->getTalkTitleGeneratorData();
 
@@ -836,7 +836,7 @@ class DataGenerator
      * @param $percentage (0-100)
      * @return bool
      */
-    function _chance($percentage)
+    protected function _chance($percentage)
     {
         if (rand(0, 100) <= $percentage) {
             return true;
@@ -850,7 +850,7 @@ class DataGenerator
      * @param int $max Maximum amount of sentences that can be generated
      * @return string
      */
-    function _genLorum($max = 15)
+    protected function _genLorum($max = 15)
     {
         $lorum = $this->getData()->getDescriptionGeneratorData();
 
