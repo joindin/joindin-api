@@ -77,11 +77,9 @@ $router = new ApiRouter($config, $routers, ['2']);
 
 $route = $router->getRoute($request);
 $return_data = $route->dispatch($request, $ji_db, $container);
-
-if ($return_data && isset($request->user_id)) {
+if (is_array($return_data) && isset($request->user_id)) {
     $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;
 }
-
 // Handle output
 // TODO sort out headers, caching, etc
 $request->getView()->render($return_data);
