@@ -33,9 +33,9 @@ Where there are links to other resources, and for pagination, you will find thos
 Results will include a ``meta`` element which contains pagination links, and a count of the number of results that were returned.  If this request was made by an authenticated user, their user details will also be contained in the meta block.
 
     meta:
-    count: 20
-    this_page: https://api.joind.in/v2/events/603/talks?resultsperpage=20&start=0
-    next_page: https://api.joind.in/v2/events/603/talks?resultsperpage=20&start=20
+        count: 20
+        this_page: https://api.joind.in/v2/events/603/talks?resultsperpage=20&start=0
+        next_page: https://api.joind.in/v2/events/603/talks?resultsperpage=20&start=20
 
 ## Authentication
 
