@@ -332,7 +332,7 @@ class EventMapper extends ApiMapper
      */
     public function setUserAttendance($event_id, $user_id)
     {
-        $sql  = 'insert into user_attend (uid,eid) values (:uid, :eid)';
+        $sql  = 'insert ignore into user_attend (uid,eid) values (:uid, :eid)';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(['uid' => $user_id, 'eid' => $event_id]);
 
