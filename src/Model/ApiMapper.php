@@ -7,6 +7,7 @@ use DateTimeZone;
 use Exception;
 use PDO;
 use Joindin\Api\Request;
+use Transliterator;
 
 class ApiMapper
 {
@@ -171,9 +172,8 @@ class ApiMapper
 
     protected function inflect($string)
     {
-        // code ported from web2
-        $alpha = preg_replace("/[^0-9a-zA-Z- ]/", "", $string);
-
+        $ascii = Transliterator::create('Any-Latin; Latin-ASCII; Lower')->transliterate($string);
+        $alpha = preg_replace("/[^0-9a-zA-Z- ]/", "", $ascii);
         return strtolower(str_replace(' ', '-', $alpha));
     }
 }
