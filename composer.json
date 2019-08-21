@@ -1,15 +1,16 @@
 {
-    "name" : "joindin/joindin-api",
-    "description" : "The API-backend that powers joind.in",
-    "keywords" : ["joind.in", "events", "talks", "speaking", "feedback"],
-    "homepage" : "https://api.joind.in",
-    "license" : "BSD-3-Clause",
-    "support" : {
-        "issues" : "https://github.com/joindin/joindin-api/issues",
-        "irc" : "irc://freenet/#joindin",
-        "source" : "https://github.com/joindin/joindin-api"
-    },
-    "require" : {
+    "name": "joindin/joindin-api",
+    "description": "The API-backend that powers joind.in",
+    "keywords": [
+        "joind.in",
+        "events",
+        "talks",
+        "speaking",
+        "feedback"
+    ],
+    "homepage": "https://api.joind.in",
+    "license": "BSD-3-Clause",
+    "require": {
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-intl" : "*",
@@ -28,40 +29,45 @@
         "sensiolabs/security-checker": "^5.0",
         "squizlabs/php_codesniffer": "^3.4"
     },
-    "autoload" : {
-        "psr-4" : {
+    "config": {
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "7.3.2"
+        },
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
             "Joindin\\Api\\": "src/",
-            "Joindin\\Modifier\\" : "src/Modifier/"
+            "Joindin\\Modifier\\": "src/Modifier/"
         }
     },
-    "autoload-dev" : {
-        "psr-4" : {
-            "Joindin\\Api\\Test\\" : "tests/"
+    "autoload-dev": {
+        "psr-4": {
+            "Joindin\\Api\\Test\\": "tests/"
         }
     },
     "scripts": {
-        "test": "phpunit -c . tests/",
-        "lint": "parallel-lint --exclude vendor .",
-        "sniff": "phpcs --runtime-set ignore_warnings_on_exit true -p .",
-        "security": "security-checker security:check composer.lock",
-        "coverage": [
-            "git diff origin/master... -- > diff.txt",
-            "diffFilter --phpunit diff.txt build/logs/clover.xml 80"
-        ],
         "check": [
             "mkdir -p build/logs",
             "@lint",
             "@sniff",
             "@security",
             "@test"
-        ]
+        ],
+        "coverage": [
+            "git diff origin/master... -- > diff.txt",
+            "diffFilter --phpunit diff.txt build/logs/clover.xml 80"
+        ],
+        "lint": "parallel-lint --exclude vendor .",
+        "security": "security-checker security:check composer.lock",
+        "sniff": "phpcs --runtime-set ignore_warnings_on_exit true -p .",
+        "test": "phpunit -c . tests/"
     },
-    "config": {
-        "platform": {
-            "php": "7.3.2"
-        },
-        "preferred-install": "dist",
-        "sort-packages" : true,
-        "optimize-autoloader" : true
+    "support": {
+        "issues": "https://github.com/joindin/joindin-api/issues",
+        "irc": "irc://freenet/#joindin",
+        "source": "https://github.com/joindin/joindin-api"
     }
 }
