@@ -67,8 +67,7 @@ if (isset($headers['authorization'])) {
     $request->identifyUser($headers['authorization'], $ji_db);
 }
 
-// @TODO This feels just a tad... shonky.
-$rules = json_decode(file_get_contents('../config/routes/2.1.json'), true);
+$rules = require '../config/routes/2.1.php';
 
 $routers = [
     "v2.1" => new VersionedRouter('2.1', $config, $rules),

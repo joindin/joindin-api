@@ -121,13 +121,19 @@ class Route
         $className = $this->getController();
         $method    = $this->getAction();
 
-        if ($container->has($className)) {
-            $controller = $container->get($className);
-            if (method_exists($controller, $method)) {
-                return $controller->$method($request, $db);
-            }
+        if (!$container->has($className)) {
+            throw new RuntimeException('Unknown controller ' . $request->url_elements[2], 400);
+        }
+
+        if (!method_exists($controller = $container->get($className), $method)) {
             throw new RuntimeException('Action not found', 500);
         }
-        throw new RuntimeException('Unknown controller ' . $request->url_elements[2], 400);
+
+        if (function_exists('newrelic_name_transaction')) {
+            $controllerWithoutNamespace = @end(explode('\\', $className));
+            newrelic_name_transaction($controllerWithoutNamespace . '.' . $method);
+        }
+
+        return $controller->$method($request, $db);
     }
 }
