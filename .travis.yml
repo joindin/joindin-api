@@ -12,8 +12,10 @@ matrix:
     - php: 7.3
   fast_finish: true
 
-before_script:
+install:
   - composer install
+
+before_script:
   - cp src/config.php.dist src/config.php
   - git remote set-branches --add origin master
   - git fetch
