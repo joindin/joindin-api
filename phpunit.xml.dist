@@ -5,11 +5,11 @@
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     backupGlobals="false"
     backupStaticAttributes="false"
-    beStrictAboutTestsThatDoNotTestAnything="true"
     beStrictAboutOutputDuringTests="true"
-    enforceTimeLimit="true"
+    beStrictAboutTestsThatDoNotTestAnything="true"
     bootstrap="./tests/bootstrap.php"
     colors="true"
+    enforceTimeLimit="true"
     verbose="true"
 >
     <testsuite name="Joind.in Test Suite">
