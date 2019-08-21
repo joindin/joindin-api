@@ -13,7 +13,7 @@ jobs:
     - uses: actions/stale@v1
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        stale-issue-message: 'Stale issue message'
-        stale-pr-message: 'Stale pull request message'
+        stale-issue-message: 'This issue has been hanging around a bit too long, if needed please update or comment.'
+        stale-pr-message: 'This PR has been hanging around a bit too long, please update/rebase or comment as needed'
         stale-issue-label: 'no-issue-activity'
         stale-pr-label: 'no-pr-activity'
