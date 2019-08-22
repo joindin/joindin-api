@@ -1,17 +1,27 @@
 language: php
+
 dist: trusty
+
 cache:
   directories:
     - $HOME/.composer/cache/files
     - $HOME/.cache/composer/files
+
 matrix:
   include:
     - php: 7.3
   fast_finish: true
-before_script:
+
+before_install:
+  - composer validate --no-check-publish
+
+install:
   - composer install
+
+before_script:
   - cp src/config.php.dist src/config.php
   - git remote set-branches --add origin master
   - git fetch
+
 script:
   - composer check

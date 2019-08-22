@@ -11,8 +11,10 @@ $select_stmt->execute();
 
 $count = 0;
 while ($row = $select_stmt->fetch(PDO::FETCH_ASSOC)) {
-    $update_stmt->execute(array("password" => password_hash($row['password'], PASSWORD_DEFAULT),
-        "id" => $row['ID']));
+    $update_stmt->execute([
+        "password" => password_hash($row['password'], PASSWORD_DEFAULT),
+        "id"       => $row['ID']
+    ]);
     $count++;
 }
 

@@ -1,66 +1,73 @@
 {
-    "name" : "joindin/joindin-api",
-    "description" : "The API-backend that powers joind.in",
-    "keywords" : ["joind.in", "events", "talks", "speaking", "feedback"],
-    "homepage" : "https://api.joind.in",
-    "license" : "BSD-3-Clause",
-    "support" : {
-        "issues" : "https://github.com/joindin/joindin-api/issues",
-        "irc" : "irc://freenet/#joindin",
-        "source" : "https://github.com/joindin/joindin-api"
+  "name": "joindin/joindin-api",
+  "description": "The API-backend that powers joind.in",
+  "keywords": [
+    "joind.in",
+    "events",
+    "talks",
+    "speaking",
+    "feedback"
+  ],
+  "homepage": "https://api.joind.in",
+  "license": "BSD-3-Clause",
+  "require": {
+    "ext-intl": "*",
+    "ext-json": "*",
+    "ext-pdo": "*",
+    "guzzlehttp/guzzle": "^6.3",
+    "guzzlehttp/oauth-subscriber": "^0.3.0",
+    "michelf/php-markdown": "^1.8",
+    "pimple/pimple": "^3.2",
+    "swiftmailer/swiftmailer": "^v5.4.9"
+  },
+  "require-dev": {
+    "exussum12/coverage-checker": "^0.11.1",
+    "jakub-onderka/php-parallel-lint": "^1.0",
+    "phpunit/php-invoker": "^2.0",
+    "phpunit/phpunit": "^8.3.4",
+    "roave/security-advisories": "dev-master",
+    "sensiolabs/security-checker": "^5.0",
+    "squizlabs/php_codesniffer": "^3.4"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "platform": {
+      "php": "7.3.2"
     },
-    "require" : {
-        "ext-json": "*",
-        "ext-pdo": "*",
-        "guzzlehttp/guzzle": "^6.3",
-        "guzzlehttp/oauth-subscriber": "^0.3.0",
-        "michelf/php-markdown": "^1.8",
-        "pimple/pimple": "^3.2",
-        "swiftmailer/swiftmailer": "^v5.4.9"
-    },
-    "require-dev": {
-        "exussum12/coverage-checker": "^0.11.1",
-        "jakub-onderka/php-parallel-lint": "^1.0",
-        "phpunit/php-invoker": "^2.0",
-        "phpunit/phpunit": "^8.1",
-        "roave/security-advisories": "dev-master",
-        "sensiolabs/security-checker": "^5.0",
-        "squizlabs/php_codesniffer": "^3.4"
-    },
-    "autoload" : {
-        "psr-4" : {
-            "Joindin\\Api\\": "src/",
-            "Joindin\\Modifier\\" : "src/Modifier/"
-        }
-    },
-    "autoload-dev" : {
-        "psr-4" : {
-            "Joindin\\Api\\Test\\" : "tests/"
-        }
-    },
-    "scripts": {
-        "test": "phpunit -c . tests/",
-        "lint": "parallel-lint --exclude vendor .",
-        "sniff": "phpcs --runtime-set ignore_warnings_on_exit true -p .",
-        "security": "security-checker security:check composer.lock",
-        "coverage": [
-            "git diff origin/master... -- > diff.txt",
-            "diffFilter --phpunit diff.txt build/logs/clover.xml 80"
-        ],
-        "check": [
-            "mkdir -p build/logs",
-            "@lint",
-            "@sniff",
-            "@security",
-            "@test"
-        ]
-    },
-    "config": {
-        "platform": {
-            "php": "7.3.2"
-        },
-        "preferred-install": "dist",
-        "sort-packages" : true,
-        "optimize-autoloader" : true
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Joindin\\Api\\": "src/",
+      "Joindin\\Modifier\\": "src/Modifier/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Joindin\\Api\\Test\\": "tests/"
+    }
+  },
+  "scripts": {
+    "check": [
+      "mkdir -p build/logs",
+      "@lint",
+      "@sniff",
+      "@security",
+      "@test"
+    ],
+    "coverage": [
+      "git diff origin/master... -- > diff.txt",
+      "diffFilter --phpunit diff.txt build/logs/clover.xml 80"
+    ],
+    "lint": "parallel-lint --exclude vendor .",
+    "security": "security-checker security:check composer.lock",
+    "sniff": "phpcs --runtime-set ignore_warnings_on_exit true -p .",
+    "test": "phpunit -c . tests/"
+  },
+  "support": {
+    "issues": "https://github.com/joindin/joindin-api/issues",
+    "irc": "irc://freenet/#joindin",
+    "source": "https://github.com/joindin/joindin-api"
+  }
 }

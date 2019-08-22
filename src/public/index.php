@@ -66,8 +66,7 @@ if (isset($headers['authorization'])) {
     $request->identifyUser($headers['authorization'], $ji_db);
 }
 
-// @TODO This feels just a tad... shonky.
-$rules = json_decode(file_get_contents('../config/routes/2.1.json'), true);
+$rules = require '../config/routes/2.1.php';
 
 $routers = [
     "v2.1" => new VersionedRouter('2.1', $config, $rules),
@@ -77,11 +76,9 @@ $router = new ApiRouter($config, $routers, ['2']);
 
 $route = $router->getRoute($request);
 $return_data = $route->dispatch($request, $ji_db, $container);
-
-if ($return_data && isset($request->user_id)) {
+if (is_array($return_data) && isset($request->user_id)) {
     $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;
 }
-
 // Handle output
 // TODO sort out headers, caching, etc
 $request->getView()->render($return_data);
