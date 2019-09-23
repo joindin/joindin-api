@@ -476,4 +476,12 @@ class TalkCommentMapper extends ApiMapper
             "comment_id"       => $comment_id
         ]);
     }
+
+    public function deleteCommentsForUser(int $userId): void
+    {
+        $sql       = 'delete from talk_comments where talk_comments.user_id = :user_id';
+        $statement = $this->_db->prepare($sql);
+
+        $statement->execute(['user_id' => $userId]);
+    }
 }
