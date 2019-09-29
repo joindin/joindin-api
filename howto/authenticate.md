@@ -7,32 +7,28 @@ title: Joind.in API Documentation
 
 You only need to authenticate if you're adding or editing data (including comments) or want to access private data. For most operations, particularly just retrieving information, authentication is not required. If you do want to authenticate, you must make all requests over SSL (i.e. to https://api.joind.in)
 
-## tl;dr
+## Step 1: Create a Client for users to authenticate against.
 
-It's OAuth2.
+First you need a client with a key and secret to use.  You can get this by logging in to your user account on http://joind.in , clicking on your name in the top bar, and choosing "Clients" from the top section of your profile page.
 
-## Step 1: Sign up for an API key
-
-The API key is per-application.  You can get this by logging in to your user account on http://joind.in and going to "Account" in the top right corner and then "API Keys" in the box on the right.
-
-This page is in two parts - the first section shows you which applications you have granted access to, and the second part is for your consumer keys.  Create a new key using the form right at the bottom of the screen, tell us a bit about your application (helps us to know which ones to approve).  Copy the key.
+Choose "Add new Client" and fill in the details accordingly. The callback URL isn't used (this API was OAuth2 at one time) so enter whatever you like here BUT KEEP A RECORD OF IT.
 
 ## Step 2: Get an Access Token For This User
 
-For each user, you will need to send them over to joind.in to log in as themselves and confirm that they grant your application access to their data.  The URL you want is:
+For each user that uses your client application, you need to log them into joind.in as themselves and get them a user-specific access token. To do this, send an API call like this:
 
-    http://joind.in/user/oauth_allow?api_key=[api-key]&callback=[callback_url]
+    curl --data '{"grant_type":"password","username":"<username>","password":"<password>","client_id":"<consumer-key>","client_secret":"<consumer-secret"}' -H "Content-Type: application/json" -H "Accept: application/json" http://api.joind.in/v2.1/token
 
-The ``[api-key]`` should be the key you registered in step 1.  The ``[callback_url]`` must **exactly** match the callback URL you registered when signing up for your API key.  There is an optional additional parameter called ``state``; whatever you set here will be sent back to you as a query parameter when we forward the user back your callback.
+The ``[consumer-key]`` and ``[consumer-secret]`` are the credentials you registered in step 1.  The ``[callback_url]`` must **exactly** match the callback URL you registered at that time.
 
-When the user arrives on our page they will grant access (logging in first if needed) and when they confirm, we'll forward them back to your callback URL with an ``access_token`` parameter in the query string.
+The access token is included in the response if the user can be successfully authenticated.
 
 ## Step 3:  Use the Access Token To Sign Requests
 
-Capture the access token parameter, and then send it in all requests as part of an Authorization header in the format:
+Capture the access token parameter that is returned and then send it in all requests as part of an Authorization header in the format:
 
-    Authorization: Bearer [access_code]
+    Authorization: Bearer [access_token]
 
-Where the ``[access_token]`` is the value from the query parameter when the user returned to your site.  All successfully authenticated requests will show a ``user_uri`` field in the ``meta`` block of the response.
+All successfully authenticated requests will show a ``user_uri`` field in the ``meta`` block of the response.
 
 
