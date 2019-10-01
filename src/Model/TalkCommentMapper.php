@@ -18,7 +18,7 @@ class TalkCommentMapper extends ApiMapper
             'user_display_name' => 'full_name',
             'username'          => 'username',
             'talk_title'        => 'talk_title',
-            'created_date'      => 'date_made'
+            'created_date'      => 'created_at'
         ];
     }
 
@@ -34,7 +34,7 @@ class TalkCommentMapper extends ApiMapper
             'username'          => 'username',
             'talk_title'        => 'talk_title',
             'source'            => 'source',
-            'created_date'      => 'date_made',
+            'created_date'      => 'created_at',
         ];
     }
 
@@ -50,7 +50,7 @@ class TalkCommentMapper extends ApiMapper
     {
         $sql = $this->getBasicSQL();
         $sql .= 'and talk_id = :talk_id';
-        $sql .= ' order by tc.date_made';
+        $sql .= ' order by tc.created_at';
 
         $sql      .= $this->buildLimit($resultsperpage, $start);
         $stmt     = $this->_db->prepare($sql);
@@ -82,7 +82,7 @@ class TalkCommentMapper extends ApiMapper
         $sql .= 'and event_id = :event_id ';
 
         // default to newest
-        $sql .= ' order by tc.date_made desc';
+        $sql .= ' order by tc.created_at desc';
 
         $sql .= $this->buildLimit($resultsperpage, $start);
 
@@ -115,7 +115,7 @@ class TalkCommentMapper extends ApiMapper
         $sql .= 'and tc.user_id = :user_id ';
 
         // default to newest
-        $sql .= ' order by tc.date_made desc';
+        $sql .= ' order by tc.created_at desc';
 
         $sql .= $this->buildLimit($resultsperpage, $start);
 
@@ -265,16 +265,16 @@ class TalkCommentMapper extends ApiMapper
             throw new Exception("Duplicate comment");
         }
 
-        $sql = 'insert into talk_comments (talk_id, rating, comment, user_id, '
-               . 'source, date_made, private, active) '
-               . 'values (:talk_id, :rating, :comment, :user_id, :source, UNIX_TIMESTAMP(), '
-               . ':private, 1)';
+        $sql = 'insert into talk_comments (talk_id, rating, comment, created_at, user_id, source, private, active) '
+               . 'values (:talk_id, :rating, :comment, :created_at, :user_id, :source, :private, 1)';
 
         $stmt     = $this->_db->prepare($sql);
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $response = $stmt->execute([
             ':talk_id' => $data['talk_id'],
             ':rating'  => $data['rating'],
             ':comment' => $data['comment'],
+            ':created_at' => $now->format('Y-m-d H:i:s'),
             ':user_id' => $data['user_id'],
             ':private' => $data['private'],
             ':source'  => $data['source'],
@@ -427,7 +427,7 @@ class TalkCommentMapper extends ApiMapper
     {
         if (in_array($decision, ['approved', 'denied'])) {
             // record the decision
-            $sql  = 'update reported_talk_comments set 
+            $sql  = 'update reported_talk_comments set
                         decision = :decision,
                         deciding_user_id = :user_id,
                         deciding_date = NOW()
@@ -458,11 +458,12 @@ class TalkCommentMapper extends ApiMapper
         $sql      = "select tc.* from talk_comments tc where tc.ID = :comment_id";
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute([':comment_id' => $comment_id]);
-
+        $utc = new \DateTimeZone('UTC');
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (isset($results[0])) {
+                $results[0]['created_at'] = new \DateTimeImmutable($results[0]['created_at'], $utc);
                 return $results[0];
             }
         }
