@@ -43,6 +43,8 @@ final class TalksControllerTest extends TalkBase
      * an exception is thrown
      *
      * @return void
+     *
+     * @group uses_pdo
      */
     public function testClaimTalkWithNoUserIdThrowsException()
     {
@@ -977,6 +979,9 @@ final class TalksControllerTest extends TalkBase
         ];
     }
 
+    /**
+     * @group uses_pdo
+     */
     public function testNotLoggedInPostAction()
     {
         $this->expectException(Exception::class);
