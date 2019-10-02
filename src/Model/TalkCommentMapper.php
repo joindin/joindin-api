@@ -3,6 +3,7 @@
 namespace Joindin\Api\Model;
 
 use Exception;
+use Joindin\Api\Exception\RateLimitExceededException;
 use PDO;
 
 class TalkCommentMapper extends ApiMapper
@@ -239,6 +240,59 @@ class TalkCommentMapper extends ApiMapper
         }
 
         return $sql;
+    }
+
+    /**
+     * @param int $user_id
+     * @throws RateLimitExceededException
+     */
+    public function checkRateLimit(int $user_id)
+    {
+        $max_comments = 30;
+        $duration_minutes = 60;
+
+        if (isset($this->_request)) {
+            $max_comments = (int) $this->_request->getConfigValue('talk_comments_rate_limit_limit', 30);
+            $duration_minutes = (int) $this->_request->getConfigValue('talk_comments_rate_limit_reset', 60);
+        }
+
+        $rate_limit_time = (new \DateTimeImmutable())
+            ->sub(new \DateInterval(sprintf('PT%dM', $duration_minutes)));
+
+        $sql = <<<SQL
+        SELECT MIN(created_at) AS created_at, COUNT(ID) AS cnt
+        FROM talk_comments
+        WHERE user_id = :user_id
+        AND created_at > :min_created_at
+        GROUP BY user_id
+        SQL;
+
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute([
+            ':user_id' => $user_id,
+            ':min_created_at' => $rate_limit_time->format('c'),
+        ]);
+
+        if ($stmt->rowCount() === 0) {
+            return;
+        }
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row['cnt'] < $max_comments) {
+            // The user has less than the number of comments to hit the rate limit
+            return;
+        }
+
+        $rate_limit_time = (new \DateTimeImmutable())
+            ->sub(new \DateInterval(sprintf('PT%dM', $duration_minutes)))
+            ->format('U');
+        $oldest_comment = (new \DateTimeImmutable($row['created_at']))->format('U');
+
+        $wait = $oldest_comment - $rate_limit_time;
+        if ($wait > 0) {
+            throw RateLimitExceededException::withLimitAndRefresh($max_comments, $wait);
+        }
     }
 
     /**
