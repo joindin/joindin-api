@@ -19,6 +19,7 @@ class TalkModel extends BaseModel
     public function getDefaultFields()
     {
         return [
+            'id'                      => 'ID',
             'talk_title'              => 'talk_title',
             'url_friendly_talk_title' => 'url_friendly_talk_title',
             'talk_description'        => 'talk_desc',
