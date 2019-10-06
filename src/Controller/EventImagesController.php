@@ -9,6 +9,15 @@ use Joindin\Api\Request;
 
 class EventImagesController extends BaseApiController
 {
+    public function listImages(Request $request, PDO $db)
+    {
+        $event_id = $this->getItemId($request);
+
+        $event_mapper = new EventMapper($db, $request);
+
+        return ['images' => $event_mapper->getImages($event_id)];
+    }
+
     public function createImage(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {

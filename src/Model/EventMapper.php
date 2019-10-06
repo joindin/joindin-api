@@ -1136,7 +1136,7 @@ class EventMapper extends ApiMapper
      *
      * @return array The images including metadata
      */
-    protected function getImages($event_id)
+    public function getImages($event_id)
     {
         $image_sql  = 'select i.type, i.url, i.width, i.height'
                       . ' from event_images i '

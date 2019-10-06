@@ -75,6 +75,15 @@ return [
             ],
     ],
     [
+        'path'       => '/events(/[\\d]+)/images',
+        'controller' => EventImagesController::class,
+        'action'     => 'listImages',
+        'verbs'      =>
+            [
+                'GET',
+            ],
+    ],
+    [
         'path'       => '/events(/[^/]+)*/?$',
         'controller' => EventsController::class,
         'action'     => 'getAction',
