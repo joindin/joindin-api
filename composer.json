@@ -11,6 +11,7 @@
   "homepage": "https://api.joind.in",
   "license": "BSD-3-Clause",
   "require": {
+    "php": "^7.2",
     "ext-intl": "*",
     "ext-json": "*",
     "ext-pdo": "*",
@@ -32,7 +33,7 @@
   "config": {
     "optimize-autoloader": true,
     "platform": {
-      "php": "7.3.2"
+      "php": "7.2.23"
     },
     "preferred-install": "dist",
     "sort-packages": true
