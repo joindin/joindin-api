@@ -33,7 +33,7 @@ class UsersController extends BaseApiController
             switch ($request->url_elements[4]) {
                 case 'talks':
                     $talk_mapper = new TalkMapper($db, $request);
-                    $talks       = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start);
+                    $talks       = $talk_mapper->getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose);
 
                     return $talks->getOutputView($request, $verbose);
 
