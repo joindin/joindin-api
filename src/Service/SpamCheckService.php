@@ -18,7 +18,7 @@ class SpamCheckService implements SpamCheckServiceInterface
      */
     public function __construct($apiKey, $blog)
     {
-        $this->akismetUrl = 'http://' . $apiKey . '.rest.akismet.com';
+        $this->akismetUrl = 'https://' . $apiKey . '.rest.akismet.com';
         $this->blog       = $blog;
     }
 
