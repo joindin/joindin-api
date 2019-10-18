@@ -11,6 +11,7 @@
   "homepage": "https://api.joind.in",
   "license": "BSD-3-Clause",
   "require": {
+    "php": "^7.2",
     "ext-intl": "*",
     "ext-json": "*",
     "ext-pdo": "*",
@@ -32,15 +33,14 @@
   "config": {
     "optimize-autoloader": true,
     "platform": {
-      "php": "7.3.2"
+      "php": "7.2.23"
     },
     "preferred-install": "dist",
     "sort-packages": true
   },
   "autoload": {
     "psr-4": {
-      "Joindin\\Api\\": "src/",
-      "Joindin\\Modifier\\": "src/Modifier/"
+      "Joindin\\Api\\": "src/"
     }
   },
   "autoload-dev": {
@@ -60,9 +60,10 @@
       "git diff origin/master... -- > diff.txt",
       "diffFilter --phpunit diff.txt build/logs/clover.xml 80"
     ],
+    "fix": "phpcbf -p .",
     "lint": "parallel-lint --exclude vendor .",
     "security": "security-checker security:check composer.lock",
-    "sniff": "phpcs --runtime-set ignore_warnings_on_exit true -p .",
+    "sniff": "phpcs --cache=build/.phpcs-cache --runtime-set ignore_warnings_on_exit true -p .",
     "test": "phpunit -c . tests/"
   },
   "support": {
