@@ -8,6 +8,7 @@
     beStrictAboutOutputDuringTests="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
     bootstrap="./tests/bootstrap.php"
+    cacheResultFile="build/.phpunit.result.cache"
     colors="true"
     enforceTimeLimit="true"
     verbose="true"

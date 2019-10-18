@@ -39,8 +39,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Joindin\\Api\\": "src/",
-      "Joindin\\Modifier\\": "src/Modifier/"
+      "Joindin\\Api\\": "src/"
     }
   },
   "autoload-dev": {
@@ -63,7 +62,7 @@
     "fix": "phpcbf -p .",
     "lint": "parallel-lint --exclude vendor .",
     "security": "security-checker security:check composer.lock",
-    "sniff": "phpcs --runtime-set ignore_warnings_on_exit true -p .",
+    "sniff": "phpcs --cache=build/.phpcs-cache --runtime-set ignore_warnings_on_exit true -p .",
     "test": "phpunit -c . tests/"
   },
   "support": {
