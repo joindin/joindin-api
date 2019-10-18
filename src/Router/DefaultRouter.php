@@ -2,6 +2,7 @@
 
 namespace Joindin\Api\Router;
 
+use Joindin\Api\Controller\DefaultController;
 use Joindin\Api\Request;
 
 /**
@@ -9,12 +10,11 @@ use Joindin\Api\Request;
  */
 class DefaultRouter extends BaseRouter
 {
-
     /**
      * {@inheritdoc}
      */
     public function getRoute(Request $request)
     {
-        return new Route('Joindin\Api\Controller\DefaultController', 'handle');
+        return new Route(DefaultController::class, 'handle');
     }
 }
