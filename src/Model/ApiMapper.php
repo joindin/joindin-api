@@ -39,8 +39,6 @@ class ApiMapper
             $this->_request    = $request;
             $this->website_url = $request->getConfigValue('website_url');
         }
-
-        return true;
     }
 
     public function getDefaultFields()

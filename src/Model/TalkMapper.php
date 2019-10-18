@@ -317,7 +317,7 @@ class TalkMapper extends ApiMapper
      *
      * @return false|TalkModelCollection
      */
-    public function getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose = false)
+    public function getTalksBySpeaker($user_id, $resultsperpage, $start, bool $verbose = false)
     {
         // based on getBasicSQL() but needs the speaker table joins
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
