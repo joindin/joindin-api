@@ -313,10 +313,11 @@ class TalkMapper extends ApiMapper
      * @param int $user_id
      * @param int $resultsperpage
      * @param int $start
+     * @param bool $verbose
      *
      * @return false|TalkModelCollection
      */
-    public function getTalksBySpeaker($user_id, $resultsperpage, $start)
+    public function getTalksBySpeaker($user_id, $resultsperpage, $start, bool $verbose = false)
     {
         // based on getBasicSQL() but needs the speaker table joins
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
@@ -345,8 +346,13 @@ class TalkMapper extends ApiMapper
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $total   = $this->getTotalCount($sql, [':user_id' => $user_id]);
+            $results = $this->processResults($results);
 
-            return new TalkModelCollection($this->processResults($results), $total);
+            if ($verbose) {
+                $results = $this->addTalkMediaTypes($results);
+            }
+
+            return new TalkModelCollection($results, $total);
         }
 
         return false;

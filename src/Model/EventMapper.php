@@ -430,6 +430,7 @@ class EventMapper extends ApiMapper
                 $list[$key]['tracks_uri']    = $base . '/' . $version . '/events/' . $row['ID'] . '/tracks';
                 $list[$key]['attending_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/attending';
                 $list[$key]['images_uri']    = $base . '/' . $version . '/events/' . $row['ID'] . '/images';
+                $list[$key]['pending']       = $row['pending'];
 
                 if ($row['pending'] == 1 && $thisUserCanApproveEvents) {
                     $list[$key]['approval_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/approval';
@@ -586,11 +587,8 @@ class EventMapper extends ApiMapper
                . ') and (events.event_start + (3*30*3600*24)) > ' . mktime(0, 0, 0)
                . ') THEN 1 ELSE 0 END as comments_enabled '
                . 'from events '
-               . 'join user_admin ua on (ua.rid = events.ID) AND rtype="event" AND (rcode!="pending" OR rcode is null)';
-
-        $sql .= 'where active = 1 and '
-                . '(pending = 0 or pending is NULL) and '
-                . ' ua.uid = :user_id';
+               . 'join user_admin ua on (ua.rid = events.ID) AND rtype="event" AND (rcode!="pending" OR rcode is null)'
+               . 'and ua.uid = :user_id';
 
         $sql .= ' order by events.event_start desc ';
 
