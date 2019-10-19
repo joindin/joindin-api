@@ -68,7 +68,7 @@
       "phpcbf -p ."
     ],
     "lint": "parallel-lint --exclude vendor .",
-    "require-checker": "composer-require-checker",
+    "require-checker": "composer-require-checker --config-file=composer-require-checker.json",
     "security": "security-checker security:check composer.lock",
     "sniff": [
       "mkdir -p build/",
