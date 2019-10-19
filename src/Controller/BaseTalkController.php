@@ -11,6 +11,7 @@ use Joindin\Api\Model\TalkModel;
 use Joindin\Api\Model\UserMapper;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 class BaseTalkController extends BaseApiController
 {
@@ -46,7 +47,7 @@ class BaseTalkController extends BaseApiController
                     "You must be logged in to %s",
                     $failMessages[$request->getVerb()]
                 ),
-                401
+                Http::UNAUTHORIZED
             );
         }
     }
@@ -119,7 +120,7 @@ class BaseTalkController extends BaseApiController
 
         $talk = $mapper->getTalkById($talk_id, $verbose);
         if (false === $talk) {
-            throw new Exception('Talk not found', 404);
+            throw new Exception('Talk not found', Http::NOT_FOUND);
         }
 
         return $talk;

@@ -11,6 +11,7 @@ use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Service\UserRegistrationEmailService;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 class UsersController extends BaseApiController
 {
@@ -58,7 +59,7 @@ class UsersController extends BaseApiController
                     );
 
                 default:
-                    throw new InvalidArgumentException('Unknown Subrequest', 404);
+                    throw new InvalidArgumentException('Unknown Subrequest', Http::NOT_FOUND);
             }
         }
 
@@ -67,7 +68,7 @@ class UsersController extends BaseApiController
         if ($user_id) {
             $list = $mapper->getUserById($user_id, $verbose);
             if (count($list['users']) == 0) {
-                throw new Exception('User not found', 404);
+                throw new Exception('User not found', Http::NOT_FOUND);
             }
 
             return $list;
@@ -81,7 +82,7 @@ class UsersController extends BaseApiController
             );
             $list     = $mapper->getUserByUsername($username, $verbose);
             if ($list === false) {
-                throw new Exception('Username not found', 404);
+                throw new Exception('Username not found', Http::NOT_FOUND);
             }
 
             return $list;
@@ -109,22 +110,22 @@ class UsersController extends BaseApiController
                     $user_mapper = new UserMapper($db, $request);
                     $token       = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
                     if (empty($token)) {
-                        throw new Exception("Verification token must be supplied", 400);
+                        throw new Exception("Verification token must be supplied", Http::BAD_REQUEST);
                     } else {
                         $success = $user_mapper->verifyUser($token);
                         if ($success) {
                             $view = $request->getView();
                             $view->setHeader('Content-Length', 0);
-                            $view->setResponseCode(204);
+                            $view->setResponseCode(Http::NO_CONTENT);
 
                             return;
                         } else {
-                            throw new Exception("Verification failed", 400);
+                            throw new Exception("Verification failed", Http::BAD_REQUEST);
                         }
                     }
                     break;
                 default:
-                    throw new InvalidArgumentException('Unknown Subrequest', 404);
+                    throw new InvalidArgumentException('Unknown Subrequest', Http::NOT_FOUND);
                     break;
             }
         } else {
@@ -202,12 +203,12 @@ class UsersController extends BaseApiController
 
             // How does it look?  With no errors, we can proceed
             if ($errors) {
-                throw new Exception(implode(". ", $errors), 400);
+                throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
             } else {
                 $user_id = $user_mapper->createUser($user);
                 $view    = $request->getView();
                 $view->setHeader('Location', $request->base . $request->path_info . '/' . $user_id);
-                $view->setResponseCode(201);
+                $view->setResponseCode(Http::CREATED);
 
                 // autoverify for test platforms
                 if (isset($this->config['features']['allow_auto_verify_users'])
@@ -244,7 +245,7 @@ class UsersController extends BaseApiController
     public function updateUser(Request $request, PDO $db)
     {
         if (false == ($request->getUserId())) {
-            throw new Exception("You must be logged in to change a user account", 401);
+            throw new Exception("You must be logged in to change a user account", Http::UNAUTHORIZED);
         }
 
         $userId = $this->getItemId($request);
@@ -256,7 +257,7 @@ class UsersController extends BaseApiController
 
             // only trusted clients can change account details
             if (!$oauthModel->isAccessTokenPermittedPasswordGrant($accessToken)) {
-                throw new Exception("This client does not have permission to perform this operation", 403);
+                throw new Exception("This client does not have permission to perform this operation", Http::FORBIDDEN);
             }
 
             // start building up a representation of the user
@@ -269,12 +270,12 @@ class UsersController extends BaseApiController
                 // they must supply their old password to be allowed to set a new one
                 $old_password = $request->getParameter('old_password');
                 if (empty($old_password)) {
-                    throw new Exception('The field "old_password" is needed to update a user password', 400);
+                    throw new Exception('The field "old_password" is needed to update a user password', Http::BAD_REQUEST);
                 }
 
                 // is the old password correct before we proceed?
                 if (!$oauthModel->reverifyUserPassword($userId, $old_password)) {
-                    throw new Exception("The credentials could not be verified", 403);
+                    throw new Exception("The credentials could not be verified", Http::FORBIDDEN);
                 }
 
                 $validity = $user_mapper->checkPasswordValidity($password);
@@ -354,34 +355,34 @@ class UsersController extends BaseApiController
             }
 
             if ($errors) {
-                throw new Exception(implode(". ", $errors), 400);
+                throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
             } else {
                 // now update the user
                 if (!$user_mapper->editUser($user, $userId)) {
-                    throw new Exception("User not updated", 400);
+                    throw new Exception("User not updated", Http::BAD_REQUEST);
                 }
 
                 // we're good!
                 $view = $request->getView();
                 $view->setHeader('Content-Length', 0);
-                $view->setResponseCode(204);
+                $view->setResponseCode(Http::NO_CONTENT);
 
                 return;
             }
         }
-        throw new Exception("Could not update user", 400);
+        throw new Exception("Could not update user", Http::BAD_REQUEST);
     }
 
     public function passwordReset(Request $request, PDO $db)
     {
         $token = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
         if (empty($token)) {
-            throw new Exception("Reset token must be supplied", 400);
+            throw new Exception("Reset token must be supplied", Http::BAD_REQUEST);
         }
 
         $password = $request->getParameter("password");
         if (empty($password)) {
-            throw new Exception("New password must be supplied", 400);
+            throw new Exception("New password must be supplied", Http::BAD_REQUEST);
         }
         // now check the password complies with our rules
         $user_mapper = new UserMapper($db, $request);
@@ -392,22 +393,22 @@ class UsersController extends BaseApiController
             if ($success) {
                 $view = $request->getView();
                 $view->setHeader('Content-Length', 0);
-                $view->setResponseCode(204);
+                $view->setResponseCode(Http::NO_CONTENT);
 
                 return;
             } else {
-                throw new Exception("Password could not be reset", 400);
+                throw new Exception("Password could not be reset", Http::BAD_REQUEST);
             }
         } else {
             // the password wasn't acceptable, tell the user why
-            throw new Exception(implode(". ", $validity), 400);
+            throw new Exception(implode(". ", $validity), Http::BAD_REQUEST);
         }
     }
 
     public function deleteUser(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 401);
+            throw new Exception("You must be logged in to delete data", Http::UNAUTHORIZED);
         }
         // delete the user
         $user_id = $this->getItemId($request);
@@ -416,16 +417,16 @@ class UsersController extends BaseApiController
 
         $is_admin = $user_mapper->isSiteAdmin($user_id);
         if (!$is_admin) {
-            throw new Exception("You do not have permission to do that", 403);
+            throw new Exception("You do not have permission to do that", Http::FORBIDDEN);
         }
 
         if (!$user_mapper->delete($user_id)) {
-            throw new Exception("There was a problem trying to delete the user", 400);
+            throw new Exception("There was a problem trying to delete the user", Http::BAD_REQUEST);
         }
 
         $view = $request->getView();
         $view->setHeader('Content-Length', 0);
-        $view->setResponseCode(204);
+        $view->setResponseCode(Http::NO_CONTENT);
     }
 
     /**
@@ -439,17 +440,17 @@ class UsersController extends BaseApiController
     public function setTrusted(Request $request, PDO $db)
     {
         if (false == ($request->getUserId())) {
-            throw new Exception("You must be logged in to change a user account", 401);
+            throw new Exception("You must be logged in to change a user account", Http::UNAUTHORIZED);
         }
 
         $user_mapper = $this->getUserMapper($db, $request);
         if (!$user_mapper->isSiteAdmin($request->getUserId())) {
-            throw new Exception("You must be an admin to change a user's trusted state", 403);
+            throw new Exception("You must be an admin to change a user's trusted state", Http::FORBIDDEN);
         }
 
         $userId = $this->getItemId($request);
         if (!is_bool($trustedStatus = $request->getParameter("trusted", null))) {
-            throw new Exception("You must provide a trusted state", 400);
+            throw new Exception("You must provide a trusted state", Http::BAD_REQUEST);
         }
 
         if (!$user_mapper->setTrustedStatus($trustedStatus, $userId)) {
@@ -457,7 +458,7 @@ class UsersController extends BaseApiController
         }
         $view = $request->getView();
         $view->setHeader('Content-Length', 0);
-        $view->setResponseCode(204);
+        $view->setResponseCode(Http::NO_CONTENT);
     }
 
     public function setUserMapper(UserMapper $user_mapper)

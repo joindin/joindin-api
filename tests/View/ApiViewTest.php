@@ -4,6 +4,7 @@ namespace Joindin\Api\Test\View;
 
 use Joindin\Api\View\ApiView;
 use PHPUnit\Framework\TestCase;
+use Teapot\StatusCode\Http;
 
 /**
  * @covers \Joindin\Api\View\ApiView
@@ -18,14 +19,14 @@ class ApiViewTest extends TestCase
     {
         $view = new ApiView();
 
-        header('Foo: bar', false, 201);
+        header('Foo: bar', false, Http::CREATED);
 
         ob_start();
         $view->render('');
         $this->assertEquals('', ob_get_contents());
         ob_end_clean();
 
-        $this->assertEquals(201, http_response_code());
+        $this->assertEquals(Http::CREATED, http_response_code());
     }
 
     /**
@@ -36,15 +37,15 @@ class ApiViewTest extends TestCase
     {
         $view = new ApiView();
 
-        $view->setResponseCode(202);
-        header('Foo: bar', false, 201);
+        $view->setResponseCode(Http::ACCEPTED);
+        header('Foo: bar', false, Http::CREATED);
 
         ob_start();
         $view->render('');
         $this->assertEquals('', ob_get_contents());
         ob_end_clean();
 
-        $this->assertEquals(202, http_response_code());
+        $this->assertEquals(Http::ACCEPTED, http_response_code());
     }
 
     /**
@@ -55,8 +56,8 @@ class ApiViewTest extends TestCase
     {
         $view = new ApiView();
 
-        $view->setResponseCode(202);
-        header('Foo: bar', false, 201);
+        $view->setResponseCode(Http::ACCEPTED);
+        header('Foo: bar', false, Http::CREATED);
 
         ob_start();
         $view->render('');
@@ -102,7 +103,7 @@ class ApiViewTest extends TestCase
     public function testThatSettingHeadersDoesntOverwriteIntendedHeaders()
     {
         $view = new ApiView();
-        $view->setResponseCode(201);
+        $view->setResponseCode(Http::CREATED);
         $view->setHeader('Location', 'http://example.org');
 
         ob_start();
@@ -113,7 +114,7 @@ class ApiViewTest extends TestCase
             'Location: http://example.org',
         ];
 
-        $this->assertEquals(201, http_response_code());
+        $this->assertEquals(Http::CREATED, http_response_code());
 
         if (!function_exists('xdebug_get_headers')) {
             $this->markTestSkipped('Test will run when xdebug enabled');

@@ -5,6 +5,7 @@ namespace Joindin\Api\Model;
 use Exception;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 class OAuthModel
 {
@@ -142,7 +143,7 @@ class OAuthModel
         }
 
         if ($result['verified'] != 1) {
-            throw new Exception("Not verified", 401);
+            throw new Exception("Not verified", Http::UNAUTHORIZED);
         }
 
         if (!password_verify(md5($password), $result['password'])) {

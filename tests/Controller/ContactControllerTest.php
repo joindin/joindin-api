@@ -11,6 +11,7 @@ use Joindin\Api\Service\SpamCheckServiceInterface;
 use Joindin\Api\View\ApiView;
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Teapot\StatusCode\Http;
 
 class ContactControllerTest extends TestCase
 {
@@ -80,7 +81,7 @@ class ContactControllerTest extends TestCase
 
             $viewMock->expects($this->once())
                      ->method('setResponseCode')
-                     ->with(202);
+                     ->with(Http::ACCEPTED);
 
             $viewMock->expects($this->once())
                      ->method('setHeader')

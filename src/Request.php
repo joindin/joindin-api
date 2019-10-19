@@ -13,6 +13,7 @@ use Joindin\Api\View\HtmlView;
 use Joindin\Api\View\JsonPView;
 use Joindin\Api\View\JsonView;
 use PDO;
+use Teapot\StatusCode\Http;
 
 class Request
 {
@@ -351,12 +352,12 @@ class Request
             // identify the user
             $oauth_pieces = explode(' ', $auth_header);
             if (count($oauth_pieces) <> 2) {
-                throw new InvalidArgumentException('Invalid Authorization Header', '400');
+                throw new InvalidArgumentException('Invalid Authorization Header', Http::BAD_REQUEST);
             }
 
             // token type must be either 'bearer' or 'oauth'
             if (!in_array(strtolower($oauth_pieces[0]), ["bearer", 'oauth'])) {
-                throw new InvalidArgumentException('Unknown Authorization Header Received', '400');
+                throw new InvalidArgumentException('Unknown Authorization Header Received', Http::BAD_REQUEST);
             }
             $oauth_model = $this->getOauthModel($db);
             $user_id     = $oauth_model->verifyAccessToken($oauth_pieces[1]);

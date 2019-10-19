@@ -6,6 +6,7 @@ use Exception;
 use Joindin\Api\Model\TalkTypeMapper;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 class TalkTypesController extends BaseApiController
 {
@@ -33,7 +34,7 @@ class TalkTypesController extends BaseApiController
         $list   = $mapper->getTalkTypeById($talk_type_id, $verbose);
 
         if (count($list['talk_types']) == 0) {
-            throw new Exception('Talk type not found', 404);
+            throw new Exception('Talk type not found', Http::NOT_FOUND);
         }
 
         return $list;

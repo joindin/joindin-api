@@ -14,6 +14,7 @@ use JoindinTest\Inc\mockPDO;
 use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Teapot\StatusCode\Http;
 
 class UsersControllerTest extends TestCase
 {
@@ -28,7 +29,7 @@ class UsersControllerTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to delete data');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
 
@@ -50,7 +51,7 @@ class UsersControllerTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You do not have permission to do that');
-        $this->expectExceptionCode(403);
+        $this->expectExceptionCode(Http::FORBIDDEN);
 
         $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 2;
@@ -82,7 +83,7 @@ class UsersControllerTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('There was a problem trying to delete the user');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
@@ -168,7 +169,7 @@ class UsersControllerTest extends TestCase
 
         $view = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
         $view->expects($this->once())->method('setHeader')->with('Location', 'basepath_info/1');
-        $view->expects($this->once())->method('setResponseCode')->with(201);
+        $view->expects($this->once())->method('setResponseCode')->with(Http::CREATED);
         $request->method('getView')->willReturn($view);
 
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
@@ -222,7 +223,7 @@ class UsersControllerTest extends TestCase
 
         $view = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
         $view->expects($this->once())->method('setHeader')->with('Content-Length', 0);
-        $view->expects($this->once())->method('setResponseCode')->with(204);
+        $view->expects($this->once())->method('setResponseCode')->with(Http::NO_CONTENT);
         $request->method('getView')->willReturn($view);
 
         $db = $this->getMockBuilder('\PDO')->disableOriginalConstructor()->getMock();
@@ -255,7 +256,7 @@ class UsersControllerTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to change a user account');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
@@ -275,7 +276,7 @@ class UsersControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("You must be an admin to change a user's trusted state");
-        $this->expectExceptionCode(403);
+        $this->expectExceptionCode(Http::FORBIDDEN);
 
         $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/4/trusted", 'REQUEST_METHOD' => 'POST']);
         $request->user_id = 2;
@@ -307,7 +308,7 @@ class UsersControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must provide a trusted state');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
@@ -341,7 +342,7 @@ class UsersControllerTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Unable to update status');
-        $this->expectExceptionCode(500);
+        $this->expectExceptionCode(Http::INTERNAL_SERVER_ERROR);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);
@@ -392,7 +393,7 @@ class UsersControllerTest extends TestCase
 
         $view->expects($this->once())
             ->method("setResponseCode")
-            ->with(204)
+            ->with(Http::NO_CONTENT)
             ->willReturn(true);
 
         $request->expects($this->once())

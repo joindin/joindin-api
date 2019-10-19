@@ -9,6 +9,7 @@ use Joindin\Api\Service\UserRegistrationEmailService;
 use Joindin\Api\Service\UserUsernameReminderEmailService;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 /**
  * Actions here deal with endpoints that trigger emails to be sent
@@ -20,7 +21,7 @@ class EmailsController extends BaseApiController
         $user_mapper = new UserMapper($db, $request);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
         if (empty($email)) {
-            throw new Exception("The email address must be supplied", 400);
+            throw new Exception("The email address must be supplied", Http::BAD_REQUEST);
         } else {
             // need the user's ID rather than the representation
             $user_id = $user_mapper->getUserIdFromEmail($email);
@@ -34,11 +35,11 @@ class EmailsController extends BaseApiController
 
                 $view = $request->getView();
                 $view->setHeader('Content-Length', 0);
-                $view->setResponseCode(202);
+                $view->setResponseCode(Http::ACCEPTED);
 
                 return;
             }
-            throw new Exception("Can't find that email address", 400);
+            throw new Exception("Can't find that email address", Http::BAD_REQUEST);
         }
     }
 
@@ -47,7 +48,7 @@ class EmailsController extends BaseApiController
         $user_mapper = new UserMapper($db, $request);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
         if (empty($email)) {
-            throw new Exception("The email address must be supplied", 400);
+            throw new Exception("The email address must be supplied", Http::BAD_REQUEST);
         } else {
             $list = $user_mapper->getUserByEmail($email);
             if (is_array($list['users']) && count($list['users'])) {
@@ -59,11 +60,11 @@ class EmailsController extends BaseApiController
 
                 $view = $request->getView();
                 $view->setHeader('Content-Length', 0);
-                $view->setResponseCode(202);
+                $view->setResponseCode(Http::ACCEPTED);
 
                 return;
             }
-            throw new Exception("Can't find that email address", 400);
+            throw new Exception("Can't find that email address", Http::BAD_REQUEST);
         }
     }
 
@@ -72,7 +73,7 @@ class EmailsController extends BaseApiController
         $user_mapper = new UserMapper($db, $request);
         $username    = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);
         if (empty($username)) {
-            throw new Exception("A username must be supplied", 400);
+            throw new Exception("A username must be supplied", Http::BAD_REQUEST);
         } else {
             $list = $user_mapper->getUserByUsername($username);
             if (is_array($list['users']) && count($list['users'])) {
@@ -86,7 +87,7 @@ class EmailsController extends BaseApiController
                 // we need a token to send so we know it is a valid reset
                 $token = $user_mapper->generatePasswordResetTokenForUserId($user_id);
                 if (!$token) {
-                    throw new Exception("Unable to generate a reset token", 400);
+                    throw new Exception("Unable to generate a reset token", Http::BAD_REQUEST);
                 }
 
                 $emailService = new UserPasswordResetEmailService($this->config, $recipients, $user, $token);
@@ -94,11 +95,11 @@ class EmailsController extends BaseApiController
 
                 $view = $request->getView();
                 $view->setHeader('Content-Length', 0);
-                $view->setResponseCode(202);
+                $view->setResponseCode(Http::ACCEPTED);
 
                 return;
             }
-            throw new Exception("Can't find that user", 400);
+            throw new Exception("Can't find that user", Http::BAD_REQUEST);
         }
     }
 }

@@ -8,6 +8,7 @@ use Joindin\Api\Request;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
+use Teapot\StatusCode\Http;
 
 class OauthModelTest extends TestCase
 {
@@ -45,7 +46,7 @@ class OauthModelTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Not verified');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $stmt = $this->getMockBuilder(PDOStatement::class)->getMock();
         $stmt->method('execute')->willReturn(true);
