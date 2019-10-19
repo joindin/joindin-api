@@ -113,7 +113,7 @@ class VersionedRouterTest extends TestCase
                 'expectedController'    => 'N/A',
                 'expectedAction'        => 'N/A',
                 'routeParams'           => [],
-                'expectedExceptionCode' => Http::UNSUPPORTED_MEDIA_TYPE
+                'expectedExceptionCode' => Http::METHOD_NOT_ALLOWED
             ],
             [ // #5
                 'version'               => '2.1',

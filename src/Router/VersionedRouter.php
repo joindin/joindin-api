@@ -72,7 +72,7 @@ class VersionedRouter extends BaseRouter
         }
 
         if ($badMethod) {
-            throw new Exception('Method not supported', Http::UNSUPPORTED_MEDIA_TYPE);
+            throw new Exception('Method not supported', Http::METHOD_NOT_ALLOWED);
         }
         throw new Exception('Endpoint not found', Http::NOT_FOUND);
     }
