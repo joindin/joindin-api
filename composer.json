@@ -55,6 +55,7 @@
       "@lint",
       "@sniff",
       "@stan",
+      "@require-checker",
       "@security",
       "@coverage"
     ],
@@ -67,6 +68,7 @@
       "phpcbf -p ."
     ],
     "lint": "parallel-lint --exclude vendor .",
+    "require-checker": "composer-require-checker",
     "security": "security-checker security:check composer.lock",
     "sniff": [
       "mkdir -p build/",
