@@ -11,6 +11,7 @@ use Joindin\Api\Request;
 use Joindin\Api\View\ApiView;
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Teapot\StatusCode\Http;
 
 class EventHostsControllerTest extends TestCase
 {
@@ -18,7 +19,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to create data');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $controller = new EventHostsController();
 
@@ -32,7 +33,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->user_id = null;
@@ -47,7 +48,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Event not found');
-        $this->expectExceptionCode(404);
+        $this->expectExceptionCode(Http::NOT_FOUND);
 
         $controller = new EventHostsController();
 
@@ -69,7 +70,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You are not allowed to remove yourself from the host-list');
-        $this->expectExceptionCode(403);
+        $this->expectExceptionCode(Http::FORBIDDEN);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
@@ -85,7 +86,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Event not found');
-        $this->expectExceptionCode(404);
+        $this->expectExceptionCode(Http::NOT_FOUND);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
@@ -109,7 +110,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You do not have permission to add hosts to this event');
-        $this->expectExceptionCode(403);
+        $this->expectExceptionCode(Http::FORBIDDEN);
 
         $controller = new EventHostsController();
 
@@ -132,7 +133,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You do not have permission to remove hosts from this event');
-        $this->expectExceptionCode(403);
+        $this->expectExceptionCode(Http::FORBIDDEN);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
@@ -157,7 +158,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('No User found');
-        $this->expectExceptionCode(404);
+        $this->expectExceptionCode(Http::NOT_FOUND);
 
         $controller = new EventHostsController();
 
@@ -186,7 +187,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('No User found');
-        $this->expectExceptionCode(404);
+        $this->expectExceptionCode(Http::NOT_FOUND);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
@@ -215,7 +216,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Something went wrong');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $controller = new EventHostsController();
 
@@ -270,7 +271,7 @@ class EventHostsControllerTest extends TestCase
             $this->equalTo('Location'),
             $this->equalTo('foo//events/12/hosts')
         );
-        $view->expects($this->once())->method('setResponseCode')->with($this->equalTo(201));
+        $view->expects($this->once())->method('setResponseCode')->with($this->equalTo(Http::CREATED));
         $view->expects($this->once())->method('setNoRender')->with($this->equalTo(true));
 
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
@@ -289,7 +290,7 @@ class EventHostsControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Something went wrong');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
@@ -322,7 +323,7 @@ class EventHostsControllerTest extends TestCase
     {
         $view = $this->getMockBuilder(ApiView::class)->getMock();
         $view->method('setHeader')->with('Location', 'base/version/events/4/hosts');
-        $view->method('setResponseCode')->with(204);
+        $view->method('setResponseCode')->with(Http::NO_CONTENT);
         $view->method('setNoRender')->with(true);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();

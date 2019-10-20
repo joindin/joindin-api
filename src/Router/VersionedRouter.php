@@ -4,6 +4,7 @@ namespace Joindin\Api\Router;
 
 use Exception;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 /**
  * A Router to route versioned Routes
@@ -71,8 +72,8 @@ class VersionedRouter extends BaseRouter
         }
 
         if ($badMethod) {
-            throw new Exception('Method not supported', 415);
+            throw new Exception('Method not supported', Http::METHOD_NOT_ALLOWED);
         }
-        throw new Exception('Endpoint not found', 404);
+        throw new Exception('Endpoint not found', Http::NOT_FOUND);
     }
 }

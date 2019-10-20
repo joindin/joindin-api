@@ -6,6 +6,7 @@ use Exception;
 use Joindin\Api\Model\TalkMapper;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 class TalkLinkController extends BaseTalkController
 {
@@ -28,7 +29,7 @@ class TalkLinkController extends BaseTalkController
         if (count($links) !== 1) {
             throw new Exception(
                 "ID not found",
-                404
+                Http::NOT_FOUND
             );
         }
 
@@ -70,7 +71,7 @@ class TalkLinkController extends BaseTalkController
         if (!$talk_mapper->removeTalkLink($talk_id, $request->url_elements[5])) {
             throw new Exception(
                 "Talk Link ID not found",
-                404
+                Http::NOT_FOUND
             );
         }
 
@@ -92,7 +93,7 @@ class TalkLinkController extends BaseTalkController
         if (!$display_name || ! $url) {
             throw new Exception(
                 "Missing required fields URL OR Display Name",
-                400
+                Http::BAD_REQUEST
             );
         }
 
@@ -100,7 +101,7 @@ class TalkLinkController extends BaseTalkController
         if (!$link_id) {
             throw new Exception(
                 "The Link has not been inserted",
-                400
+                Http::BAD_REQUEST
             );
         }
 
@@ -123,7 +124,7 @@ class TalkLinkController extends BaseTalkController
         if (!($is_admin || $is_speaker)) {
             throw new Exception(
                 "You do not have permission to add links to this talk",
-                403
+                Http::FORBIDDEN
             );
         }
     }
@@ -139,6 +140,6 @@ class TalkLinkController extends BaseTalkController
 
         $view = $request->getView();
         $view->setHeader('Location', rtrim("/", $uri));
-        $view->setResponseCode(204);
+        $view->setResponseCode(Http::NO_CONTENT);
     }
 }

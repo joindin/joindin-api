@@ -14,6 +14,7 @@ use Joindin\Api\Model\OAuthModel;
 use Joindin\Api\Model\TwitterRequestTokenMapper;
 use Joindin\Api\Request;
 use PDO;
+use Teapot\StatusCode\Http;
 
 class TwitterController extends BaseApiController
 {
@@ -29,7 +30,7 @@ class TwitterController extends BaseApiController
         $clientSecret     = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
-            throw new Exception("This client cannot perform this action", 403);
+            throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
 
         $stack = HandlerStack::create();
@@ -47,7 +48,7 @@ class TwitterController extends BaseApiController
         ]);
 
         $res = $client->post('oauth/request_token');
-        if ($res->getStatusCode() == 200) {
+        if ($res->getStatusCode() == Http::OK) {
             parse_str($res->getBody(), $data);
 
             $requestTokenMapper = new TwitterRequestTokenMapper($db);
@@ -55,7 +56,7 @@ class TwitterController extends BaseApiController
             $tokens      = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
             $output_list = $tokens->getOutputView($request);
             $request->getView()->setHeader('Location', $output_list['twitter_request_tokens'][0]['uri']);
-            $request->getView()->setResponseCode(201);
+            $request->getView()->setResponseCode(Http::CREATED);
 
             return $output_list;
         }
@@ -80,7 +81,7 @@ class TwitterController extends BaseApiController
         $clientSecret     = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
-            throw new Exception("This client cannot perform this action", 403);
+            throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
 
         // check incoming values
@@ -106,7 +107,7 @@ class TwitterController extends BaseApiController
         ]);
 
         $res = $client->post('oauth/access_token', ['form_params' => ['oauth_verifier' => $verifier]]);
-        if ($res->getStatusCode() == 200) {
+        if ($res->getStatusCode() == Http::OK) {
             parse_str($res->getBody(), $data);
 
             // we might want to store oauth_token and oauth_token_secret at some point if we want any
@@ -133,10 +134,10 @@ class TwitterController extends BaseApiController
                 try {
                     $res = $client1->get('1.1/account/verify_credentials.json?include_email=true');
                 } catch (Exception $e) {
-                    throw new Exception('Could not retrieve user-informations from Twitter', 403, $e);
+                    throw new Exception('Could not retrieve user-informations from Twitter', Http::FORBIDDEN, $e);
                 }
 
-                if ($res->getStatusCode() == 200) {
+                if ($res->getStatusCode() == Http::OK) {
                     $result = $this->oauthModel->createUserFromTwitterUsername(
                         $clientId,
                         json_decode($res->getBody()->getContents(), JSON_OBJECT_AS_ARRAY)
@@ -145,7 +146,7 @@ class TwitterController extends BaseApiController
             }
 
             if (!$result) {
-                throw new Exception("Could not sign in with Twitter", 403);
+                throw new Exception("Could not sign in with Twitter", Http::FORBIDDEN);
             }
 
             // clean up request token data

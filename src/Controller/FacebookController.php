@@ -10,6 +10,7 @@ use Exception;
 use GuzzleHttp\Client;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 class FacebookController extends BaseApiController
 {
@@ -38,7 +39,7 @@ class FacebookController extends BaseApiController
         $clientSecret     = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
-            throw new Exception("This client cannot perform this action", 403);
+            throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
 
         // check incoming values
@@ -60,7 +61,7 @@ class FacebookController extends BaseApiController
             ]
         ]);
 
-        if ($res->getStatusCode() == 200) {
+        if ($res->getStatusCode() == Http::OK) {
             $data         = json_decode((string)$res->getBody(), true);
             $access_token = $data['access_token'];
 
@@ -71,10 +72,10 @@ class FacebookController extends BaseApiController
                     'fields'       => 'name,email',
                 ]
             ]);
-            if ($res->getStatusCode() == 200) {
+            if ($res->getStatusCode() == Http::OK) {
                 $data = json_decode((string)$res->getBody(), true, 512, JSON_BIGINT_AS_STRING);
                 if (!array_key_exists('email', $data)) {
-                    throw new Exception("Email address is unavailable", 403);
+                    throw new Exception("Email address is unavailable", Http::FORBIDDEN);
                 }
                 $email    = $data['email'];
                 $fullName = $data['name'];
@@ -92,7 +93,7 @@ class FacebookController extends BaseApiController
                 }
             }
 
-            throw new Exception("Could not sign in with Facebook", 403);
+            throw new Exception("Could not sign in with Facebook", Http::FORBIDDEN);
         }
 
         trigger_error(

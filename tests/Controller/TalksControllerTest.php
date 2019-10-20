@@ -12,6 +12,8 @@ use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Request;
 use Joindin\Api\Service\TalkCommentEmailService;
 use JoindinTest\Inc\mockPDO;
+use Teapot\StatusCode\Http;
+use Teapot\StatusCode\WebDAV;
 
 class TalksControllerTest extends TalkBase
 {
@@ -43,7 +45,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to create data');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = new Request(
             [],
@@ -69,7 +71,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Talk not found');
-        $this->expectExceptionCode(404);
+        $this->expectExceptionCode(Http::NOT_FOUND);
 
         $request = new Request(
             [],
@@ -112,7 +114,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must provide a display name and a username');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = new Request(
             [],
@@ -153,7 +155,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must provide a display name and a username');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = new Request(
             [],
@@ -193,7 +195,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('No speaker matching that name found');
-        $this->expectExceptionCode(422);
+        $this->expectExceptionCode(WebDAV::UNPROCESSABLE_ENTITY);
 
         $request = new Request(
             [],
@@ -238,7 +240,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Talk already claimed');
-        $this->expectExceptionCode(422);
+        $this->expectExceptionCode(WebDAV::UNPROCESSABLE_ENTITY);
 
         $request = new Request(
             [],
@@ -285,7 +287,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be the speaker or event admin to link a user to a talk');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = new Request(
             [],
@@ -350,7 +352,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Specified user not found');
-        $this->expectExceptionCode(404);
+        $this->expectExceptionCode(Http::NOT_FOUND);
 
         $request = new Request(
             [],
@@ -524,7 +526,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You already have a pending claim for this talk. Please wait for an event admin to approve your claim.');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = new Request(
             [],
@@ -587,7 +589,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be an event admin to approve this claim');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = new Request(
             [],
@@ -651,7 +653,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be the talk speaker to approve this assignment');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = new Request(
             [],
@@ -953,7 +955,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to create data');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = new Request(
             [],
@@ -972,7 +974,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('The field "comment" is required');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = new Request(
             [],
@@ -1002,7 +1004,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('The field "rating" is required');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = new Request(
             [],
@@ -1290,7 +1292,7 @@ class TalksControllerTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Generic talks listing not supported');
-        $this->expectExceptionCode(405);
+        $this->expectExceptionCode(Http::METHOD_NOT_ALLOWED);
 
         $request = new Request(
             [],

@@ -6,6 +6,7 @@ use Exception;
 use Joindin\Api\Model\EventMapper;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 class EventImagesController extends BaseApiController
 {
@@ -21,7 +22,7 @@ class EventImagesController extends BaseApiController
     public function createImage(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
+            throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
         $event_id = $this->getItemId($request);
@@ -35,15 +36,15 @@ class EventImagesController extends BaseApiController
         }
 
         if (!$event_mapper->thisUserHasAdminOn($event_id)) {
-            throw new Exception("You don't have permission to do that", 403);
+            throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
 
         if (!isset($_FILES['image'])) {
-            throw new Exception("Image was not supplied", 400);
+            throw new Exception("Image was not supplied", Http::BAD_REQUEST);
         }
 
         if ($_FILES['image']['error'] != 0) {
-            throw new Exception("Image upload failed (Code: " . $_FILES['image']['error'] . ")", 400);
+            throw new Exception("Image upload failed (Code: " . $_FILES['image']['error'] . ")", Http::BAD_REQUEST);
         }
 
         // check the file meets our expectations
@@ -53,20 +54,20 @@ class EventImagesController extends BaseApiController
 
         // must be gif, jpg or png
         if (!in_array($filetype, [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG], true)) {
-            throw new Exception("Supplied image must be a PNG, JPG or GIF", 400);
+            throw new Exception("Supplied image must be a PNG, JPG or GIF", Http::BAD_REQUEST);
         }
 
         // must be square
         if ($width != $height) {
-            throw new Exception("Supplied image must be square", 400);
+            throw new Exception("Supplied image must be square", Http::BAD_REQUEST);
         }
 
         // 140px min, 1440px max
         if ($width < 140) {
-            throw new Exception("Supplied image must be at least 140px square", 400);
+            throw new Exception("Supplied image must be at least 140px square", Http::BAD_REQUEST);
         }
         if ($width > 1440) {
-            throw new Exception("Supplied image must be no more than 1440px square", 400);
+            throw new Exception("Supplied image must be no more than 1440px square", Http::BAD_REQUEST);
         }
 
         // save the file - overwrite current one if there is one
@@ -113,13 +114,13 @@ class EventImagesController extends BaseApiController
 
         $view = $request->getView();
         $view->setHeader('Location', $location);
-        $view->setResponseCode(201);
+        $view->setResponseCode(Http::CREATED);
     }
 
     public function deleteImage(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
+            throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
         $event_id     = $this->getItemId($request);
@@ -130,6 +131,6 @@ class EventImagesController extends BaseApiController
 
         $view = $request->getView();
         $view->setHeader('Location', $location);
-        $view->setResponseCode(204);
+        $view->setResponseCode(Http::NO_CONTENT);
     }
 }
