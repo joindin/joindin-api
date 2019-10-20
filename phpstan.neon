@@ -1,0 +1,8 @@
+parameters:
+    excludes_analyse:
+        - */public/index.php
+        - */scripts/*
+    paths:
+        - src
+
+    level: 1

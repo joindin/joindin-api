@@ -14,10 +14,10 @@ use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Model\TrackMapper;
 use Joindin\Api\Model\UserMapper;
+use Joindin\Api\Request;
 use Joindin\Api\Service\EventApprovedEmailService;
 use Joindin\Api\Service\EventSubmissionEmailService;
 use PDO;
-use Joindin\Api\Request;
 use Teapot\StatusCode\Http;
 
 class EventsController extends BaseApiController
@@ -205,6 +205,9 @@ class EventsController extends BaseApiController
             $event  = [];
             $errors = [];
 
+            // make the timezone, and read in times with respect to that
+            $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+
             $event['name'] = filter_var(
                 $request->getParameter("name"),
                 FILTER_SANITIZE_STRING,
@@ -252,8 +255,6 @@ class EventsController extends BaseApiController
                     FILTER_FLAG_NO_ENCODE_QUOTES
                 );
                 try {
-                    // make the timezone, and read in times with respect to that
-                    $tz                  = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
                     $start_date          = new DateTime($request->getParameter("start_date"), $tz);
                     $end_date            = new DateTime($request->getParameter("end_date"), $tz);
                     $event['start_date'] = $start_date->format('U');
@@ -426,6 +427,7 @@ class EventsController extends BaseApiController
 
     public function putAction(Request $request, PDO $db)
     {
+        $tz = new DateTimeZone('UTC');
         if (!isset($request->user_id)) {
             throw new Exception('You must be logged in to edit data', Http::UNAUTHORIZED);
         }
