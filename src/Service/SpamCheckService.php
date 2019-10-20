@@ -33,6 +33,10 @@ class SpamCheckService implements SpamCheckServiceInterface
      */
     public function isCommentAcceptable(array $data, $userIp, $userAgent)
     {
+        if (!array_key_exists('comment', $data) || !is_string($data['comment']) || '' === trim($data['comment'])) {
+            return false;
+        }
+
         $comment = [];
 
         // set some required fields
@@ -43,7 +47,7 @@ class SpamCheckService implements SpamCheckServiceInterface
         $comment['user_agent'] = $userAgent;
 
         // now use the incoming data
-        $comment['comment_content'] = $this->getField("comment", $data);
+        $comment['comment_content'] = $data['comment'];
 
         // actually do the check
         $ch = curl_init($this->akismetUrl . '/1.1/comment-check');
@@ -62,21 +66,6 @@ class SpamCheckService implements SpamCheckServiceInterface
 
         // otherwise, anything could have happened and we don't know if it's acceptable
         // TODO log what did happen
-        return false;
-    }
-
-    /**
-     * @param       $key
-     * @param array $data
-     *
-     * @return false|mixed
-     */
-    protected function getField($key, array $data)
-    {
-        if (isset($data[$key])) {
-            return $data[$key];
-        }
-
         return false;
     }
 }
