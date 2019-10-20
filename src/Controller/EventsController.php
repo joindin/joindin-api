@@ -18,6 +18,7 @@ use Joindin\Api\Service\EventApprovedEmailService;
 use Joindin\Api\Service\EventSubmissionEmailService;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 class EventsController extends BaseApiController
 {
@@ -80,7 +81,7 @@ class EventsController extends BaseApiController
                     $list   = $mapper->getTracksByEventId($event_id, $resultsperpage, $start, $verbose);
                     break;
                 default:
-                    throw new InvalidArgumentException('Unknown Subrequest', 404);
+                    throw new InvalidArgumentException('Unknown Subrequest', Http::NOT_FOUND);
                     break;
             }
         } else {
@@ -92,7 +93,7 @@ class EventsController extends BaseApiController
             if ($event_id) {
                 $list = $mapper->getEventById($event_id, $verbose, $activeEventsOnly);
                 if (count($list['events']) == 0) {
-                    throw new Exception('Event not found', 404);
+                    throw new Exception('Event not found', Http::NOT_FOUND);
                 }
             } else {
                 // handle the filter parameters
@@ -106,12 +107,12 @@ class EventsController extends BaseApiController
                     // for pending events we need a logged in user with the correct permissions
                     if ($params["filter"] == 'pending') {
                         if (!isset($request->user_id)) {
-                            throw new Exception("You must be logged in to view pending events", 400);
+                            throw new Exception("You must be logged in to view pending events", Http::BAD_REQUEST);
                         }
                         $user_mapper      = new UserMapper($db, $request);
                         $canApproveEvents = $user_mapper->isSiteAdmin($request->user_id);
                         if (!$canApproveEvents) {
-                            throw new Exception("You don't have permission to view pending events", 403);
+                            throw new Exception("You don't have permission to view pending events", Http::FORBIDDEN);
                         }
                     }
                 }
@@ -177,7 +178,7 @@ class EventsController extends BaseApiController
     public function postAction(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
+            throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
@@ -190,12 +191,12 @@ class EventsController extends BaseApiController
 
                     $view = $request->getView();
                     $view->setHeader('Location', $request->base . $request->path_info);
-                    $view->setResponseCode(201);
+                    $view->setResponseCode(Http::CREATED);
 
                     return;
 
                 default:
-                    throw new Exception("Operation not supported, sorry", 404);
+                    throw new Exception("Operation not supported, sorry", Http::NOT_FOUND);
             }
         } else {
             // Create a new event, pending unless user has privs
@@ -334,7 +335,7 @@ class EventsController extends BaseApiController
 
             // How does it look?  With no errors, we can proceed
             if ($errors) {
-                throw new Exception(implode(". ", $errors), 400);
+                throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
             } else {
                 $user_mapper = new UserMapper($db, $request);
 
@@ -365,14 +366,14 @@ class EventsController extends BaseApiController
                     // redirect to event listing
                     $view = $request->getView();
                     $view->setHeader('Location', $request->base . $request->path_info . '/' . $event_id);
-                    $view->setResponseCode(201);
+                    $view->setResponseCode(Http::CREATED);
                 } else {
                     $event_id = $event_mapper->createEvent($event);
 
                     // set status to accepted; a pending event won't be visible
                     $view = $request->getView();
                     $view->setHeader('Location', $request->base . $request->path_info);
-                    $view->setResponseCode(202);
+                    $view->setResponseCode(Http::ACCEPTED);
                 }
 
                 // now set the current user as host and attending
@@ -399,7 +400,7 @@ class EventsController extends BaseApiController
     public function deleteAction(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to delete data", 401);
+            throw new Exception("You must be logged in to delete data", Http::UNAUTHORIZED);
         }
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
@@ -410,23 +411,23 @@ class EventsController extends BaseApiController
 
                     $view = $request->getView();
                     $view->setHeader('Location', $request->base . $request->path_info);
-                    $view->setResponseCode(200);
+                    $view->setResponseCode(Http::OK);
 
                     return;
 
                     break;
                 default:
-                    throw new Exception("Operation not supported, sorry", 404);
+                    throw new Exception("Operation not supported, sorry", Http::NOT_FOUND);
             }
         } else {
-            throw new Exception("Operation not supported, sorry", 404);
+            throw new Exception("Operation not supported, sorry", Http::NOT_FOUND);
         }
     }
 
     public function putAction(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception('You must be logged in to edit data', 401);
+            throw new Exception('You must be logged in to edit data', Http::UNAUTHORIZED);
         }
 
         $event_id = $this->getItemId($request);
@@ -442,7 +443,7 @@ class EventsController extends BaseApiController
             }
 
             if (!$event_mapper->thisUserHasAdminOn($event_id)) {
-                throw new Exception('You are not an host for this event', 403);
+                throw new Exception('You are not an host for this event', Http::FORBIDDEN);
             }
 
             // initialise a new set of fields to save
@@ -509,7 +510,7 @@ class EventsController extends BaseApiController
             }
             // How does it look?  With no errors, we can proceed
             if ($errors) {
-                throw new Exception(implode(". ", $errors), 400);
+                throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
             }
 
             // optional fields - only check if we have no errors as we may need $tz
@@ -570,7 +571,7 @@ class EventsController extends BaseApiController
 
             $view = $request->getView();
             $view->setHeader('Location', $request->base . $request->path_info);
-            $view->setResponseCode(204);
+            $view->setResponseCode(Http::NO_CONTENT);
 
             return;
         }
@@ -580,7 +581,7 @@ class EventsController extends BaseApiController
     {
         // Check for login
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to view pending claims", 401);
+            throw new Exception("You must be logged in to view pending claims", Http::UNAUTHORIZED);
         }
 
         $event_id     = $this->getItemId($request);
@@ -588,7 +589,7 @@ class EventsController extends BaseApiController
 
         $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
         if (!$event_mapper->thisUserHasAdminOn($event_id)) {
-            throw new Exception('You do not have permission to edit this track', 403);
+            throw new Exception('You do not have permission to edit this track', Http::FORBIDDEN);
         }
 
         // verbosity
@@ -614,7 +615,7 @@ class EventsController extends BaseApiController
     {
         // Check for login
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create a track", 401);
+            throw new Exception("You must be logged in to create a track", Http::UNAUTHORIZED);
         }
 
         $track             = [];
@@ -623,17 +624,17 @@ class EventsController extends BaseApiController
         if (empty($track['event_id'])) {
             throw new Exception(
                 "POST expects a track representation sent to a specific event URL",
-                400
+                Http::BAD_REQUEST
             );
         }
 
         $event_mapper = new EventMapper($db, $request);
         $events       = $event_mapper->getEventById($event_id, true);
         if (!$events || $events['meta']['count'] == 0) {
-            throw new Exception("Associated event not found", 404);
+            throw new Exception("Associated event not found", Http::NOT_FOUND);
         }
         if (!$event_mapper->thisUserHasAdminOn($event_id)) {
-            throw new Exception('You do not have permission to edit this track', 403);
+            throw new Exception('You do not have permission to edit this track', Http::FORBIDDEN);
         }
 
         // validate fields
@@ -655,7 +656,7 @@ class EventsController extends BaseApiController
             $errors[] = "'track_description' is a required field";
         }
         if ($errors) {
-            throw new Exception(implode(". ", $errors), 400);
+            throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
         }
 
         $track_mapper = new TrackMapper($db, $request);
@@ -665,7 +666,7 @@ class EventsController extends BaseApiController
 
         $view = $request->getView();
         $view->setHeader('Location', $uri);
-        $view->setResponseCode(201);
+        $view->setResponseCode(Http::CREATED);
     }
 
     /**
@@ -683,19 +684,19 @@ class EventsController extends BaseApiController
     public function approveAction(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
+            throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
         $event_id     = $this->getItemId($request);
         $event_mapper = new EventMapper($db, $request);
 
         if (!$event_mapper->thisUserCanApproveEvents()) {
-            throw new Exception("You are not allowed to approve this event", 403);
+            throw new Exception("You are not allowed to approve this event", Http::FORBIDDEN);
         }
 
         $result = $event_mapper->approve($event_id, $request->user_id);
         if (!$result) {
-            throw new Exception("This event cannot be approved", 400);
+            throw new Exception("This event cannot be approved", Http::BAD_REQUEST);
         }
 
         if ($result) {
@@ -710,7 +711,7 @@ class EventsController extends BaseApiController
 
         $view = $request->getView();
         $view->setHeader('Location', $location);
-        $view->setResponseCode(204);
+        $view->setResponseCode(Http::NO_CONTENT);
     }
 
     /**
@@ -725,24 +726,24 @@ class EventsController extends BaseApiController
     public function rejectAction(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
+            throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
         $event_id     = $this->getItemId($request);
         $event_mapper = new EventMapper($db, $request);
 
         if (!$event_mapper->thisUserCanApproveEvents()) {
-            throw new Exception("You are not allowed to reject this event", 403);
+            throw new Exception("You are not allowed to reject this event", Http::FORBIDDEN);
         }
 
         $result = $event_mapper->reject($event_id, $request->user_id);
         if (!$result) {
-            throw new Exception("This event cannot be rejected", 400);
+            throw new Exception("This event cannot be rejected", Http::BAD_REQUEST);
         }
 
         $view = $request->getView();
         $view->setHeader('Content-Length', 0);
-        $view->setResponseCode(204);
+        $view->setResponseCode(Http::NO_CONTENT);
     }
 
 

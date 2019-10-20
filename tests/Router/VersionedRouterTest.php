@@ -6,6 +6,7 @@ use Exception;
 use Joindin\Api\Request;
 use Joindin\Api\Router\VersionedRouter;
 use PHPUnit\Framework\TestCase;
+use Teapot\StatusCode\Http;
 
 /**
  * A class to test VersionedRouter
@@ -112,7 +113,7 @@ class VersionedRouterTest extends TestCase
                 'expectedController'    => 'N/A',
                 'expectedAction'        => 'N/A',
                 'routeParams'           => [],
-                'expectedExceptionCode' => 415
+                'expectedExceptionCode' => Http::METHOD_NOT_ALLOWED
             ],
             [ // #5
                 'version'               => '2.1',
@@ -134,7 +135,7 @@ class VersionedRouterTest extends TestCase
                 'expectedController'    => 'N/A',
                 'expectedAction'        => 'N/A',
                 'routeParams'           => [],
-                'expectedExceptionCode' => 404
+                'expectedExceptionCode' => Http::NOT_FOUND
             ]
         ];
     }

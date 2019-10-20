@@ -7,6 +7,7 @@ use Joindin\Api\Controller\TokenController;
 use Joindin\Api\Request;
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Teapot\StatusCode\Http;
 
 class TokenControllerTest extends TestCase
 {
@@ -24,7 +25,7 @@ class TokenControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $usersController = new TokenController();
 
@@ -35,7 +36,7 @@ class TokenControllerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $usersController = new TokenController();
 

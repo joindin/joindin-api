@@ -6,6 +6,7 @@ use Exception;
 use Joindin\Api\Model\LanguageMapper;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 class LanguagesController extends BaseApiController
 {
@@ -19,7 +20,7 @@ class LanguagesController extends BaseApiController
         $list   = $mapper->getLanguageById($language_id, $verbose);
 
         if (count($list['languages']) == 0) {
-            throw new Exception('Language not found', 404);
+            throw new Exception('Language not found', Http::NOT_FOUND);
         }
 
         return $list;

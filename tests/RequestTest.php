@@ -3,6 +3,7 @@ namespace Joindin\Api\Test;
 
 use Joindin\Api\Request;
 use PHPUnit\Framework\TestCase;
+use Teapot\StatusCode\Http;
 
 class RequestTest extends TestCase
 {
@@ -398,7 +399,7 @@ class RequestTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid Authorization Header');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = new Request($this->config, ['HTTPS' => 'on']);
         $request->identifyUser('This is a bad header');
@@ -414,7 +415,7 @@ class RequestTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown Authorization Header Received');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = new Request($this->config, ['HTTPS' => 'on']);
         $request->identifyUser('Auth Me');

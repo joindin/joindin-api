@@ -5,6 +5,7 @@ use Joindin\Api\Request;
 use Joindin\Api\Router\ApiRouter;
 use Joindin\Api\Router\DefaultRouter;
 use Joindin\Api\Router\VersionedRouter;
+use Teapot\StatusCode\Http;
 
 include __DIR__ . '/../../vendor/autoload.php';
 if (!function_exists('apache_request_headers')) {
@@ -18,11 +19,11 @@ function handle_exception(\Throwable $e)
 {
     // pull the correct format before we bail
     global $request, $config;
-    $status_code = $e->getCode() ?: 400;
+    $status_code = $e->getCode() ?: Http::BAD_REQUEST;
     $status_code = is_numeric($status_code) ? $status_code : 500;
     $request->getView()->setResponseCode($status_code);
 
-    if ($status_code === 401) {
+    if ($status_code === Http::UNAUTHORIZED) {
         $request->getView()->setHeader('WWW-Authenticate', 'Bearer realm="api.joind.in');
     }
 

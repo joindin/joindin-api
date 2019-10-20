@@ -8,6 +8,7 @@ use Joindin\Api\Model\EventMapper;
 use Joindin\Api\Model\UserMapper;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 class EventHostsController extends BaseApiController
 // @codingStandardsIgnoreEnd
@@ -41,13 +42,13 @@ class EventHostsController extends BaseApiController
 
         $mapper = $this->getEventHostMapper($request, $db);
         if (!$event_id) {
-            throw new Exception('Event not found', 404);
+            throw new Exception('Event not found', Http::NOT_FOUND);
         }
 
         $list = $mapper->getHostsByEventId($event_id, $verbose, $start, $resultsperpage);
 
         if (false === $list) {
-            throw new Exception('Event not found', 404);
+            throw new Exception('Event not found', Http::NOT_FOUND);
         }
 
         return $list;
@@ -65,7 +66,7 @@ class EventHostsController extends BaseApiController
     public function addHost(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to create data", 401);
+            throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
         $event_id = $this->getItemId($request);
@@ -73,12 +74,12 @@ class EventHostsController extends BaseApiController
         $eventMapper = $this->getEventMapper($request, $db);
         $event       = $eventMapper->getEventById($event_id);
         if (false === $event) {
-            throw new Exception('Event not found', 404);
+            throw new Exception('Event not found', Http::NOT_FOUND);
         }
 
         $isAdmin = $eventMapper->thisUserHasAdminOn($event_id);
         if (!$isAdmin) {
-            throw new Exception("You do not have permission to add hosts to this event", 403);
+            throw new Exception("You do not have permission to add hosts to this event", Http::FORBIDDEN);
         }
         $username   = filter_var(
             $request->getParameter('host_name'),
@@ -88,14 +89,14 @@ class EventHostsController extends BaseApiController
         $userMapper = $this->getUserMapper($request, $db);
         $user_id    = $userMapper->getUserIdFromUsername($username);
         if (false === $user_id) {
-            throw new Exception('No User found', 404);
+            throw new Exception('No User found', Http::NOT_FOUND);
         }
 
         $mapper = $this->getEventHostMapper($request, $db);
 
         $uid = $mapper->addHostToEvent($event_id, $user_id);
         if (false === $uid) {
-            throw new Exception('Something went wrong', 400);
+            throw new Exception('Something went wrong', Http::BAD_REQUEST);
         }
 
         $uri = sprintf(
@@ -106,7 +107,7 @@ class EventHostsController extends BaseApiController
         );
 
         $request->getView()->setHeader('Location', $uri);
-        $request->getView()->setResponseCode(201);
+        $request->getView()->setResponseCode(Http::CREATED);
         $request->getView()->setNoRender(true);
 
         return;
@@ -122,12 +123,12 @@ class EventHostsController extends BaseApiController
     public function removeHostFromEvent(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in to remove data", 401);
+            throw new Exception("You must be logged in to remove data", Http::UNAUTHORIZED);
         }
 
         $user_id = $request->url_elements[5];
         if ($user_id === $request->user_id) {
-            throw new Exception('You are not allowed to remove yourself from the host-list', 403);
+            throw new Exception('You are not allowed to remove yourself from the host-list', Http::FORBIDDEN);
         }
 
         $event_id = $this->getItemId($request);
@@ -135,25 +136,25 @@ class EventHostsController extends BaseApiController
         $eventMapper = $this->getEventMapper($request, $db);
         $event       = $eventMapper->getEventById($event_id);
         if (false === $event) {
-            throw new Exception('Event not found', 404);
+            throw new Exception('Event not found', Http::NOT_FOUND);
         }
 
         $isAdmin = $eventMapper->thisUserHasAdminOn($event_id);
         if (!$isAdmin) {
-            throw new Exception("You do not have permission to remove hosts from this event", 403);
+            throw new Exception("You do not have permission to remove hosts from this event", Http::FORBIDDEN);
         }
 
         $userMapper = $this->getUserMapper($request, $db);
         $user       = $userMapper->getUserById($user_id);
         if (false === $user) {
-            throw new Exception('No User found', 404);
+            throw new Exception('No User found', Http::NOT_FOUND);
         }
 
         $mapper = $this->getEventHostMapper($request, $db);
 
         $uid = $mapper->removeHostFromEvent($user_id, $event_id);
         if (false === $uid) {
-            throw new Exception('Something went wrong', 400);
+            throw new Exception('Something went wrong', Http::BAD_REQUEST);
         }
 
         $uri = sprintf(
@@ -164,7 +165,7 @@ class EventHostsController extends BaseApiController
         );
 
         $request->getView()->setHeader('Location', $uri);
-        $request->getView()->setResponseCode(204);
+        $request->getView()->setResponseCode(Http::NO_CONTENT);
         $request->getView()->setNoRender(true);
 
         return;

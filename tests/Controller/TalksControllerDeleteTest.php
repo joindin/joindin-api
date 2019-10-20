@@ -7,6 +7,7 @@ use Joindin\Api\Controller\TalksController;
 use Joindin\Api\Request;
 use Joindin\Api\View\ApiView;
 use JoindinTest\Inc\mockPDO;
+use Teapot\StatusCode\Http;
 
 class TalksControllerDeleteTest extends TalkBase
 {
@@ -14,7 +15,7 @@ class TalksControllerDeleteTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = new Request(
             [],
@@ -61,7 +62,7 @@ class TalksControllerDeleteTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
 
         $request = new Request(
             [],
@@ -106,7 +107,7 @@ class TalksControllerDeleteTest extends TalkBase
         $request->method('getView')->willReturn($view);
 
         $view->method('setHeader')->with('Content-Length', 0);
-        $view->method('setResponseCode')->with(204);
+        $view->method('setResponseCode')->with(Http::NO_CONTENT);
 
         $this->assertNull($talks_controller->deleteTalk($request, $db));
     }
@@ -115,7 +116,7 @@ class TalksControllerDeleteTest extends TalkBase
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You do not have permission to do that');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = new Request(
             [],
@@ -171,7 +172,7 @@ class TalksControllerDeleteTest extends TalkBase
         $request->method('getView')->willReturn($view);
 
         $view->method('setHeader')->with('Content-Length', 0);
-        $view->method('setResponseCode')->with(204);
+        $view->method('setResponseCode')->with(Http::NO_CONTENT);
 
         $this->assertNull($talks_controller->deleteTalk($request, $db));
     }

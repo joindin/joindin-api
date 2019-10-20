@@ -8,6 +8,7 @@ use Joindin\Api\Service\SpamCheckService;
 use Joindin\Api\Service\SpamCheckServiceInterface;
 use PDO;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 /**
  * Contact us end point
@@ -71,7 +72,7 @@ class ContactController extends BaseApiController
         $clientSecret = $request->getParameter('client_secret');
         $oauthModel   = $request->getOauthModel($db);
         if (!$oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
-            throw new Exception("This client cannot perform this action", 403);
+            throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
 
         $fields = ['name', 'email', 'subject', 'comment'];
@@ -91,7 +92,7 @@ class ContactController extends BaseApiController
             $message .= implode(', ', $error);
             $message .= count($error) == 1 ? ' is ' : ' are ';
             $message .= 'required.';
-            throw new Exception($message, 400);
+            throw new Exception($message, Http::BAD_REQUEST);
         }
 
         if (!$this->spamCheckService->isCommentAcceptable(
@@ -99,14 +100,14 @@ class ContactController extends BaseApiController
             $request->getClientIP(),
             $request->getClientUserAgent()
         )) {
-            throw new Exception("Comment failed spam check", 400);
+            throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
         }
 
         $this->emailService->sendEmail($data);
 
         $view = $request->getView();
 
-        $view->setResponseCode(202);
+        $view->setResponseCode(Http::ACCEPTED);
         $view->setHeader('Content-Length', 0);
     }
 }

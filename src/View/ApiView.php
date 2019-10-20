@@ -2,6 +2,8 @@
 
 namespace Joindin\Api\View;
 
+use Teapot\StatusCode\Http;
+
 class ApiView
 {
     /** @var array */
@@ -13,7 +15,7 @@ class ApiView
     /** @var bool */
     protected $noRender;
 
-    public function __construct(array $headers = [], $responseCode = 200, $noRender = false)
+    public function __construct(array $headers = [], $responseCode = Http::OK, $noRender = false)
     {
         $this->headers      = $headers;
         $this->responseCode = $responseCode;
@@ -79,7 +81,7 @@ class ApiView
         if ($content && $this->noRender === false) {
             $body = $this->buildOutput($content);
         }
-        if (200 == $this->responseCode) {
+        if (Http::OK == $this->responseCode) {
             $this->responseCode = http_response_code();
         }
         foreach ($this->headers as $key => $value) {

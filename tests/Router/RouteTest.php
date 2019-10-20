@@ -7,6 +7,7 @@ use Joindin\Api\Request;
 use Joindin\Api\Router\Route;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Teapot\StatusCode\Http;
 
 /**
  * Class to test Route
@@ -103,7 +104,7 @@ class RouteTest extends TestCase
                 'action'                => 'action2',
                 Request::class => $this->getRequest('v1'),
                 'expectedException'     => 'Exception',
-                'expectedExceptionCode' => 500,
+                'expectedExceptionCode' => Http::INTERNAL_SERVER_ERROR,
             ],
             [ // #2
                 'config'                => ['config'],
@@ -111,7 +112,7 @@ class RouteTest extends TestCase
                 'action'                => 'action2',
                 Request::class => $this->getRequest('v1'),
                 'expectedException'     => 'Exception',
-                'expectedExceptionCode' => 400,
+                'expectedExceptionCode' => Http::BAD_REQUEST,
                 'controllerExists'      => false
             ]
         ];
