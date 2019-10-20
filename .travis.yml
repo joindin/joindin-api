@@ -21,8 +21,6 @@ install:
 
 before_script:
   - cp src/config.php.dist src/config.php
-  - git remote set-branches --add origin master
-  - git fetch
 
 script:
   - composer check
