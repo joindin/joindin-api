@@ -37,17 +37,12 @@ class SpamCheckService implements SpamCheckServiceInterface
             return false;
         }
 
-        $comment = [];
-
-        // set some required fields
-        $comment['blog'] = $this->blog;
-
-        // TODO what are better values to use for these required fields?
-        $comment['user_ip']    = $userIp;
-        $comment['user_agent'] = $userAgent;
-
-        // now use the incoming data
-        $comment['comment_content'] = $data['comment'];
+        $comment = [
+            'blog' =>  $this->blog,
+            'user_ip' => $userIp,
+            'user_agent' => $userAgent,
+            'comment_content' => $data['comment'],
+        ];
 
         // actually do the check
         $ch = curl_init($this->akismetUrl . '/1.1/comment-check');
