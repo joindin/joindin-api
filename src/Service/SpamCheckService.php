@@ -37,18 +37,16 @@ class SpamCheckService implements SpamCheckServiceInterface
             return false;
         }
 
-        $comment = [
-            'blog' =>  $this->blog,
-            'comment_content' => $data['comment'],
-            'user_agent' => $userAgent,
-            'user_ip' => $userIp,
-        ];
-
         // actually do the check
         $ch = curl_init($this->akismetUrl . '/1.1/comment-check');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $comment);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+            'blog' =>  $this->blog,
+            'comment_content' => $data['comment'],
+            'user_agent' => $userAgent,
+            'user_ip' => $userIp,
+        ]);
 
         $result = curl_exec($ch);
         curl_close($ch);
