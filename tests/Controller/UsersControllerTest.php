@@ -159,13 +159,13 @@ class UsersControllerTest extends TestCase
                 ['twitter_username'],
                 ['biography']
             )->willReturnOnConsecutiveCalls(
-                'user"\'stuff',
-                'full"\'stuff',
-                'mailstuff@example.com',
-                'pass"\'stuff',
-                'twitter"\'stuff',
-                'Bio"\'stuff'
-            );
+            'user"\'stuff',
+            'full"\'stuff',
+            'mailstuff@example.com',
+            'pass"\'stuff',
+            'twitter"\'stuff',
+            'Bio"\'stuff'
+        );
 
         $view = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
         $view->expects($this->once())->method('setHeader')->with('Location', 'basepath_info/1');
