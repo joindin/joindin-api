@@ -114,7 +114,7 @@ class EventCommentsController extends BaseApiController
                 $this->config['akismet']['blog']
             );
             $isValid          = $spamCheckService->isCommentAcceptable(
-                $comment,
+                $commentText,
                 $request->getClientIP(),
                 $request->getClientUserAgent()
             );

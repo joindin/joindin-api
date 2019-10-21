@@ -25,15 +25,15 @@ class SpamCheckService implements SpamCheckServiceInterface
     /**
      * Check your comment against the spam check service
      *
-     * @param array  $data
+     * @param string $comment
      * @param string $userIp
      * @param string $userAgent
      *
      * @return bool true if the comment is okay, false if it got rated as spam
      */
-    public function isCommentAcceptable(array $data, $userIp, $userAgent)
+    public function isCommentAcceptable(string $comment, $userIp, $userAgent)
     {
-        if (!array_key_exists('comment', $data) || !is_string($data['comment']) || '' === trim($data['comment'])) {
+        if ('' === trim($comment)) {
             return false;
         }
 
@@ -43,7 +43,7 @@ class SpamCheckService implements SpamCheckServiceInterface
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
             'blog' =>  $this->blog,
-            'comment_content' => $data['comment'],
+            'comment_content' => $comment,
             'user_agent' => $userAgent,
             'user_ip' => $userIp,
         ]);
