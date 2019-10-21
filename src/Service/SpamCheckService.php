@@ -39,9 +39,9 @@ class SpamCheckService implements SpamCheckServiceInterface
 
         $comment = [
             'blog' =>  $this->blog,
-            'user_ip' => $userIp,
-            'user_agent' => $userAgent,
             'comment_content' => $data['comment'],
+            'user_agent' => $userAgent,
+            'user_ip' => $userIp,
         ];
 
         // actually do the check
