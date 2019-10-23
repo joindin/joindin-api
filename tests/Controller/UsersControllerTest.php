@@ -158,7 +158,8 @@ class UsersControllerTest extends TestCase
                 ['password'],
                 ['twitter_username'],
                 ['biography']
-            )->willReturnOnConsecutiveCalls(
+            )
+            ->willReturnOnConsecutiveCalls(
                 'user"\'stuff',
                 'full"\'stuff',
                 'mailstuff@example.com',
