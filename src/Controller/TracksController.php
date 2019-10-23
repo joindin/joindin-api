@@ -68,12 +68,12 @@ class TracksController extends BaseApiController
             $errors[] = "'track_name' is a required field";
         }
         $track['track_description'] = filter_var(
-            $request->getParameter("track_description"),
+            $request->getParameter("track_description", null),
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
-        if (empty($track['track_description'])) {
-            $errors[] = "'track_description' is a required field";
+        if (!isset($track['track_description'])) {
+            unset($track['track_description']); // Track description not provided; don't edit
         }
         if ($errors) {
             throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);

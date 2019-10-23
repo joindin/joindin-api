@@ -653,7 +653,7 @@ class EventsController extends BaseApiController
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
         if (empty($track['track_description'])) {
-            $errors[] = "'track_description' is a required field";
+            $track['track_description'] = '';
         }
         if ($errors) {
             throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
