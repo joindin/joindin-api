@@ -40,6 +40,7 @@ set_exception_handler('handle_exception');
 
 // config setup
 define('BASEPATH', '.');
+$config = [];
 include '../config.php';
 
 $container = ContainerFactory::build($config);
@@ -49,6 +50,7 @@ if ($config['mode'] == "development") {
 }
 
 // database setup
+$db = [];
 include '../database.php';
 $ji_db = new PDO(
     'mysql:host=' . $db['default']['hostname'] .
