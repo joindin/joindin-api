@@ -9,6 +9,8 @@ use Joindin\Api\Request;
  */
 class ClientModel extends BaseModel
 {
+    private $id;
+
     /**
      * Default fields in the output view
      *
