@@ -602,9 +602,9 @@ class TalkMapper extends ApiMapper
     protected function getUserRatingOnTalk($talk_id, $user_id)
     {
         $stmt = $this->_db->prepare('
-            SELECT rating 
-            FROM talk_comments 
-            WHERE talk_id = :talk_id 
+            SELECT rating
+            FROM talk_comments
+            WHERE talk_id = :talk_id
             AND user_id = :user_id;
         ');
         $stmt->execute([
@@ -655,17 +655,14 @@ class TalkMapper extends ApiMapper
         while ($i < 5) {
             $stub = substr(md5(mt_rand()), 3, 5);
             try {
-                $stored = $this->storeStub($stub, $talk_id);
-                // only return a value if we actually stored one
-                $stored_stub = $stub;
-                break;
+                return $this->storeStub($stub, $talk_id);
             } catch (Exception $e) {
                 // failed to store - try again
             }
             $i++;
         }
 
-        return $stored_stub;
+        return '';
     }
 
     /**
@@ -1062,8 +1059,8 @@ class TalkMapper extends ApiMapper
             DELETE
             FROM
               talk_links
-            WHERE talk_id = :talk_id 
-              AND id = :link_id 
+            WHERE talk_id = :talk_id
+              AND id = :link_id
         ";
 
         $stmt = $this->_db->prepare($sql);
@@ -1110,7 +1107,7 @@ class TalkMapper extends ApiMapper
                 SET a.`talk_type` = b.`ID`,
               a.`url` = :url
             WHERE a.`id` = :link_id
-              AND a.`talk_id` = :talk_id 
+              AND a.`talk_id` = :talk_id
         ";
 
         $stmt = $this->_db->prepare($sql);
