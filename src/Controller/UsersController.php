@@ -413,17 +413,15 @@ class UsersController extends BaseApiController
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", Http::UNAUTHORIZED);
         }
-        // delete the user
-        $userId = $this->getItemId($request);
 
         $userMapper = $this->getUserMapper($db, $request);
 
-        $isAdmin = $userMapper->isSiteAdmin($userId);
+        $isAdmin = $userMapper->isSiteAdmin($request->user_id);
         if (!$isAdmin) {
             throw new Exception("You do not have permission to do that", Http::FORBIDDEN);
         }
 
-        if (!$userMapper->delete($userId)) {
+        if (!$userMapper->delete($this->getItemId($request))) {
             throw new Exception("There was a problem trying to delete the user", Http::BAD_REQUEST);
         }
 
