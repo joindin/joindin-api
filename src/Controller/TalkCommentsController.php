@@ -15,6 +15,11 @@ use UnexpectedValueException;
 class TalkCommentsController extends BaseApiController
 // @codingStandardsIgnoreEnd
 {
+    /**
+     * @var TalkCommentMapper
+     */
+    private $commentMapper;
+
     public function getComments(Request $request, PDO $db)
     {
         $commentId = $this->getItemId($request);
@@ -26,7 +31,7 @@ class TalkCommentsController extends BaseApiController
             return false;
         }
 
-        $mapper = new TalkCommentMapper($db, $request);
+        $mapper = $this->getCommentMapper($request, $db);
 
         $list = $mapper->getCommentById($commentId, $verbose);
         if (false === $list) {
@@ -44,7 +49,7 @@ class TalkCommentsController extends BaseApiController
         }
 
         $eventMapper   = new EventMapper($db, $request);
-        $commentMapper = new TalkCommentMapper($db, $request);
+        $commentMapper = $this->getCommentMapper($request, $db);
 
         if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception("You must log in to do that", Http::UNAUTHORIZED);
@@ -66,7 +71,7 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('You must log in to report a comment', Http::UNAUTHORIZED);
         }
 
-        $commentMapper = new TalkCommentMapper($db, $request);
+        $commentMapper = $this->getCommentMapper($request, $db);
 
         $commentId   = $this->getItemId($request);
         $commentInfo = $commentMapper->getCommentInfo($commentId);
@@ -117,7 +122,7 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('You must log in to moderate a comment', Http::UNAUTHORIZED);
         }
 
-        $commentMapper = new TalkCommentMapper($db, $request);
+        $commentMapper = $this->getCommentMapper($request, $db);
 
         $commentId   = $this->getItemId($request);
         $commentInfo = $commentMapper->getCommentInfo($commentId);
@@ -159,7 +164,7 @@ class TalkCommentsController extends BaseApiController
         }
 
         $commentId     = $this->getItemId($request);
-        $commentMapper = new TalkCommentMapper($db, $request);
+        $commentMapper = $this->getCommentMapper($request, $db);
         $comment       = $commentMapper->getRawComment($commentId);
 
         if (false === $comment) {
@@ -188,5 +193,14 @@ class TalkCommentsController extends BaseApiController
         }
 
         return $commentMapper->getCommentById($commentId);
+    }
+
+    private function getCommentMapper(Request $request, PDO $db): TalkCommentMapper
+    {
+        if ($this->commentMapper === null) {
+            $this->commentMapper = new TalkCommentMapper($db, $request);
+        }
+
+        return $this->commentMapper;
     }
 }
