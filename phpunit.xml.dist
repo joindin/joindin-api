@@ -10,6 +10,7 @@
     bootstrap="./tests/bootstrap.php"
     cacheResultFile="build/.phpunit.result.cache"
     colors="true"
+    executionOrder="random"
     enforceTimeLimit="true"
     verbose="true"
 >
