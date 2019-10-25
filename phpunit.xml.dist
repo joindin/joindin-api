@@ -10,7 +10,6 @@
     bootstrap="./tests/bootstrap.php"
     cacheResultFile="build/.phpunit.result.cache"
     colors="true"
-    enforceTimeLimit="true"
     verbose="true"
 >
     <testsuite name="Joind.in Test Suite">
