@@ -22,10 +22,6 @@ class TalkCommentsController extends BaseApiController
         // verbosity
         $verbose = $this->getVerbosity($request);
 
-        // pagination settings
-        $start          = $this->getStart($request);
-        $resultsperpage = $this->getResultsPerPage($request);
-
         if (!$comment_id) {
             return false;
         }
