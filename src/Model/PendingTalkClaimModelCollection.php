@@ -12,7 +12,6 @@ class PendingTalkClaimModelCollection extends BaseModelCollection
     /** @var array|PendingTalkClaimModel[] */
     protected $list;
 
-    /** @var int */
     protected $total;
 
     /**

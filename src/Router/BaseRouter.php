@@ -9,9 +9,6 @@ use Joindin\Api\Request;
  */
 abstract class BaseRouter
 {
-    /**
-     * @var array The configuration for this Router
-     */
     protected $config;
 
     /**

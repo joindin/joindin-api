@@ -11,14 +11,7 @@ use Transliterator;
 
 class ApiMapper
 {
-    /**
-     * @var PDO
-     */
     protected $_db;
-
-    /**
-     * @var Request
-     */
     protected $_request;
 
     /**

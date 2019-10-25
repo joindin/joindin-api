@@ -13,7 +13,6 @@ class TokenModelCollection extends BaseModelCollection
     /** @var array|TokenModel[] */
     protected $list;
 
-    /** @var int */
     protected $total;
 
     /**

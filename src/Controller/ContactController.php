@@ -15,14 +15,7 @@ use Teapot\StatusCode\Http;
  */
 class ContactController extends BaseApiController
 {
-    /**
-     * @var ContactEmailService
-     */
     private $emailService;
-
-    /**
-     * @var SpamCheckService
-     */
     private $spamCheckService;
 
     /**

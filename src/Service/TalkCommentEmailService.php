@@ -6,9 +6,7 @@ use Joindin\Api\Model\TalkModel;
 
 class TalkCommentEmailService extends BaseEmailService
 {
-    /** @var TalkModel */
     protected $talk;
-
     protected $comment;
     protected $config;
 
