@@ -17,18 +17,18 @@ class TalkCommentsController extends BaseApiController
 {
     public function getComments(Request $request, PDO $db)
     {
-        $comment_id = $this->getItemId($request);
+        $commentId = $this->getItemId($request);
 
         // verbosity
         $verbose = $this->getVerbosity($request);
 
-        if (!$comment_id) {
+        if (!$commentId) {
             return false;
         }
 
         $mapper = new TalkCommentMapper($db, $request);
 
-        $list = $mapper->getCommentById($comment_id, $verbose);
+        $list = $mapper->getCommentById($commentId, $verbose);
         if (false === $list) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
@@ -38,20 +38,20 @@ class TalkCommentsController extends BaseApiController
 
     public function getReported(Request $request, PDO $db)
     {
-        $event_id = $this->getItemId($request);
-        if (empty($event_id)) {
+        $eventId = $this->getItemId($request);
+        if (empty($eventId)) {
             throw new UnexpectedValueException("Event not found", Http::NOT_FOUND);
         }
 
-        $event_mapper   = new EventMapper($db, $request);
-        $comment_mapper = new TalkCommentMapper($db, $request);
+        $eventMapper   = new EventMapper($db, $request);
+        $commentMapper = new TalkCommentMapper($db, $request);
 
         if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception("You must log in to do that", Http::UNAUTHORIZED);
         }
 
-        if ($event_mapper->thisUserHasAdminOn($event_id)) {
-            $list = $comment_mapper->getReportedCommentsByEventId($event_id);
+        if ($eventMapper->thisUserHasAdminOn($eventId)) {
+            $list = $commentMapper->getReportedCommentsByEventId($eventId);
 
             return $list->getOutputView($request);
         } else {
@@ -66,10 +66,10 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('You must log in to report a comment', Http::UNAUTHORIZED);
         }
 
-        $comment_mapper = new TalkCommentMapper($db, $request);
+        $commentMapper = new TalkCommentMapper($db, $request);
 
         $commentId   = $this->getItemId($request);
-        $commentInfo = $comment_mapper->getCommentInfo($commentId);
+        $commentInfo = $commentMapper->getCommentInfo($commentId);
         if (false === $commentInfo) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
@@ -77,13 +77,13 @@ class TalkCommentsController extends BaseApiController
         $talkId  = $commentInfo['talk_id'];
         $eventId = $commentInfo['event_id'];
 
-        $comment_mapper->userReportedComment($commentId, $request->user_id);
+        $commentMapper->userReportedComment($commentId, $request->user_id);
 
         // notify event admins
-        $comment      = $comment_mapper->getCommentById($commentId, true, true);
-        $event_mapper = new EventMapper($db, $request);
-        $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
-        $event        = $event_mapper->getEventById($eventId, true, true);
+        $comment      = $commentMapper->getCommentById($commentId, true, true);
+        $eventMapper  = new EventMapper($db, $request);
+        $recipients   = $eventMapper->getHostsEmailAddresses($eventId);
+        $event        = $eventMapper->getEventById($eventId, true, true);
 
         $emailService = new CommentReportedEmailService($this->config, $recipients, $comment, $event);
         $emailService->sendEmail();
@@ -117,17 +117,17 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('You must log in to moderate a comment', Http::UNAUTHORIZED);
         }
 
-        $comment_mapper = new TalkCommentMapper($db, $request);
+        $commentMapper = new TalkCommentMapper($db, $request);
 
         $commentId   = $this->getItemId($request);
-        $commentInfo = $comment_mapper->getCommentInfo($commentId);
+        $commentInfo = $commentMapper->getCommentInfo($commentId);
         if (false === $commentInfo) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
-        $event_mapper = new EventMapper($db, $request);
-        $event_id     = $commentInfo['event_id'];
-        if (false == $event_mapper->thisUserHasAdminOn($event_id)) {
+        $eventMapper = new EventMapper($db, $request);
+        $eventId     = $commentInfo['event_id'];
+        if (false == $eventMapper->thisUserHasAdminOn($eventId)) {
             throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
 
@@ -136,10 +136,10 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('Unexpected decision', Http::BAD_REQUEST);
         }
 
-        $comment_mapper->moderateReportedComment($decision, $commentId, $request->user_id);
+        $commentMapper->moderateReportedComment($decision, $commentId, $request->user_id);
 
-        $talk_id = $commentInfo['talk_id'];
-        $uri     = $request->base . '/' . $request->version . '/talks/' . $talk_id . "/comments";
+        $talkId  = $commentInfo['talk_id'];
+        $uri     = $request->base . '/' . $request->version . '/talks/' . $talkId . "/comments";
 
         $view = $request->getView();
         $view->setHeader('Location', $uri);
@@ -153,14 +153,14 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('You must log in to edit a comment', Http::UNAUTHORIZED);
         }
 
-        $new_comment_body = $request->getParameter('comment');
-        if (empty($new_comment_body)) {
+        $newCommentBody = $request->getParameter('comment');
+        if (empty($newCommentBody)) {
             throw new Exception('The field "comment" is required', Http::BAD_REQUEST);
         }
 
-        $comment_id     = $this->getItemId($request);
-        $comment_mapper = new TalkCommentMapper($db, $request);
-        $comment        = $comment_mapper->getRawComment($comment_id);
+        $commentId     = $this->getItemId($request);
+        $commentMapper = new TalkCommentMapper($db, $request);
+        $comment       = $commentMapper->getRawComment($commentId);
 
         if (false === $comment) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
@@ -170,20 +170,23 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('You are not the comment author', Http::FORBIDDEN);
         }
 
-        $max_comment_edit_minutes = 15;
+        $maxCommentEditMinutes = 15;
         if (isset($this->config['limits']['max_comment_edit_minutes'])) {
-            $max_comment_edit_minutes = $this->config['limits']['max_comment_edit_minutes'];
+            $maxCommentEditMinutes = $this->config['limits']['max_comment_edit_minutes'];
         }
 
-        if ($comment['date_made'] + ($max_comment_edit_minutes * 60) < time()) {
-            throw new Exception('Cannot edit the comment after ' . $max_comment_edit_minutes . ' minutes', Http::BAD_REQUEST);
+        if ($comment['date_made'] + ($maxCommentEditMinutes * 60) < time()) {
+            throw new Exception(
+                'Cannot edit the comment after ' . $maxCommentEditMinutes . ' minutes',
+                Http::BAD_REQUEST
+            );
         }
 
-        $updateSuccess = $comment_mapper->updateCommentBody($comment_id, $new_comment_body);
+        $updateSuccess = $commentMapper->updateCommentBody($commentId, $newCommentBody);
         if (false === $updateSuccess) {
             throw new Exception('Comment update failed', 500);
         }
 
-        return $comment_mapper->getCommentById($comment_id);
+        return $commentMapper->getCommentById($commentId);
     }
 }
