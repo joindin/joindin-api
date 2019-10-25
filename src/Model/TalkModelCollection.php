@@ -13,7 +13,6 @@ class TalkModelCollection extends BaseModelCollection
     /** @var array|TalkModel[] */
     protected $list;
 
-    /** @var int */
     protected $total;
 
     /**

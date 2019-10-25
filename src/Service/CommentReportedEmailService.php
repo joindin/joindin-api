@@ -7,7 +7,6 @@ class CommentReportedEmailService extends BaseEmailService
     /** @var array */
     protected $comment;
 
-    /** @var array */
     protected $event;
 
     /** @var string */

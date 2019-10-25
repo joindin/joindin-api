@@ -13,7 +13,6 @@ class ClientModelCollection extends BaseModelCollection
     /** @var array|ClientModel[] */
     protected $list;
 
-    /** @var int */
     protected $total;
 
     /**

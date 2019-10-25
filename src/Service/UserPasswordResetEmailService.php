@@ -4,7 +4,6 @@ namespace Joindin\Api\Service;
 
 class UserPasswordResetEmailService extends BaseEmailService
 {
-    /** @var array */
     protected $user;
 
     /** @var string */

@@ -8,9 +8,6 @@ use Joindin\Api\Request;
 
 abstract class BaseModel
 {
-    /**
-     * @var array
-     */
     protected $data;
 
     public function __construct(array $data)
