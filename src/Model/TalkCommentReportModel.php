@@ -9,9 +9,9 @@ use Joindin\Api\Request;
  */
 class TalkCommentReportModel extends BaseModel
 {
-    private $reporting_user_id;
-    private $event_id;
-    private $talk_id;
+    public $reporting_user_id;
+    public $event_id;
+    public $talk_id;
 
     /**
      * Default fields in the output view
