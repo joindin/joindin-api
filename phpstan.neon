@@ -3,6 +3,8 @@ parameters:
         - */public/index.php
         - */scripts/*
 
+    inferPrivatePropertyTypeFromConstructor: true
+
     level: 1
 
     paths:
