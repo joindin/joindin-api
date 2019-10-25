@@ -23,7 +23,6 @@
     "teapot/status-code": "^1.1.1"
   },
   "require-dev": {
-    "exussum12/coverage-checker": "^0.11.1",
     "jakub-onderka/php-parallel-lint": "^1.0",
     "phpunit/php-invoker": "^2.0",
     "phpunit/phpunit": "^8.3.4",
