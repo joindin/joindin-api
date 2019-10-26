@@ -35,12 +35,12 @@ class BaseTalkController extends BaseApiController
     /**
      * @var TalkMapper
      */
-    public $talk_mapper;
+    private $talk_mapper;
 
     /**
      * @var UserMapper
      */
-    public $user_mapper;
+    private $user_mapper;
 
     protected function checkLoggedIn(Request $request)
     {
