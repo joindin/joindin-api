@@ -24,3 +24,6 @@ before_script:
 
 script:
   - composer check
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
