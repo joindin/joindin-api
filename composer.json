@@ -53,7 +53,7 @@
       "@lint",
       "@sniff",
       "@security",
-      "@test"
+      "@coverage"
     ],
     "coverage": [
       "phpunit --dump-xdebug-filter=build/xdebug-filter.php",
