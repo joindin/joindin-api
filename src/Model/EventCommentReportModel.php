@@ -9,9 +9,6 @@ use Joindin\Api\Request;
  */
 class EventCommentReportModel extends BaseModel
 {
-    public $reporting_user_id;
-    public $event_id;
-
     /**
      * Default fields in the output view
      *

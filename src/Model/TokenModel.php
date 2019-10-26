@@ -9,8 +9,6 @@ use Joindin\Api\Request;
  */
 class TokenModel extends BaseModel
 {
-    public $id;
-
     /**
      * Default fields in the output view
      *
