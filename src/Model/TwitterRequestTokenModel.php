@@ -9,8 +9,6 @@ use Joindin\Api\Request;
  */
 class TwitterRequestTokenModel extends BaseModel
 {
-    public $ID;
-
     /**
      * Default fields in the output view
      *

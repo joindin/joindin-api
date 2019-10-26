@@ -9,10 +9,6 @@ use Joindin\Api\Request;
  */
 class TalkModel extends BaseModel
 {
-    public $event_id;
-    public $ID;
-    public $stub;
-
     /**
      * Default fields in the output view
      *
