@@ -15,6 +15,7 @@ use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Model\TrackMapper;
 use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Service\EventApprovedEmailService;
+use Joindin\Api\Service\EventRejectedEmailService;
 use Joindin\Api\Service\EventSubmissionEmailService;
 use PDO;
 use Joindin\Api\Request;
@@ -733,14 +734,23 @@ class EventsController extends BaseApiController
 
         $event_id     = $this->getItemId($request);
         $event_mapper = new EventMapper($db, $request);
+        $reason = filter_var($request->getParameter('reason'), FILTER_SANITIZE_STRING);
 
         if (!$event_mapper->thisUserCanApproveEvents()) {
             throw new Exception("You are not allowed to reject this event", Http::FORBIDDEN);
         }
 
-        $result = $event_mapper->reject($event_id, $request->user_id);
+        $result = $event_mapper->reject($event_id, $request->user_id, $reason);
         if (!$result) {
             throw new Exception("This event cannot be rejected", Http::BAD_REQUEST);
+        }
+
+        // Only send an email if we provided a reason
+        if (!empty($reason)){
+            $event        = $event_mapper->getEventById($event_id, true, false)['events'][0];
+            $recipients   = array_merge([$this->config['email']['from']], $event_mapper->getHostsEmailAddresses($event_id));
+            $emailService = new EventRejectedEmailService($this->config, $recipients, $event);
+            $emailService->sendEmail();
         }
 
         $view = $request->getView();

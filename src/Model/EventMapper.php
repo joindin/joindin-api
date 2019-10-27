@@ -40,6 +40,7 @@ class EventMapper extends ApiMapper
             'talks_count'          => 'talk_count',
             'icon'                 => 'event_icon',
             'location'             => 'event_loc',
+            'rejection_reason'     => 'rejection_reason',
         ];
     }
 
@@ -78,6 +79,7 @@ class EventMapper extends ApiMapper
             'cfp_start_date'       => 'event_cfp_start',
             'cfp_end_date'         => 'event_cfp_end',
             'cfp_url'              => 'event_cfp_url',
+            'rejection_reason'     => 'rejection_reason',
         ];
     }
 
@@ -1108,10 +1110,11 @@ class EventMapper extends ApiMapper
      *
      * @param  integer $event_id
      * @param  integer $reviewing_user_id The user who rejected the event
+     * @param  string $reason_Details for rejection
      *
      * @return boolean
      */
-    public function reject($event_id, $reviewing_user_id)
+    public function reject($event_id, $reviewing_user_id, $reason)
     {
         $sql      = "select ID from events where pending = 1 and active = 0 and ID = :event_id";
         $stmt     = $this->_db->prepare($sql);
@@ -1121,10 +1124,15 @@ class EventMapper extends ApiMapper
             return false;
         }
 
-        $sql  = "update events set pending = 0, active = 0, reviewer_id = :reviewing_user_id where ID = :event_id";
+        $sql  = "update events set pending = 0, active = 0, reviewer_id = :reviewing_user_id, "
+            . "rejection_reason = :rejection_reason where ID = :event_id";
         $stmt = $this->_db->prepare($sql);
 
-        return $stmt->execute(["event_id" => $event_id, "reviewing_user_id" => $reviewing_user_id]);
+        return $stmt->execute([
+            "event_id" => $event_id,
+            "reviewing_user_id" => $reviewing_user_id,
+            "rejection_reason" => $reason
+        ]);
     }
 
     /**
