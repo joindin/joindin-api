@@ -18,6 +18,7 @@
     "guzzlehttp/guzzle": "^6.3",
     "guzzlehttp/oauth-subscriber": "^0.3.0",
     "michelf/php-markdown": "^1.8",
+    "phpstan/phpstan-shim": "~0.11.19",
     "pimple/pimple": "^3.2",
     "swiftmailer/swiftmailer": "^6.0",
     "teapot/status-code": "^1.1.1"
