@@ -48,7 +48,7 @@ abstract class BaseEmailService
             throw new Exception("SMTP Server not properly set up.");
         }
 
-        $transport = Swift_SmtpTransport::newInstance(
+        $transport = new Swift_SmtpTransport(
             $config['email']['smtp']['host'],
             $config['email']['smtp']['port'],
             $config['email']['smtp']['security']
@@ -59,8 +59,8 @@ abstract class BaseEmailService
             ->setPassword($config['email']['smtp']['password']);
 
 
-        $this->mailer  = Swift_Mailer::newInstance($transport);
-        $this->message = Swift_Message::newInstance();
+        $this->mailer  = new Swift_Mailer($transport);
+        $this->message = new Swift_Message();
 
         if (isset($config['email']['forward_all_to'])
             && ! empty($config['email']['forward_all_to'])
