@@ -6,7 +6,6 @@ use Joindin\Api\Request;
 
 abstract class BaseApiController
 {
-    /** @var array */
     protected $config;
 
     public function __construct(array $config = [])

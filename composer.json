@@ -23,9 +23,7 @@
     "teapot/status-code": "^1.1.1"
   },
   "require-dev": {
-    "exussum12/coverage-checker": "^0.11.1",
     "jakub-onderka/php-parallel-lint": "^1.0",
-    "phpunit/php-invoker": "^2.0",
     "phpunit/phpunit": "^8.3.4",
     "roave/security-advisories": "dev-master",
     "sensiolabs/security-checker": "^6.0",
@@ -55,17 +53,17 @@
       "@lint",
       "@sniff",
       "@security",
-      "@test"
+      "@coverage"
     ],
     "coverage": [
-      "git diff origin/master... -- > diff.txt",
-      "diffFilter --phpunit diff.txt build/logs/clover.xml 80"
+      "phpunit --dump-xdebug-filter=build/xdebug-filter.php",
+      "phpunit --coverage-clover=build/logs/clover.xml --coverage-text --prepend=build/xdebug-filter.php"
     ],
     "fix": "phpcbf -p .",
     "lint": "parallel-lint --exclude vendor .",
     "security": "security-checker security:check composer.lock",
     "sniff": "phpcs --cache=build/.phpcs-cache --runtime-set ignore_warnings_on_exit true -p .",
-    "test": "phpunit -c . tests/"
+    "test": "phpunit"
   },
   "support": {
     "issues": "https://github.com/joindin/joindin-api/issues",

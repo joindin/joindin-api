@@ -11,20 +11,8 @@ use Teapot\StatusCode\Http;
  */
 class ApiRouter extends BaseRouter
 {
-
-    /**
-     * @var array The configuration for this Router
-     */
     protected $config;
-
-    /**
-     * @var array A list of supported versions and Routers
-     */
     private $routers;
-
-    /**
-     * @var array A list of versions once but no longer supported
-     */
     private $oldVersions;
 
     /**

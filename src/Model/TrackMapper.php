@@ -119,12 +119,8 @@ class TrackMapper extends ApiMapper
      */
     public function createEventTrack(array $data, $event_id)
     {
-        // Sanity check: ensure all mandatory fields are present.
-        $mandatory_fields          = [
-            'track_name',
-            'track_description',
-        ];
-        $contains_mandatory_fields = ! array_diff($mandatory_fields, array_keys($data));
+        // Sanity check: ensure all mandatory fields are present.;
+        $contains_mandatory_fields = ! array_diff($mandatory_fields = ['track_name'], array_keys($data));
         if (!$contains_mandatory_fields) {
             throw new Exception("Missing mandatory fields");
         }
@@ -189,11 +185,7 @@ class TrackMapper extends ApiMapper
     public function editEventTrack(array $data, $track_id)
     {
         // Sanity check: ensure all mandatory fields are present.
-        $mandatory_fields          = [
-            'track_name',
-            'track_description',
-        ];
-        $contains_mandatory_fields = ! array_diff($mandatory_fields, array_keys($data));
+        $contains_mandatory_fields = ! array_diff($mandatory_fields = ['track_name'], array_keys($data));
         if (!$contains_mandatory_fields) {
             throw new Exception("Missing mandatory fields");
         }

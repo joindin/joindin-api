@@ -27,9 +27,6 @@ abstract class BaseEmailService
      */
     protected $message;
 
-    /**
-     * Array of email addresses to send to
-     */
     protected $recipients;
 
     /**

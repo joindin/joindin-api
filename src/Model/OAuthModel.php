@@ -9,13 +9,9 @@ use Teapot\StatusCode\Http;
 
 class OAuthModel
 {
-    /**
-     * @var PDO
-     */
     // @codingStandardsIgnoreStart
     protected $_db;
     // @codingStandardsIgnoreEnd
-    /** @var Request */
     protected $request;
 
     /**

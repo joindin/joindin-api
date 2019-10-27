@@ -6,7 +6,6 @@ use Teapot\StatusCode\Http;
 
 class ApiView
 {
-    /** @var array */
     protected $headers;
 
     /** @var int */

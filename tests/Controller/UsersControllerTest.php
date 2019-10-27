@@ -25,7 +25,7 @@ class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteUserWithNoUserIdThrowsException()
+    public function testDeleteUserWithoutBeingLoggedInThrowsException()
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to delete data');
@@ -67,6 +67,7 @@ class UsersControllerTest extends TestCase
         $userMapper
             ->expects($this->once())
             ->method('isSiteAdmin')
+            ->with(2)
             ->willReturn(false);
 
         $usersController->setUserMapper($userMapper);
@@ -99,11 +100,13 @@ class UsersControllerTest extends TestCase
         $userMapper
             ->expects($this->once())
             ->method('isSiteAdmin')
+            ->with(1)
             ->willReturn(true);
 
         $userMapper
             ->expects($this->once())
             ->method('delete')
+            ->with(3)
             ->willReturn(false);
 
         $usersController->setUserMapper($userMapper);
@@ -133,11 +136,13 @@ class UsersControllerTest extends TestCase
         $userMapper
             ->expects($this->once())
             ->method('isSiteAdmin')
+            ->with(1)
             ->willReturn(true);
 
         $userMapper
             ->expects($this->once())
             ->method('delete')
+            ->with(3)
             ->willReturn(true);
 
         $usersController->setUserMapper($userMapper);
@@ -158,7 +163,8 @@ class UsersControllerTest extends TestCase
                 ['password'],
                 ['twitter_username'],
                 ['biography']
-            )->willReturnOnConsecutiveCalls(
+            )
+            ->willReturnOnConsecutiveCalls(
                 'user"\'stuff',
                 'full"\'stuff',
                 'mailstuff@example.com',

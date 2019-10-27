@@ -7,7 +7,6 @@ use Joindin\Api\Model\TalkModel;
 class TalkClaimEmailService extends BaseEmailService
 {
     protected $event;
-    /** @var TalkModel */
     protected $talk;
     protected $website_url;
 
