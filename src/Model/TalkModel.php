@@ -6,6 +6,10 @@ use Joindin\Api\Request;
 
 /**
  * Object that represents a talk
+ *
+ * @property int $ID
+ * @property int $event_id
+ * @property string $stub
  */
 class TalkModel extends BaseModel
 {

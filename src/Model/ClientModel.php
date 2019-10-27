@@ -6,6 +6,8 @@ use Joindin\Api\Request;
 
 /**
  * Object that represents a talk
+ *
+ * @property int $id
  */
 class ClientModel extends BaseModel
 {

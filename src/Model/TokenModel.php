@@ -6,6 +6,8 @@ use Joindin\Api\Request;
 
 /**
  * Object that represents a token
+ *
+ * @property int $id
  */
 class TokenModel extends BaseModel
 {
