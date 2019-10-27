@@ -143,7 +143,7 @@ class TalksController extends BaseTalkController
                                 $this->config['akismet']['blog']
                             );
                             $isValid          = $spamCheckService->isCommentAcceptable(
-                                $data,
+                                $comment,
                                 $request->getClientIP(),
                                 $request->getClientUserAgent()
                             );

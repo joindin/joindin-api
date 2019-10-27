@@ -89,7 +89,7 @@ class ContactController extends BaseApiController
         }
 
         if (!$this->spamCheckService->isCommentAcceptable(
-            $data,
+            $data['comment'],
             $request->getClientIP(),
             $request->getClientUserAgent()
         )) {

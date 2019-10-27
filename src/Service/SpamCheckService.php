@@ -25,35 +25,28 @@ class SpamCheckService implements SpamCheckServiceInterface
     /**
      * Check your comment against the spam check service
      *
-     * @param array  $data
+     * @param string $comment
      * @param string $userIp
      * @param string $userAgent
      *
      * @return bool true if the comment is okay, false if it got rated as spam
      */
-    public function isCommentAcceptable(array $data, $userIp, $userAgent)
+    public function isCommentAcceptable(string $comment, $userIp, $userAgent)
     {
-        if (!array_key_exists('comment', $data) || !is_string($data['comment']) || '' === trim($data['comment'])) {
+        if ('' === trim($comment)) {
             return false;
         }
-
-        $comment = [];
-
-        // set some required fields
-        $comment['blog'] = $this->blog;
-
-        // TODO what are better values to use for these required fields?
-        $comment['user_ip']    = $userIp;
-        $comment['user_agent'] = $userAgent;
-
-        // now use the incoming data
-        $comment['comment_content'] = $data['comment'];
 
         // actually do the check
         $ch = curl_init($this->akismetUrl . '/1.1/comment-check');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $comment);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+            'blog' =>  $this->blog,
+            'comment_content' => $comment,
+            'user_agent' => $userAgent,
+            'user_ip' => $userIp,
+        ]);
 
         $result = curl_exec($ch);
         curl_close($ch);
