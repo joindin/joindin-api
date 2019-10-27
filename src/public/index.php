@@ -9,7 +9,7 @@ use Teapot\StatusCode\Http;
 
 include __DIR__ . '/../../vendor/autoload.php';
 if (!function_exists('apache_request_headers')) {
-    include '../inc/nginx-helper.php';
+    include __DIR__ . '/../inc/nginx-helper.php';
 }
 if (!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
@@ -41,7 +41,7 @@ set_exception_handler('handle_exception');
 // config setup
 define('BASEPATH', '.');
 $config = [];
-include '../config.php';
+include __DIR__. '/../config.php';
 
 $container = ContainerFactory::build($config);
 
@@ -51,7 +51,7 @@ if ($config['mode'] == "development") {
 
 // database setup
 $db = [];
-include '../database.php';
+include __DIR__ . '/../database.php';
 $ji_db = new PDO(
     'mysql:host=' . $db['default']['hostname'] .
     ';dbname=' . $db['default']['database'] . ';charset=utf8mb4',
@@ -69,7 +69,7 @@ if (isset($headers['authorization'])) {
     $request->identifyUser($headers['authorization'], $ji_db);
 }
 
-$rules = require '../config/routes/2.1.php';
+$rules = require __DIR__ .'/../config/routes/2.1.php';
 
 $routers = [
     "v2.1" => new VersionedRouter('2.1', $config, $rules),
