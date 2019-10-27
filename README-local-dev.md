@@ -4,7 +4,7 @@ The API will run happily under the [PHP development server](http://php.net/manua
 
 To run the API on http://localhost:8080/, do the following:
 ```
-cd src/public
+cd public
 export JOINDIN_API_BASE_URL=http://localhost:8081
 php -S localhost:8081 index.php
 ```
