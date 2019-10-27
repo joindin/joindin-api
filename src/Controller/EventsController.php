@@ -746,7 +746,7 @@ class EventsController extends BaseApiController
         }
 
         // Only send an email if we provided a reason
-        if (!empty($reason)){
+        if (!empty($reason)) {
             $event        = $event_mapper->getEventById($event_id, true, false)['events'][0];
             $recipients   = array_merge([$this->config['email']['from']], $event_mapper->getHostsEmailAddresses($event_id));
             $emailService = new EventRejectedEmailService($this->config, $recipients, $event);
