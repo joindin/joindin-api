@@ -8,4 +8,5 @@ parameters:
     level: 1
 
     paths:
+        - inc
         - src
