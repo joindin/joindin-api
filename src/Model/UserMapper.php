@@ -346,7 +346,7 @@ class UserMapper extends ApiMapper
 
 
     /**
-     * @param int $user
+     * @param array $user
      *
      * @throws Exception
      * @return false|string user ID
