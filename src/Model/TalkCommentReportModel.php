@@ -6,6 +6,10 @@ use Joindin\Api\Request;
 
 /**
  * Object that represents a reported event comment
+ *
+ * @property int $event_id
+ * @property int $reporting_user_id
+ * @property int $talk_id
  */
 class TalkCommentReportModel extends BaseModel
 {
