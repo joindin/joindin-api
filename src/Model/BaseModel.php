@@ -6,6 +6,10 @@ use DateTime;
 use DateTimeZone;
 use Joindin\Api\Request;
 
+/**
+ * @property string|null $event_tz_cont For an event or event-related item, the first half of a TZ identifier
+ * @property string|null $event_tz_place For an event or event-related item, the second half of a TZ identifier
+ */
 abstract class BaseModel
 {
     protected $data;
