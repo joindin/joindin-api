@@ -15,7 +15,7 @@ class HtmlView extends ApiView
 {
 
     /**
-     * @param $content
+     * @param array|string $content
      *
      * @return bool
      */
