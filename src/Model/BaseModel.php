@@ -82,15 +82,9 @@ abstract class BaseModel
 
         $fields = array_merge($fields, $this->getSubResources());
 
-        // special handling for dates
-        $tz = new DateTimeZone('UTC');
-        if (property_exists($this, 'event_tz_place')
-            && property_exists($this, 'event_tz_cont')
-            && $this->event_tz_place !== ''
-            && $this->event_tz_cont !== ''
-        ) {
-            $tz = new DateTimeZone($this->event_tz_cont . '/' . $this->event_tz_place);
-        }
+        // special handling for dates; uses magic getters for event TZ columns
+        $tz = $this->event_tz_place != '' && $this->event_tz_cont != '' ?
+            new DateTimeZone($this->event_tz_cont . '/' . $this->event_tz_place) : new DateTimeZone('UTC');
 
         foreach ($fields as $output_name => $name) {
             $value = $this->$name;
