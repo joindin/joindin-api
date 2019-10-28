@@ -647,7 +647,7 @@ class TalkMapper extends ApiMapper
      *
      * @param int $talk_id The talk that needs a new stub
      *
-     * @return string
+     * @return string|bool
      */
     protected function generateStub($talk_id)
     {
