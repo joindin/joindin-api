@@ -7,7 +7,7 @@ use Joindin\Api\Model\EventCommentMapper;
 use Joindin\Api\Model\EventMapper;
 use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Service\EventCommentReportedEmailService;
-use Joindin\Api\Service\SpamCheckService;
+use Joindin\Api\Service\SpamCheckServiceInterface;
 use PDO;
 use Joindin\Api\Request;
 use Teapot\StatusCode\Http;
@@ -16,6 +16,15 @@ use UnexpectedValueException;
 class EventCommentsController extends BaseApiController
 // @codingStandardsIgnoreEnd
 {
+    private $spamCheckService;
+
+    public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [])
+    {
+        parent::__construct($config);
+
+        $this->spamCheckService = $spamCheckService;
+    }
+
     public function getComments(Request $request, PDO $db)
     {
         $comment_id = $this->getItemId($request);
@@ -107,20 +116,14 @@ class EventCommentsController extends BaseApiController
         $comment['cname']   = $thisUser['full_name'];
         $comment['source']  = $consumer_name;
 
-        // run it by akismet if we have it
-        if (isset($this->config['akismet']['apiKey'], $this->config['akismet']['blog'])) {
-            $spamCheckService = new SpamCheckService(
-                $this->config['akismet']['apiKey'],
-                $this->config['akismet']['blog']
-            );
-            $isValid          = $spamCheckService->isCommentAcceptable(
-                $commentText,
-                $request->getClientIP(),
-                $request->getClientUserAgent()
-            );
-            if (!$isValid) {
-                throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
-            }
+        $isValid = $this->spamCheckService->isCommentAcceptable(
+            $commentText,
+            $request->getClientIP(),
+            $request->getClientUserAgent()
+        );
+
+        if (!$isValid) {
+            throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
         }
 
         $event_mapper   = new EventMapper($db, $request);
