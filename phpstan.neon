@@ -5,7 +5,7 @@ parameters:
 
     inferPrivatePropertyTypeFromConstructor: true
 
-    level: 3
+    level: 4
 
     paths:
         - inc
