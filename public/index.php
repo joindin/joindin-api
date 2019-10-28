@@ -9,7 +9,7 @@ use Teapot\StatusCode\Http;
 
 include __DIR__ . '/../vendor/autoload.php';
 if (!function_exists('apache_request_headers')) {
-    include '../src/inc/nginx-helper.php';
+    include '../../inc/nginx-helper.php';
 }
 if (!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
