@@ -1,6 +1,6 @@
 parameters:
     excludes_analyse:
-        - */public/index.php
+        - public/
         - */scripts/*
 
     inferPrivatePropertyTypeFromConstructor: true
