@@ -129,9 +129,9 @@ class EventMapper extends ApiMapper
     /**
      * Internal function called by other event-fetching code, with changeable SQL
      *
-     * @param int   $resultsperpage how many records to return
-     * @param int   $start          offset to start returning records from
-     * @param array $params         filters and other parameters to limit/order the collection
+     * @param int      $resultsperpage how many records to return
+     * @param int|null $start          offset to start returning records from
+     * @param array    $params         filters and other parameters to limit/order the collection
      *
      * @return false|array the raw database results
      */
