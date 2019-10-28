@@ -1,4 +1,4 @@
-Your event, *[title]* has been rejected due to the following reason(s):
+Your event with the "[title]" has been rejected due to the following reason(s):
 
 [reason]
 
