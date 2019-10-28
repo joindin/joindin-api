@@ -1,6 +1,6 @@
 parameters:
     excludes_analyse:
-        - */public/index.php
+        - public/
         - */scripts/*
 
     inferPrivatePropertyTypeFromConstructor: true
@@ -8,4 +8,5 @@ parameters:
     level: 1
 
     paths:
+        - inc
         - src
