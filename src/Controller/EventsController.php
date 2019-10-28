@@ -155,16 +155,22 @@ class EventsController extends BaseApiController
                 }
 
                 if (isset($request->parameters['startdate'])) {
-                    $start_datetime = new DateTime($request->parameters['startdate']);
-                    if ($start_datetime) {
+                    try {
+                        $start_datetime = new DateTime($request->parameters['startdate']);
+
                         $params["startdate"] = $start_datetime->format("U");
+                    } catch (Exception $e) {
+                        // ignore
                     }
                 }
 
                 if (isset($request->parameters['enddate'])) {
-                    $end_datetime = new DateTime($request->parameters['enddate']);
-                    if ($end_datetime) {
+                    try {
+                        $end_datetime = new DateTime($request->parameters['enddate']);
+
                         $params["enddate"] = $end_datetime->format("U");
+                    } catch (Exception $e) {
+                        // ignore
                     }
                 }
 
