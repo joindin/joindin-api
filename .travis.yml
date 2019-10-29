@@ -6,6 +6,7 @@ cache:
   directories:
     - $HOME/.composer/cache/files
     - $HOME/.cache/composer/files
+    - $HOME/build
 
 matrix:
   include:
