@@ -4,8 +4,7 @@ dist: trusty
 
 cache:
   directories:
-    - $HOME/.composer/cache/files
-    - $HOME/.cache/composer/files
+    - $HOME/.composer/cache
 
 matrix:
   include:
