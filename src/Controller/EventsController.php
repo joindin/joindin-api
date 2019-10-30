@@ -205,9 +205,6 @@ class EventsController extends BaseApiController
             $event  = [];
             $errors = [];
 
-            // make the timezone, and read in times with respect to that
-            $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
-
             $event['name'] = filter_var(
                 $request->getParameter("name"),
                 FILTER_SANITIZE_STRING,
@@ -235,6 +232,8 @@ class EventsController extends BaseApiController
                 $errors[] = "'location' is a required field (for virtual events, 'online' works)";
             }
 
+            $tz = new DateTimeZone('UTC');
+
             $start_date = strtotime($request->getParameter("start_date"));
             $end_date   = strtotime($request->getParameter("end_date"));
             if (!$start_date || ! $end_date) {
@@ -255,6 +254,9 @@ class EventsController extends BaseApiController
                     FILTER_FLAG_NO_ENCODE_QUOTES
                 );
                 try {
+                    // make the timezone, and read in times with respect to that
+                    $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+
                     $start_date          = new DateTime($request->getParameter("start_date"), $tz);
                     $end_date            = new DateTime($request->getParameter("end_date"), $tz);
                     $event['start_date'] = $start_date->format('U');
