@@ -1,11 +1,11 @@
 parameters:
     excludes_analyse:
         - public/
-        - */scripts/*
+        - scripts/
 
     inferPrivatePropertyTypeFromConstructor: true
 
-    level: 1
+    level: 3
 
     paths:
         - inc

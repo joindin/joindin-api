@@ -647,7 +647,7 @@ class TalkMapper extends ApiMapper
      *
      * @param int $talk_id The talk that needs a new stub
      *
-     * @return string
+     * @return string|bool
      */
     protected function generateStub($talk_id)
     {
@@ -694,7 +694,7 @@ class TalkMapper extends ApiMapper
      * @param string $title   The talk title
      * @param int    $talk_id The talk to store the title against
      *
-     * @return string The value we stored
+     * @return string|bool The value we stored
      */
     protected function generateInflectedTitle($title, $talk_id)
     {

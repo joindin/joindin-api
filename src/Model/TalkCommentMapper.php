@@ -358,8 +358,8 @@ class TalkCommentMapper extends ApiMapper
      *
      * Includes verbose nested comment info
      *
-     * @param $event_id  int    The event whose comments should be returned
-     * @param $moderated bool  Whether to include comments that have been moderated
+     * @param int  $event_id  The event whose comments should be returned
+     * @param bool $moderated Whether to include comments that have been moderated
      *
      * @return TalkCommentReportModelCollection
      */

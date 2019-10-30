@@ -4,6 +4,7 @@ dist: trusty
 
 cache:
   directories:
+    - $HOME/.composer/cache
     - $HOME/.composer/cache/files
     - $HOME/.cache/composer/files
     - $HOME/build

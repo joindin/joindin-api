@@ -433,8 +433,8 @@ class UsersController extends BaseApiController
     /**
      * Allow users to be set as trusted
      *
-     * @param $request Request
-     * @param $db      PDO
+     * @param Request $request
+     * @param PDO $db
      *
      * @throws Exception
      */

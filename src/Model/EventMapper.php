@@ -730,7 +730,7 @@ class EventMapper extends ApiMapper
      * @param int    $event_id The event to store it against
      * @param string $start_date
      *
-     * @return string The value we stored
+     * @return string|false The value we stored
      */
     protected function generateInflectedName($name, $event_id, $start_date)
     {

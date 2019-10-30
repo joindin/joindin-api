@@ -22,7 +22,7 @@ class ApiView
     }
 
     /**
-     * @param $content
+     * @param array $content
      *
      * @return array
      */
@@ -69,7 +69,7 @@ class ApiView
     }
 
     /**
-     * @param $content
+     * @param array|string $content
      *
      * @return bool
      */

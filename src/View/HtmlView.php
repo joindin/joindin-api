@@ -15,7 +15,7 @@ class HtmlView extends ApiView
 {
 
     /**
-     * @param $content
+     * @param array|string $content
      *
      * @return bool
      */
@@ -31,7 +31,7 @@ class HtmlView extends ApiView
      *
      * @param array $content data to be rendered
      *
-     * @return bool
+     * @return null
      */
     public function buildOutput($content)
     {
