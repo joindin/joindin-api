@@ -186,7 +186,7 @@ class Header
     /**
      * Trim a header by removing excess spaces and wrapping quotes
      *
-     * @param $str
+     * @param string $str
      *
      * @return string
      */
