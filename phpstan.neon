@@ -1,7 +1,7 @@
 parameters:
     excludes_analyse:
         - public/
-        - */scripts/*
+        - scripts/
 
     inferPrivatePropertyTypeFromConstructor: true
 
