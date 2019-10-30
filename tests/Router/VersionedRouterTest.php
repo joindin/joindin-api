@@ -13,7 +13,7 @@ use Teapot\StatusCode\Http;
  *
  * @covers \Joindin\Api\Router\VersionedRouter
  */
-class VersionedRouterTest extends TestCase
+final class VersionedRouterTest extends TestCase
 {
 
     /**

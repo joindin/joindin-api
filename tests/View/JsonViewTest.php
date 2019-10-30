@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \Joindin\Api\View\JsonView
  */
-class JsonViewTest extends TestCase
+final class JsonViewTest extends TestCase
 {
 
     /**

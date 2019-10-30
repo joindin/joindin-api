@@ -9,7 +9,7 @@ use Joindin\Api\View\ApiView;
 use JoindinTest\Inc\mockPDO;
 use Teapot\StatusCode\Http;
 
-class TalksControllerDeleteTest extends TalkBase
+final class TalksControllerDeleteTest extends TalkBase
 {
     public function testRemoveStarFromTalkFailsWhenNotLoggedIn()
     {

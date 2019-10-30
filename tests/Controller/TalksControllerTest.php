@@ -15,7 +15,7 @@ use JoindinTest\Inc\mockPDO;
 use Teapot\StatusCode\Http;
 use Teapot\StatusCode\WebDAV;
 
-class TalksControllerTest extends TalkBase
+final class TalksControllerTest extends TalkBase
 {
     private $config;
 
