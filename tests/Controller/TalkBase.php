@@ -12,7 +12,7 @@ use Joindin\Api\Request;
 use JoindinTest\Inc\mockPDO;
 use PHPUnit\Framework\TestCase;
 
-class TalkBase extends TestCase
+abstract class TalkBase extends TestCase
 {
     protected $talk_mapper;
 
