@@ -1,4 +1,5 @@
 <?php
+
 namespace Joindin\Api\Test;
 
 use Joindin\Api\Request;
@@ -210,7 +211,7 @@ class RequestTest extends TestCase
      */
     public function testIfPreferredFormatIsNotAcceptedReturnJson()
     {
-        $server =['HTTP_ACCEPT' =>
+        $server = ['HTTP_ACCEPT' =>
             'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8'];
         $request                = new Request($this->config, $server);
 

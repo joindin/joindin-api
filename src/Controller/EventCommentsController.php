@@ -1,4 +1,5 @@
 <?php
+
 // @codingStandardsIgnoreStart
 namespace Joindin\Api\Controller;
 
@@ -127,8 +128,10 @@ class EventCommentsController extends BaseApiController
         $comment_mapper = new EventCommentMapper($db, $request);
 
         // should rating be allowed?
-        if ($comment_mapper->hasUserRatedThisEvent($comment['user_id'], $comment['event_id']) ||
-            $event_mapper->isUserAHostOn($comment['user_id'], $comment['event_id'])) {
+        if (
+            $comment_mapper->hasUserRatedThisEvent($comment['user_id'], $comment['event_id']) ||
+            $event_mapper->isUserAHostOn($comment['user_id'], $comment['event_id'])
+        ) {
             // a user can only rate once and event hosts cannot rate their own event
             $comment['rating'] = 0;
         } else {

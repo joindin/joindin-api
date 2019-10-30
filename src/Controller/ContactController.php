@@ -88,11 +88,13 @@ class ContactController extends BaseApiController
             throw new Exception($message, Http::BAD_REQUEST);
         }
 
-        if (!$this->spamCheckService->isCommentAcceptable(
-            $data['comment'],
-            $request->getClientIP(),
-            $request->getClientUserAgent()
-        )) {
+        if (
+            !$this->spamCheckService->isCommentAcceptable(
+                $data['comment'],
+                $request->getClientIP(),
+                $request->getClientUserAgent()
+            )
+        ) {
             throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
         }
 

@@ -211,7 +211,8 @@ class UsersController extends BaseApiController
                 $view->setResponseCode(Http::CREATED);
 
                 // autoverify for test platforms
-                if (isset($this->config['features']['allow_auto_verify_users'])
+                if (
+                    isset($this->config['features']['allow_auto_verify_users'])
                     && $this->config['features']['allow_auto_verify_users']
                 ) {
                     if ($request->getParameter("auto_verify_user") == "true") {
