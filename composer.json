@@ -61,10 +61,16 @@
       "phpunit --dump-xdebug-filter=build/xdebug-filter.php",
       "phpunit --coverage-clover=build/logs/clover.xml --coverage-text --prepend=build/xdebug-filter.php"
     ],
-    "fix": "phpcbf -p .",
+    "fix": [
+      "mkdir -p build/",
+      "phpcbf -p ."
+    ],
     "lint": "parallel-lint --exclude vendor .",
     "security": "security-checker security:check composer.lock",
-    "sniff": "phpcs --cache=build/.phpcs-cache --runtime-set ignore_warnings_on_exit true -p .",
+    "sniff": [
+      "mkdir -p build/",
+      "phpcs --runtime-set ignore_warnings_on_exit true -p ."
+    ],
     "stan": "phpstan analyze --configuration=phpstan.neon",
     "test": "phpunit"
   },
