@@ -155,16 +155,22 @@ class EventsController extends BaseApiController
                 }
 
                 if (isset($request->parameters['startdate'])) {
-                    $start_datetime = new DateTime($request->parameters['startdate']);
-                    if ($start_datetime) {
+                    try {
+                        $start_datetime = new DateTime($request->parameters['startdate']);
+
                         $params["startdate"] = $start_datetime->format("U");
+                    } catch (Exception $e) {
+                        // ignore
                     }
                 }
 
                 if (isset($request->parameters['enddate'])) {
-                    $end_datetime = new DateTime($request->parameters['enddate']);
-                    if ($end_datetime) {
+                    try {
+                        $end_datetime = new DateTime($request->parameters['enddate']);
+
                         $params["enddate"] = $end_datetime->format("U");
+                    } catch (Exception $e) {
+                        // ignore
                     }
                 }
 
@@ -703,13 +709,11 @@ class EventsController extends BaseApiController
             throw new Exception("This event cannot be approved", Http::BAD_REQUEST);
         }
 
-        if ($result) {
-            // Send a notification email as we have approved
-            $event        = $event_mapper->getEventById($event_id, true)['events'][0];
-            $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
-            $emailService = new EventApprovedEmailService($this->config, $recipients, $event);
-            $emailService->sendEmail();
-        }
+        // Send a notification email as we have approved
+        $event        = $event_mapper->getEventById($event_id, true)['events'][0];
+        $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
+        $emailService = new EventApprovedEmailService($this->config, $recipients, $event);
+        $emailService->sendEmail();
 
         $location = $request->base . '/' . $request->version . '/events/' . $event_id;
 

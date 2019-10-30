@@ -29,7 +29,7 @@ class HtmlView extends ApiView
     /**
      * Render the view
      *
-     * @param array $content data to be rendered
+     * @param array|string|bool $content data to be rendered
      *
      * @return null
      */
@@ -78,7 +78,7 @@ class HtmlView extends ApiView
      * Renders the passed value, either raw or as a link (if prepended by http
      * or https)
      *
-     * @param string $value
+     * @param string|bool $value
      *
      * @return void
      */
