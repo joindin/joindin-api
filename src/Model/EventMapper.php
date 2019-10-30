@@ -131,9 +131,9 @@ class EventMapper extends ApiMapper
     /**
      * Internal function called by other event-fetching code, with changeable SQL
      *
-     * @param int   $resultsperpage how many records to return
-     * @param int   $start          offset to start returning records from
-     * @param array $params         filters and other parameters to limit/order the collection
+     * @param int      $resultsperpage how many records to return
+     * @param int|null $start          offset to start returning records from
+     * @param array    $params         filters and other parameters to limit/order the collection
      *
      * @return false|array the raw database results
      */
@@ -732,7 +732,7 @@ class EventMapper extends ApiMapper
      * @param int    $event_id The event to store it against
      * @param string $start_date
      *
-     * @return string The value we stored
+     * @return string|false The value we stored
      */
     protected function generateInflectedName($name, $event_id, $start_date)
     {

@@ -6,6 +6,8 @@ use Joindin\Api\Request;
 
 /**
  * Object to represent a twitter request token
+ *
+ * @property int $ID
  */
 class TwitterRequestTokenModel extends BaseModel
 {

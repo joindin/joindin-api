@@ -18,7 +18,7 @@ class PendingTalkClaimModelCollection extends BaseModelCollection
      * Take arrays of data and create a collection of models; store metadata
      *
      * @param array $data
-     * @param       $total
+     * @param int   $total
      */
     public function __construct(array $data, $total)
     {

@@ -22,9 +22,9 @@ class ApiView
     }
 
     /**
-     * @param $content
+     * @param mixed $content
      *
-     * @return array
+     * @return mixed
      */
     protected function addCount($content)
     {
@@ -69,7 +69,7 @@ class ApiView
     }
 
     /**
-     * @param $content
+     * @param array|string $content
      *
      * @return bool
      */
