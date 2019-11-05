@@ -20,6 +20,7 @@ install:
   - composer install
 
 before_script:
+  - composer show
   - mkdir -p build/logs
   - cp src/config.php.dist src/config.php
 
