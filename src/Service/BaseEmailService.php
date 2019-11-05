@@ -62,7 +62,8 @@ abstract class BaseEmailService
         $this->mailer  = new Swift_Mailer($transport);
         $this->message = new Swift_Message();
 
-        if (isset($config['email']['forward_all_to'])
+        if (
+            isset($config['email']['forward_all_to'])
             && ! empty($config['email']['forward_all_to'])
         ) {
             $this->recipients = [$config['email']['forward_all_to']];

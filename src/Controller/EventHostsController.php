@@ -1,4 +1,5 @@
 <?php
+
 // @codingStandardsIgnoreStart
 namespace Joindin\Api\Controller;
 

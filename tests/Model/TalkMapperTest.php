@@ -1,4 +1,5 @@
 <?php
+
 namespace Joindin\Api\Test\Model;
 
 use Joindin\Api\Model\TalkMapper;

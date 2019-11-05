@@ -59,7 +59,7 @@ final class TalkCommentEmailServiceTest extends Testcase
         $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
         $service               = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
-        $service->templatePath = __DIR__.'/../../src/View/emails/';
+        $service->templatePath = __DIR__ . '/../../src/View/emails/';
 
         $template     = "testTemplate.md";
         $replacements = ["cat" => "Camel", "mat" => "magic carpet"];
