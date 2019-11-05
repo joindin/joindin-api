@@ -27,8 +27,7 @@
     "jakub-onderka/php-parallel-lint": "^1.0",
     "phpunit/phpunit": "^8.3.4",
     "roave/security-advisories": "dev-master",
-    "sensiolabs/security-checker": "^6.0",
-    "squizlabs/php_codesniffer": "^3.4"
+    "sensiolabs/security-checker": "^6.0"
   },
   "config": {
     "optimize-autoloader": true,
@@ -52,7 +51,6 @@
     "check": [
       "mkdir -p build/logs",
       "@lint",
-      "@sniff",
       "@stan",
       "@security",
       "@coverage"
@@ -61,16 +59,8 @@
       "phpunit --dump-xdebug-filter=build/xdebug-filter.php",
       "phpunit --coverage-clover=build/logs/clover.xml --coverage-text --prepend=build/xdebug-filter.php"
     ],
-    "fix": [
-      "mkdir -p build/",
-      "phpcbf -p ."
-    ],
     "lint": "parallel-lint --exclude vendor .",
     "security": "security-checker security:check composer.lock",
-    "sniff": [
-      "mkdir -p build/",
-      "phpcs --runtime-set ignore_warnings_on_exit true -p ."
-    ],
     "stan": "phpstan analyze --configuration=phpstan.neon",
     "test": "phpunit"
   },
