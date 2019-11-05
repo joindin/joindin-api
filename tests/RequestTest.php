@@ -6,7 +6,7 @@ use Joindin\Api\Request;
 use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 
-class RequestTest extends TestCase
+final class RequestTest extends TestCase
 {
     /**
      * Make sure we have everything we need - in this case the config

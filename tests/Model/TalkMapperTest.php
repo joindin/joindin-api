@@ -8,7 +8,7 @@ use JoindinTest\Inc\mockPDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
-class TalkMapperTest extends TestCase
+final class TalkMapperTest extends TestCase
 {
     public function testMediaTypesAreAddedCorrectly()
     {

@@ -32,7 +32,7 @@ abstract class BaseEmailService
     /**
      * Template path, can be changed when testing
      */
-    public $templatePath = "../View/emails/";
+    public $templatePath = __DIR__ . '/../View/emails/';
 
     /**
      * Make a message to be sent later

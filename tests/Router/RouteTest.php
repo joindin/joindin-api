@@ -14,7 +14,7 @@ use Teapot\StatusCode\Http;
  *
  * @covers \Joindin\Api\Router\Route
  */
-class RouteTest extends TestCase
+final class RouteTest extends TestCase
 {
 
     /**

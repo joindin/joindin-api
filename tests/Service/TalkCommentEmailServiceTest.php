@@ -6,7 +6,7 @@ use Joindin\Api\Model\TalkModel;
 use Joindin\Api\Service\TalkCommentEmailService;
 use PHPUnit\Framework\TestCase;
 
-class TalkCommentEmailServiceTest extends Testcase
+final class TalkCommentEmailServiceTest extends Testcase
 {
     protected $config = [
         'email' => [
