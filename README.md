@@ -104,6 +104,14 @@ Patches can be applied using either of the two patchdb scripts (PHP/Shell) in th
 Please do your best to ensure that any code you contributed adheres to the
 Joind.in coding style -- this is the PSR-2 coding standard with no namespaces.
 
+Run
+
+```
+$ composer cs
+```
+
+to fix coding style issues.
+
 #### Inline Documentation
 
 For inline documentation we recommend the use of PHPDoc-compatible documentation

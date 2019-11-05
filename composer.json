@@ -50,6 +50,7 @@
   "scripts": {
     "check": [
       "mkdir -p build/logs",
+      "@cs",
       "@stan",
       "@security",
       "@coverage"
@@ -58,6 +59,7 @@
       "phpunit --dump-xdebug-filter=build/xdebug-filter.php",
       "phpunit --coverage-clover=build/logs/clover.xml --coverage-text --prepend=build/xdebug-filter.php"
     ],
+    "cs": "php-cs-fixer fix --config=.php_cs --diff --diff-format=udiff --verbose",
     "security": "security-checker security:check composer.lock",
     "stan": "phpstan analyze --configuration=phpstan.neon",
     "test": "phpunit"
