@@ -10,7 +10,7 @@ use PDOStatement;
 use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 
-class OauthModelTest extends TestCase
+final class OauthModelTest extends TestCase
 {
     public function setup(): void
     {

@@ -9,7 +9,7 @@ use Teapot\StatusCode\Http;
 /**
  * @covers \Joindin\Api\View\ApiView
  */
-class ApiViewTest extends TestCase
+final class ApiViewTest extends TestCase
 {
     /**
      * @runInSeparateProcess

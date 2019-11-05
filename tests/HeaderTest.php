@@ -5,7 +5,7 @@ namespace Joindin\Api\Test;
 use Joindin\Api\Header;
 use PHPUnit\Framework\TestCase;
 
-class HeaderTest extends TestCase
+final class HeaderTest extends TestCase
 {
     public function testParseParamsWithEmbededSeparator()
     {
