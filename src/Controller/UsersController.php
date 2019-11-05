@@ -22,7 +22,7 @@ class UsersController extends BaseApiController
     private $userRegistrationEmailService;
 
     /**
-     * @var TalkCommentMapper
+     * @var TalkCommentMapper|null
      */
     private $talkCommentMapper;
 
@@ -515,7 +515,7 @@ class UsersController extends BaseApiController
 
     public function initializeTalkCommentMapper(PDO $db, Request $request): void
     {
-        if (!$this->talkCommentMapper) {
+        if (null === $this->talkCommentMapper) {
             $this->talkCommentMapper = new TalkCommentMapper($db, $request);
         }
     }
