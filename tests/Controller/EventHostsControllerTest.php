@@ -13,7 +13,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 
-class EventHostsControllerTest extends TestCase
+final class EventHostsControllerTest extends TestCase
 {
     public function testThatNotLoggedInUsersCanNotAddAHost()
     {

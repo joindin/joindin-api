@@ -4,7 +4,7 @@ namespace Joindin\Api\Test\Router;
 
 use Joindin\Api\Request;
 
-class TestController3
+final class TestController3
 {
     public function action(Request $request, $db)
     {

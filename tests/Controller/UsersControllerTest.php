@@ -16,7 +16,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 
-class UsersControllerTest extends TestCase
+final class UsersControllerTest extends TestCase
 {
 
     /**

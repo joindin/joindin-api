@@ -7,7 +7,7 @@ use Joindin\Api\Request;
 use Joindin\Api\Router\BaseRouter;
 use Joindin\Api\Router\Route;
 
-class TestRouter3 extends BaseRouter
+final class TestRouter3 extends BaseRouter
 {
 
 
