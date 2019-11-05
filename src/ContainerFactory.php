@@ -85,8 +85,11 @@ class ContainerFactory
                 return new EmailsController($config);
             });
 
-            $container[EventCommentsController::class] = $container->factory(function ($c) use ($config) {
-                return new EventCommentsController($config);
+            $container[EventCommentsController::class] = $container->factory(static function ($container) use ($config): EventCommentsController {
+                return new EventCommentsController(
+                    $container[SpamCheckServiceInterface::class],
+                    $config
+                );
             });
 
             $container[EventHostsController::class] = $container->factory(function ($c) use ($config) {
@@ -117,8 +120,11 @@ class ContainerFactory
                 return new TalkLinkController($config);
             });
 
-            $container[TalksController::class] = $container->factory(function ($c) use ($config) {
-                return new TalksController($config);
+            $container[TalksController::class] = $container->factory(static function ($container) use ($config): TalksController {
+                return new TalksController(
+                    $container[SpamCheckServiceInterface::class],
+                    $config
+                );
             });
 
             $container[TalkTypesController::class] = $container->factory(function ($c) use ($config) {

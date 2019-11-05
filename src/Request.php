@@ -346,7 +346,8 @@ class Request
      */
     public function identifyUser($auth_header, PDO $db = null)
     {
-        if (($this->getScheme() == "https://") ||
+        if (
+            ($this->getScheme() == "https://") ||
             (isset($this->config['mode']) && $this->config['mode'] == "development")
         ) {
             // identify the user
@@ -399,7 +400,8 @@ class Request
         // now how about PUT/POST bodies? These override what we already had
         if ($this->getVerb() == 'POST' || $this->getVerb() == 'PUT') {
             $body = $this->getRawBody();
-            if ((isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] == "application/json")
+            if (
+                (isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] == "application/json")
                 || (isset($server['HTTP_CONTENT_TYPE']) && $server['HTTP_CONTENT_TYPE'] == "application/json")
             ) {
                 $body_params = json_decode($body);

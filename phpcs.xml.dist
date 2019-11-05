@@ -4,7 +4,7 @@
         name="JoindIn"
         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd"
 >
- <description>The Joind.in coding standard (PSR2, no namespace).</description>
+ <description>The Joind.in coding standard</description>
 
  <exclude-pattern>**/config.php</exclude-pattern>
  <exclude-pattern>**/database.php</exclude-pattern>
@@ -14,18 +14,12 @@
  <exclude-pattern>vendor</exclude-pattern>
 
  <arg name="basepath" value="."/>
- <arg name="cache" value=".phpcs-cache"/>
+ <arg name="cache" value="build/.phpcs-cache "/>
  <arg name="colors"/>
  <arg name="extensions" value="php"/>
 
  <file>src/</file>
  <file>tests/</file>
- <!--
-    Include all sniffs in the PSR2 standard except these which we override
-    to turn off certain requirements
- -->
- <rule ref="PSR2">
-  <!-- Exclude the "Each class must be in a namespace of at least one level"  -->
-  <exclude name="PSR1.Classes.ClassDeclaration"/>
- </rule>
+
+ <rule ref="PSR12" />
 </ruleset>

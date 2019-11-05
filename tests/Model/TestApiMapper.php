@@ -4,7 +4,7 @@ namespace Joindin\Api\Test\Model;
 
 use Joindin\Api\Model\ApiMapper;
 
-class TestApiMapper extends ApiMapper
+final class TestApiMapper extends ApiMapper
 {
     public function getDefaultFields()
     {

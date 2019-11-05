@@ -411,11 +411,13 @@ class OAuthModel
                . "values(:screen_name, :name, :screen_name, :email, 1, 1, 0)";
 
         $stmt = $this->_db->prepare($sql);
-        if (!$stmt->execute([
+        if (
+            !$stmt->execute([
             'screen_name' => $values['screen_name'],
             'name'        => $values['name'],
             'email'       => $values['email'],
-        ])) {
+            ])
+        ) {
             throw new Exception('Something went wrong');
         }
 

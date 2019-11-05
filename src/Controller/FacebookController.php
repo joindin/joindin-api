@@ -30,8 +30,10 @@ class FacebookController extends BaseApiController
      */
     public function logUserIn(Request $request, PDO $db)
     {
-        if (empty($this->config['facebook']['app_id'])
-            || empty($this->config['facebook']['app_secret'])) {
+        if (
+            empty($this->config['facebook']['app_id'])
+            || empty($this->config['facebook']['app_secret'])
+        ) {
             throw new Exception("Cannot login via Facebook", 501);
         }
 

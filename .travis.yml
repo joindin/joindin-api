@@ -4,8 +4,8 @@ dist: trusty
 
 cache:
   directories:
-    - $HOME/.composer/cache/files
-    - $HOME/.cache/composer/files
+    - $HOME/.composer/cache
+    - $HOME/build
 
 matrix:
   include:
@@ -20,10 +20,16 @@ install:
   - composer install
 
 before_script:
+  - mkdir -p build/logs
   - cp src/config.php.dist src/config.php
 
 script:
-  - composer check
+  - vendor/bin/parallel-lint --exclude vendor .
+  - vendor/bin/phpcs --runtime-set ignore_warnings_on_exit true -p .
+  - vendor/bin/phpstan analyze --configuration=phpstan.neon
+  - vendor/bin/security-checker security:check composer.lock
+  - vendor/bin/phpunit --dump-xdebug-filter=build/xdebug-filter.php
+  - vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --coverage-text --prepend=build/xdebug-filter.php
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

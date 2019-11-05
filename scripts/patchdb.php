@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * Sets up the joindin database and runs the

@@ -155,16 +155,22 @@ class EventsController extends BaseApiController
                 }
 
                 if (isset($request->parameters['startdate'])) {
-                    $start_datetime = new DateTime($request->parameters['startdate']);
-                    if ($start_datetime) {
+                    try {
+                        $start_datetime = new DateTime($request->parameters['startdate']);
+
                         $params["startdate"] = $start_datetime->format("U");
+                    } catch (Exception $e) {
+                        // ignore
                     }
                 }
 
                 if (isset($request->parameters['enddate'])) {
-                    $end_datetime = new DateTime($request->parameters['enddate']);
-                    if ($end_datetime) {
+                    try {
+                        $end_datetime = new DateTime($request->parameters['enddate']);
+
                         $params["enddate"] = $end_datetime->format("U");
+                    } catch (Exception $e) {
+                        // ignore
                     }
                 }
 
@@ -205,9 +211,6 @@ class EventsController extends BaseApiController
             $event  = [];
             $errors = [];
 
-            // make the timezone, and read in times with respect to that
-            $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
-
             $event['name'] = filter_var(
                 $request->getParameter("name"),
                 FILTER_SANITIZE_STRING,
@@ -235,6 +238,8 @@ class EventsController extends BaseApiController
                 $errors[] = "'location' is a required field (for virtual events, 'online' works)";
             }
 
+            $tz = new DateTimeZone('UTC');
+
             $start_date = strtotime($request->getParameter("start_date"));
             $end_date   = strtotime($request->getParameter("end_date"));
             if (!$start_date || ! $end_date) {
@@ -255,6 +260,9 @@ class EventsController extends BaseApiController
                     FILTER_FLAG_NO_ENCODE_QUOTES
                 );
                 try {
+                    // make the timezone, and read in times with respect to that
+                    $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+
                     $start_date          = new DateTime($request->getParameter("start_date"), $tz);
                     $end_date            = new DateTime($request->getParameter("end_date"), $tz);
                     $event['start_date'] = $start_date->format('U');
@@ -351,7 +359,8 @@ class EventsController extends BaseApiController
                                           || $user_mapper->isTrusted($request->user_id);
 
                 // Do we want to automatically approve when testing?
-                if (isset($this->config['features']['allow_auto_approve_events'])
+                if (
+                    isset($this->config['features']['allow_auto_approve_events'])
                     && $this->config['features']['allow_auto_approve_events']
                 ) {
                     if ($request->getParameter("auto_approve_event") == "true") {
@@ -701,13 +710,11 @@ class EventsController extends BaseApiController
             throw new Exception("This event cannot be approved", Http::BAD_REQUEST);
         }
 
-        if ($result) {
-            // Send a notification email as we have approved
-            $event        = $event_mapper->getEventById($event_id, true)['events'][0];
-            $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
-            $emailService = new EventApprovedEmailService($this->config, $recipients, $event);
-            $emailService->sendEmail();
-        }
+        // Send a notification email as we have approved
+        $event        = $event_mapper->getEventById($event_id, true)['events'][0];
+        $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
+        $emailService = new EventApprovedEmailService($this->config, $recipients, $event);
+        $emailService->sendEmail();
 
         $location = $request->base . '/' . $request->version . '/events/' . $event_id;
 

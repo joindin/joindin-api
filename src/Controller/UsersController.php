@@ -218,7 +218,8 @@ class UsersController extends BaseApiController
                 $view->setResponseCode(Http::CREATED);
 
                 // autoverify for test platforms
-                if (isset($this->config['features']['allow_auto_verify_users'])
+                if (
+                    isset($this->config['features']['allow_auto_verify_users'])
                     && $this->config['features']['allow_auto_verify_users']
                 ) {
                     if ($request->getParameter("auto_verify_user") == "true") {
@@ -464,8 +465,8 @@ class UsersController extends BaseApiController
     /**
      * Allow users to be set as trusted
      *
-     * @param $request Request
-     * @param $db      PDO
+     * @param Request $request
+     * @param PDO $db
      *
      * @throws Exception
      */

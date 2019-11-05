@@ -8,7 +8,7 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
-class EventHostMapperTest extends TestCase
+final class EventHostMapperTest extends TestCase
 {
     public function testThatAddingHostToEventCallsExpectedInsert()
     {

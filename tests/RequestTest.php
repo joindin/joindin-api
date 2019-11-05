@@ -1,11 +1,12 @@
 <?php
+
 namespace Joindin\Api\Test;
 
 use Joindin\Api\Request;
 use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 
-class RequestTest extends TestCase
+final class RequestTest extends TestCase
 {
     /**
      * Make sure we have everything we need - in this case the config
@@ -210,7 +211,7 @@ class RequestTest extends TestCase
      */
     public function testIfPreferredFormatIsNotAcceptedReturnJson()
     {
-        $server =['HTTP_ACCEPT' =>
+        $server = ['HTTP_ACCEPT' =>
             'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8'];
         $request                = new Request($this->config, $server);
 
