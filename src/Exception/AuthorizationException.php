@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Joindin\Api\Exception;
 
-use \RuntimeException;
-
-final class AuthorizationException extends RuntimeException
+final class AuthorizationException extends \RuntimeException
 {
     private const MESSAGE = 'This operation requires %s privileges.';
 
