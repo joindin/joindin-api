@@ -90,7 +90,7 @@ class Header
         for ($i = 0, $total = count($values); $i < $total; $i++) {
             if (strpos($values[$i], $this->glue) !== false) {
                 // Explode on glue when the glue is not inside of a comma
-                foreach (preg_split('/' . preg_quote($this->glue) . '(?=([^"]*"[^"]*")*[^"]*$)/', $values[$i]) as $v) {
+                foreach (preg_split('/' . preg_quote($this->glue, '/') . '(?=([^"]*"[^"]*")*[^"]*$)/', $values[$i]) as $v) {
                     $values[] = trim($v);
                 }
                 unset($values[$i]);
@@ -104,7 +104,7 @@ class Header
 
     public function hasValue($searchValue)
     {
-        return in_array($searchValue, $this->toArray());
+        return in_array($searchValue, $this->toArray(), false);
     }
 
     public function removeValue($searchValue)
@@ -142,7 +142,7 @@ class Header
         foreach ($this->values as $value) {
             $parts = explode('=', $value);
             $key   = ucwords($parts[0]);
-            if (count($parts) == 1) {
+            if (count($parts) === 1) {
                 if (array_key_exists(0, $assocArray)) {
                     $assocArray[0][] = $parts[0];
                 } else {
@@ -173,7 +173,7 @@ class Header
                     continue;
                 }
                 $pieces           = array_map($callback, $matches[0]);
-                $part[$pieces[0]] = isset($pieces[1]) ? $pieces[1] : '';
+                $part[$pieces[0]] = $pieces[1] ?? '';
             }
             if ($part) {
                 $params[] = $part;
