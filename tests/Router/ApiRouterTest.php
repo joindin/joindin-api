@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @covers \Joindin\Api\Router\ApiRouter
  */
-class ApiRouterTest extends TestCase
+final class ApiRouterTest extends TestCase
 {
     /**
      * DataProvider for testGetSetRouters

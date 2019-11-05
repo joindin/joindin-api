@@ -10,12 +10,14 @@ use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Model\TalkModelCollection;
 use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Request;
+use Joindin\Api\Service\NullSpamCheckService;
+use Joindin\Api\Service\SpamCheckServiceInterface;
 use Joindin\Api\Service\TalkCommentEmailService;
 use JoindinTest\Inc\mockPDO;
 use Teapot\StatusCode\Http;
 use Teapot\StatusCode\WebDAV;
 
-class TalksControllerTest extends TalkBase
+final class TalksControllerTest extends TalkBase
 {
     private $config;
 
@@ -55,7 +57,8 @@ class TalksControllerTest extends TalkBase
             ]
         );
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $talks_controller->setSpeakerForTalk($request, $db);
@@ -83,7 +86,8 @@ class TalksControllerTest extends TalkBase
 
         $request->user_id = 2;
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
 
@@ -129,7 +133,8 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'Jane Bloggs'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -170,7 +175,8 @@ class TalksControllerTest extends TalkBase
             'username'  => 'janebloggs'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -211,7 +217,8 @@ class TalksControllerTest extends TalkBase
             'display_name'  =>  'P Sherman'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -255,7 +262,8 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -302,7 +310,8 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -367,7 +376,8 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -414,7 +424,11 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'Jane Bloggs'
         ];
 
-        $talks_controller = new TalksController($this->config);
+        $talks_controller = new TalksController(
+            new NullSpamCheckService(),
+            $this->config
+        );
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -475,7 +489,11 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController($this->config);
+        $talks_controller = new TalksController(
+            new NullSpamCheckService(),
+            $this->config
+        );
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -541,7 +559,8 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'Jane Bloggs'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -604,7 +623,8 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'Jane Bloggs'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -668,7 +688,8 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -723,7 +744,8 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'Jane Bloggs',
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -789,7 +811,11 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'P Sherman',
         ];
 
-        $talks_controller = new TalksController($this->config);
+        $talks_controller = new TalksController(
+            new NullSpamCheckService(),
+            $this->config
+        );
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -869,18 +895,24 @@ class TalksControllerTest extends TalkBase
 
         $talks_comment_email->method('sendEmail');
 
-        $talks_controller = $this->getMockBuilder(TalksController::class)
-            ->setMethods(['getTalkCommentEmailService'])
-            ->getMock();
+        $talks_controller = new class(new NullSpamCheckService(), $talks_comment_email) extends TalksController {
+            private $talkCommentEmailService;
 
-        $talks_controller
-            ->method('getTalkCommentEmailService')
-            ->with(
-                $this->anything(),
-                $expectedEmailsSent,
-                $this->anything(),
-                $this->anything()
-            )->willReturn($talks_comment_email);
+            public function __construct(
+                SpamCheckServiceInterface $spamCheckService,
+                TalkCommentEmailService $talkCommentEmailService,
+                array $config = []
+            ) {
+                parent::__construct($spamCheckService, $config);
+
+                $this->talkCommentEmailService = $talkCommentEmailService;
+            }
+
+            public function getTalkCommentEmailService($config, $recipients, $talk, $comment)
+            {
+                return $this->talkCommentEmailService;
+            }
+        };
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -965,7 +997,8 @@ class TalksControllerTest extends TalkBase
             ]
         );
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
-        $talks_controller = new TalksController();
+
+        $talks_controller = new TalksController(new NullSpamCheckService());
 
         $talks_controller->postAction($request, $db);
     }
@@ -993,7 +1026,7 @@ class TalksControllerTest extends TalkBase
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
 
         $talks_controller->setTalkMapper($this->talk_mapper);
 
@@ -1023,7 +1056,7 @@ class TalksControllerTest extends TalkBase
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
 
         $talks_controller->setTalkMapper($this->talk_mapper);
 
@@ -1050,7 +1083,11 @@ class TalksControllerTest extends TalkBase
             'display_name'  => 'P Sherman',
         ];
 
-        $talks_controller = new TalksController($this->config);
+        $talks_controller = new TalksController(
+            new NullSpamCheckService(),
+            $this->config
+        );
+
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
@@ -1157,7 +1194,8 @@ class TalksControllerTest extends TalkBase
             ['code_link' => 'https://github.com'],
         ];
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $talks_controller->setTalkMapper($this->talk_mapper);
 
         $output = $talks_controller->getAction($request, $db);
@@ -1198,7 +1236,8 @@ class TalksControllerTest extends TalkBase
         $talkComment->method('getCommentsByTalkId')
             ->willReturn($expected);
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $talks_controller->setMapper(
             'talkcomment',
             $talkComment
@@ -1228,7 +1267,8 @@ class TalksControllerTest extends TalkBase
         $talkMapper->method('getUserStarred')
             ->willReturn($expected);
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $talks_controller->setMapper(
             'talk',
             $talkMapper
@@ -1278,7 +1318,8 @@ class TalksControllerTest extends TalkBase
             ->willReturn($collection);
 
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
+
         $talks_controller->setMapper(
             'talk',
             $talkMapper
@@ -1304,7 +1345,7 @@ class TalksControllerTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $talks_controller = new TalksController();
+        $talks_controller = new TalksController(new NullSpamCheckService());
 
         $talks_controller->getTalkByKeyWord($request, $db);
     }

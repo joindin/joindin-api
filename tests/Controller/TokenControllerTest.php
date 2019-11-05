@@ -9,7 +9,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 
-class TokenControllerTest extends TestCase
+final class TokenControllerTest extends TestCase
 {
     private $request;
 

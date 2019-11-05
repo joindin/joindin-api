@@ -9,7 +9,7 @@ use Joindin\Api\Service\SpamCheckServiceInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class ContainerFactoryTest extends TestCase
+final class ContainerFactoryTest extends TestCase
 {
     private $config = [
         'akismet' => [
