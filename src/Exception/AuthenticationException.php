@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Joindin\Api\Exception;
 
-use \RuntimeException;
-
-final class AuthenticationException extends RuntimeException
+final class AuthenticationException extends \RuntimeException
 {
     private const MESSAGE = 'You must be logged in to perform this operation.';
 
