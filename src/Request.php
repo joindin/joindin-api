@@ -118,7 +118,7 @@ class Request
             $this->setHost($server['HTTP_HOST']);
         }
 
-        if (isset($server['HTTPS']) && ($server['HTTPS'] == "on")) {
+        if (isset($server['HTTPS']) && ($server['HTTPS'] === 'on')) {
             $this->setScheme('https://');
         } else {
             $this->setScheme('http://');
@@ -140,8 +140,8 @@ class Request
      */
     public function setClientInfo()
     {
-        $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
-        $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
+        $ipAddress = $_SERVER['REMOTE_ADDR'] ?? null;
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
 
         if (array_key_exists('HTTP_FORWARDED', $_SERVER)) {
             $header = new Header('Forwarded', $_SERVER['HTTP_FORWARDED'], ';');
@@ -256,7 +256,7 @@ class Request
     public function accepts($header)
     {
         foreach ($this->accept as $accept) {
-            if (strstr($accept, $header) !== false) {
+            if (strpos($accept, $header) !== false) {
                 return true;
             }
         }
@@ -347,17 +347,17 @@ class Request
     public function identifyUser($auth_header, PDO $db = null)
     {
         if (
-            ($this->getScheme() == "https://") ||
-            (isset($this->config['mode']) && $this->config['mode'] == "development")
+            ($this->getScheme() === 'https://') ||
+            (isset($this->config['mode']) && $this->config['mode'] === 'development')
         ) {
             // identify the user
             $oauth_pieces = explode(' ', $auth_header);
-            if (count($oauth_pieces) <> 2) {
+            if (count($oauth_pieces) !== 2) {
                 throw new InvalidArgumentException('Invalid Authorization Header', Http::BAD_REQUEST);
             }
 
             // token type must be either 'bearer' or 'oauth'
-            if (!in_array(strtolower($oauth_pieces[0]), ["bearer", 'oauth'])) {
+            if (!in_array(strtolower($oauth_pieces[0]), ['bearer', 'oauth'])) {
                 throw new InvalidArgumentException('Unknown Authorization Header Received', Http::BAD_REQUEST);
             }
             $oauth_model = $this->getOauthModel($db);
@@ -398,11 +398,11 @@ class Request
         }
 
         // now how about PUT/POST bodies? These override what we already had
-        if ($this->getVerb() == 'POST' || $this->getVerb() == 'PUT') {
+        if ($this->getVerb() === 'POST' || $this->getVerb() === 'PUT') {
             $body = $this->getRawBody();
             if (
-                (isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] == "application/json")
-                || (isset($server['HTTP_CONTENT_TYPE']) && $server['HTTP_CONTENT_TYPE'] == "application/json")
+                (isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] === 'application/json')
+                || (isset($server['HTTP_CONTENT_TYPE']) && $server['HTTP_CONTENT_TYPE'] === 'application/json')
             ) {
                 $body_params = json_decode($body);
                 if ($body_params) {
@@ -410,8 +410,6 @@ class Request
                         $this->parameters[$param_name] = $param_value;
                     }
                 }
-            } else {
-                // we could parse other supported formats here
             }
         }
 
@@ -513,8 +511,8 @@ class Request
      */
     public function getOauthModel(PDO $db = null)
     {
-        if (is_null($this->oauthModel)) {
-            if (is_null($db)) {
+        if ($this->oauthModel === null) {
+            if ($db === null) {
                 throw new InvalidArgumentException('Db Must be provided to get Oauth Model');
             }
             $this->oauthModel = new OAuthModel($db, $this);
