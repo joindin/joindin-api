@@ -10,6 +10,10 @@ use Teapot\StatusCode\Http;
 
 final class TalkLinkControllerTest extends TalkBase
 {
+    private $talks_controller;
+    private $request;
+    private $db;
+
     /**
      * Test sending delete link where the link id is not found
      */
