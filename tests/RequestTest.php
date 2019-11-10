@@ -227,10 +227,10 @@ final class RequestTest extends TestCase
         ];
         $request = new Request($this->config, $server);
 
-        $result = $request->preferredContentTypeOutOf(
-            ['text/html'],
-            ['application/xml']
-        );
+        $result = $request->preferredContentTypeOutOf([
+            'text/html',
+            'application/xml',
+        ]);
 
         $this->assertEquals('json', $result);
     }
