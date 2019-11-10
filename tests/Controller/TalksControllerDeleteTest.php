@@ -12,6 +12,8 @@ use Teapot\StatusCode\Http;
 
 final class TalksControllerDeleteTest extends TalkBase
 {
+    private $talkMapper;
+
     public function testRemoveStarFromTalkFailsWhenNotLoggedIn()
     {
         $this->expectException(Exception::class);
