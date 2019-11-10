@@ -1,6 +1,6 @@
 # joindin-api
 
-[![Build Status](https://travis-ci.org/joindin/joindin-api.svg?branch=master)](https://travis-ci.org/joindin/joindin-api)
+[![CI Status](https://github.com/joindin/joindin-api/workflows/Continuous%20Integration/badge.svg)](https://github.com/joindin/joindin-api/actions)
 [![codecov](https://codecov.io/gh/joindin/joindin-api/branch/master/graph/badge.svg)](https://codecov.io/gh/joindin/joindin-api)
 
 This is the API behind the joind.in website (the new version of it), the mobile applications, and many other consumers.  This project is a dependency for the majority of the other projects under the joind.in organization https://github.com/joindin
@@ -144,19 +144,19 @@ Docs are written in markdown and rendered by [Jekyll](http://jekyllrb.com/), a r
 
 ## Global .gitignore
 
-git has the capability to define a global gitignore file , which means you can 
-set up rules on your machine to ignore everything you don't want to include in 
+git has the capability to define a global gitignore file , which means you can
+set up rules on your machine to ignore everything you don't want to include in
 your commits. This works not only for this project, but for all your other
 projects too.
 
-You can define the gitignore file with a command that looks like this, where the 
-last argument is the file that holds the patterns to ignore: 
+You can define the gitignore file with a command that looks like this, where the
+last argument is the file that holds the patterns to ignore:
 
 ```bash
 git config --global core.excludesfile ~/.gitignore_global
 ```
 
-Octocat gives [a good starting point](https://gist.github.com/octocat/9257657) for 
+Octocat gives [a good starting point](https://gist.github.com/octocat/9257657) for
 what to include, but you can also ignore the files used by your editor:
 
     # Eclipse
