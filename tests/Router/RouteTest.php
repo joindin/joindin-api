@@ -124,8 +124,8 @@ final class RouteTest extends TestCase
      * @covers       \Joindin\Api\Router\Route::dispatch
      *
      * @param array $config
-     * @param $controller
-     * @param $action
+     * @param string $controller
+     * @param string $action
      * @param Request $request
      * @param bool $expectedException
      * @param bool $expectedExceptionCode
