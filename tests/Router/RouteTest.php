@@ -183,7 +183,7 @@ final class RouteTest extends TestCase
      */
     private function getRequest($urlElement)
     {
-        $request = $this->createMock(Request::class, ['getUrlElement'], [], '', false);
+        $request = $this->createMock(Request::class);
 
         $request->expects($this->any())
                 ->method('getUrlElement')
