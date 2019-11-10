@@ -460,7 +460,7 @@ final class RequestTest extends TestCase
         // Please see below for explanation of why we're mocking a "mock" PDO
         // class
         $db = $this->getMockBuilder(
-            '\JoindinTest\Inc\mockPDO'
+            '\Joindin\Api\Test\Mock\mockPDO'
         )->getMock();
         $db->method('getAvailableDrivers');
 

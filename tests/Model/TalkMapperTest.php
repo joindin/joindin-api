@@ -4,7 +4,7 @@ namespace Joindin\Api\Test\Model;
 
 use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Request;
-use JoindinTest\Inc\mockPDO;
+use Joindin\Api\Test\Mock\mockPDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
