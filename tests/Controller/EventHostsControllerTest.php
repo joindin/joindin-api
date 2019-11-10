@@ -353,7 +353,7 @@ final class EventHostsControllerTest extends TestCase
         $constructor->setUserMapper($userMapper);
         $constructor->setEventHostMapper($eventHostMapper);
 
-        $this->assertNull($constructor->removeHostFromEvent($request, $db));
+        $constructor->removeHostFromEvent($request, $db);
     }
 
     public function testThatGettingEventHostWapperMithoutSettingFirstWorksAsExpected()
