@@ -5,6 +5,7 @@ namespace Joindin\Api\Test\Router;
 use Exception;
 use Joindin\Api\Request;
 use Joindin\Api\Router\Route;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Teapot\StatusCode\Http;
