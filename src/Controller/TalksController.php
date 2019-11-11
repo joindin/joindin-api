@@ -553,7 +553,7 @@ class TalksController extends BaseTalkController
         );
 
         $talk['speakers'] = array_map(
-            function ($speaker) {
+            static function ($speaker) {
                 $speaker = filter_var($speaker, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 $speaker = trim($speaker);
 

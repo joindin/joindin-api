@@ -314,7 +314,7 @@ class EventsController extends BaseApiController
                 $incoming_tag_list = $request->getParameter('tags');
                 if (is_array($incoming_tag_list)) {
                     $tags = array_map(
-                        function ($tag) {
+                        static function ($tag) {
                             $tag = filter_var($tag, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                             $tag = trim($tag);
                             $tag = strtolower($tag);
@@ -564,7 +564,7 @@ class EventsController extends BaseApiController
             $incoming_tag_list = $request->getParameter('tags');
             if (is_array($incoming_tag_list)) {
                 $tags = array_map(
-                    function ($tag) {
+                    static function ($tag) {
                         $tag = filter_var($tag, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                         $tag = trim($tag);
                         $tag = strtolower($tag);

@@ -60,7 +60,7 @@ class VersionedRouter extends BaseRouter
                 // Determine numeric keys
                 $exclude = array_filter(
                     array_keys($matches),
-                    function ($val) {
+                    static function ($val) {
                         return is_integer($val);
                     }
                 );
