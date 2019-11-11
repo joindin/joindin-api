@@ -21,8 +21,8 @@ class Request
     /**
      * Output formats
      */
-    public const FORMAT_JSON = 'json';
-    public const FORMAT_HTML = 'html';
+    private const FORMAT_JSON = 'json';
+    private const FORMAT_HTML = 'html';
 
     /**
      * Content-types for the Accepts header
