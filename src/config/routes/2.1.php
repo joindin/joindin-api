@@ -18,6 +18,7 @@ use Joindin\Api\Controller\EventCommentsController;
 use Joindin\Api\Controller\EventHostsController;
 use Joindin\Api\Controller\ApplicationsController;
 use Joindin\Api\Controller\DefaultController;
+use Joindin\Api\Request;
 
 return [
     [
@@ -26,7 +27,7 @@ return [
         'action'     => 'listHosts',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -35,7 +36,7 @@ return [
         'action'     => 'addHost',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -44,7 +45,7 @@ return [
         'action'     => 'removeHostFromEvent',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -53,7 +54,7 @@ return [
         'action'     => 'getReported',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -62,7 +63,7 @@ return [
         'action'     => 'getReported',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -71,7 +72,7 @@ return [
         'action'     => 'pendingClaims',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -80,7 +81,7 @@ return [
         'action'     => 'listImages',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -89,7 +90,7 @@ return [
         'action'     => 'getAction',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -98,7 +99,7 @@ return [
         'action'     => 'createTrack',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -107,7 +108,7 @@ return [
         'action'     => 'approveAction',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -116,7 +117,7 @@ return [
         'action'     => 'rejectAction',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -125,7 +126,7 @@ return [
         'action'     => 'createComment',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -134,7 +135,7 @@ return [
         'action'     => 'createImage',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -143,7 +144,7 @@ return [
         'action'     => 'deleteImage',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -152,7 +153,7 @@ return [
         'action'     => 'createTalkAction',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -161,7 +162,7 @@ return [
         'action'     => 'postAction',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -170,7 +171,7 @@ return [
         'action'     => 'putAction',
         'verbs'      =>
             [
-                'PUT',
+                Request::HTTP_PUT,
             ],
     ],
     [
@@ -179,7 +180,7 @@ return [
         'action'     => 'deleteAction',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -188,7 +189,7 @@ return [
         'action'     => 'getTalkLinks',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -197,7 +198,7 @@ return [
         'action'     => 'addTalkLink',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -206,7 +207,7 @@ return [
         'action'     => 'getTalkLink',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -215,7 +216,7 @@ return [
         'action'     => 'removeTalkLink',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -224,7 +225,7 @@ return [
         'action'     => 'updateTalkLink',
         'verbs'      =>
             [
-                'PUT',
+                Request::HTTP_PUT,
             ],
     ],
     [
@@ -233,7 +234,7 @@ return [
         'action'     => 'getSpeakersForTalk',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -242,7 +243,7 @@ return [
         'action'     => 'setSpeakerForTalk',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -251,7 +252,7 @@ return [
         'action'     => 'removeSpeakerForTalk',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -260,7 +261,7 @@ return [
         'action'     => 'editTalk',
         'verbs'      =>
             [
-                'PUT',
+                Request::HTTP_PUT,
             ],
     ],
     [
@@ -269,7 +270,7 @@ return [
         'action'     => 'getTalkByKeyWord',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -278,7 +279,7 @@ return [
         'action'     => 'getTalkComments',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -287,7 +288,7 @@ return [
         'action'     => 'getTalkStarred',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -296,7 +297,7 @@ return [
         'action'     => 'getAction',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -305,7 +306,7 @@ return [
         'action'     => 'addTrackToTalk',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -314,7 +315,7 @@ return [
         'action'     => 'removeTrackFromTalk',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -323,7 +324,7 @@ return [
         'action'     => 'postAction',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -332,7 +333,7 @@ return [
         'action'     => 'removeApprovedSpeakerFromTalk',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -341,7 +342,7 @@ return [
         'action'     => 'removeStarFromTalk',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -350,7 +351,7 @@ return [
         'action'     => 'deleteTalk',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -359,7 +360,7 @@ return [
         'action'     => 'postAction',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -368,7 +369,7 @@ return [
         'action'     => 'listTokensForUser',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -377,7 +378,7 @@ return [
         'action'     => 'getToken',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -386,7 +387,7 @@ return [
         'action'     => 'revokeToken',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -395,7 +396,7 @@ return [
         'action'     => 'getAction',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -404,7 +405,7 @@ return [
         'action'     => 'editTrack',
         'verbs'      =>
             [
-                'PUT',
+                Request::HTTP_PUT,
             ],
     ],
     [
@@ -413,7 +414,7 @@ return [
         'action'     => 'deleteTrack',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -422,7 +423,7 @@ return [
         'action'     => 'passwordReset',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -431,7 +432,7 @@ return [
         'action'     => 'setTrusted',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -440,7 +441,7 @@ return [
         'action'     => 'getAction',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -449,7 +450,7 @@ return [
         'action'     => 'postAction',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -458,7 +459,7 @@ return [
         'action'     => 'deleteUser',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -467,7 +468,7 @@ return [
         'action'     => 'updateUser',
         'verbs'      =>
             [
-                'PUT',
+                Request::HTTP_PUT,
             ],
     ],
 
@@ -477,7 +478,7 @@ return [
         'action'     => 'deleteTalkComments',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
@@ -486,7 +487,7 @@ return [
         'action'     => 'getComments',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -495,7 +496,7 @@ return [
         'action'     => 'reportComment',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -504,7 +505,7 @@ return [
         'action'     => 'moderateReportedComment',
         'verbs'      =>
             [
-                'PUT',
+                Request::HTTP_PUT,
             ],
     ],
     [
@@ -513,7 +514,7 @@ return [
         'action'     => 'getComments',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -522,7 +523,7 @@ return [
         'action'     => 'updateComment',
         'verbs'      =>
             [
-                'PUT',
+                Request::HTTP_PUT,
             ],
     ],
     [
@@ -531,7 +532,7 @@ return [
         'action'     => 'verifications',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -540,7 +541,7 @@ return [
         'action'     => 'usernameReminder',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -549,7 +550,7 @@ return [
         'action'     => 'passwordReset',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -558,7 +559,7 @@ return [
         'action'     => 'getRequestToken',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -567,7 +568,7 @@ return [
         'action'     => 'logUserIn',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -576,7 +577,7 @@ return [
         'action'     => 'getAllLanguages',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -585,7 +586,7 @@ return [
         'action'     => 'getLanguage',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -594,7 +595,7 @@ return [
         'action'     => 'contact',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -603,7 +604,7 @@ return [
         'action'     => 'getAllTalkTypes',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -612,7 +613,7 @@ return [
         'action'     => 'getTalkType',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -621,7 +622,7 @@ return [
         'action'     => 'logUserIn',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -630,7 +631,7 @@ return [
         'action'     => 'listApplications',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -639,7 +640,7 @@ return [
         'action'     => 'createApplication',
         'verbs'      =>
             [
-                'POST',
+                Request::HTTP_POST,
             ],
     ],
     [
@@ -648,7 +649,7 @@ return [
         'action'     => 'getApplication',
         'verbs'      =>
             [
-                'GET',
+                Request::HTTP_GET,
             ],
     ],
     [
@@ -657,7 +658,7 @@ return [
         'action'     => 'editApplication',
         'verbs'      =>
             [
-                'PUT',
+                Request::HTTP_PUT,
             ],
     ],
     [
@@ -666,7 +667,7 @@ return [
         'action'     => 'deleteApplication',
         'verbs'      =>
             [
-                'DELETE',
+                Request::HTTP_DELETE,
             ],
     ],
     [
