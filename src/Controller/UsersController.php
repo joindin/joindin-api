@@ -237,8 +237,6 @@ class UsersController extends BaseApiController
             $recipients   = [$user['email']];
             $emailService = $this->getUserRegistrationEmailService($this->config, $recipients, $token);
             $emailService->sendEmail();
-
-            return;
         }
     }
 
