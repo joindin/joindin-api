@@ -167,7 +167,7 @@ class ApplicationsController extends BaseApiController
         try {
             $clientMapper->deleteClient($this->getItemId($request));
         } catch (Exception $e) {
-            throw new Exception($e->getMessage(), 500, $e);
+            throw new Exception($e->getMessage(), Http::INTERNAL_SERVER_ERROR, $e);
         }
 
         $request->getView()->setNoRender(true);

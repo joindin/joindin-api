@@ -127,7 +127,7 @@ class Route
         }
 
         if (!method_exists($controller = $container->get($className), $method)) {
-            throw new RuntimeException('Action not found', 500);
+            throw new RuntimeException('Action not found', Http::INTERNAL_SERVER_ERROR);
         }
 
         if (function_exists('newrelic_name_transaction')) {
