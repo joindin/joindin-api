@@ -134,9 +134,9 @@ class PendingTalkClaimMapper extends ApiMapper
                 return self::HOST_ASSIGN;
             } elseif ($result['host_approved_at'] === null) {
                 return self::SPEAKER_CLAIM;
-            } else {
-                return false;
             }
+
+            return false;
         }
 
         return false;

@@ -191,9 +191,10 @@ class TalksController extends BaseTalkController
                         $view->setResponseCode(Http::CREATED);
 
                         return;
-                    } else {
-                        throw new Exception("The comment could not be stored", Http::BAD_REQUEST);
                     }
+
+                    throw new Exception("The comment could not be stored", Http::BAD_REQUEST);
+
                     break;
                 case 'starred':
                     // the body of this request is completely irrelevant

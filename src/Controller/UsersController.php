@@ -118,18 +118,19 @@ class UsersController extends BaseApiController
                     $token       = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
                     if (empty($token)) {
                         throw new Exception("Verification token must be supplied", Http::BAD_REQUEST);
-                    } else {
-                        $success = $userMapper->verifyUser($token);
-                        if ($success) {
-                            $view = $request->getView();
-                            $view->setHeader('Content-Length', 0);
-                            $view->setResponseCode(Http::NO_CONTENT);
-
-                            return;
-                        } else {
-                            throw new Exception("Verification failed", Http::BAD_REQUEST);
-                        }
                     }
+
+                    $success = $userMapper->verifyUser($token);
+                    if ($success) {
+                        $view = $request->getView();
+                        $view->setHeader('Content-Length', 0);
+                        $view->setResponseCode(Http::NO_CONTENT);
+
+                        return;
+                    }
+
+                    throw new Exception("Verification failed", Http::BAD_REQUEST);
+
                     break;
                 default:
                     throw new InvalidArgumentException('Unknown Subrequest', Http::NOT_FOUND);
@@ -211,33 +212,33 @@ class UsersController extends BaseApiController
             // How does it look?  With no errors, we can proceed
             if ($errors) {
                 throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
-            } else {
-                $userId = $userMapper->createUser($user);
-                $view    = $request->getView();
-                $view->setHeader('Location', $request->base . $request->path_info . '/' . $userId);
-                $view->setResponseCode(Http::CREATED);
-
-                // autoverify for test platforms
-                if (
-                    isset($this->config['features']['allow_auto_verify_users'])
-                    && $this->config['features']['allow_auto_verify_users']
-                ) {
-                    if ($request->getParameter("auto_verify_user") == "true") {
-                        // the test suite sends this extra field, if we got
-                        // this far then this platform supports this
-                        $userMapper->verifyThisTestUser($userId);
-                    }
-                }
-
-                // Generate a verification token and email it to the user
-                $token = $userMapper->generateEmailVerificationTokenForUserId($userId);
-
-                $recipients   = [$user['email']];
-                $emailService = $this->getUserRegistrationEmailService($this->config, $recipients, $token);
-                $emailService->sendEmail();
-
-                return;
             }
+
+            $userId = $userMapper->createUser($user);
+            $view    = $request->getView();
+            $view->setHeader('Location', $request->base . $request->path_info . '/' . $userId);
+            $view->setResponseCode(Http::CREATED);
+
+            // autoverify for test platforms
+            if (
+                isset($this->config['features']['allow_auto_verify_users'])
+                && $this->config['features']['allow_auto_verify_users']
+            ) {
+                if ($request->getParameter("auto_verify_user") == "true") {
+                    // the test suite sends this extra field, if we got
+                    // this far then this platform supports this
+                    $userMapper->verifyThisTestUser($userId);
+                }
+            }
+
+            // Generate a verification token and email it to the user
+            $token = $userMapper->generateEmailVerificationTokenForUserId($userId);
+
+            $recipients   = [$user['email']];
+            $emailService = $this->getUserRegistrationEmailService($this->config, $recipients, $token);
+            $emailService->sendEmail();
+
+            return;
         }
     }
 
@@ -367,19 +368,19 @@ class UsersController extends BaseApiController
 
             if ($errors) {
                 throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
-            } else {
-                // now update the user
-                if (!$userMapper->editUser($user, $userId)) {
-                    throw new Exception("User not updated", Http::BAD_REQUEST);
-                }
-
-                // we're good!
-                $view = $request->getView();
-                $view->setHeader('Content-Length', 0);
-                $view->setResponseCode(Http::NO_CONTENT);
-
-                return;
             }
+
+            // now update the user
+            if (!$userMapper->editUser($user, $userId)) {
+                throw new Exception("User not updated", Http::BAD_REQUEST);
+            }
+
+            // we're good!
+            $view = $request->getView();
+            $view->setHeader('Content-Length', 0);
+            $view->setResponseCode(Http::NO_CONTENT);
+
+            return;
         }
         throw new Exception("Could not update user", Http::BAD_REQUEST);
     }
@@ -407,13 +408,13 @@ class UsersController extends BaseApiController
                 $view->setResponseCode(Http::NO_CONTENT);
 
                 return;
-            } else {
-                throw new Exception("Password could not be reset", Http::BAD_REQUEST);
             }
-        } else {
-            // the password wasn't acceptable, tell the user why
-            throw new Exception(implode(". ", $validity), Http::BAD_REQUEST);
+
+            throw new Exception("Password could not be reset", Http::BAD_REQUEST);
         }
+
+        // the password wasn't acceptable, tell the user why
+        throw new Exception(implode(". ", $validity), Http::BAD_REQUEST);
     }
 
     /**
