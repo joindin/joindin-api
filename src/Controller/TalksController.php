@@ -406,8 +406,11 @@ class TalksController extends BaseTalkController
         $event_mapper->cacheTalkCount($event_id);
 
         $uri = $request->base . '/' . $request->version . '/talks/' . $new_id;
-        $request->getView()->setResponseCode(Http::CREATED);
-        $request->getView()->setHeader('Location', $uri);
+
+        $view = $request->getView();
+
+        $view->setResponseCode(Http::CREATED);
+        $view->setHeader('Location', $uri);
 
         $new_talk   = $this->getTalkById($request, $db, $new_id);
         $collection = new TalkModelCollection([$new_talk], 1);

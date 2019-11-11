@@ -134,9 +134,11 @@ class TokenController extends BaseApiController
             throw new Exception($e->getMessage(), 500, $e);
         }
 
-        $request->getView()->setNoRender(true);
-        $request->getView()->setResponseCode(Http::NO_CONTENT);
-        $request->getView()->setHeader(
+        $view = $request->getView();
+
+        $view->setNoRender(true);
+        $view->setResponseCode(Http::NO_CONTENT);
+        $view->setHeader(
             'Location',
             $request->base . '/' . $request->version . '/token'
         );

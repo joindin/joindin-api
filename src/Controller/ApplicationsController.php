@@ -88,8 +88,11 @@ class ApplicationsController extends BaseApiController
         $clientId     = $clientMapper->createClient($app);
 
         $uri = $request->base . '/' . $request->version . '/applications/' . $clientId;
-        $request->getView()->setResponseCode(Http::CREATED);
-        $request->getView()->setHeader('Location', $uri);
+
+        $view = $request->getView();
+
+        $view->setResponseCode(Http::CREATED);
+        $view->setHeader('Location', $uri);
 
         $mapper    = $this->getClientMapper($db, $request);
         $newClient = $mapper->getClientByIdAndUser($clientId, $request->user_id);
@@ -139,8 +142,11 @@ class ApplicationsController extends BaseApiController
         $clientId     = $clientMapper->updateClient($this->getItemId($request), $app);
 
         $uri = $request->base . '/' . $request->version . '/applications/' . $clientId;
-        $request->getView()->setResponseCode(Http::CREATED);
-        $request->getView()->setHeader('Location', $uri);
+
+        $view = $request->getView();
+
+        $view->setResponseCode(Http::CREATED);
+        $view->setHeader('Location', $uri);
 
         $newClient = $clientMapper->getClientByIdAndUser($clientId, $request->user_id);
 
@@ -170,9 +176,11 @@ class ApplicationsController extends BaseApiController
             throw new Exception($e->getMessage(), 500, $e);
         }
 
-        $request->getView()->setNoRender(true);
-        $request->getView()->setResponseCode(Http::NO_CONTENT);
-        $request->getView()->setHeader(
+        $view = $request->getView();
+
+        $view->setNoRender(true);
+        $view->setResponseCode(Http::NO_CONTENT);
+        $view->setHeader(
             'Location',
             $request->base . '/' . $request->version . '/applications'
         );

@@ -107,9 +107,11 @@ class EventHostsController extends BaseApiController
             $event_id
         );
 
-        $request->getView()->setHeader('Location', $uri);
-        $request->getView()->setResponseCode(Http::CREATED);
-        $request->getView()->setNoRender(true);
+        $view = $request->getView();
+
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(Http::CREATED);
+        $view->setNoRender(true);
 
         return;
     }
@@ -165,9 +167,11 @@ class EventHostsController extends BaseApiController
             $event_id
         );
 
-        $request->getView()->setHeader('Location', $uri);
-        $request->getView()->setResponseCode(Http::NO_CONTENT);
-        $request->getView()->setNoRender(true);
+        $view = $request->getView();
+
+        $view->setHeader('Location', $uri);
+        $view->setResponseCode(Http::NO_CONTENT);
+        $view->setNoRender(true);
 
         return;
     }
