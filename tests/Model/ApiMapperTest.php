@@ -13,7 +13,7 @@ use ReflectionClass;
 /**
  *
  */
-class ApiMapperTest extends TestCase
+final class ApiMapperTest extends TestCase
 {
     public function setup(): void
     {

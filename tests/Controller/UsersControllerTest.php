@@ -4,7 +4,10 @@ namespace Joindin\Api\Test\Controller;
 
 use Exception;
 use Joindin\Api\Controller\UsersController;
+use Joindin\Api\Exception\AuthenticationException;
+use Joindin\Api\Exception\AuthorizationException;
 use Joindin\Api\Model\OAuthModel;
+use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Request;
 use Joindin\Api\Service\UserRegistrationEmailService;
@@ -16,7 +19,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 
-class UsersControllerTest extends TestCase
+final class UsersControllerTest extends TestCase
 {
 
     /**
@@ -147,6 +150,89 @@ class UsersControllerTest extends TestCase
 
         $usersController->setUserMapper($userMapper);
         $this->assertNull($usersController->deleteUser($request, $db));
+    }
+
+    public function testDeleteTalkCommentsWithoutBeingLoggedInThrowsException(): void
+    {
+        $request = new Request(
+            [],
+            ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3/talk-comments", 'REQUEST_METHOD' => 'DELETE']
+        );
+
+        $usersController = new UsersController();
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+
+        $this->expectException(AuthenticationException::class);
+        $this->expectExceptionMessage('You must be logged in to perform this operation.');
+        $this->expectExceptionCode(Http::UNAUTHORIZED);
+
+        $usersController->deleteTalkComments($request, $db);
+    }
+
+    public function testDeleteTalkCommentsWithNonAdminThrowsException(): void
+    {
+        $this->expectException(AuthorizationException::class);
+        $this->expectExceptionMessage('This operation requires admin privileges.');
+        $this->expectExceptionCode(Http::FORBIDDEN);
+
+        $request = new Request(
+            [],
+            ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3/talk-comments", 'REQUEST_METHOD' => 'DELETE']
+        );
+        $request->user_id = 2;
+
+        $usersController = new UsersController();
+
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+
+        $userMapper = $this->getMockBuilder(UserMapper::class)
+            ->setConstructorArgs([$db,$request])
+            ->getMock();
+
+        $userMapper
+            ->expects($this->once())
+            ->method('isSiteAdmin')
+            ->with(2)
+            ->willReturn(false);
+
+        $usersController->setUserMapper($userMapper);
+        $usersController->deleteTalkComments($request, $db);
+    }
+
+    public function testDeleteTalkCommentsDeletesUsersTalkComments(): void
+    {
+        $usersController = new UsersController();
+
+        $request = new Request(
+            [],
+            ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3/talk-comments", 'REQUEST_METHOD' => 'DELETE']
+        );
+        $request->user_id = 1;
+
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+
+        $userMapper = $this->getMockBuilder(UserMapper::class)
+            ->setConstructorArgs([$db,$request])
+            ->getMock();
+
+        $userMapper
+            ->expects($this->once())
+            ->method('isSiteAdmin')
+            ->with(1)
+            ->willReturn(true);
+
+        $talkCommentMapper = $this->getMockBuilder(TalkCommentMapper::class)
+            ->setConstructorArgs([$db,$request])
+            ->getMock();
+
+        $talkCommentMapper
+            ->expects($this->once())
+            ->method('deleteCommentsForUser')
+            ->with(3);
+
+        $usersController->setUserMapper($userMapper);
+        $usersController->setTalkCommentMapper($talkCommentMapper);
+        $usersController->deleteTalkComments($request, $db);
     }
 
     public function testThatUserDataIsNotDoubleEscapedOnUserCreation()

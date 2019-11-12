@@ -360,7 +360,8 @@ class EventsController extends BaseApiController
                                           || $user_mapper->isTrusted($request->user_id);
 
                 // Do we want to automatically approve when testing?
-                if (isset($this->config['features']['allow_auto_approve_events'])
+                if (
+                    isset($this->config['features']['allow_auto_approve_events'])
                     && $this->config['features']['allow_auto_approve_events']
                 ) {
                     if ($request->getParameter("auto_approve_event") == "true") {

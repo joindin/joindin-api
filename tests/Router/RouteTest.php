@@ -14,7 +14,7 @@ use Teapot\StatusCode\Http;
  *
  * @covers \Joindin\Api\Router\Route
  */
-class RouteTest extends TestCase
+final class RouteTest extends TestCase
 {
 
     /**
@@ -155,7 +155,7 @@ class RouteTest extends TestCase
             $container
                 ->expects($this->atLeastOnce())
                 ->method('get')
-                ->willReturn(new $controller);
+                ->willReturn(new $controller());
         }
 
         $route = new Route($controller, $action);

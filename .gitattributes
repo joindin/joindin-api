@@ -4,5 +4,4 @@ scripts export-ignore
 tests export-ignore
 tools export-ignore
 vendor/* export-ignore
-build.xml export-ignore
 build export-ignore

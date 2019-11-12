@@ -13,7 +13,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 
-class ContactControllerTest extends TestCase
+final class ContactControllerTest extends TestCase
 {
     /**
      * @dataProvider dataProvider

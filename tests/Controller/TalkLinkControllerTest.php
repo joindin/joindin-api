@@ -8,7 +8,7 @@ use Joindin\Api\Request;
 use JoindinTest\Inc\mockPDO;
 use Teapot\StatusCode\Http;
 
-class TalkLinkControllerTest extends TalkBase
+final class TalkLinkControllerTest extends TalkBase
 {
     /**
      * Test sending delete link where the link id is not found

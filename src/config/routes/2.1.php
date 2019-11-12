@@ -470,6 +470,16 @@ return [
                 'PUT',
             ],
     ],
+
+    [
+        'path'       => '/users/[0-9]+/talk_comments',
+        'controller' => UsersController::class,
+        'action'     => 'deleteTalkComments',
+        'verbs'      =>
+            [
+                'DELETE',
+            ],
+    ],
     [
         'path'       => '/event_comments(/[^/]+)*/?$',
         'controller' => EventCommentsController::class,
@@ -504,24 +514,6 @@ return [
         'verbs'      =>
             [
                 'GET',
-            ],
-    ],
-    [
-        'path'       => '/talk_comments(/[^/]+)*/reported?$',
-        'controller' => TalkCommentsController::class,
-        'action'     => 'reportComment',
-        'verbs'      =>
-            [
-                'POST',
-            ],
-    ],
-    [
-        'path'       => '/talk_comments(/[^/]+)*/reported?$',
-        'controller' => TalkCommentsController::class,
-        'action'     => 'moderateReportedComment',
-        'verbs'      =>
-            [
-                'PUT',
             ],
     ],
     [

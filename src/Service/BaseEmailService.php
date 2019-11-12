@@ -32,7 +32,7 @@ abstract class BaseEmailService
     /**
      * Template path, can be changed when testing
      */
-    public $templatePath = "../View/emails/";
+    public $templatePath = __DIR__ . '/../View/emails/';
 
     /**
      * Make a message to be sent later
@@ -62,7 +62,8 @@ abstract class BaseEmailService
         $this->mailer  = new Swift_Mailer($transport);
         $this->message = new Swift_Message();
 
-        if (isset($config['email']['forward_all_to'])
+        if (
+            isset($config['email']['forward_all_to'])
             && ! empty($config['email']['forward_all_to'])
         ) {
             $this->recipients = [$config['email']['forward_all_to']];

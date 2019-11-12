@@ -13,7 +13,7 @@ use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Model\TalkModelCollection;
 use Joindin\Api\Model\TalkTypeMapper;
-use Joindin\Api\Service\SpamCheckService;
+use Joindin\Api\Service\SpamCheckServiceInterface;
 use Joindin\Api\Service\TalkAssignEmailService;
 use Joindin\Api\Service\TalkClaimApprovedEmailService;
 use Joindin\Api\Service\TalkClaimEmailService;
@@ -30,6 +30,14 @@ class TalksController extends BaseTalkController
      * @var PendingTalkClaimMapper
      */
     private $pending_talk_claim_mapper;
+    private $spamCheckService;
+
+    public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [])
+    {
+        parent::__construct($config);
+
+        $this->spamCheckService = $spamCheckService;
+    }
 
     public function getAction(Request $request, PDO $db)
     {
@@ -136,20 +144,14 @@ class TalksController extends BaseTalkController
                     $data['source']  = $consumer_name;
 
                     try {
-                        // run it by akismet if we have it
-                        if (isset($this->config['akismet']['apiKey'], $this->config['akismet']['blog'])) {
-                            $spamCheckService = new SpamCheckService(
-                                $this->config['akismet']['apiKey'],
-                                $this->config['akismet']['blog']
-                            );
-                            $isValid          = $spamCheckService->isCommentAcceptable(
-                                $comment,
-                                $request->getClientIP(),
-                                $request->getClientUserAgent()
-                            );
-                            if (!$isValid) {
-                                throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
-                            }
+                        $isValid = $this->spamCheckService->isCommentAcceptable(
+                            $comment,
+                            $request->getClientIP(),
+                            $request->getClientUserAgent()
+                        );
+
+                        if (!$isValid) {
+                            throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
                         }
 
                         // should rating be allowed?

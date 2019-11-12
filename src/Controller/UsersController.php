@@ -4,6 +4,8 @@ namespace Joindin\Api\Controller;
 
 use Exception;
 use InvalidArgumentException;
+use Joindin\Api\Exception\AuthenticationException;
+use Joindin\Api\Exception\AuthorizationException;
 use Joindin\Api\Model\EventMapper;
 use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Model\TalkMapper;
@@ -18,6 +20,11 @@ class UsersController extends BaseApiController
     protected $userMapper;
 
     private $userRegistrationEmailService;
+
+    /**
+     * @var TalkCommentMapper|null
+     */
+    private $talkCommentMapper;
 
     public function getAction(Request $request, PDO $db)
     {
@@ -211,7 +218,8 @@ class UsersController extends BaseApiController
                 $view->setResponseCode(Http::CREATED);
 
                 // autoverify for test platforms
-                if (isset($this->config['features']['allow_auto_verify_users'])
+                if (
+                    isset($this->config['features']['allow_auto_verify_users'])
                     && $this->config['features']['allow_auto_verify_users']
                 ) {
                     if ($request->getParameter("auto_verify_user") == "true") {
@@ -244,7 +252,7 @@ class UsersController extends BaseApiController
      */
     public function updateUser(Request $request, PDO $db)
     {
-        if (false == ($request->getUserId())) {
+        if (null === ($request->getUserId())) {
             throw new Exception("You must be logged in to change a user account", Http::UNAUTHORIZED);
         }
 
@@ -408,6 +416,30 @@ class UsersController extends BaseApiController
         }
     }
 
+    /**
+     * @throws Exception
+     */
+    public function deleteTalkComments(Request $request, PDO $db): void
+    {
+        if (null === ($request->getUserId())) {
+            throw AuthenticationException::forUnauthenticatedUser();
+        }
+
+        $userId = $request->getUserId();
+
+        $userMapper = $this->getUserMapper($db, $request);
+        if (!$userMapper->isSiteAdmin($userId)) {
+            throw AuthorizationException::forNonAdministrator();
+        }
+
+        $this->initializeTalkCommentMapper($db, $request);
+        $this->talkCommentMapper->deleteCommentsForUser($this->getItemId($request));
+
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(Http::NO_CONTENT);
+    }
+
     public function deleteUser(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
@@ -440,7 +472,7 @@ class UsersController extends BaseApiController
      */
     public function setTrusted(Request $request, PDO $db)
     {
-        if (false == ($request->getUserId())) {
+        if (null === ($request->getUserId())) {
             throw new Exception("You must be logged in to change a user account", Http::UNAUTHORIZED);
         }
 
@@ -474,6 +506,18 @@ class UsersController extends BaseApiController
         }
 
         return $this->userMapper;
+    }
+
+    public function setTalkCommentMapper(TalkCommentMapper $talkCommentMapper): void
+    {
+        $this->talkCommentMapper = $talkCommentMapper;
+    }
+
+    public function initializeTalkCommentMapper(PDO $db, Request $request): void
+    {
+        if (!$this->talkCommentMapper instanceof TalkCommentMapper) {
+            $this->talkCommentMapper = new TalkCommentMapper($db, $request);
+        }
     }
 
     public function setUserRegistrationEmailService(UserRegistrationEmailService $mailService)
