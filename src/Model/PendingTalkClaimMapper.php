@@ -130,9 +130,13 @@ class PendingTalkClaimMapper extends ApiMapper
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($stmt->rowCount() == 0) {
                 return false;
-            } elseif ($result['user_approved_at'] === null) {
+            }
+
+            if ($result['user_approved_at'] === null) {
                 return self::HOST_ASSIGN;
-            } elseif ($result['host_approved_at'] === null) {
+            }
+
+            if ($result['host_approved_at'] === null) {
                 return self::SPEAKER_CLAIM;
             } else {
                 return false;
