@@ -63,49 +63,53 @@ class FacebookController extends BaseApiController
             ]
         ]);
 
-        if ($res->getStatusCode() == Http::OK) {
-            $data         = json_decode((string)$res->getBody(), true);
-            $access_token = $data['access_token'];
+        if ($res->getStatusCode() != Http::OK) {
+            trigger_error(
+                sprintf(
+                    'Unexpected Facebook error (%s: %s)',
+                    $res->getStatusCode(),
+                    $res->getBody()
+                ),
+                E_USER_WARNING
+            );
 
-            // retrieve email address from Facebook profile
-            $res = $client->get('https://graph.facebook.com/me', [
-                'query' => [
-                    'access_token' => $access_token,
-                    'fields'       => 'name,email',
-                ]
-            ]);
-            if ($res->getStatusCode() == Http::OK) {
-                $data = json_decode((string)$res->getBody(), true, 512, JSON_BIGINT_AS_STRING);
-                if (!array_key_exists('email', $data)) {
-                    throw new Exception("Email address is unavailable", Http::FORBIDDEN);
-                }
-                $email    = $data['email'];
-                $fullName = $data['name'];
-                $id       = $data['id'];
+            throw new Exception("Unexpected Facebook error", Http::INTERNAL_SERVER_ERROR);
+        }
 
-                $result = $this->oauthModel->createAccessTokenFromTrustedEmail(
-                    $clientId,
-                    $email,
-                    $fullName,
-                    $id
-                );
+        $data         = json_decode((string)$res->getBody(), true);
+        $access_token = $data['access_token'];
 
-                if ($result) {
-                    return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
-                }
-            }
+        // retrieve email address from Facebook profile
+        $res = $client->get('https://graph.facebook.com/me', [
+            'query' => [
+                'access_token' => $access_token,
+                'fields'       => 'name,email',
+            ]
+        ]);
 
+        if (!$res->getStatusCode() == Http::OK) {
             throw new Exception("Could not sign in with Facebook", Http::FORBIDDEN);
         }
 
-        trigger_error(
-            sprintf(
-                'Unexpected Facebook error (%s: %s)',
-                $res->getStatusCode(),
-                $res->getBody()
-            ),
-            E_USER_WARNING
+        $data = json_decode((string)$res->getBody(), true, 512, JSON_BIGINT_AS_STRING);
+        if (!array_key_exists('email', $data)) {
+            throw new Exception("Email address is unavailable", Http::FORBIDDEN);
+        }
+        $email    = $data['email'];
+        $fullName = $data['name'];
+        $id       = $data['id'];
+
+        $result = $this->oauthModel->createAccessTokenFromTrustedEmail(
+            $clientId,
+            $email,
+            $fullName,
+            $id
         );
-        throw new Exception("Unexpected Facebook error", Http::INTERNAL_SERVER_ERROR);
+
+        if (!$result) {
+            return;
+        }
+
+        return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
     }
 }

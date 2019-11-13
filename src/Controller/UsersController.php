@@ -260,129 +260,128 @@ class UsersController extends BaseApiController
         $userId = $this->getItemId($request);
 
         $userMapper = $this->getUserMapper($db, $request);
-        if ($userMapper->thisUserHasAdminOn($userId)) {
-            $oauthModel  = $request->getOauthModel($db);
-            $accessToken = $request->getAccessToken();
 
-            // only trusted clients can change account details
-            if (!$oauthModel->isAccessTokenPermittedPasswordGrant($accessToken)) {
-                throw new Exception("This client does not have permission to perform this operation", Http::FORBIDDEN);
+        if (!$userMapper->thisUserHasAdminOn($userId)) {
+            throw new Exception("Could not update user", Http::BAD_REQUEST);
+        }
+        $oauthModel  = $request->getOauthModel($db);
+        $accessToken = $request->getAccessToken();
+
+        // only trusted clients can change account details
+        if (!$oauthModel->isAccessTokenPermittedPasswordGrant($accessToken)) {
+            throw new Exception("This client does not have permission to perform this operation", Http::FORBIDDEN);
+        }
+
+        // start building up a representation of the user
+        $user   = ["user_id" => $userId];
+        $errors = [];
+
+        // start with passwords
+        $password = $request->getParameter('password');
+        if (!empty($password)) {
+            // they must supply their old password to be allowed to set a new one
+            $oldPassword = $request->getParameter('old_password');
+            if (empty($oldPassword)) {
+                throw new Exception(
+                    'The field "old_password" is needed to update a user password',
+                    Http::BAD_REQUEST
+                );
             }
 
-            // start building up a representation of the user
-            $user   = ["user_id" => $userId];
-            $errors = [];
-
-            // start with passwords
-            $password = $request->getParameter('password');
-            if (!empty($password)) {
-                // they must supply their old password to be allowed to set a new one
-                $oldPassword = $request->getParameter('old_password');
-                if (empty($oldPassword)) {
-                    throw new Exception(
-                        'The field "old_password" is needed to update a user password',
-                        Http::BAD_REQUEST
-                    );
-                }
-
-                // is the old password correct before we proceed?
-                if (!$oauthModel->reverifyUserPassword($userId, $oldPassword)) {
-                    throw new Exception("The credentials could not be verified", Http::FORBIDDEN);
-                }
-
-                $validity = $userMapper->checkPasswordValidity($password);
-                if (true === $validity) {
-                    // OK good, go ahead
-                    $user['password'] = $password;
-                } else {
-                    // the password wasn't acceptable, tell the user why
-                    $errors = array_merge($errors, $validity);
-                }
+            // is the old password correct before we proceed?
+            if (!$oauthModel->reverifyUserPassword($userId, $oldPassword)) {
+                throw new Exception("The credentials could not be verified", Http::FORBIDDEN);
             }
 
-            $user['full_name'] = filter_var(
-                trim($request->getParameter("full_name")),
+            $validity = $userMapper->checkPasswordValidity($password);
+            if (true === $validity) {
+                // OK good, go ahead
+                $user['password'] = $password;
+            } else {
+                // the password wasn't acceptable, tell the user why
+                $errors = array_merge($errors, $validity);
+            }
+        }
+
+        $user['full_name'] = filter_var(
+            trim($request->getParameter("full_name")),
+            FILTER_SANITIZE_STRING,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
+        if (empty($user['full_name'])) {
+            $errors[] = "'full_name' is a required field";
+        }
+
+        $user['email'] = filter_var(
+            trim($request->getParameter("email")),
+            FILTER_VALIDATE_EMAIL,
+            FILTER_FLAG_NO_ENCODE_QUOTES
+        );
+        if (empty($user['email'])) {
+            $errors[] = "A valid entry for 'email' is required";
+        } else {
+            // does anyone else have this email?
+            $existingUser = $userMapper->getUserByEmail($user['email']);
+            if ($existingUser['users']) {
+                // yes but is that our existing user being found?
+                $oldUser = $userMapper->getUserById($userId);
+                if ($oldUser['users'][0]['uri'] != $existingUser['users'][0]['uri']) {
+                    // the email address exists and not on this user's account
+                    $errors[] = "That email is already associated with another account";
+                }
+            }
+        }
+
+        $username = $request->getParameter("username", false);
+        if (false !== $username) {
+            $user['username'] = filter_var(
+                trim($username),
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
-            if (empty($user['full_name'])) {
-                $errors[] = "'full_name' is a required field";
+            // does anyone else have this username?
+            $existingUser = $userMapper->getUserByUsername($user['username']);
+            if ($existingUser['users']) {
+                // yes but is that our existing user being found?
+                $oldUser = $userMapper->getUserById($userId);
+                if ($oldUser['users'][0]['uri'] != $existingUser['users'][0]['uri']) {
+                    // the username exists and not on this user's account
+                    $errors[] = "That username is already associated with another account";
+                }
             }
+        }
 
-            $user['email'] = filter_var(
-                trim($request->getParameter("email")),
-                FILTER_VALIDATE_EMAIL,
+        // Optional Fields
+        $twitterUsername = $request->getParameter("twitter_username", false);
+        if (false !== $twitterUsername) {
+            $user['twitter_username'] = filter_var(
+                trim($twitterUsername),
+                FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
-            if (empty($user['email'])) {
-                $errors[] = "A valid entry for 'email' is required";
-            } else {
-                // does anyone else have this email?
-                $existingUser = $userMapper->getUserByEmail($user['email']);
-                if ($existingUser['users']) {
-                    // yes but is that our existing user being found?
-                    $oldUser = $userMapper->getUserById($userId);
-                    if ($oldUser['users'][0]['uri'] != $existingUser['users'][0]['uri']) {
-                        // the email address exists and not on this user's account
-                        $errors[] = "That email is already associated with another account";
-                    }
-                }
-            }
-
-            $username = $request->getParameter("username", false);
-            if (false !== $username) {
-                $user['username'] = filter_var(
-                    trim($username),
-                    FILTER_SANITIZE_STRING,
-                    FILTER_FLAG_NO_ENCODE_QUOTES
-                );
-                // does anyone else have this username?
-                $existingUser = $userMapper->getUserByUsername($user['username']);
-                if ($existingUser['users']) {
-                    // yes but is that our existing user being found?
-                    $oldUser = $userMapper->getUserById($userId);
-                    if ($oldUser['users'][0]['uri'] != $existingUser['users'][0]['uri']) {
-                        // the username exists and not on this user's account
-                        $errors[] = "That username is already associated with another account";
-                    }
-                }
-            }
-
-            // Optional Fields
-            $twitterUsername = $request->getParameter("twitter_username", false);
-            if (false !== $twitterUsername) {
-                $user['twitter_username'] = filter_var(
-                    trim($twitterUsername),
-                    FILTER_SANITIZE_STRING,
-                    FILTER_FLAG_NO_ENCODE_QUOTES
-                );
-            }
-            $biography = $request->getParameter("biography", false);
-            if (false !== $biography) {
-                $user['biography'] = filter_var(
-                    trim($biography),
-                    FILTER_SANITIZE_STRING,
-                    FILTER_FLAG_NO_ENCODE_QUOTES
-                );
-            }
-
-            if ($errors) {
-                throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
-            }
-
-            // now update the user
-            if (!$userMapper->editUser($user, $userId)) {
-                throw new Exception("User not updated", Http::BAD_REQUEST);
-            }
-
-            // we're good!
-            $view = $request->getView();
-            $view->setHeader('Content-Length', 0);
-            $view->setResponseCode(Http::NO_CONTENT);
-
-            return;
         }
-        throw new Exception("Could not update user", Http::BAD_REQUEST);
+        $biography = $request->getParameter("biography", false);
+        if (false !== $biography) {
+            $user['biography'] = filter_var(
+                trim($biography),
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_NO_ENCODE_QUOTES
+            );
+        }
+
+        if ($errors) {
+            throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
+        }
+
+        // now update the user
+        if (!$userMapper->editUser($user, $userId)) {
+            throw new Exception("User not updated", Http::BAD_REQUEST);
+        }
+
+        // we're good!
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(Http::NO_CONTENT);
     }
 
     public function passwordReset(Request $request, PDO $db)
@@ -399,22 +398,22 @@ class UsersController extends BaseApiController
         // now check the password complies with our rules
         $userMapper = new UserMapper($db, $request);
         $validity    = $userMapper->checkPasswordValidity($password);
-        if (true === $validity) {
-            // OK, go ahead
-            $success = $userMapper->resetPassword($token, $password);
-            if ($success) {
-                $view = $request->getView();
-                $view->setHeader('Content-Length', 0);
-                $view->setResponseCode(Http::NO_CONTENT);
 
-                return;
-            }
+        if (true !== $validity) {
+            // the password wasn't acceptable, tell the user why
+            throw new Exception(implode(". ", $validity), Http::BAD_REQUEST);
+        }
 
+        // OK, go ahead
+        $success = $userMapper->resetPassword($token, $password);
+
+        if (!$success) {
             throw new Exception("Password could not be reset", Http::BAD_REQUEST);
         }
 
-        // the password wasn't acceptable, tell the user why
-        throw new Exception(implode(". ", $validity), Http::BAD_REQUEST);
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(Http::NO_CONTENT);
     }
 
     /**

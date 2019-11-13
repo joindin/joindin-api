@@ -48,20 +48,21 @@ class TwitterController extends BaseApiController
         ]);
 
         $res = $client->post('oauth/request_token');
-        if ($res->getStatusCode() == Http::OK) {
-            parse_str($res->getBody(), $data);
 
-            $requestTokenMapper = new TwitterRequestTokenMapper($db);
-            // $tokens is instance of TwitterRequestTokenModelCollection
-            $tokens      = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
-            $output_list = $tokens->getOutputView($request);
-            $request->getView()->setHeader('Location', $output_list['twitter_request_tokens'][0]['uri']);
-            $request->getView()->setResponseCode(Http::CREATED);
-
-            return $output_list;
+        if ($res->getStatusCode() != Http::OK) {
+            throw new Exception("Twitter: no request token (" . $res->getStatusCode() . ": " . $res->getBody() . ")", Http::INTERNAL_SERVER_ERROR);
         }
 
-        throw new Exception("Twitter: no request token (" . $res->getStatusCode() . ": " . $res->getBody() . ")", Http::INTERNAL_SERVER_ERROR);
+        parse_str($res->getBody(), $data);
+
+        $requestTokenMapper = new TwitterRequestTokenMapper($db);
+        // $tokens is instance of TwitterRequestTokenModelCollection
+        $tokens      = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
+        $output_list = $tokens->getOutputView($request);
+        $request->getView()->setHeader('Location', $output_list['twitter_request_tokens'][0]['uri']);
+        $request->getView()->setResponseCode(Http::CREATED);
+
+        return $output_list;
     }
 
     /**
@@ -107,55 +108,56 @@ class TwitterController extends BaseApiController
         ]);
 
         $res = $client->post('oauth/access_token', ['form_params' => ['oauth_verifier' => $verifier]]);
-        if ($res->getStatusCode() == Http::OK) {
-            parse_str($res->getBody(), $data);
 
-            // we might want to store oauth_token and oauth_token_secret at some point if we want any
-            // more info from twitter
-            $twitterUsername = $data['screen_name'];
-
-            $result = $this->oauthModel->createAccessTokenFromTwitterUsername($clientId, $twitterUsername);
-            if (!$result) {
-                // try to create the user.
-                $stack1 = HandlerStack::create();
-                $oauth1 = new Oauth1([
-                    'consumer_key'    => $this->config['twitter']['consumer_key'],
-                    'consumer_secret' => $this->config['twitter']['consumer_secret'],
-                    'token'           => $data['oauth_token'],
-                    'token_secret'    => $data['oauth_token_secret'],
-                ]);
-                $stack1->push($oauth1);
-                $client1 = new Client([
-                    'base_uri' => 'https://api.twitter.com/',
-                    'auth' => 'oauth',
-                    'handler' => $stack1
-                ]);
-
-                try {
-                    $res = $client1->get('1.1/account/verify_credentials.json?include_email=true');
-                } catch (Exception $e) {
-                    throw new Exception('Could not retrieve user-informations from Twitter', Http::FORBIDDEN, $e);
-                }
-
-                if ($res->getStatusCode() == Http::OK) {
-                    $result = $this->oauthModel->createUserFromTwitterUsername(
-                        $clientId,
-                        json_decode($res->getBody()->getContents(), JSON_OBJECT_AS_ARRAY)
-                    );
-                }
-            }
-
-            if (!$result) {
-                throw new Exception("Could not sign in with Twitter", Http::FORBIDDEN);
-            }
-
-            // clean up request token data
-            $requestTokenMapper = new TwitterRequestTokenMapper($db);
-            $requestTokenMapper->delete($request_token);
-
-            return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
+        if ($res->getStatusCode() != Http::OK) {
+            throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", Http::INTERNAL_SERVER_ERROR);
         }
 
-        throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", Http::INTERNAL_SERVER_ERROR);
+        parse_str($res->getBody(), $data);
+
+        // we might want to store oauth_token and oauth_token_secret at some point if we want any
+        // more info from twitter
+        $twitterUsername = $data['screen_name'];
+
+        $result = $this->oauthModel->createAccessTokenFromTwitterUsername($clientId, $twitterUsername);
+        if (!$result) {
+            // try to create the user.
+            $stack1 = HandlerStack::create();
+            $oauth1 = new Oauth1([
+                'consumer_key'    => $this->config['twitter']['consumer_key'],
+                'consumer_secret' => $this->config['twitter']['consumer_secret'],
+                'token'           => $data['oauth_token'],
+                'token_secret'    => $data['oauth_token_secret'],
+            ]);
+            $stack1->push($oauth1);
+            $client1 = new Client([
+                'base_uri' => 'https://api.twitter.com/',
+                'auth' => 'oauth',
+                'handler' => $stack1
+            ]);
+
+            try {
+                $res = $client1->get('1.1/account/verify_credentials.json?include_email=true');
+            } catch (Exception $e) {
+                throw new Exception('Could not retrieve user-informations from Twitter', Http::FORBIDDEN, $e);
+            }
+
+            if ($res->getStatusCode() == Http::OK) {
+                $result = $this->oauthModel->createUserFromTwitterUsername(
+                    $clientId,
+                    json_decode($res->getBody()->getContents(), JSON_OBJECT_AS_ARRAY)
+                );
+            }
+        }
+
+        if (!$result) {
+            throw new Exception("Could not sign in with Twitter", Http::FORBIDDEN);
+        }
+
+        // clean up request token data
+        $requestTokenMapper = new TwitterRequestTokenMapper($db);
+        $requestTokenMapper->delete($request_token);
+
+        return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
     }
 }
