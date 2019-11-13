@@ -130,11 +130,8 @@ class UsersController extends BaseApiController
                     }
 
                     throw new Exception("Verification failed", Http::BAD_REQUEST);
-
-                    break;
                 default:
                     throw new InvalidArgumentException('Unknown Subrequest', Http::NOT_FOUND);
-                    break;
             }
         } else {
             $user   = [];
