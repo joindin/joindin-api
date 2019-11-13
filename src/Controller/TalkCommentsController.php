@@ -189,7 +189,7 @@ class TalkCommentsController extends BaseApiController
 
         $updateSuccess = $commentMapper->updateCommentBody($commentId, $newCommentBody);
         if (false === $updateSuccess) {
-            throw new Exception('Comment update failed', 500);
+            throw new Exception('Comment update failed', Http::INTERNAL_SERVER_ERROR);
         }
 
         return $commentMapper->getCommentById($commentId);

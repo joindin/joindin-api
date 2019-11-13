@@ -61,7 +61,7 @@ class TwitterController extends BaseApiController
             return $output_list;
         }
 
-        throw new Exception("Twitter: no request token (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);
+        throw new Exception("Twitter: no request token (" . $res->getStatusCode() . ": " . $res->getBody() . ")", Http::INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -156,6 +156,6 @@ class TwitterController extends BaseApiController
             return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
         }
 
-        throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", 500);
+        throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", Http::INTERNAL_SERVER_ERROR);
     }
 }
