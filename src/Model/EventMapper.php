@@ -1114,7 +1114,7 @@ class EventMapper extends ApiMapper
      *
      * @return boolean
      */
-    public function reject($event_id, $reviewing_user_id, $reason)
+    public function reject($event_id, $reviewing_user_id, string $reason)
     {
         $sql      = "select ID from events where pending = 1 and active = 0 and ID = :event_id";
         $stmt     = $this->_db->prepare($sql);
