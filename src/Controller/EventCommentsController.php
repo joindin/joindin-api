@@ -71,9 +71,9 @@ class EventCommentsController extends BaseApiController
             $list = $comment_mapper->getReportedCommentsByEventId($event_id);
 
             return $list->getOutputView($request);
-        } else {
-            throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
+
+        throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
     }
 
     public function createComment(Request $request, PDO $db)

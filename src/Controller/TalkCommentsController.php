@@ -59,9 +59,9 @@ class TalkCommentsController extends BaseApiController
             $list = $commentMapper->getReportedCommentsByEventId($eventId);
 
             return $list->getOutputView($request);
-        } else {
-            throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
+
+        throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
     }
 
     public function reportComment(Request $request, PDO $db)
