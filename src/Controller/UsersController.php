@@ -488,7 +488,7 @@ class UsersController extends BaseApiController
         }
 
         if (!$userMapper->setTrustedStatus($trustedStatus, $userId)) {
-            throw new Exception("Unable to update status", 500);
+            throw new Exception("Unable to update status", Http::INTERNAL_SERVER_ERROR);
         }
         $view = $request->getView();
         $view->setHeader('Content-Length', 0);

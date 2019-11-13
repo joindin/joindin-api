@@ -131,7 +131,7 @@ class TokenController extends BaseApiController
         try {
             $tokenMapper->deleteToken($this->getItemId($request));
         } catch (Exception $e) {
-            throw new Exception($e->getMessage(), 500, $e);
+            throw new Exception($e->getMessage(), Http::INTERNAL_SERVER_ERROR, $e);
         }
 
         $request->getView()->setNoRender(true);

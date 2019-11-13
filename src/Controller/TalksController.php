@@ -554,7 +554,7 @@ class TalksController extends BaseTalkController
         );
 
         $talk['speakers'] = array_map(
-            function ($speaker) {
+            static function ($speaker) {
                 $speaker = filter_var($speaker, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 $speaker = trim($speaker);
 
@@ -654,7 +654,7 @@ class TalksController extends BaseTalkController
                 $event_mapper->setUserAttendance($event_id, $speaker_id);
 
                 if (!$success) {
-                    throw new Exception("There was a problem assigning the talk", 500);
+                    throw new Exception("There was a problem assigning the talk", Http::INTERNAL_SERVER_ERROR);
                 }
 
                 if (!defined('UNIT_TEST')) {
@@ -672,12 +672,12 @@ class TalksController extends BaseTalkController
             if ($data['username'] === $user['username']) {
                 if ($pending_talk_claim_mapper->approveAssignmentAsSpeaker($talk_id, $user_id, $claim['ID'])) {
                     if (!$talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id, $speaker_name)) {
-                        throw new Exception("There was a problem assigning the talk", 500);
+                        throw new Exception("There was a problem assigning the talk", Http::INTERNAL_SERVER_ERROR);
                     }
 
                     $event_mapper->setUserAttendance($event_id, $speaker_id);
                 } else {
-                    throw new Exception("There was a problem assigning the talk", 500);
+                    throw new Exception("There was a problem assigning the talk", Http::INTERNAL_SERVER_ERROR);
                 }
             } else {
                 throw new Exception("You must be the talk speaker to approve this assignment", Http::UNAUTHORIZED);
@@ -788,7 +788,7 @@ class TalksController extends BaseTalkController
         $claim_exists              = $pending_talk_claim_mapper->claimExists($talk_id, $speaker_id, $claim['ID']);
 
         if ($claim_exists !== PendingTalkClaimMapper::SPEAKER_CLAIM) {
-            throw new Exception("There was a problem with the claim", 500);
+            throw new Exception("There was a problem with the claim", Http::INTERNAL_SERVER_ERROR);
         }
         $method     = $this->getRequestParameter($request, 'action', 'approve');
         $recipients = [$user_mapper->getEmailByUserId($speaker_id)];
@@ -797,7 +797,7 @@ class TalksController extends BaseTalkController
         $success = $pending_talk_claim_mapper->rejectClaimAsHost($talk_id, $speaker_id, $claim['ID']);
 
         if (!$success) {
-            throw new Exception("There was a problem assigning the talk", 500);
+            throw new Exception("There was a problem assigning the talk", Http::INTERNAL_SERVER_ERROR);
         }
 
         $emailService = new TalkClaimRejectedEmailService($this->config, $recipients, $event, $talk);

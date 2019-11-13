@@ -33,7 +33,9 @@ class ApiView
                 // count what's in the non-meta element
                 if ($name == "meta") {
                     continue;
-                } elseif (is_array($item)) {
+                }
+
+                if (is_array($item)) {
                     $content['meta']['count'] = count($item);
                 }
             }
