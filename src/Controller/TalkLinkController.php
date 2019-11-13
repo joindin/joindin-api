@@ -51,7 +51,7 @@ class TalkLinkController extends BaseTalkController
         if (!$talk_mapper->updateTalkLink($talk_id, $link_id, $display_name, $url)) {
             throw new Exception(
                 "Update of Link ID Failed",
-                500
+                Http::INTERNAL_SERVER_ERROR
             );
         }
 

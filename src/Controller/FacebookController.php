@@ -34,7 +34,7 @@ class FacebookController extends BaseApiController
             empty($this->config['facebook']['app_id'])
             || empty($this->config['facebook']['app_secret'])
         ) {
-            throw new Exception("Cannot login via Facebook", 501);
+            throw new Exception("Cannot login via Facebook", Http::NOT_IMPLEMENTED);
         }
 
         $clientId         = $request->getParameter('client_id');
@@ -106,6 +106,6 @@ class FacebookController extends BaseApiController
             ),
             E_USER_WARNING
         );
-        throw new Exception("Unexpected Facebook error", 500);
+        throw new Exception("Unexpected Facebook error", Http::INTERNAL_SERVER_ERROR);
     }
 }

@@ -71,9 +71,9 @@ class EventCommentsController extends BaseApiController
             $list = $comment_mapper->getReportedCommentsByEventId($event_id);
 
             return $list->getOutputView($request);
-        } else {
-            throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
+
+        throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
     }
 
     public function createComment(Request $request, PDO $db)
@@ -98,7 +98,9 @@ class EventCommentsController extends BaseApiController
         $rating = $request->getParameter('rating', false);
         if (false === $rating) {
             throw new Exception('The field "rating" is required', Http::BAD_REQUEST);
-        } elseif (false === is_numeric($rating)) {
+        }
+
+        if (false === is_numeric($rating)) {
             throw new Exception('The field "rating" must be a number', Http::BAD_REQUEST);
         }
 

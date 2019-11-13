@@ -315,7 +315,7 @@ class EventsController extends BaseApiController
                 $incoming_tag_list = $request->getParameter('tags');
                 if (is_array($incoming_tag_list)) {
                     $tags = array_map(
-                        function ($tag) {
+                        static function ($tag) {
                             $tag = filter_var($tag, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                             $tag = trim($tag);
                             $tag = strtolower($tag);
@@ -346,65 +346,65 @@ class EventsController extends BaseApiController
             // How does it look?  With no errors, we can proceed
             if ($errors) {
                 throw new Exception(implode(". ", $errors), Http::BAD_REQUEST);
-            } else {
-                $user_mapper = new UserMapper($db, $request);
-
-                $event_owner           = $user_mapper->getUserById($request->user_id);
-                $event['contact_name'] = $event_owner['users'][0]['full_name'];
-
-                /**
-                 * If the user is a site admin, or has been set to trusted,
-                 * then approve the event straight away
-                 */
-                $approveEventOnCreation = $user_mapper->isSiteAdmin($request->user_id)
-                                          || $user_mapper->isTrusted($request->user_id);
-
-                // Do we want to automatically approve when testing?
-                if (
-                    isset($this->config['features']['allow_auto_approve_events'])
-                    && $this->config['features']['allow_auto_approve_events']
-                ) {
-                    if ($request->getParameter("auto_approve_event") == "true") {
-                        // The test suite sends this extra field, if we got
-                        // this far then this platform supports this
-                        $approveEventOnCreation = true;
-                    }
-                }
-
-                if ($approveEventOnCreation) {
-                    $event_id = $event_mapper->createEvent($event, true);
-
-                    // redirect to event listing
-                    $view = $request->getView();
-                    $view->setHeader('Location', $request->base . $request->path_info . '/' . $event_id);
-                    $view->setResponseCode(Http::CREATED);
-                } else {
-                    $event_id = $event_mapper->createEvent($event);
-
-                    // set status to accepted; a pending event won't be visible
-                    $view = $request->getView();
-                    $view->setHeader('Location', $request->base . $request->path_info);
-                    $view->setResponseCode(Http::ACCEPTED);
-                }
-
-                // now set the current user as host and attending
-                $event_mapper->addUserAsHost($event_id, $request->user_id);
-                $event_mapper->setUserAttendance($event_id, $request->user_id);
-                if (isset($tags)) {
-                    $event_mapper->setTags($event_id, $tags);
-                }
-
-                // Send an email if we didn't auto-approve
-                if (!$user_mapper->isSiteAdmin($request->user_id)) {
-                    $event        = $event_mapper->getPendingEventById($event_id);
-                    $count        = $event_mapper->getPendingEventsCount();
-                    $recipients   = $user_mapper->getSiteAdminEmails();
-                    $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
-                    $emailService->sendEmail();
-                }
-
-                return;
             }
+
+            $user_mapper = new UserMapper($db, $request);
+
+            $event_owner           = $user_mapper->getUserById($request->user_id);
+            $event['contact_name'] = $event_owner['users'][0]['full_name'];
+
+            /**
+             * If the user is a site admin, or has been set to trusted,
+             * then approve the event straight away
+             */
+            $approveEventOnCreation = $user_mapper->isSiteAdmin($request->user_id)
+                                      || $user_mapper->isTrusted($request->user_id);
+
+            // Do we want to automatically approve when testing?
+            if (
+                isset($this->config['features']['allow_auto_approve_events'])
+                && $this->config['features']['allow_auto_approve_events']
+            ) {
+                if ($request->getParameter("auto_approve_event") == "true") {
+                    // The test suite sends this extra field, if we got
+                    // this far then this platform supports this
+                    $approveEventOnCreation = true;
+                }
+            }
+
+            if ($approveEventOnCreation) {
+                $event_id = $event_mapper->createEvent($event, true);
+
+                // redirect to event listing
+                $view = $request->getView();
+                $view->setHeader('Location', $request->base . $request->path_info . '/' . $event_id);
+                $view->setResponseCode(Http::CREATED);
+            } else {
+                $event_id = $event_mapper->createEvent($event);
+
+                // set status to accepted; a pending event won't be visible
+                $view = $request->getView();
+                $view->setHeader('Location', $request->base . $request->path_info);
+                $view->setResponseCode(Http::ACCEPTED);
+            }
+
+            // now set the current user as host and attending
+            $event_mapper->addUserAsHost($event_id, $request->user_id);
+            $event_mapper->setUserAttendance($event_id, $request->user_id);
+            if (isset($tags)) {
+                $event_mapper->setTags($event_id, $tags);
+            }
+
+            // Send an email if we didn't auto-approve
+            if (!$user_mapper->isSiteAdmin($request->user_id)) {
+                $event        = $event_mapper->getPendingEventById($event_id);
+                $count        = $event_mapper->getPendingEventsCount();
+                $recipients   = $user_mapper->getSiteAdminEmails();
+                $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
+                $emailService->sendEmail();
+            }
+
+            return;
         }
     }
 
@@ -565,7 +565,7 @@ class EventsController extends BaseApiController
             $incoming_tag_list = $request->getParameter('tags');
             if (is_array($incoming_tag_list)) {
                 $tags = array_map(
-                    function ($tag) {
+                    static function ($tag) {
                         $tag = filter_var($tag, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                         $tag = trim($tag);
                         $tag = strtolower($tag);

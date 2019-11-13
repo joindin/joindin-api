@@ -59,9 +59,9 @@ class TalkCommentsController extends BaseApiController
             $list = $commentMapper->getReportedCommentsByEventId($eventId);
 
             return $list->getOutputView($request);
-        } else {
-            throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
+
+        throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
     }
 
     public function reportComment(Request $request, PDO $db)
@@ -189,7 +189,7 @@ class TalkCommentsController extends BaseApiController
 
         $updateSuccess = $commentMapper->updateCommentBody($commentId, $newCommentBody);
         if (false === $updateSuccess) {
-            throw new Exception('Comment update failed', 500);
+            throw new Exception('Comment update failed', Http::INTERNAL_SERVER_ERROR);
         }
 
         return $commentMapper->getCommentById($commentId);

@@ -262,9 +262,9 @@ class OAuthModel
         // or something else.
         if ($result['application']) {
             return $result['application'];
-        } else {
-            return "joind.in";
         }
+
+        return "joind.in";
     }
 
     /**

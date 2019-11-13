@@ -18,656 +18,584 @@ use Joindin\Api\Controller\EventCommentsController;
 use Joindin\Api\Controller\EventHostsController;
 use Joindin\Api\Controller\ApplicationsController;
 use Joindin\Api\Controller\DefaultController;
+use Joindin\Api\Request;
 
 return [
     [
         'path'       => '/events(/[^/]+)*/hosts',
         'controller' => EventHostsController::class,
         'action'     => 'listHosts',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/events/[\\d]+/hosts',
         'controller' => EventHostsController::class,
         'action'     => 'addHost',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/events/[\\d]+/hosts/[\\d]+',
         'controller' => EventHostsController::class,
         'action'     => 'removeHostFromEvent',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/events(/[^/]+)*/comments/reported',
         'controller' => EventCommentsController::class,
         'action'     => 'getReported',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/events(/[\\d]+)/talk_comments/reported',
         'controller' => TalkCommentsController::class,
         'action'     => 'getReported',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/events/(\\d+)/claims$',
         'controller' => EventsController::class,
         'action'     => 'pendingClaims',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/events(/[\\d]+)/images',
         'controller' => EventImagesController::class,
         'action'     => 'listImages',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/events(/[^/]+)*/?$',
         'controller' => EventsController::class,
         'action'     => 'getAction',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/events/(\\d+)/tracks$',
         'controller' => EventsController::class,
         'action'     => 'createTrack',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/events/(\\d+)/approval$',
         'controller' => EventsController::class,
         'action'     => 'approveAction',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/events/(\\d+)/approval$',
         'controller' => EventsController::class,
         'action'     => 'rejectAction',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/events(/[^/]+)*/comments',
         'controller' => EventCommentsController::class,
         'action'     => 'createComment',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/events(/[\\d]+)/images',
         'controller' => EventImagesController::class,
         'action'     => 'createImage',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/events(/[\\d]+)/images',
         'controller' => EventImagesController::class,
         'action'     => 'deleteImage',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/events(/[\\d]+)/talks',
         'controller' => TalksController::class,
         'action'     => 'createTalkAction',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/events(/[^/]+)*/?$',
         'controller' => EventsController::class,
         'action'     => 'postAction',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/events(/[^/]+)*/?$',
         'controller' => EventsController::class,
         'action'     => 'putAction',
-        'verbs'      =>
-            [
-                'PUT',
-            ],
+        'verbs'      => [
+            Request::HTTP_PUT,
+        ],
     ],
     [
         'path'       => '/events(/[^/]+)*/?$',
         'controller' => EventsController::class,
         'action'     => 'deleteAction',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/links/?$',
         'controller' => TalkLinkController::class,
         'action'     => 'getTalkLinks',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/links/?$',
         'controller' => TalkLinkController::class,
         'action'     => 'addTalkLink',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/links(/[\\d]+)$',
         'controller' => TalkLinkController::class,
         'action'     => 'getTalkLink',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/links(/[\\d]+)$',
         'controller' => TalkLinkController::class,
         'action'     => 'removeTalkLink',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/links(/[\\d]+)$',
         'controller' => TalkLinkController::class,
         'action'     => 'updateTalkLink',
-        'verbs'      =>
-            [
-                'PUT',
-            ],
+        'verbs'      => [
+            Request::HTTP_PUT,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/speakers/?$',
         'controller' => TalksController::class,
         'action'     => 'getSpeakersForTalk',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/speakers/?$',
         'controller' => TalksController::class,
         'action'     => 'setSpeakerForTalk',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/speakers/?$',
         'controller' => TalksController::class,
         'action'     => 'removeSpeakerForTalk',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)$',
         'controller' => TalksController::class,
         'action'     => 'editTalk',
-        'verbs'      =>
-            [
-                'PUT',
-            ],
+        'verbs'      => [
+            Request::HTTP_PUT,
+        ],
     ],
     [
         'path'       => '/talks/?$',
         'controller' => TalksController::class,
         'action'     => 'getTalkByKeyWord',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/talks/[\\d]+/comments/?$',
         'controller' => TalksController::class,
         'action'     => 'getTalkComments',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/talks/[\\d]+/starred/?$',
         'controller' => TalksController::class,
         'action'     => 'getTalkStarred',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/talks/[\\d]+/?$',
         'controller' => TalksController::class,
         'action'     => 'getAction',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/tracks$',
         'controller' => TalksController::class,
         'action'     => 'addTrackToTalk',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/tracks(/[\\d]+)$',
         'controller' => TalksController::class,
         'action'     => 'removeTrackFromTalk',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/talks(/[^/]+)*/?$',
         'controller' => TalksController::class,
         'action'     => 'postAction',
-        'verbs'      =>
-            [
-                'POST',
+        'verbs'      => [
+                Request::HTTP_POST,
             ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/speakers(/[\\d]+)$',
         'controller' => TalksController::class,
         'action'     => 'removeApprovedSpeakerFromTalk',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/talks/[\\d]+/starred/?$',
         'controller' => TalksController::class,
         'action'     => 'removeStarFromTalk',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/talks/[\\d]+/?$',
         'controller' => TalksController::class,
         'action'     => 'deleteTalk',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/token(/[^/]+)*/?$',
         'controller' => TokenController::class,
         'action'     => 'postAction',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/token/?$',
         'controller' => TokenController::class,
         'action'     => 'listTokensForUser',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/token(/[^/]+)/?$',
         'controller' => TokenController::class,
         'action'     => 'getToken',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/token(/[^/]+)*/?$',
         'controller' => TokenController::class,
         'action'     => 'revokeToken',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/tracks(/[^/]+)*/?$',
         'controller' => TracksController::class,
         'action'     => 'getAction',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/tracks(/[\\d]+)/?$',
         'controller' => TracksController::class,
         'action'     => 'editTrack',
-        'verbs'      =>
-            [
-                'PUT',
-            ],
+        'verbs'      => [
+            Request::HTTP_PUT,
+        ],
     ],
     [
         'path'       => '/tracks(/[\\d]+)/?$',
         'controller' => TracksController::class,
         'action'     => 'deleteTrack',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/users/passwords$',
         'controller' => UsersController::class,
         'action'     => 'passwordReset',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/users(/[0-9]+)/trusted?$',
         'controller' => UsersController::class,
         'action'     => 'setTrusted',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/users(/[^/]+)*/?$',
         'controller' => UsersController::class,
         'action'     => 'getAction',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/users(/[^/]+)*/?$',
         'controller' => UsersController::class,
         'action'     => 'postAction',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/users(/[^/]+)*/?$',
         'controller' => UsersController::class,
         'action'     => 'deleteUser',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/users(/[0-9]+)/?$',
         'controller' => UsersController::class,
         'action'     => 'updateUser',
-        'verbs'      =>
-            [
-                'PUT',
-            ],
+        'verbs'      => [
+            Request::HTTP_PUT,
+        ],
     ],
-
     [
         'path'       => '/users/[0-9]+/talk_comments',
         'controller' => UsersController::class,
         'action'     => 'deleteTalkComments',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/event_comments(/[^/]+)*/?$',
         'controller' => EventCommentsController::class,
         'action'     => 'getComments',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/event_comments(/[^/]+)*/reported?$',
         'controller' => EventCommentsController::class,
         'action'     => 'reportComment',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/event_comments(/[^/]+)*/reported?$',
         'controller' => EventCommentsController::class,
         'action'     => 'moderateReportedComment',
-        'verbs'      =>
-            [
-                'PUT',
-            ],
+        'verbs'      => [
+            Request::HTTP_PUT,
+        ],
     ],
     [
         'path'       => '/talk_comments(/[^/]+)*/?$',
         'controller' => TalkCommentsController::class,
         'action'     => 'getComments',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/talk_comments(/[^/]+)*/?$',
         'controller' => TalkCommentsController::class,
         'action'     => 'updateComment',
-        'verbs'      =>
-            [
-                'PUT',
-            ],
+        'verbs'      => [
+            Request::HTTP_PUT,
+        ],
     ],
     [
         'path'       => '/emails/verifications',
         'controller' => EmailsController::class,
         'action'     => 'verifications',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/emails/reminders/username',
         'controller' => EmailsController::class,
         'action'     => 'usernameReminder',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/emails/reminders/password',
         'controller' => EmailsController::class,
         'action'     => 'passwordReset',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/twitter/request_token',
         'controller' => TwitterController::class,
         'action'     => 'getRequestToken',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/twitter/token',
         'controller' => TwitterController::class,
         'action'     => 'logUserIn',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/languages?$',
         'controller' => LanguagesController::class,
         'action'     => 'getAllLanguages',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/languages(/[0-9]+)?/?$',
         'controller' => LanguagesController::class,
         'action'     => 'getLanguage',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/contact',
         'controller' => ContactController::class,
         'action'     => 'contact',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/talk_types/?$',
         'controller' => TalkTypesController::class,
         'action'     => 'getAllTalkTypes',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/talk_types(/[0-9]+)?/?$',
         'controller' => TalkTypesController::class,
         'action'     => 'getTalkType',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/facebook/token',
         'controller' => FacebookController::class,
         'action'     => 'logUserIn',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/applications$',
         'controller' => ApplicationsController::class,
         'action'     => 'listApplications',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/applications$',
         'controller' => ApplicationsController::class,
         'action'     => 'createApplication',
-        'verbs'      =>
-            [
-                'POST',
-            ],
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/applications(/[0-9]+)$',
         'controller' => ApplicationsController::class,
         'action'     => 'getApplication',
-        'verbs'      =>
-            [
-                'GET',
-            ],
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
     ],
     [
         'path'       => '/applications(/[0-9]+)$',
         'controller' => ApplicationsController::class,
         'action'     => 'editApplication',
-        'verbs'      =>
-            [
-                'PUT',
-            ],
+        'verbs'      => [
+            Request::HTTP_PUT,
+        ],
     ],
     [
         'path'       => '/applications(/[0-9]+)$',
         'controller' => ApplicationsController::class,
         'action'     => 'deleteApplication',
-        'verbs'      =>
-            [
-                'DELETE',
-            ],
+        'verbs'      => [
+            Request::HTTP_DELETE,
+        ],
     ],
     [
         'path'       => '/?$',
