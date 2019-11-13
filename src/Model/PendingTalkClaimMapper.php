@@ -13,8 +13,8 @@ use PDO;
  */
 class PendingTalkClaimMapper extends ApiMapper
 {
-    const SPEAKER_CLAIM = 1;
-    const HOST_ASSIGN = 2;
+    public const SPEAKER_CLAIM = 1;
+    public const HOST_ASSIGN = 2;
 
     /**
      * Default mapping for column names to API field names
