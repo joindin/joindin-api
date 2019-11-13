@@ -21,22 +21,22 @@ class Request
     /**
      * Output formats
      */
-    const FORMAT_JSON = 'json';
-    const FORMAT_HTML = 'html';
+    private const FORMAT_JSON = 'json';
+    private const FORMAT_HTML = 'html';
 
     /**
      * Content-types for the Accepts header
      */
-    const CONTENT_TYPE_JSON = 'application/json';
-    const CONTENT_TYPE_HTML = 'text/html';
+    public const CONTENT_TYPE_JSON = 'application/json';
+    public const CONTENT_TYPE_HTML = 'text/html';
 
     /**
      * HTTP Verbs
      */
-    const HTTP_GET = 'GET';
-    const HTTP_POST = 'POST';
-    const HTTP_PUT = 'PUT';
-    const HTTP_DELETE = 'DELETE';
+    public const HTTP_GET = 'GET';
+    public const HTTP_POST = 'POST';
+    public const HTTP_PUT = 'PUT';
+    public const HTTP_DELETE = 'DELETE';
 
     /**
      * @var string HTTP verb

@@ -98,7 +98,9 @@ class EventCommentsController extends BaseApiController
         $rating = $request->getParameter('rating', false);
         if (false === $rating) {
             throw new Exception('The field "rating" is required', Http::BAD_REQUEST);
-        } elseif (false === is_numeric($rating)) {
+        }
+
+        if (false === is_numeric($rating)) {
             throw new Exception('The field "rating" must be a number', Http::BAD_REQUEST);
         }
 
