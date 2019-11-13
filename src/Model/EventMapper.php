@@ -1110,7 +1110,7 @@ class EventMapper extends ApiMapper
      *
      * @param  integer $event_id
      * @param  integer $reviewing_user_id The user who rejected the event
-     * @param  string $reason_Details for rejection
+     * @param  string $reason Details for rejection
      *
      * @return boolean
      */
