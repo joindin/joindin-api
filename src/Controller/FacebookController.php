@@ -107,7 +107,7 @@ class FacebookController extends BaseApiController
         );
 
         if (!$result) {
-            return;
+            throw new Exception("Could not sign in with Facebook", Http::FORBIDDEN);
         }
 
         return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
