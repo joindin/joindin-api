@@ -112,7 +112,7 @@ class Header
         $this->values = array_values(
             array_filter(
                 $this->values,
-                function ($value) use ($searchValue) {
+                static function ($value) use ($searchValue) {
                     return $value != $searchValue;
                 }
             )

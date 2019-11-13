@@ -47,13 +47,13 @@ class ContainerFactory
         if (!isset(static::$container) || $rebuild) {
             $container = new Container();
 
-            $container[SpamCheckServiceInterface::class] = function ($c) {
+            $container[SpamCheckServiceInterface::class] = static function ($c) {
                 return new NullSpamCheckService();
             };
 
             //add $config
             if (isset($config['akismet']['apiKey'], $config['akismet']['blog'])) {
-                $container[SpamCheckServiceInterface::class] = function ($c) use ($config) {
+                $container[SpamCheckServiceInterface::class] = static function ($c) use ($config) {
                     return new SpamCheckService(
                         $config['akismet']['apiKey'],
                         $config['akismet']['blog']
@@ -61,11 +61,11 @@ class ContainerFactory
                 };
             }
 
-            $container[ContactEmailService::class] = function ($c) use ($config) {
+            $container[ContactEmailService::class] = static function ($c) use ($config) {
                 return new ContactEmailService($config);
             };
 
-            $container[ContactController::class] = $container->factory(function (Container $c) use ($config) {
+            $container[ContactController::class] = $container->factory(static function (Container $c) use ($config) {
                 return new ContactController(
                     $c[ContactEmailService::class],
                     $c[SpamCheckServiceInterface::class],
@@ -73,15 +73,15 @@ class ContainerFactory
                 );
             });
 
-            $container[ApplicationsController::class] = $container->factory(function ($c) use ($config) {
+            $container[ApplicationsController::class] = $container->factory(static function ($c) use ($config) {
                 return new ApplicationsController($config);
             });
 
-            $container[DefaultController::class] = $container->factory(function ($c) use ($config) {
+            $container[DefaultController::class] = $container->factory(static function ($c) use ($config) {
                 return new DefaultController($config);
             });
 
-            $container[EmailsController::class] = $container->factory(function ($c) use ($config) {
+            $container[EmailsController::class] = $container->factory(static function ($c) use ($config) {
                 return new EmailsController($config);
             });
 
@@ -92,31 +92,31 @@ class ContainerFactory
                 );
             });
 
-            $container[EventHostsController::class] = $container->factory(function ($c) use ($config) {
+            $container[EventHostsController::class] = $container->factory(static function ($c) use ($config) {
                 return new EventHostsController($config);
             });
 
-            $container[EventImagesController::class] = $container->factory(function ($c) use ($config) {
+            $container[EventImagesController::class] = $container->factory(static function ($c) use ($config) {
                 return new EventImagesController($config);
             });
 
-            $container[EventsController::class] = $container->factory(function ($c) use ($config) {
+            $container[EventsController::class] = $container->factory(static function ($c) use ($config) {
                 return new EventsController($config);
             });
 
-            $container[FacebookController::class] = $container->factory(function ($c) use ($config) {
+            $container[FacebookController::class] = $container->factory(static function ($c) use ($config) {
                 return new FacebookController($config);
             });
 
-            $container[LanguagesController::class] = $container->factory(function ($c) use ($config) {
+            $container[LanguagesController::class] = $container->factory(static function ($c) use ($config) {
                 return new LanguagesController($config);
             });
 
-            $container[TalkCommentsController::class] = $container->factory(function ($c) use ($config) {
+            $container[TalkCommentsController::class] = $container->factory(static function ($c) use ($config) {
                 return new TalkCommentsController($config);
             });
 
-            $container[TalkLinkController::class] = $container->factory(function ($c) use ($config) {
+            $container[TalkLinkController::class] = $container->factory(static function ($c) use ($config) {
                 return new TalkLinkController($config);
             });
 
@@ -127,23 +127,23 @@ class ContainerFactory
                 );
             });
 
-            $container[TalkTypesController::class] = $container->factory(function ($c) use ($config) {
+            $container[TalkTypesController::class] = $container->factory(static function ($c) use ($config) {
                 return new TalkTypesController($config);
             });
 
-            $container[TokenController::class] = $container->factory(function ($c) use ($config) {
+            $container[TokenController::class] = $container->factory(static function ($c) use ($config) {
                 return new TokenController($config);
             });
 
-            $container[TracksController::class] = $container->factory(function ($c) use ($config) {
+            $container[TracksController::class] = $container->factory(static function ($c) use ($config) {
                 return new TracksController($config);
             });
 
-            $container[TwitterController::class] = $container->factory(function ($c) use ($config) {
+            $container[TwitterController::class] = $container->factory(static function ($c) use ($config) {
                 return new TwitterController($config);
             });
 
-            $container[UsersController::class] = $container->factory(function ($c) use ($config) {
+            $container[UsersController::class] = $container->factory(static function ($c) use ($config) {
                 return new UsersController($config);
             });
 
