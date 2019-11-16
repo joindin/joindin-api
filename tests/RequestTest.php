@@ -13,13 +13,14 @@ use Joindin\Api\View\JsonPView;
 
 final class RequestTest extends TestCase
 {
+    private $config;
+
     /**
      * Make sure we have everything we need - in this case the config
      */
     public function setUp(): void
     {
-        include __DIR__ . '/../src/config.php';
-        $this->config = $config;
+        $this->config = include __DIR__ . '/../src/config.php';
     }
 
     /**
@@ -226,10 +227,10 @@ final class RequestTest extends TestCase
         ];
         $request = new Request($this->config, $server);
 
-        $result = $request->preferredContentTypeOutOf(
-            ['text/html'],
-            ['application/xml']
-        );
+        $result = $request->preferredContentTypeOutOf([
+            'text/html',
+            'application/xml',
+        ]);
 
         $this->assertEquals('json', $result);
     }
@@ -460,7 +461,7 @@ final class RequestTest extends TestCase
         // Please see below for explanation of why we're mocking a "mock" PDO
         // class
         $db = $this->getMockBuilder(
-            '\JoindinTest\Inc\mockPDO'
+            '\Joindin\Api\Test\Mock\mockPDO'
         )->getMock();
         $db->method('getAvailableDrivers');
 

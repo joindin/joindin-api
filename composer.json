@@ -25,6 +25,8 @@
   },
   "require-dev": {
     "jakub-onderka/php-parallel-lint": "^1.0",
+    "phpstan/extension-installer": "^1.0.3",
+    "phpstan/phpstan-phpunit": "~0.11.2",
     "phpunit/phpunit": "^8.3.4",
     "roave/security-advisories": "dev-master",
     "sensiolabs/security-checker": "^6.0",

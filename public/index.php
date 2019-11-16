@@ -40,8 +40,7 @@ set_exception_handler('handle_exception');
 
 // config setup
 define('BASEPATH', '.');
-$config = [];
-require __DIR__. '/../src/config.php';
+$config = require __DIR__. '/../src/config.php';
 
 $container = ContainerFactory::build($config);
 

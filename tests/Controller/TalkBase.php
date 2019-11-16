@@ -9,7 +9,7 @@ use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Model\TalkModel;
 use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Request;
-use JoindinTest\Inc\mockPDO;
+use Joindin\Api\Test\Mock\mockPDO;
 use PHPUnit\Framework\TestCase;
 
 abstract class TalkBase extends TestCase

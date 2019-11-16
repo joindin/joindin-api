@@ -13,7 +13,7 @@ use Joindin\Api\Request;
 use Joindin\Api\Service\UserRegistrationEmailService;
 use Joindin\Api\View\ApiView;
 use Joindin\Api\View\JsonView;
-use JoindinTest\Inc\mockPDO;
+use Joindin\Api\Test\Mock\mockPDO;
 use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

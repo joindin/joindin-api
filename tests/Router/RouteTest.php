@@ -5,6 +5,7 @@ namespace Joindin\Api\Test\Router;
 use Exception;
 use Joindin\Api\Request;
 use Joindin\Api\Router\Route;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Teapot\StatusCode\Http;
@@ -124,8 +125,8 @@ final class RouteTest extends TestCase
      * @covers       \Joindin\Api\Router\Route::dispatch
      *
      * @param array $config
-     * @param $controller
-     * @param $action
+     * @param string $controller
+     * @param string $action
      * @param Request $request
      * @param bool $expectedException
      * @param bool $expectedExceptionCode
@@ -182,7 +183,7 @@ final class RouteTest extends TestCase
      */
     private function getRequest($urlElement)
     {
-        $request = $this->createMock(Request::class, ['getUrlElement'], [], '', false);
+        $request = $this->createMock(Request::class);
 
         $request->expects($this->any())
                 ->method('getUrlElement')
