@@ -33,37 +33,37 @@ class TokenController extends BaseApiController
             throw new Exception('The fields "username" and "password" are both required', Http::BAD_REQUEST);
         }
 
-        if ($grantType == 'password') {
-            // authenticate the user for web2
+        if ($grantType != 'password') {
+            throw new Exception("Grant type not recognised", Http::BAD_REQUEST);
+        }
 
-            $clientId     = $request->getParameter('client_id');
-            $clientSecret = $request->getParameter('client_secret');
-            if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
-                throw new Exception("This client cannot authenticate using the password grant type", Http::FORBIDDEN);
-            }
+        // authenticate the user for web2
 
-            // expire any old tokens
-            if (isset($this->config['oauth']['expirable_client_ids'])) {
-                $this->oauthModel->expireOldTokens($this->config['oauth']['expirable_client_ids']);
-            }
+        $clientId     = $request->getParameter('client_id');
+        $clientSecret = $request->getParameter('client_secret');
+        if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
+            throw new Exception("This client cannot authenticate using the password grant type", Http::FORBIDDEN);
+        }
 
-            // generate a temporary access token and then redirect back to the callback
-            $username = $request->getParameter('username');
-            $password = $request->getParameter('password');
-            $result   = $this->oauthModel->createAccessTokenFromPassword(
-                $clientId,
-                $username,
-                $password
-            );
+        // expire any old tokens
+        if (isset($this->config['oauth']['expirable_client_ids'])) {
+            $this->oauthModel->expireOldTokens($this->config['oauth']['expirable_client_ids']);
+        }
 
-            if ($result) {
-                return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
-            }
+        // generate a temporary access token and then redirect back to the callback
+        $username = $request->getParameter('username');
+        $password = $request->getParameter('password');
+        $result   = $this->oauthModel->createAccessTokenFromPassword(
+            $clientId,
+            $username,
+            $password
+        );
 
+        if (!$result) {
             throw new Exception("Signin failed", Http::FORBIDDEN);
         }
 
-        throw new Exception("Grant type not recognised", Http::BAD_REQUEST);
+        return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
     }
 
     public function listTokensForUser(Request $request, PDO $db)

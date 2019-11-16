@@ -83,7 +83,6 @@ class EventsController extends BaseApiController
                     break;
                 default:
                     throw new InvalidArgumentException('Unknown Subrequest', Http::NOT_FOUND);
-                    break;
             }
         } else {
             $mapper           = new EventMapper($db, $request);
@@ -403,8 +402,6 @@ class EventsController extends BaseApiController
                 $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
                 $emailService->sendEmail();
             }
-
-            return;
         }
     }
 
@@ -584,8 +581,6 @@ class EventsController extends BaseApiController
             $view = $request->getView();
             $view->setHeader('Location', $request->base . $request->path_info);
             $view->setResponseCode(Http::NO_CONTENT);
-
-            return;
         }
     }
 

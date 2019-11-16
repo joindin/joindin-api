@@ -322,9 +322,9 @@ final class EventHostsControllerTest extends TestCase
     public function testThatRemovingUserAsHostSetsCorrectValues()
     {
         $view = $this->getMockBuilder(ApiView::class)->getMock();
-        $view->method('setHeader')->with('Location', 'base/version/events/4/hosts');
-        $view->method('setResponseCode')->with(Http::NO_CONTENT);
-        $view->method('setNoRender')->with(true);
+        $view->expects($this->once())->method('setHeader')->with('Location', 'base/version/events/4/hosts');
+        $view->expects($this->once())->method('setResponseCode')->with(Http::NO_CONTENT);
+        $view->expects($this->once())->method('setNoRender')->with(true);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
@@ -339,21 +339,21 @@ final class EventHostsControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $eventMapper = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $eventMapper->method('getEventById')->willReturn(true);
-        $eventMapper->method('thisUserHasAdminOn')->willReturn(true);
+        $eventMapper->expects($this->once())->method('getEventById')->willReturn(true);
+        $eventMapper->expects($this->once())->method('thisUserHasAdminOn')->willReturn(true);
 
         $userMapper = $this->getMockBuilder(UserMapper::class)->disableOriginalConstructor()->getMock();
-        $userMapper->method('getUserById')->willReturn(true);
+        $userMapper->expects($this->once())->method('getUserById')->willReturn(true);
 
         $eventHostMapper = $this->getMockBuilder(EventHostMapper::class)->disableOriginalConstructor()->getMock();
-        $eventHostMapper->method('removeHostFromEvent')->willReturn(true);
+        $eventHostMapper->expects($this->once())->method('removeHostFromEvent')->willReturn(true);
 
         $constructor = new \Joindin\Api\Controller\EventHostsController();
         $constructor->setEventMapper($eventMapper);
         $constructor->setUserMapper($userMapper);
         $constructor->setEventHostMapper($eventHostMapper);
 
-        $this->assertNull($constructor->removeHostFromEvent($request, $db));
+        $constructor->removeHostFromEvent($request, $db);
     }
 
     public function testThatGettingEventHostWapperMithoutSettingFirstWorksAsExpected()

@@ -7,11 +7,13 @@ use Joindin\Api\Controller\TalksController;
 use Joindin\Api\Request;
 use Joindin\Api\Service\NullSpamCheckService;
 use Joindin\Api\View\ApiView;
-use JoindinTest\Inc\mockPDO;
+use Joindin\Api\Test\Mock\mockPDO;
 use Teapot\StatusCode\Http;
 
 final class TalksControllerDeleteTest extends TalkBase
 {
+    private $talkMapper;
+
     public function testRemoveStarFromTalkFailsWhenNotLoggedIn()
     {
         $this->expectException(Exception::class);

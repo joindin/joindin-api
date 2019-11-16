@@ -13,7 +13,7 @@ use Joindin\Api\Request;
 use Joindin\Api\Service\NullSpamCheckService;
 use Joindin\Api\Service\SpamCheckServiceInterface;
 use Joindin\Api\Service\TalkCommentEmailService;
-use JoindinTest\Inc\mockPDO;
+use Joindin\Api\Test\Mock\mockPDO;
 use Teapot\StatusCode\Http;
 use Teapot\StatusCode\WebDAV;
 

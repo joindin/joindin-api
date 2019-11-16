@@ -12,6 +12,10 @@ use Teapot\StatusCode\Http;
 
 final class OauthModelTest extends TestCase
 {
+    private $pdo;
+    private $request;
+    private $oauth;
+
     public function setup(): void
     {
         $this->pdo              = $this->getMockBuilder(PDO::class)

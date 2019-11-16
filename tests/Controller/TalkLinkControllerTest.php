@@ -5,11 +5,15 @@ namespace Joindin\Api\Test\Controller;
 use Exception;
 use Joindin\Api\Controller\TalkLinkController;
 use Joindin\Api\Request;
-use JoindinTest\Inc\mockPDO;
+use Joindin\Api\Test\Mock\mockPDO;
 use Teapot\StatusCode\Http;
 
 final class TalkLinkControllerTest extends TalkBase
 {
+    private $talks_controller;
+    private $request;
+    private $db;
+
     /**
      * Test sending delete link where the link id is not found
      */

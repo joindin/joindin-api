@@ -15,6 +15,9 @@ use ReflectionClass;
  */
 final class ApiMapperTest extends TestCase
 {
+    private $pdo;
+    private $request;
+
     public function setup(): void
     {
         $this->pdo     = $this->getMockBuilder(PDO::class)

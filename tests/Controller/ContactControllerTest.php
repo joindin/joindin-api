@@ -21,8 +21,8 @@ final class ContactControllerTest extends TestCase
      * @param bool  $isClientPermittedPasswordGrant
      * @param array $returnValueMap
      * @param bool  $isCommentAcceptable
-     * @param null  $expectedException
-     * @param null  $expectedExceptionMessage
+     * @param null|string $expectedException
+     * @param null|string $expectedExceptionMessage
      * @param bool  $spamShouldBeChecked
      * @param bool  $emailShouldBeSent
      *
