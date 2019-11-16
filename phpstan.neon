@@ -5,6 +5,7 @@ parameters:
 
     ignoreErrors:
         - '#Joindin\\Api\\Test\\Mock\\mockPDO::__construct\(\) does not call parent constructor from PDO\.#'
+        - '#Call to an undefined method Prophecy\\Prophecy\\ObjectProphecy::request\(\)#'
 
     inferPrivatePropertyTypeFromConstructor: true
 
