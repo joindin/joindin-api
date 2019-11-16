@@ -401,8 +401,6 @@ class EventsController extends BaseApiController
                 $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
                 $emailService->sendEmail();
             }
-
-            return;
         }
     }
 
@@ -582,8 +580,6 @@ class EventsController extends BaseApiController
             $view = $request->getView();
             $view->setHeader('Location', $request->base . $request->path_info);
             $view->setResponseCode(Http::NO_CONTENT);
-
-            return;
         }
     }
 
