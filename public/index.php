@@ -24,7 +24,6 @@ function handle_exception(Throwable $e)
     global $request, $config;
 
     if ($request instanceof Request) {
-
         if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
             $message = "Database error";
         }
