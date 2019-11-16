@@ -29,8 +29,9 @@
     "teapot/status-code": "^1.1.1"
   },
   "require-dev": {
-    "maglnet/composer-require-checker": "^2.0.0",
     "friendsofphp/php-cs-fixer": "^2.16.0",
+    "jangregor/phpstan-prophecy": "~0.4.2",
+    "maglnet/composer-require-checker": "^2.0.0",
     "phpstan/extension-installer": "^1.0.3",
     "phpstan/phpstan-phpunit": "~0.11.2",
     "phpunit/phpunit": "^8.3.4",
