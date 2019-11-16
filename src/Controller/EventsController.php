@@ -82,7 +82,6 @@ class EventsController extends BaseApiController
                     break;
                 default:
                     throw new InvalidArgumentException('Unknown Subrequest', Http::NOT_FOUND);
-                    break;
             }
         } else {
             $mapper           = new EventMapper($db, $request);

@@ -194,8 +194,6 @@ class TalksController extends BaseTalkController
                     }
 
                     throw new Exception("The comment could not be stored", Http::BAD_REQUEST);
-
-                    break;
                 case 'starred':
                     // the body of this request is completely irrelevant
                     // The logged in user *is* attending the talk.  Use DELETE to unattend
