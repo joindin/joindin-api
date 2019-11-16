@@ -73,6 +73,11 @@
     "require-checker": "composer-require-checker --config-file=composer-require-checker.json",
     "security": "security-checker security:check composer.lock",
     "stan": "phpstan analyze --configuration=phpstan.neon",
+    "stan-baseline": [
+      "sed -e '/phpstan-baseline\\.neon/ s/^/#/' phpstan.neon > phpstan-without-baseline.neon",
+      "phpstan analyze --configuration phpstan-without-baseline.neon --error-format baselineNeon > phpstan-baseline.neon  || true",
+      "rm phpstan-without-baseline.neon"
+    ],
     "test": "phpunit"
   },
   "support": {

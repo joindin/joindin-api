@@ -1,0 +1,10 @@
+
+
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Joindin\\\\Api\\\\Test\\\\Mock\\\\mockPDO\\:\\:__construct\\(\\) does not call parent constructor from PDO\\.$#"
+			count: 1
+			path: tests/Mock/mockPDO.php
+
+
