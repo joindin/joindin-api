@@ -15,25 +15,30 @@ if (!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
 }
 // Add exception handler
-function handle_exception(\Throwable $e)
+function handle_exception(Throwable $e)
 {
-    // pull the correct format before we bail
-    global $request, $config;
-    $status_code = $e->getCode() ?: Http::BAD_REQUEST;
-    $status_code = is_numeric($status_code) ? $status_code : 500;
-    $request->getView()->setResponseCode($status_code);
-
-    if ($status_code === Http::UNAUTHORIZED) {
-        $request->getView()->setHeader('WWW-Authenticate', 'Bearer realm="api.joind.in');
-    }
-
-    error_log(get_class($e) . ': ' . $e->getMessage() . " -- " . $e->getTraceAsString());
-
     $message = $e->getMessage();
-    if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
-        $message = "Database error";
+
+    error_log(get_class($e) . ': ' . $message . " -- " . $e->getTraceAsString());
+
+    global $request, $config;
+
+    if ($request instanceof Request) {
+        if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
+            $message = "Database error";
+        }
+
+        $status_code = $e->getCode() ?: Http::BAD_REQUEST;
+        $status_code = is_numeric($status_code) ? $status_code : 500;
+
+        $request->getView()->setResponseCode($status_code);
+
+        if ($status_code === Http::UNAUTHORIZED) {
+            $request->getView()->setHeader('WWW-Authenticate', 'Bearer realm="api.joind.in');
+        }
+
+        $request->getView()->render([$message]);
     }
-    $request->getView()->render([$message]);
 }
 
 set_exception_handler('handle_exception');
