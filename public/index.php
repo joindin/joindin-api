@@ -17,16 +17,18 @@ if (!ini_get('date.timezone')) {
 // Add exception handler
 function handle_exception(Throwable $e)
 {
-    error_log(get_class($e) . ': ' . $e->getMessage() . " -- " . $e->getTraceAsString());
+    $message = $e->getMessage();
+
+    error_log(get_class($e) . ': ' . $message . " -- " . $e->getTraceAsString());
 
     global $request, $config;
 
-    $message = $e->getMessage();
-    if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
-        $message = "Database error";
-    }
+    if ($request instanceof Request) {
 
-    if (null !== $request) {
+        if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
+            $message = "Database error";
+        }
+
         $status_code = $e->getCode() ?: Http::BAD_REQUEST;
         $status_code = is_numeric($status_code) ? $status_code : 500;
 
