@@ -26,21 +26,21 @@ class EmailsController extends BaseApiController
 
         // need the user's ID rather than the representation
         $user_id = $user_mapper->getUserIdFromEmail($email);
-        if ($user_id) {
-            // Generate a verification token and email it to the user
-            $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
 
-            $recipients   = [$email];
-            $emailService = new UserRegistrationEmailService($this->config, $recipients, $token);
-            $emailService->sendEmail();
-
-            $view = $request->getView();
-            $view->setHeader('Content-Length', 0);
-            $view->setResponseCode(Http::ACCEPTED);
-
-            return;
+        if (!$user_id) {
+            throw new Exception("Can't find that email address", Http::BAD_REQUEST);
         }
-        throw new Exception("Can't find that email address", Http::BAD_REQUEST);
+
+        // Generate a verification token and email it to the user
+        $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
+
+        $recipients   = [$email];
+        $emailService = new UserRegistrationEmailService($this->config, $recipients, $token);
+        $emailService->sendEmail();
+
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(Http::ACCEPTED);
     }
 
     public function usernameReminder(Request $request, PDO $db)
@@ -52,20 +52,20 @@ class EmailsController extends BaseApiController
         }
 
         $list = $user_mapper->getUserByEmail($email);
-        if (is_array($list['users']) && count($list['users'])) {
-            $user = $list['users'][0];
 
-            $recipients   = [$email];
-            $emailService = new UserUsernameReminderEmailService($this->config, $recipients, $user);
-            $emailService->sendEmail();
-
-            $view = $request->getView();
-            $view->setHeader('Content-Length', 0);
-            $view->setResponseCode(Http::ACCEPTED);
-
-            return;
+        if (!is_array($list['users']) || !count($list['users'])) {
+            throw new Exception("Can't find that email address", Http::BAD_REQUEST);
         }
-        throw new Exception("Can't find that email address", Http::BAD_REQUEST);
+
+        $user = $list['users'][0];
+
+        $recipients   = [$email];
+        $emailService = new UserUsernameReminderEmailService($this->config, $recipients, $user);
+        $emailService->sendEmail();
+
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(Http::ACCEPTED);
     }
 
     public function passwordReset(Request $request, PDO $db)
@@ -77,29 +77,29 @@ class EmailsController extends BaseApiController
         }
 
         $list = $user_mapper->getUserByUsername($username);
-        if (is_array($list['users']) && count($list['users'])) {
-            $user = $list['users'][0];
 
-            // neither user_id nor email are in the user resource returned by the mapper
-            $user_id    = $user_mapper->getUserIdFromUsername($username);
-            $email      = $user_mapper->getEmailByUserId($user_id);
-            $recipients = [$email];
-
-            // we need a token to send so we know it is a valid reset
-            $token = $user_mapper->generatePasswordResetTokenForUserId($user_id);
-            if (!$token) {
-                throw new Exception("Unable to generate a reset token", Http::BAD_REQUEST);
-            }
-
-            $emailService = new UserPasswordResetEmailService($this->config, $recipients, $user, $token);
-            $emailService->sendEmail();
-
-            $view = $request->getView();
-            $view->setHeader('Content-Length', 0);
-            $view->setResponseCode(Http::ACCEPTED);
-
-            return;
+        if (!is_array($list['users']) || !count($list['users'])) {
+            throw new Exception("Can't find that user", Http::BAD_REQUEST);
         }
-        throw new Exception("Can't find that user", Http::BAD_REQUEST);
+
+        $user = $list['users'][0];
+
+        // neither user_id nor email are in the user resource returned by the mapper
+        $user_id    = $user_mapper->getUserIdFromUsername($username);
+        $email      = $user_mapper->getEmailByUserId($user_id);
+        $recipients = [$email];
+
+        // we need a token to send so we know it is a valid reset
+        $token = $user_mapper->generatePasswordResetTokenForUserId($user_id);
+        if (!$token) {
+            throw new Exception("Unable to generate a reset token", Http::BAD_REQUEST);
+        }
+
+        $emailService = new UserPasswordResetEmailService($this->config, $recipients, $user, $token);
+        $emailService->sendEmail();
+
+        $view = $request->getView();
+        $view->setHeader('Content-Length', 0);
+        $view->setResponseCode(Http::ACCEPTED);
     }
 }

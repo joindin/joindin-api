@@ -67,13 +67,13 @@ class EventCommentsController extends BaseApiController
             throw new Exception("You must log in to do that", Http::UNAUTHORIZED);
         }
 
-        if ($event_mapper->thisUserHasAdminOn($event_id)) {
-            $list = $comment_mapper->getReportedCommentsByEventId($event_id);
-
-            return $list->getOutputView($request);
+        if (!$event_mapper->thisUserHasAdminOn($event_id)) {
+            throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
 
-        throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
+        $list = $comment_mapper->getReportedCommentsByEventId($event_id);
+
+        return $list->getOutputView($request);
     }
 
     public function createComment(Request $request, PDO $db)

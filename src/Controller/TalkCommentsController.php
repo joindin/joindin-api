@@ -55,13 +55,13 @@ class TalkCommentsController extends BaseApiController
             throw new Exception("You must log in to do that", Http::UNAUTHORIZED);
         }
 
-        if ($eventMapper->thisUserHasAdminOn($eventId)) {
-            $list = $commentMapper->getReportedCommentsByEventId($eventId);
-
-            return $list->getOutputView($request);
+        if (!$eventMapper->thisUserHasAdminOn($eventId)) {
+            throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
 
-        throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
+        $list = $commentMapper->getReportedCommentsByEventId($eventId);
+
+        return $list->getOutputView($request);
     }
 
     public function reportComment(Request $request, PDO $db)
