@@ -12,18 +12,24 @@
   "license": "BSD-3-Clause",
   "require": {
     "php": "^7.2",
+    "ext-curl": "*",
+    "ext-filter": "*",
+    "ext-gd": "*",
     "ext-intl": "*",
     "ext-json": "*",
+    "ext-openssl": "*",
     "ext-pdo": "*",
     "guzzlehttp/guzzle": "^6.3",
     "guzzlehttp/oauth-subscriber": "^0.3.0",
     "michelf/php-markdown": "^1.8",
     "phpstan/phpstan-shim": "~0.11.19",
     "pimple/pimple": "^3.2",
+    "psr/container": "^1.0.0",
     "swiftmailer/swiftmailer": "^6.0",
     "teapot/status-code": "^1.1.1"
   },
   "require-dev": {
+    "maglnet/composer-require-checker": "^2.0.0",
     "friendsofphp/php-cs-fixer": "^2.16.0",
     "phpstan/extension-installer": "^1.0.3",
     "phpstan/phpstan-phpunit": "~0.11.2",
@@ -54,6 +60,7 @@
       "mkdir -p build/logs",
       "@cs",
       "@stan",
+      "@require-checker",
       "@security",
       "@coverage"
     ],
@@ -62,6 +69,7 @@
       "phpunit --coverage-clover=build/logs/clover.xml --coverage-text --prepend=build/xdebug-filter.php"
     ],
     "cs": "php-cs-fixer fix --config=.php_cs --diff --diff-format=udiff --verbose",
+    "require-checker": "composer-require-checker --config-file=composer-require-checker.json",
     "security": "security-checker security:check composer.lock",
     "stan": "phpstan analyze --configuration=phpstan.neon",
     "test": "phpunit"
