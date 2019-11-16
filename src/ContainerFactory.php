@@ -2,6 +2,7 @@
 
 namespace Joindin\Api;
 
+use GuzzleHttp\Client;
 use Joindin\Api\Controller\ApplicationsController;
 use Joindin\Api\Controller\ContactController;
 use Joindin\Api\Controller\DefaultController;
@@ -55,6 +56,7 @@ class ContainerFactory
             if (isset($config['akismet']['apiKey'], $config['akismet']['blog'])) {
                 $container[SpamCheckServiceInterface::class] = static function ($c) use ($config) {
                     return new SpamCheckService(
+                        new Client(),
                         $config['akismet']['apiKey'],
                         $config['akismet']['blog']
                     );
