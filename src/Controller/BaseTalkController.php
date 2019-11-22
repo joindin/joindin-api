@@ -90,7 +90,6 @@ class BaseTalkController extends BaseApiController
         return $this->event_mapper;
     }
 
-
     public function setUserMapper(UserMapper $user_mapper)
     {
         $this->user_mapper = $user_mapper;
@@ -104,7 +103,6 @@ class BaseTalkController extends BaseApiController
 
         return $this->user_mapper;
     }
-
 
     /**
      * Get a single talk
@@ -124,11 +122,13 @@ class BaseTalkController extends BaseApiController
         $verbose = false
     ) {
         $mapper = $this->getTalkMapper($db, $request);
+
         if (0 === $talk_id) {
             $talk_id = $this->getItemId($request);
         }
 
         $talk = $mapper->getTalkById($talk_id, $verbose);
+
         if (false === $talk) {
             throw new Exception('Talk not found', Http::NOT_FOUND);
         }

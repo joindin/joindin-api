@@ -42,7 +42,6 @@ class PendingTalkClaimModel extends BaseModel
         return $fields;
     }
 
-
     /**
      * Return an array with client-facing fields and hypermedia, ready for output
      *

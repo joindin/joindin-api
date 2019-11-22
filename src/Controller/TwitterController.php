@@ -3,7 +3,6 @@
 /**
  * Twitter-specific endpoints live here
  */
-
 namespace Joindin\Api\Controller;
 
 use Exception;
@@ -29,6 +28,7 @@ class TwitterController extends BaseApiController
         $clientId         = $request->getParameter('client_id');
         $clientSecret     = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
+
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
             throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
@@ -81,6 +81,7 @@ class TwitterController extends BaseApiController
         $clientId         = $request->getParameter('client_id');
         $clientSecret     = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
+
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
             throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
@@ -89,6 +90,7 @@ class TwitterController extends BaseApiController
         if (empty($request_token = $request->getParameter("token"))) {
             throw new Exception("The request token must be supplied");
         }
+
         if (empty($verifier = $request->getParameter("verifier"))) {
             throw new Exception("The verifier code must be supplied");
         }
@@ -120,6 +122,7 @@ class TwitterController extends BaseApiController
         $twitterUsername = $data['screen_name'];
 
         $result = $this->oauthModel->createAccessTokenFromTwitterUsername($clientId, $twitterUsername);
+
         if (!$result) {
             // try to create the user.
             $stack1 = HandlerStack::create();

@@ -51,6 +51,7 @@ class TalkCommentReportModelCollection extends BaseModelCollection
         $retval = [];
         // handle the collection first
         $retval = ['reports' => []];
+
         foreach ($this->list as $item) {
             $retval['reports'][] = $item->getOutputView($request, $verbose);
         }

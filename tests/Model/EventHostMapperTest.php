@@ -14,12 +14,12 @@ final class EventHostMapperTest extends TestCase
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
-             ->with([
-                 ':host_id'  => 12,
-                 ':event_id' => 10,
-                 ':type'     => 'event'
-             ])
-             ->willReturn(true);
+            ->with([
+                ':host_id'  => 12,
+                ':event_id' => 10,
+                ':type'     => 'event'
+            ])
+            ->willReturn(true);
         $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $pdo->method('prepare')
             ->with('INSERT INTO user_admin (uid, rid, rtype) VALUES (:host_id, :event_id, :type)')
@@ -38,12 +38,12 @@ final class EventHostMapperTest extends TestCase
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
-             ->with([
-                 ':host_id'  => 12,
-                 ':event_id' => 10,
-                 ':type'     => 'event'
-             ])
-             ->willReturn(false);
+            ->with([
+                ':host_id'  => 12,
+                ':event_id' => 10,
+                ':type'     => 'event'
+            ])
+            ->willReturn(false);
         $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $pdo->method('prepare')
             ->with('INSERT INTO user_admin (uid, rid, rtype) VALUES (:host_id, :event_id, :type)')
@@ -60,10 +60,10 @@ final class EventHostMapperTest extends TestCase
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
-             ->with([
-                 ':event_id' => 12,
-             ])
-             ->willReturn(false);
+            ->with([
+                ':event_id' => 12,
+            ])
+            ->willReturn(false);
         $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $pdo->method('prepare')
             ->with('select a.uid as user_id, u.full_name as host_name from user_admin a inner join user u on u.ID = a.uid where rid = :event_id and rtype="event" and (rcode!="pending" OR rcode is null) order by host_name  LIMIT 0,10')
@@ -80,22 +80,22 @@ final class EventHostMapperTest extends TestCase
     {
         $stmt1 = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt1->method('execute')
-              ->with([
-                  ':event_id' => 12,
-              ])
-              ->willReturn(true);
+            ->with([
+                ':event_id' => 12,
+            ])
+            ->willReturn(true);
         $stmt1->method('fetchAll')
-              ->willReturn([
-                  ['user_id' => 8, 'host_name' => 'Karl Napp'],
-              ]);
+            ->willReturn([
+                ['user_id' => 8, 'host_name' => 'Karl Napp'],
+            ]);
         $stmt2 = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt2->method('execute')
-              ->with([
-                  ':event_id' => 12,
-              ])
-              ->willReturn(true);
+            ->with([
+                ':event_id' => 12,
+            ])
+            ->willReturn(true);
         $stmt2->method('fetchAll')
-              ->willReturn(1);
+            ->willReturn(1);
         $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $pdo->expects($this->at(0))
             ->method('prepare')
@@ -132,12 +132,12 @@ final class EventHostMapperTest extends TestCase
     {
         $stmt1 = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt1->method('execute')
-              ->with([
-                  ':user_id'  => 12,
-                  ':event_id' => 14,
-                  ':type'     => 'event',
-              ])
-              ->willReturn(true);
+            ->with([
+                ':user_id'  => 12,
+                ':event_id' => 14,
+                ':type'     => 'event',
+            ])
+            ->willReturn(true);
 
         $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $pdo->expects($this->once())

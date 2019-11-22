@@ -45,6 +45,7 @@ class SpamCheckService implements SpamCheckServiceInterface
         if ('' === trim($comment)) {
             return false;
         }
+
         try {
             $response = $this->httpClient->request(
                 'POST',

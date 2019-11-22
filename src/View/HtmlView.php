@@ -13,7 +13,6 @@ namespace Joindin\Api\View;
  */
 class HtmlView extends ApiView
 {
-
     /**
      * @param array|string $content
      *
@@ -38,6 +37,7 @@ class HtmlView extends ApiView
         $content = $this->addCount($content);
 
         $this->layoutStart();
+
         if (is_array($content)) {
             $this->printArray($content);
         } else {
@@ -62,6 +62,7 @@ class HtmlView extends ApiView
         // field name
         foreach ($content as $field => $value) {
             echo "<li><strong>" . $field . ":</strong> ";
+
             if (is_array($value)) {
                 // recurse
                 $this->printArray($value);
@@ -88,6 +89,7 @@ class HtmlView extends ApiView
             $value = $value ? 'true' : 'false';
         }
         $value = htmlentities($value, ENT_COMPAT, 'UTF-8');
+
         if ((strpos($value, 'http://') === 0) || (strpos($value, 'https://') === 0)) {
             echo "<a href=\"" . $value . "\">" . $value . "</a>";
         } else {

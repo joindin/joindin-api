@@ -11,7 +11,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class RouterTest extends TestCase
 {
-
     /**
      * DataProvider for testConstruct
      *

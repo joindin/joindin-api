@@ -20,7 +20,7 @@ abstract class BaseApiController
             !empty($request->url_elements[3])
              && is_numeric($request->url_elements[3])
         ) {
-            return (int)$request->url_elements[3];
+            return (int) $request->url_elements[3];
         }
 
         return false;
@@ -46,7 +46,7 @@ abstract class BaseApiController
 
     public function getResultsPerPage(Request $request)
     {
-        return (int)$request->paginationParameters['resultsperpage'];
+        return (int) $request->paginationParameters['resultsperpage'];
     }
 
     public function getSort(Request $request)

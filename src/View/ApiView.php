@@ -79,12 +79,15 @@ class ApiView
     {
         ob_start();
         $body = '';
+
         if ($content && $this->noRender === false) {
             $body = $this->buildOutput($content);
         }
+
         if (Http::OK == $this->responseCode) {
             $this->responseCode = http_response_code();
         }
+
         foreach ($this->headers as $key => $value) {
             header($key . ': ' . $value, true);
         }
@@ -92,6 +95,7 @@ class ApiView
 
         echo $body;
         ob_end_flush();
+
         return true;
     }
 

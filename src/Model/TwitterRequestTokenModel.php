@@ -40,7 +40,6 @@ class TwitterRequestTokenModel extends BaseModel
         ];
     }
 
-
     /**
      * Return this object with client-facing fields and hypermedia, ready for output
      *

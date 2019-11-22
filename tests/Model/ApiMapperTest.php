@@ -21,11 +21,11 @@ final class ApiMapperTest extends TestCase
     public function setup(): void
     {
         $this->pdo     = $this->getMockBuilder(PDO::class)
-                              ->disableOriginalConstructor()
-                              ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->request = $this->getMockBuilder(Request::class)
-                              ->disableOriginalConstructor()
-                              ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     public function testThatApiMapperHasNoDefaultFields()
@@ -67,7 +67,6 @@ final class ApiMapperTest extends TestCase
                         'event_tz_cont'    => null,
                         'name'             => null,
                     ],
-
                 ],
                 [
                     [
@@ -113,7 +112,6 @@ final class ApiMapperTest extends TestCase
     {
         $mapper = new TestApiMapper($this->pdo, $this->request);
 
-
         $this->assertEquals('', $mapper->buildLimit(0, 12));
         $this->assertEquals(' LIMIT 12,1', $mapper->buildLimit(1, 12));
         $this->assertEquals(' LIMIT 12,1', $mapper->buildLimit("1", "12"));
@@ -123,23 +121,24 @@ final class ApiMapperTest extends TestCase
     public function testThatRetrievingTotalCountFromQueryWorks($query, $countquery, $data, $returns, $exception = false)
     {
         $result = $this->getMockBuilder(PDOStatement::class)
-                       ->disableOriginalConstructor()
-                       ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
+
         if ($exception) {
             $result->method('execute')
-                   ->with($this->equalTo($data))
-                   ->will($this->throwException(new Exception()));
+                ->with($this->equalTo($data))
+                ->will($this->throwException(new Exception()));
         } else {
             $result->method('execute')
-                   ->with($this->equalTo($data));
+                ->with($this->equalTo($data));
         }
         $result->method('fetchColumn')
-               ->with($this->equalTo(0))
-               ->willReturn($returns);
+            ->with($this->equalTo(0))
+            ->willReturn($returns);
 
         $pdo = $this->getMockBuilder(PDO::class)
-                    ->disableOriginalConstructor()
-                    ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
         $pdo->method('prepare')
             ->with($this->equalTo($countquery))
             ->willReturn($result);

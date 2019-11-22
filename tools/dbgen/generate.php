@@ -1,4 +1,5 @@
 <?php
+
     // In case you run into memory limit issues, here's your fix, you WILL need it :)
     ini_set('memory_limit', '1024M');
 
@@ -38,8 +39,6 @@
 //    define("COUNT_TRACKS",          16000);
 //    define("COUNT_TALKS",           50000);
 //    define("COUNT_TALK_COMMENTS",  250000);
-
-
 
     // Comma separated: 1 day event, 2 day event, 3 day event, 5 day event.
     define("EVENT_DURATION", "50,75,90,100");
@@ -92,13 +91,15 @@
     // 25% has a twitter account
     define("USER_HAS_TWITTER", 25);
 
-
 // ====================== NOTHING TO EDIT BELOW THIS POINT, MOVE ALONG ======================
 
     require_once "generator_data.interface.php";
+
     require_once "generator_data.class.php";
+
     require_once "generator.class.php";
 
     $gen = new DataGenerator(new Generator_Data());
     echo $gen->generate();
+
     exit;

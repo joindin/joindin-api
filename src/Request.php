@@ -17,7 +17,6 @@ use Teapot\StatusCode\Http;
 
 class Request
 {
-
     /**
      * Output formats
      */
@@ -150,9 +149,11 @@ class Request
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
             $elementArray = array_change_key_case($elementArray);
+
             if (isset($elementArray['for']) && count($elementArray['for'])) {
                 $ipAddress = $elementArray['for'][0];
             }
+
             if (isset($elementArray['user-agent']) && count($elementArray['user-agent'])) {
                 $userAgent = $elementArray['user-agent'][0];
             }
@@ -236,7 +237,7 @@ class Request
      */
     public function getUrlElement($index, $default = '')
     {
-        $index = (int)$index;
+        $index = (int) $index;
 
         if (!isset($this->url_elements[$index])) {
             return $default;
@@ -306,13 +307,14 @@ class Request
                 case self::CONTENT_TYPE_HTML:
                 case self::FORMAT_HTML:
                     $this->view = new HtmlView();
-                    break;
 
+                    break;
                 case self::CONTENT_TYPE_JSON:
                 case self::FORMAT_JSON:
                 default:
                     // JSONP?
                     $callback = filter_var($this->getParameter('callback'), FILTER_SANITIZE_STRING);
+
                     if ($callback) {
                         $this->view = new JsonPView($callback);
                     } else {
@@ -352,6 +354,7 @@ class Request
         ) {
             // identify the user
             $oauth_pieces = explode(' ', $auth_header);
+
             if (count($oauth_pieces) !== 2) {
                 throw new InvalidArgumentException('Invalid Authorization Header', Http::BAD_REQUEST);
             }
@@ -393,6 +396,7 @@ class Request
         if (!isset($this->paginationParameters['start'])) {
             $this->paginationParameters['start'] = null;
         }
+
         if (!isset($this->paginationParameters['resultsperpage'])) {
             $this->paginationParameters['resultsperpage'] = 20;
         }
@@ -400,11 +404,13 @@ class Request
         // now how about PUT/POST bodies? These override what we already had
         if ($this->getVerb() === 'POST' || $this->getVerb() === 'PUT') {
             $body = $this->getRawBody();
+
             if (
                 (isset($server['CONTENT_TYPE']) && $server['CONTENT_TYPE'] === 'application/json')
                 || (isset($server['HTTP_CONTENT_TYPE']) && $server['HTTP_CONTENT_TYPE'] === 'application/json')
             ) {
                 $body_params = json_decode($body);
+
                 if ($body_params) {
                     foreach ($body_params as $param_name => $param_value) {
                         $this->parameters[$param_name] = $param_value;

@@ -43,6 +43,7 @@ class EventHostMapper extends ApiMapper
         $response = $stmt->execute([
             ':event_id' => $event_id
         ]);
+
         if (!$response) {
             return false;
         }
