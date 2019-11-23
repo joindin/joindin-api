@@ -65,7 +65,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           pecl: true
-          extension-csv: "intl, json, pdo, ext-mbstring, ext-gd"
+          extension-csv: "gd, intl, json, mbstring, pdo"
 
       - name: "Cache dependencies installed with composer"
         uses: actions/cache@v1
