@@ -30,6 +30,7 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.16.0",
+    "infection/infection": "^0.14.2",
     "jangregor/phpstan-prophecy": "~0.4.2",
     "maglnet/composer-require-checker": "^2.0.0",
     "phpstan/extension-installer": "^1.0.3",
