@@ -26,7 +26,7 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
-          extension-csv: "intl, json, pdo"
+          extension-csv: "gd, intl, json, mbstring, pdo"
 
       - name: "Cache dependencies installed with composer"
         uses: actions/cache@v1.0.0
@@ -100,7 +100,7 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
-          extension-csv: "intl, json, pdo, xdebug"
+          extension-csv: "gd, intl, json, mbstring, pdo"
           coverage: "xdebug"
 
       - name: "Cache dependencies installed with composer"
