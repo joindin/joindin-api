@@ -8,7 +8,7 @@ parameters:
 
     inferPrivatePropertyTypeFromConstructor: true
 
-    level: 4
+    level: max
 
     paths:
         - inc

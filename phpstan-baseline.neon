@@ -3,8 +3,428 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Parameter \\#2 \\$str of function explode expects string, string\\|null given\\.$#"
+			count: 1
+			path: inc/nginx-helper.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function strlen expects string, string\\|null given\\.$#"
+			count: 1
+			path: inc/nginx-helper.php
+
+		-
+			message: "#^Cannot call method getOutputView\\(\\) on Joindin\\\\Api\\\\Model\\\\ClientModelCollection\\|false\\.$#"
+			count: 4
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$clientId of method Joindin\\\\Api\\\\Model\\\\ClientMapper\\:\\:getClientByIdAndUser\\(\\) expects string, int given\\.$#"
+			count: 2
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Cannot call method getClients\\(\\) on Joindin\\\\Api\\\\Model\\\\ClientModelCollection\\|false\\.$#"
+			count: 1
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: src/Controller/ContactController.php
+
+		-
+			message: "#^Parameter \\#3 \\$token of class Joindin\\\\Api\\\\Service\\\\UserRegistrationEmailService constructor expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 3
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$user_id of method Joindin\\\\Api\\\\Model\\\\UserMapper\\:\\:getEmailByUserId\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$user_id of method Joindin\\\\Api\\\\Model\\\\UserMapper\\:\\:generatePasswordResetTokenForUserId\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Joindin\\\\Api\\\\Request\\:\\:getParameter\\(\\) expects string, false given\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$token of method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:getConsumerName\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Parameter \\#3 \\$comment of class Joindin\\\\Api\\\\Service\\\\EventCommentReportedEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Parameter \\#4 \\$event of class Joindin\\\\Api\\\\Service\\\\EventCommentReportedEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagecreatefromstring expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$im of function imagealphablending expects resource, resource\\|false given\\.$#"
+			count: 2
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$im of function imagesavealpha expects resource, resource\\|false given\\.$#"
+			count: 2
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$dst_im of function imagecopyresampled expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#2 \\$src_im of function imagecopyresampled expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$im of function imagejpeg expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$im of function imagegif expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$im of function imagepng expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Cannot call method getOutputView\\(\\) on Joindin\\\\Api\\\\Model\\\\TalkModelCollection\\|false\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function trim expects string, string\\|false given\\.$#"
+			count: 2
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event_id of method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:addUserAsHost\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event_id of method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:setUserAttendance\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event_id of method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:setTags\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event_id of method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:getPendingEventById\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$recipients of class Joindin\\\\Api\\\\Service\\\\EventSubmissionEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#3 \\$event of class Joindin\\\\Api\\\\Service\\\\EventSubmissionEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Joindin\\\\Api\\\\Request\\:\\:getParameter\\(\\) expects string, false given\\.$#"
+			count: 6
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#3 \\$reason of method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:reject\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#3 \\$comment of class Joindin\\\\Api\\\\Service\\\\CommentReportedEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/TalkCommentsController.php
+
+		-
+			message: "#^Parameter \\#4 \\$event of class Joindin\\\\Api\\\\Service\\\\CommentReportedEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/TalkCommentsController.php
+
+		-
+			message: "#^Parameter \\#3 \\$link_id of method Joindin\\\\Api\\\\Controller\\\\TalkLinkController\\:\\:sucessfullyAltered\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: src/Controller/TalkLinkController.php
+
+		-
+			message: "#^Parameter \\#1 \\$keyword of method Joindin\\\\Api\\\\Model\\\\TalkMapper\\:\\:getTalksByTitleSearch\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Cannot call method getOutputView\\(\\) on bool\\|Joindin\\\\Api\\\\Model\\\\TalkModelCollection\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$token of method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:getConsumerName\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$comment_id of method Joindin\\\\Api\\\\Model\\\\TalkCommentMapper\\:\\:getCommentById\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 2
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$talk_id of method Joindin\\\\Api\\\\Model\\\\TalkMapper\\:\\:addTalkLink\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#3 \\$talk_id of method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:getTalkById\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$key of function array_key_exists expects int\\|string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function trim expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Joindin\\\\Api\\\\Request\\:\\:getParameter\\(\\) expects string, null given\\.$#"
+			count: 1
+			path: src/Controller/TracksController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: src/Controller/TracksController.php
+
+		-
+			message: "#^Cannot call method getOutputView\\(\\) on Joindin\\\\Api\\\\Model\\\\TwitterRequestTokenModelCollection\\|false\\.$#"
+			count: 1
+			path: src/Controller/TwitterController.php
+
+		-
+			message: "#^Parameter \\#2 \\$assoc of function json_decode expects bool, int given\\.$#"
+			count: 1
+			path: src/Controller/TwitterController.php
+
+		-
+			message: "#^Cannot call method getOutputView\\(\\) on Joindin\\\\Api\\\\Model\\\\TalkModelCollection\\|false\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#1 \\$username of method Joindin\\\\Api\\\\Model\\\\UserMapper\\:\\:getUserByUsername\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#1 \\$keyword of method Joindin\\\\Api\\\\Model\\\\UserMapper\\:\\:getUserByKeyword\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 6
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#1 \\$token of method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:isAccessTokenPermittedPasswordGrant\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Joindin\\\\Api\\\\Request\\:\\:getParameter\\(\\) expects string, false given\\.$#"
+			count: 3
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Cannot call method deleteCommentsForUser\\(\\) on Joindin\\\\Api\\\\Model\\\\TalkCommentMapper\\|null\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Joindin\\\\Api\\\\Request\\:\\:getParameter\\(\\) expects string, null given\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Argument of an invalid type array\\<int, string\\>\\|false supplied for foreach, only iterables are supported\\.$#"
+			count: 2
+			path: src/Header.php
+
+		-
+			message: "#^Cannot call method transliterate\\(\\) on Transliterator\\|null\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|false given\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|null given\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function substr expects string, int\\|string given\\.$#"
+			count: 1
+			path: src/Model/BaseModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function base64_encode expects string, string\\|false given\\.$#"
+			count: 2
+			path: src/Model/ClientMapper.php
+
+		-
+			message: "#^Parameter \\#2 \\$start of method Joindin\\\\Api\\\\Model\\\\ApiMapper\\:\\:buildLimit\\(\\) expects int, int\\|null given\\.$#"
+			count: 1
+			path: src/Model/EventMapper.php
+
+		-
+			message: "#^Parameter \\#2 \\$request of class Joindin\\\\Api\\\\Model\\\\UserMapper constructor expects Joindin\\\\Api\\\\Request\\|null, object given\\.$#"
+			count: 2
+			path: src/Model/EventMapper.php
+
+		-
+			message: "#^Parameter \\#2 \\$user_id of method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:createAccessToken\\(\\) expects int, int\\|true given\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$userId of method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:getUserUri\\(\\) expects int, int\\|true given\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fread expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fclose expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function sha1 expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:createUserFromTwitterUsername\\(\\) should return array but returns array\\|false\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function md5 expects string, int given\\.$#"
+			count: 1
+			path: src/Model/TalkMapper.php
+
+		-
+			message: "#^Parameter \\#2 \\$request of class Joindin\\\\Api\\\\Model\\\\UserMapper constructor expects Joindin\\\\Api\\\\Request\\|null, object given\\.$#"
+			count: 1
+			path: src/Model/TalkMapper.php
+
+		-
+			message: "#^Cannot assign offset 0 to array\\|false\\.$#"
+			count: 2
+			path: src/Model/UserMapper.php
+
+		-
+			message: "#^Parameter \\#1 \\$data of function bin2hex expects string, string\\|false given\\.$#"
+			count: 2
+			path: src/Model/UserMapper.php
+
+		-
+			message: "#^Parameter \\#1 \\$pathInfo of method Joindin\\\\Api\\\\Request\\:\\:setPathInfo\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Parameter \\#1 \\$userId of method Joindin\\\\Api\\\\Request\\:\\:setUserId\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Request\\:\\:getRawBody\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Parameter \\#1 \\$array_arg of function end is passed by reference, so it expects variables only\\.$#"
+			count: 1
+			path: src/Router/Route.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\View\\\\ApiView\\:\\:\\$responseCode \\(int\\) does not accept bool\\|int\\.$#"
+			count: 1
+			path: src/View/ApiView.php
+
+		-
 			message: "#^Joindin\\\\Api\\\\Test\\\\Mock\\\\mockPDO\\:\\:__construct\\(\\) does not call parent constructor from PDO\\.$#"
 			count: 1
 			path: tests/Mock/mockPDO.php
+
+		-
+			message: "#^Parameter \\#1 \\$resultsperpage of method Joindin\\\\Api\\\\Test\\\\Model\\\\TestApiMapper\\:\\:buildLimit\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$start of method Joindin\\\\Api\\\\Test\\\\Model\\\\TestApiMapper\\:\\:buildLimit\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$db of method Joindin\\\\Api\\\\Router\\\\Route\\:\\:dispatch\\(\\) expects PDO, string given\\.$#"
+			count: 1
+			path: tests/Router/RouteTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$expected of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) expects string, true given\\.$#"
+			count: 1
+			path: tests/Router/RouteTest.php
 
 
