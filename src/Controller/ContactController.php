@@ -64,6 +64,7 @@ class ContactController extends BaseApiController
         $clientId     = $request->getParameter('client_id');
         $clientSecret = $request->getParameter('client_secret');
         $oauthModel   = $request->getOauthModel($db);
+
         if (!$oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
             throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
@@ -71,8 +72,10 @@ class ContactController extends BaseApiController
         $fields = ['name', 'email', 'subject', 'comment'];
         $error  = [];
         $data   = [];
+
         foreach ($fields as $name) {
             $value = $request->getParameter($name);
+
             if (empty($value)) {
                 $error[] = "'$name'";
             }
@@ -85,6 +88,7 @@ class ContactController extends BaseApiController
             $message .= implode(', ', $error);
             $message .= count($error) == 1 ? ' is ' : ' are ';
             $message .= 'required.';
+
             throw new Exception($message, Http::BAD_REQUEST);
         }
 

@@ -54,7 +54,8 @@ class UserMapper extends ApiMapper
      */
     public function getUserById($user_id, $verbose = false)
     {
-        $results = $this->getUsers(1, 0, 'user.ID=' . (int)$user_id, null);
+        $results = $this->getUsers(1, 0, 'user.ID=' . (int) $user_id, null);
+
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
@@ -82,9 +83,11 @@ class UserMapper extends ApiMapper
         $data = ["username" => $username];
 
         $response = $stmt->execute($data);
+
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
+
             if ($results) {
                 return $this->transformResults($results, $verbose);
             }
@@ -142,6 +145,7 @@ class UserMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
 
         $response = $stmt->execute();
+
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -186,6 +190,7 @@ class UserMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
 
         $response = $stmt->execute();
+
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql);
@@ -207,6 +212,7 @@ class UserMapper extends ApiMapper
     {
         $order   = 'user.ID';
         $results = $this->getUsers($resultsperpage, $start, null, $order);
+
         if (is_array($results)) {
             return $this->transformResults($results, $verbose);
         }
@@ -226,6 +232,7 @@ class UserMapper extends ApiMapper
     {
         $where   = "ua.eid = " . $event_id;
         $results = $this->getUsers($resultsperpage, $start, $where);
+
         if (is_array($results)) {
             return $this->transformResults($results, $verbose);
         }
@@ -248,6 +255,7 @@ class UserMapper extends ApiMapper
         // add per-item links
         if (is_array($list) && count($list)) {
             $userIsSiteAdmin = false;
+
             if ($this->_request->user_id && $this->isSiteAdmin($this->_request->user_id)) {
                 $userIsSiteAdmin = true;
             }
@@ -255,6 +263,7 @@ class UserMapper extends ApiMapper
             foreach ($results as $key => $row) {
                 // can the logged in user edit this user?
                 $canEdit = false;
+
                 if ($userIsSiteAdmin || $row['ID'] == $this->_request->user_id) {
                     $canEdit = true;
                 }
@@ -300,7 +309,8 @@ class UserMapper extends ApiMapper
      */
     public function isSiteAdmin($user_id)
     {
-        $results = $this->getUsers(1, 0, 'user.ID=' . (int)$user_id, null);
+        $results = $this->getUsers(1, 0, 'user.ID=' . (int) $user_id, null);
+
         if (isset($results[0]) && $results[0]['admin'] == 1) {
             return true;
         }
@@ -317,7 +327,8 @@ class UserMapper extends ApiMapper
      */
     public function isTrusted($user_id)
     {
-        $results = $this->getUsers(1, 0, 'user.ID=' . (int)$user_id, null);
+        $results = $this->getUsers(1, 0, 'user.ID=' . (int) $user_id, null);
+
         if (isset($results[0]) && $results[0]['trusted'] == 1) {
             return true;
         }
@@ -339,11 +350,10 @@ class UserMapper extends ApiMapper
                       . "where ID = :user_id";
 
         $verify_stmt = $this->_db->prepare($verify_sql);
-        $verify_data = ["trusted_status" => (int)$trustedStatus, "user_id" => $user_id];
+        $verify_data = ["trusted_status" => (int) $trustedStatus, "user_id" => $user_id];
 
         return $verify_stmt->execute($verify_data);
     }
-
 
     /**
      * @param array $user
@@ -361,6 +371,7 @@ class UserMapper extends ApiMapper
             'password',
         ];
         $contains_mandatory_fields = ! array_diff($mandatory_fields, array_keys($user));
+
         if (!$contains_mandatory_fields) {
             throw new Exception("Missing mandatory fields");
         }
@@ -389,6 +400,7 @@ class UserMapper extends ApiMapper
 
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute($user);
+
         if ($result) {
             return $this->_db->lastInsertId();
         }
@@ -416,9 +428,11 @@ class UserMapper extends ApiMapper
         $data = ["email" => $email];
 
         $response = $stmt->execute($data);
+
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
+
             if ($results) {
                 return $this->transformResults($results, $verbose);
             }
@@ -446,7 +460,6 @@ class UserMapper extends ApiMapper
         return true;
     }
 
-
     /**
      * Generate and store a token in the email_verification_tokens table for this
      * user, when they use the token to verify, we'll set their status to verified
@@ -469,6 +482,7 @@ class UserMapper extends ApiMapper
         ];
 
         $response = $stmt->execute($data);
+
         if ($response) {
             return $token;
         }
@@ -495,8 +509,10 @@ class UserMapper extends ApiMapper
         ];
 
         $response = $select_stmt->execute($data);
+
         if ($response) {
             $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
+
             if ($row && is_array($row)) {
                 $user_id = $row['user_id'];
 
@@ -533,8 +549,10 @@ class UserMapper extends ApiMapper
         $data     = ["email" => $email];
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
+
         if ($response) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
             if (isset($row['ID'])) {
                 return $row['ID'];
             }
@@ -588,6 +606,7 @@ class UserMapper extends ApiMapper
     {
         // do we even have an authenticated user?
         $loggedInUser = $this->_request->getUserId();
+
         if ($loggedInUser) {
             // are we asking for access to the current user?
             if ($loggedInUser == $user_id) {
@@ -621,6 +640,7 @@ class UserMapper extends ApiMapper
             'email',
         ];
         $contains_mandatory_fields = ! array_diff($mandatory_fields, array_keys($user));
+
         if (!$contains_mandatory_fields) {
             throw new Exception("Missing mandatory fields");
         }
@@ -653,6 +673,7 @@ class UserMapper extends ApiMapper
 
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute($user);
+
         if ($result) {
             return true;
         }
@@ -674,8 +695,10 @@ class UserMapper extends ApiMapper
         $data     = ["username" => $username];
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
+
         if ($response) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
             if (isset($row['ID'])) {
                 return $row['ID'];
             }
@@ -697,8 +720,10 @@ class UserMapper extends ApiMapper
         $sql      = "select email from user where ID = :user_id";
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(["user_id" => $user_id]);
+
         if ($response) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
             if (isset($row['email'])) {
                 return $row['email'];
             }
@@ -730,6 +755,7 @@ class UserMapper extends ApiMapper
         ];
 
         $response = $stmt->execute($data);
+
         if ($response) {
             return $token;
         }
@@ -757,8 +783,10 @@ class UserMapper extends ApiMapper
         $data        = ["token" => $token];
 
         $response = $select_stmt->execute($data);
+
         if ($response) {
             $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
+
             if ($row && is_array($row)) {
                 $user_id = $row['user_id'];
 
@@ -804,6 +832,7 @@ class UserMapper extends ApiMapper
             // underlying database doesn't understand transactions. Shouldn't happen
             // but to be on the safe side.
         }
+
         try {
             // Delete the user
             $sql  = "delete from user where ID = :user_id";

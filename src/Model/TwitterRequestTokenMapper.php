@@ -21,6 +21,7 @@ class TwitterRequestTokenMapper extends ApiMapper
             ':token'  => $token,
             ':secret' => $secret
         ]);
+
         if ($response) {
             $token_id = $this->_db->lastInsertId();
 

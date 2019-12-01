@@ -17,7 +17,6 @@ use Teapot\StatusCode\Http;
  */
 final class SpamCheckServiceTest extends TestCase
 {
-
     /**
      * @dataProvider provideBlankOrEmptyString
      */

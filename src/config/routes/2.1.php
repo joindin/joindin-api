@@ -290,8 +290,8 @@ return [
         'controller' => TalksController::class,
         'action'     => 'postAction',
         'verbs'      => [
-                Request::HTTP_POST,
-            ],
+            Request::HTTP_POST,
+        ],
     ],
     [
         'path'       => '/talks(/[\\d]+)/speakers(/[\\d]+)$',

@@ -29,7 +29,7 @@ abstract class TalkBase extends TestCase
     final protected function createTalkMapper(mockPDO $db, Request $request, $expectedCalls = 1)
     {
         $talk_mapper = $this->getMockBuilder(TalkMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $talk_mapper
@@ -59,7 +59,7 @@ abstract class TalkBase extends TestCase
     final protected function createVerboseTalkMapper(mockPDO $db, Request $request)
     {
         $talk_mapper = $this->getMockBuilder(TalkMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $talk_mapper
@@ -94,7 +94,7 @@ abstract class TalkBase extends TestCase
     final protected function createUserMapper(mockPDO $db, Request $request)
     {
         $user_mapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $user_mapper
@@ -115,7 +115,7 @@ abstract class TalkBase extends TestCase
     final protected function createEventMapper(mockPDO $db, Request $request)
     {
         $event_mapper = $this->getMockBuilder(EventMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $event_mapper
@@ -140,14 +140,14 @@ abstract class TalkBase extends TestCase
     final protected function createTalkCommentMapper(mockPDO $db, Request $request)
     {
         return $this->getMockBuilder(TalkCommentMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
     }
 
     final protected function createOathModel(mockPDO $db, Request $request, $consumerName = "")
     {
         $oathModel = $this->getMockBuilder(OAuthModel::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $oathModel

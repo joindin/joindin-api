@@ -38,6 +38,7 @@ class TalkTypeMapper extends ApiMapper
     public function getTalkTypeList($resultsperpage, $start = 0, $verbose = false)
     {
         $results = $this->getTalkTypes($resultsperpage, $start);
+
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
@@ -53,7 +54,8 @@ class TalkTypeMapper extends ApiMapper
      */
     public function getTalkTypeById($talkType_id, $verbose)
     {
-        $results = $this->getTalkTypes(1, 0, ['ID' => (int)$talkType_id]);
+        $results = $this->getTalkTypes(1, 0, ['ID' => (int) $talkType_id]);
+
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
@@ -91,6 +93,7 @@ class TalkTypeMapper extends ApiMapper
 
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($params);
+
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $params);
@@ -139,6 +142,7 @@ class TalkTypeMapper extends ApiMapper
         $stmt->execute();
 
         $list = [];
+
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $lang) {
             $list[$lang['cat_title']] = $lang['ID'];
         }

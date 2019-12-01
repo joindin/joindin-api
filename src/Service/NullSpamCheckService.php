@@ -4,7 +4,6 @@ namespace Joindin\Api\Service;
 
 class NullSpamCheckService implements SpamCheckServiceInterface
 {
-
     /**
      * Check your comment against the spam check service
      *

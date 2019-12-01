@@ -15,7 +15,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace Joindin\Api;
 
 use ArrayIterator;
@@ -39,8 +38,8 @@ class Header
         $this->header = trim($header);
         $this->glue   = $glue;
 
-        foreach ((array)$values as $value) {
-            foreach ((array)$value as $v) {
+        foreach ((array) $values as $value) {
+            foreach ((array) $value as $v) {
                 $this->values[] = $v;
             }
         }
@@ -139,9 +138,11 @@ class Header
     public function buildEntityArray()
     {
         $assocArray = [];
+
         foreach ($this->values as $value) {
             $parts = explode('=', $value);
             $key   = ucwords($parts[0]);
+
             if (count($parts) === 1) {
                 if (array_key_exists(0, $assocArray)) {
                     $assocArray[0][] = $parts[0];
@@ -168,6 +169,7 @@ class Header
         // Normalize the header into a single array and iterate over all values
         foreach ($this->normalize()->toArray() as $val) {
             $part = [];
+
             foreach (preg_split('/;(?=([^"]*"[^"]*")*[^"]*$)/', $val) as $kvp) {
                 if (!preg_match_all('/<[^>]+>|[^=]+/', $kvp, $matches)) {
                     continue;
@@ -175,6 +177,7 @@ class Header
                 $pieces           = array_map($callback, $matches[0]);
                 $part[$pieces[0]] = $pieces[1] ?? '';
             }
+
             if ($part) {
                 $params[] = $part;
             }

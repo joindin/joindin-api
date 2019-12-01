@@ -94,6 +94,7 @@ final class HeaderTest extends TestCase
         $iterator = $header->getIterator();
 
         $values = [];
+
         foreach ($iterator as $value) {
             $values[] = $value;
         }
@@ -109,9 +110,9 @@ final class HeaderTest extends TestCase
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
         $header    = new Header('X-Forwarded-For', $headerStr, ',');
-        $this->assertEquals($headerStr, (string)$header);
+        $this->assertEquals($headerStr, (string) $header);
         $header->parseParams();
-        $this->assertEquals('10.0.0.1, 10.0.0.2, 10.0.0.3', (string)$header);
+        $this->assertEquals('10.0.0.1, 10.0.0.2, 10.0.0.3', (string) $header);
     }
 
     /**

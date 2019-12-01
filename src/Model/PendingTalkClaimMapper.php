@@ -126,8 +126,10 @@ class PendingTalkClaimMapper extends ApiMapper
                 'claim_id'   => $claim_id
             ]
         );
+
         if ($response) {
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
             if ($stmt->rowCount() == 0) {
                 return false;
             }
@@ -246,6 +248,7 @@ class PendingTalkClaimMapper extends ApiMapper
 
         $list   = [];
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         foreach ($result as $row) {
             $date = new DateTime('@' . $row['date_added']);
 

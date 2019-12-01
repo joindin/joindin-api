@@ -38,6 +38,7 @@ class EventCommentReportedEmailService extends BaseEmailService
         }
 
         $rating = $this->comment['rating'];
+
         if ($rating == 0) {
             $rating = 'Not rated';
         }

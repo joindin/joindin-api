@@ -9,8 +9,6 @@ use Joindin\Api\Router\Route;
 
 final class TestRouter3 extends BaseRouter
 {
-
-
     /**
      * {@inheritdoc}
      */

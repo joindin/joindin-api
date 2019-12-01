@@ -9,7 +9,6 @@
  * @license  http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  *
  */
-
 require_once __DIR__ . '/newConsumerKeyFunc.php';
 
 $keys = new_consumer_key();

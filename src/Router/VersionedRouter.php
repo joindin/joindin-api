@@ -11,7 +11,6 @@ use Teapot\StatusCode\Http;
  */
 class VersionedRouter extends BaseRouter
 {
-
     /**
      * The version this Router represents
      *
@@ -51,10 +50,12 @@ class VersionedRouter extends BaseRouter
     public function getRoute(Request $request)
     {
         $badMethod = false;
+
         foreach ($this->rules as $rule) {
             if (preg_match('%^/v' . $this->version . $rule['path'] . '%', $request->getPathInfo(), $matches)) {
                 if (isset($rule['verbs']) && ! in_array($request->getVerb(), $rule['verbs'])) {
                     $badMethod = true;
+
                     continue;
                 }
                 // Determine numeric keys
@@ -74,6 +75,7 @@ class VersionedRouter extends BaseRouter
         if ($badMethod) {
             throw new Exception('Method not supported', Http::METHOD_NOT_ALLOWED);
         }
+
         throw new Exception('Endpoint not found', Http::NOT_FOUND);
     }
 }

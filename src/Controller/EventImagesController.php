@@ -31,6 +31,7 @@ class EventImagesController extends BaseApiController
 
         // ensure event exists
         $existing_event = $event_mapper->getEventById($event_id, false, true);
+
         if ($existing_event['meta']['count'] == 0) {
             throw new Exception('There is no event with ID ' . $event_id);
         }
@@ -66,6 +67,7 @@ class EventImagesController extends BaseApiController
         if ($width < 140) {
             throw new Exception("Supplied image must be at least 140px square", Http::BAD_REQUEST);
         }
+
         if ($width > 1440) {
             throw new Exception("Supplied image must be no more than 1440px square", Http::BAD_REQUEST);
         }

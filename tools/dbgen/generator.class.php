@@ -1,12 +1,11 @@
 <?php
-require_once "generator_data.interface.php";
 
+require_once "generator_data.interface.php";
 
 /**
  * We echo everything. This is because this class generates too much data that we can keep inside our memory.
  * The "caching" is pretty bad as well. When I'm running the "massive" parameters, the system uses 600M+ of memory.
  */
-
 class DataGenerator
 {
     protected $_data;            // Configuration data
@@ -79,6 +78,7 @@ class DataGenerator
     protected function _cacheFetchRandom($tag)
     {
         $idx = array_rand($this->_cache[$tag]);
+
         return $this->_cache[$tag][$idx];
     }
 
@@ -112,6 +112,7 @@ class DataGenerator
                 return $object;
             }
         }
+
         return null;
     }
     
@@ -136,6 +137,7 @@ class DataGenerator
     protected function _generateLanguages()
     {
         echo "TRUNCATE lang;\n";
+
         foreach ($this->getData()->getLanguageData() as $key => $lang) {
             echo sprintf("insert into lang (lang_name, lang_abbr, id) values ('%s','%s', %d);\n", $lang['name'], $lang['abbr'], $key);
         }
@@ -150,6 +152,7 @@ class DataGenerator
     protected function _generateCategories()
     {
         echo "TRUNCATE categories;\n";
+
         foreach ($this->getData()->getCategoryData() as $key => $cat) {
             echo sprintf("insert into categories (cat_title, cat_desc, id) values ('%s','%s', %d);\n", $cat['title'], $cat['desc'], $key);
             ;
@@ -165,9 +168,10 @@ class DataGenerator
         echo "INSERT INTO talks (talk_title, slides_link, date_given, event_id, ID, talk_desc, active, owner_id, lang, duration) VALUES \n";
 
         $first = true;
+
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "TALK: $id         (".(memory_get_usage(true)/1024)." Kb)        \r");
+                fwrite(STDERR, "TALK: $id         (" . (memory_get_usage(true)/1024) . " Kb)        \r");
             }
             
             $talk = new StdClass();
@@ -217,12 +221,12 @@ class DataGenerator
         echo ";";
         echo "\n\n";
 
-
         //
         // Add categories to the talks
         echo "TRUNCATE talk_cat;\n";
         echo "INSERT INTO talk_cat (talk_id, cat_id, ID) VALUES \n";
         $first = true;
+
         foreach ($this->_cacheFetchTag('talks') as $talk) {
             $cat_id = array_rand($this->getData()->getCategoryData());
 
@@ -236,13 +240,13 @@ class DataGenerator
         echo ";";
         echo "\n\n";
 
-
         //
         // Add speakers to the talks
         echo "TRUNCATE talk_speaker;\n";
         echo "INSERT INTO talk_speaker (talk_id, speaker_name, ID, speaker_id, status) VALUES \n";
 
         $first = true;
+
         foreach ($this->_cacheFetchTag('talks') as $talk) {
             // Check if we need multiple speakers or not
             $speaker_count = $this->_chance(TALK_HAS_MULTIPLE_SPEAKERS) ? rand(2, 4) : 1;
@@ -283,9 +287,10 @@ class DataGenerator
         echo "INSERT INTO event_track (event_id, track_name, track_desc, ID, track_color) VALUES \n";
 
         $first = true;
+
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "TRACK: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
+                fwrite(STDERR, "TRACK: $id       (" . (memory_get_usage(true)/1024) . " Kb)        \r");
             }
             $event = $this->_cacheFetchRandom('events');
 
@@ -297,7 +302,7 @@ class DataGenerator
             $this->_cacheStore('events', $event->id, $event);
 
             // Additional info
-            $track_name = "Track ".$track_id;
+            $track_name = "Track " . $track_id;
             $track_desc = $this->_genLorum(5);
 
             $tmp = $this->getData()->getTrackColorData();
@@ -334,9 +339,10 @@ class DataGenerator
         echo "INSERT INTO talk_comments (talk_id, rating, comment, date_made, ID, private, active, user_id, comment_type, source) VALUES \n";
 
         $first = true;
+
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "TALK COMMENT ID: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
+                fwrite(STDERR, "TALK COMMENT ID: $id       (" . (memory_get_usage(true)/1024) . " Kb)        \r");
             }
 
             $talk = $this->_cacheFetchRandom('talks');
@@ -372,7 +378,6 @@ class DataGenerator
                 $user_id = $user->id;
             }
 
-
             $tmp = $this->getData()->getCommentSourceData();
             $source = $tmp[array_rand($tmp)];
 
@@ -393,7 +398,6 @@ class DataGenerator
                 $source
             );
 
-
             $first = false;
         }
 
@@ -406,9 +410,10 @@ class DataGenerator
     {
         $first = true;
         $have_event_comments = false;
+
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "EVENT COMMENT ID: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
+                fwrite(STDERR, "EVENT COMMENT ID: $id       (" . (memory_get_usage(true)/1024) . " Kb)        \r");
             }
 
             $event = $this->_cacheFetchRandom('events');
@@ -434,7 +439,7 @@ class DataGenerator
                 $comment_name = "NULL";
             } else {
                 $user = $this->_cacheFetchRandom('users');
-                $comment_name = "'".$user->fullname."'";
+                $comment_name = "'" . $user->fullname . "'";
                 $user_id = $user->id;
             }
 
@@ -494,6 +499,7 @@ class DataGenerator
         $event_count = count($events);
 
         $first = true;
+
         foreach ($this->_cacheFetchTag('users') as $user) {
             // The first user ALWAYS has an event. Otherwise we might end up with a empty
             // query. This is here to make sure that never can happen.
@@ -501,7 +507,6 @@ class DataGenerator
 
             for ($i=0; $i!=$attended_events; $i++) {
                 $event = $this->_cacheFetchRandom('events');
-
 
                 // if the user is already attending this event, move on
                 if (!isset($this->_users_attending[$user->id])
@@ -522,7 +527,6 @@ class DataGenerator
         echo "\n\n";
     }
 
-
     // Randomly attach user to events as admins
     protected function _attachAdminUsersToEvents()
     {
@@ -530,6 +534,7 @@ class DataGenerator
         echo "INSERT INTO user_admin (rid, uid, rtype, rcode) VALUES \n";
 
         $first = true;
+
         foreach ($this->_cacheFetchTag('events') as $event) {
             // A single or multi-user event
             if ($this->_chance(EVENT_ADMIN_SINGLE_USER)) {
@@ -539,6 +544,7 @@ class DataGenerator
             }
 
             $userids = [];
+
             for ($i=0; $i!=$admin_count; $i++) {
                 // Make sure we don't add the same user twice
                 do {
@@ -564,7 +570,7 @@ class DataGenerator
 
     protected function generateUniqueStub($eventName)
     {
-        $key = substr(md5($eventName.mt_rand()), 0, 5);
+        $key = substr(md5($eventName . mt_rand()), 0, 5);
         $stub = $key;
         $index = 0;
 
@@ -586,11 +592,11 @@ class DataGenerator
         `event_voting`, `private`, `event_tz_cont`, `event_tz_place`, `event_contact_name`, `event_contact_email`, `event_cfp_url`) VALUES\n";
 
         $first = true;
+
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "EVENT ID: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
+                fwrite(STDERR, "EVENT ID: $id       (" . (memory_get_usage(true)/1024) . " Kb)        \r");
             }
-
 
             $event = new StdClass();
             $event->id = $id;
@@ -603,13 +609,13 @@ class DataGenerator
             // Store this event in the cache
             $this->_cacheStore('events', $id, $event);
 
-
             // Fill the rest of the event
             $event->name = $this->_getEventTitle();
 
             // Find the duration
             $durations = explode(",", EVENT_DURATION);
             $percentage = rand(0, 100);
+
             if ($percentage < $durations[0]) {
                 // one day event
                 $duration_end = "+1 day";
@@ -626,6 +632,7 @@ class DataGenerator
 
             // Check if we need to be in the future
             $future = $this->_chance(EVENT_IN_FUTURE);
+
             if ($future) {
                 // Future event, so + time
                 $event->start = time() + rand(10000, 100000000);
@@ -645,8 +652,8 @@ class DataGenerator
 
             // Global event info
             $event->stub = $this->generateUniqueStub($event->name);
-            $event->url = str_replace(" ", "", "http://".strtolower($event->name).".example.org");
-            $event->hash = "#".$event->stub;
+            $event->url = str_replace(" ", "", "http://" . strtolower($event->name) . ".example.org");
+            $event->hash = "#" . $event->stub;
             $event->description = $this->_genLorum();
             $event->icon = "";
 
@@ -688,7 +695,7 @@ class DataGenerator
                 "Amsterdam",
                 "",
                 "",
-                $event->url."/cfp"
+                $event->url . "/cfp"
             );
 
             $first = false;
@@ -710,9 +717,10 @@ class DataGenerator
 
         $usernames = [];
         $id = 2;
+
         while ($id < ($count+2)) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "USER ID: $id    (".(memory_get_usage(true)/1024)." Kb)        \r");
+                fwrite(STDERR, "USER ID: $id    (" . (memory_get_usage(true)/1024) . " Kb)        \r");
             }
 
             // Generate and store user
@@ -729,12 +737,12 @@ class DataGenerator
             $this->_cacheStore('users', $id, $user);
 
             // Generate additional information
-            $user->password = password_hash(md5($user->username."pass"), PASSWORD_DEFAULT);
+            $user->password = password_hash(md5($user->username . "pass"), PASSWORD_DEFAULT);
             $user->last_login = time() - rand(0, 1000000);
             $user->admin = ($this->_chance(USER_IS_ADMIN)) ? 1 : 0;
             $user->active = 1;
             $user->verified = 1;
-            $user->twitter = $this->_chance(USER_HAS_TWITTER) ? "@".$user->username : "";
+            $user->twitter = $this->_chance(USER_HAS_TWITTER) ? "@" . $user->username : "";
 
             echo ",\n";
             printf(
@@ -775,9 +783,9 @@ class DataGenerator
 
             // Populate user object
             $user = new StdClass();
-            $user->username = strtolower($first[0].$last);
+            $user->username = strtolower($first[0] . $last);
             $user->fullname = $first . " " . $last;
-            $user->email = strtolower($first).".".strtolower($last)."@example.org";
+            $user->email = strtolower($first) . "." . strtolower($last) . "@example.org";
         } while ($this->_cacheFetch('user', "username", $user->username));
 
         return $user;
@@ -821,11 +829,12 @@ class DataGenerator
         $data = $this->getData()->getTalkTitleGeneratorData();
 
         $title = "";
-        $title .= $data->a[array_rand($data->a)]. " ";  //  a-e is because of lack of imagination
-        $title .= $data->b[array_rand($data->b)]. " ";
-        $title .= $data->c[array_rand($data->c)]. " ";
-        $title .= $data->d[array_rand($data->d)]. " ";
+        $title .= $data->a[array_rand($data->a)] . " ";  //  a-e is because of lack of imagination
+        $title .= $data->b[array_rand($data->b)] . " ";
+        $title .= $data->c[array_rand($data->c)] . " ";
+        $title .= $data->d[array_rand($data->d)] . " ";
         $title .= $data->e[array_rand($data->e)];
+
         return $title;
     }
 
@@ -841,6 +850,7 @@ class DataGenerator
         if (rand(0, 100) <= $percentage) {
             return true;
         }
+
         return false;
     }
 
@@ -855,13 +865,15 @@ class DataGenerator
         $lorum = $this->getData()->getDescriptionGeneratorData();
 
         $number = rand(1, $max);
+
         for ($i=0, $ret="", $r=$number; $i!=$r; $i++) {
             $ret .= $lorum[array_rand($lorum)];
 
-            if ($number > 10 && $i == (int)($number/2)) {
+            if ($number > 10 && $i == (int) ($number/2)) {
                 $ret .= "\\n\\n";
             }
         }
+
         return trim($ret);
     }
 } // End class

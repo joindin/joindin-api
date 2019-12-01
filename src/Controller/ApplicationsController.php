@@ -57,6 +57,7 @@ class ApplicationsController extends BaseApiController
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
+
         if (empty($app['name'])) {
             $errors[] = "'name' is a required field";
         }
@@ -66,6 +67,7 @@ class ApplicationsController extends BaseApiController
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
+
         if (empty($app['description'])) {
             $errors[] = "'description' is a required field";
         }
@@ -74,6 +76,7 @@ class ApplicationsController extends BaseApiController
             $request->getParameter("callback_url"),
             FILTER_SANITIZE_URL
         );
+
         if (empty($app['callback_url'])) {
             $errors[] = "'callback_url' is a required field";
         }
@@ -111,6 +114,7 @@ class ApplicationsController extends BaseApiController
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
+
         if (empty($app['name'])) {
             $errors[] = "'name' is a required field";
         }
@@ -120,6 +124,7 @@ class ApplicationsController extends BaseApiController
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
+
         if (empty($app['description'])) {
             $errors[] = "'description' is a required field";
         }
