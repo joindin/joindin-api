@@ -30,6 +30,7 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.16.0",
+    "infection/infection": "^0.14.2",
     "jangregor/phpstan-prophecy": "~0.4.2",
     "maglnet/composer-require-checker": "^2.0.0",
     "phpstan/extension-installer": "^1.0.3",
@@ -70,6 +71,7 @@
       "phpunit --coverage-clover=build/logs/clover.xml --coverage-text --prepend=build/xdebug-filter.php"
     ],
     "cs": "php-cs-fixer fix --config=.php_cs --diff --diff-format=udiff --verbose",
+    "infection": "infection --ignore-msi-with-no-mutations --min-covered-msi=71 --min-msi=19",
     "require-checker": "composer-require-checker --config-file=composer-require-checker.json",
     "security": "security-checker security:check composer.lock",
     "stan": "phpstan analyze --configuration=phpstan.neon",
