@@ -74,9 +74,8 @@
     "security": "security-checker security:check composer.lock",
     "stan": "phpstan analyze --configuration=phpstan.neon",
     "stan-baseline": [
-      "sed -e '/phpstan-baseline\\.neon/ s/^/#/' phpstan.neon > phpstan-without-baseline.neon",
-      "phpstan analyze --configuration phpstan-without-baseline.neon --error-format baselineNeon > phpstan-baseline.neon  || true",
-      "rm phpstan-without-baseline.neon"
+      "echo '' > phpstan-baseline.neon",
+      "phpstan analyze --configuration phpstan.neon --error-format baselineNeon > phpstan-baseline.neon  || true"
     ],
     "test": "phpunit"
   },
