@@ -23,6 +23,9 @@ return PhpCsFixer\Config::create()
             'syntax' => 'short',
         ],
         'backtick_to_shell_exec' => true,
+        'binary_operator_spaces' => [
+            'default' => 'single_space',
+        ],
         'blank_line_after_opening_tag' => true,
         'blank_line_before_statement' => [
             'statements' => [
