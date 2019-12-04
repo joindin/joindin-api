@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "82afecd87791ba1d3c905b075c6bce90",
+    "content-hash": "41f0ab707762fdea4a21f54e529ee59a",
     "packages": [
         {
             "name": "doctrine/lexer",
@@ -1311,16 +1311,16 @@
         },
         {
             "name": "infection/infection",
-            "version": "0.14.4",
+            "version": "0.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/infection/infection.git",
-                "reference": "b96e312cb6726862089f63cbc6557b62fe29f4c0"
+                "reference": "1d79de53cbc1dfa902e1ea4afba6c3f0214d5224"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/infection/infection/zipball/b96e312cb6726862089f63cbc6557b62fe29f4c0",
-                "reference": "b96e312cb6726862089f63cbc6557b62fe29f4c0",
+                "url": "https://api.github.com/repos/infection/infection/zipball/1d79de53cbc1dfa902e1ea4afba6c3f0214d5224",
+                "reference": "1d79de53cbc1dfa902e1ea4afba6c3f0214d5224",
                 "shasum": ""
             },
             "require": {
@@ -1329,16 +1329,17 @@
                 "ext-json": "*",
                 "ext-libxml": "*",
                 "justinrainbow/json-schema": "^5.2",
-                "nikic/php-parser": "^4.2.1",
+                "nikic/php-parser": "^4.2.2",
                 "ocramius/package-versions": "^1.2",
                 "php": "^7.2.9",
                 "pimple/pimple": "^3.2",
                 "sebastian/diff": "^3.0.2",
-                "symfony/console": "^3.4.29 || ^4.0",
-                "symfony/filesystem": "^3.4.29 || ^4.0",
-                "symfony/finder": "^3.4.29 || ^4.0",
-                "symfony/process": "^3.4.29 || ^4.0",
-                "symfony/yaml": "^3.4.29 || ^4.0",
+                "seld/jsonlint": "^1.7",
+                "symfony/console": "^3.4.29 || ^4.0 || ^5.0",
+                "symfony/filesystem": "^3.4.29 || ^4.0 || ^5.0",
+                "symfony/finder": "^3.4.29 || ^4.0 || ^5.0",
+                "symfony/process": "^3.4.29 || ^4.0 || ^5.0",
+                "symfony/yaml": "^3.4.29 || ^4.0 || ^5.0",
                 "thecodingmachine/safe": "^0.1.16",
                 "webmozart/assert": "^1.3",
                 "webmozart/path-util": "^2.3"
@@ -1348,8 +1349,8 @@
             },
             "require-dev": {
                 "helmich/phpunit-json-assert": "^3.0",
-                "phpunit/phpunit": "^8.2.5",
-                "symfony/phpunit-bridge": "^4.3.4"
+                "phpunit/phpunit": "^8.2.5 <8.4",
+                "symfony/phpunit-bridge": "^4.3.4 || ^5.0"
             },
             "bin": [
                 "bin/infection"
@@ -1403,7 +1404,7 @@
                 "testing",
                 "unit testing"
             ],
-            "time": "2019-11-26T19:48:46+00:00"
+            "time": "2019-11-29T06:37:53+00:00"
         },
         {
             "name": "jangregor/phpstan-prophecy",
@@ -3422,6 +3423,55 @@
             "time": "2016-10-03T07:35:21+00:00"
         },
         {
+            "name": "seld/jsonlint",
+            "version": "1.7.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/jsonlint.git",
+                "reference": "e2e5d290e4d2a4f0eb449f510071392e00e10d19"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/e2e5d290e4d2a4f0eb449f510071392e00e10d19",
+                "reference": "e2e5d290e4d2a4f0eb449f510071392e00e10d19",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0"
+            },
+            "bin": [
+                "bin/jsonlint"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Seld\\JsonLint\\": "src/Seld/JsonLint/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                }
+            ],
+            "description": "JSON Linter",
+            "keywords": [
+                "json",
+                "linter",
+                "parser",
+                "validator"
+            ],
+            "time": "2019-10-24T14:27:39+00:00"
+        },
+        {
             "name": "sensiolabs/security-checker",
             "version": "v6.0.3",
             "source": {
@@ -3675,26 +3725,26 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v4.4.1",
+            "version": "v5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "40c2606131d56eff6f193b6e2ceb92414653b591"
+                "reference": "1d71f670bc5a07b9ccc97dc44f932177a322d4e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/40c2606131d56eff6f193b6e2ceb92414653b591",
-                "reference": "40c2606131d56eff6f193b6e2ceb92414653b591",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/1d71f670bc5a07b9ccc97dc44f932177a322d4e6",
+                "reference": "1d71f670bc5a07b9ccc97dc44f932177a322d4e6",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3",
+                "php": "^7.2.5",
                 "symfony/polyfill-ctype": "~1.8"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.4-dev"
+                    "dev-master": "5.0-dev"
                 }
             },
             "autoload": {
@@ -3721,29 +3771,29 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2019-11-26T23:16:41+00:00"
+            "time": "2019-11-26T23:25:11+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "v4.4.1",
+            "version": "v5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "ce8743441da64c41e2a667b8eb66070444ed911e"
+                "reference": "17874dd8ab9a19422028ad56172fb294287a701b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/ce8743441da64c41e2a667b8eb66070444ed911e",
-                "reference": "ce8743441da64c41e2a667b8eb66070444ed911e",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/17874dd8ab9a19422028ad56172fb294287a701b",
+                "reference": "17874dd8ab9a19422028ad56172fb294287a701b",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3"
+                "php": "^7.2.5"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.4-dev"
+                    "dev-master": "5.0-dev"
                 }
             },
             "autoload": {
@@ -3770,7 +3820,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2019-11-17T21:56:56+00:00"
+            "time": "2019-11-18T17:27:11+00:00"
         },
         {
             "name": "symfony/http-client",
@@ -4190,25 +4240,25 @@
         },
         {
             "name": "symfony/process",
-            "version": "v4.4.1",
+            "version": "v5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "51c0135ef3f44c5803b33dc60e96bf4f77752726"
+                "reference": "1568a2e8370fbc7416ef64eb5a698e4a05db5ff4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/51c0135ef3f44c5803b33dc60e96bf4f77752726",
-                "reference": "51c0135ef3f44c5803b33dc60e96bf4f77752726",
+                "url": "https://api.github.com/repos/symfony/process/zipball/1568a2e8370fbc7416ef64eb5a698e4a05db5ff4",
+                "reference": "1568a2e8370fbc7416ef64eb5a698e4a05db5ff4",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3"
+                "php": "^7.2.5"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.4-dev"
+                    "dev-master": "5.0-dev"
                 }
             },
             "autoload": {
@@ -4235,7 +4285,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2019-11-28T13:33:56+00:00"
+            "time": "2019-11-28T14:20:16+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -4347,27 +4397,27 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v4.4.1",
+            "version": "v5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "76de473358fe802578a415d5bb43c296cf09d211"
+                "reference": "51b684480184fa767b97e28eaca67664e48dd3e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/76de473358fe802578a415d5bb43c296cf09d211",
-                "reference": "76de473358fe802578a415d5bb43c296cf09d211",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/51b684480184fa767b97e28eaca67664e48dd3e9",
+                "reference": "51b684480184fa767b97e28eaca67664e48dd3e9",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3",
+                "php": "^7.2.5",
                 "symfony/polyfill-ctype": "~1.8"
             },
             "conflict": {
-                "symfony/console": "<3.4"
+                "symfony/console": "<4.4"
             },
             "require-dev": {
-                "symfony/console": "^3.4|^4.0|^5.0"
+                "symfony/console": "^4.4|^5.0"
             },
             "suggest": {
                 "symfony/console": "For validating YAML files using the lint command"
@@ -4375,7 +4425,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.4-dev"
+                    "dev-master": "5.0-dev"
                 }
             },
             "autoload": {
@@ -4402,7 +4452,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2019-11-12T14:51:11+00:00"
+            "time": "2019-11-18T17:27:11+00:00"
         },
         {
             "name": "thecodingmachine/safe",
