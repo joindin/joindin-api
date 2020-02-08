@@ -147,7 +147,6 @@ final class TalksControllerDeleteTest extends TalkBase
 
         $talks_controller->setTalkMapper($talk_mapper);
 
-
         $talks_controller->deleteTalk($request, $db);
     }
 

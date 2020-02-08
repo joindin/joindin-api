@@ -50,8 +50,8 @@ final class ContactControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $spamCheckService = $this->getMockBuilder(SpamCheckServiceInterface::class)
-                                 ->disableOriginalConstructor()
-                                 ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         if ($spamShouldBeChecked) {
             $spamCheckService
@@ -61,8 +61,8 @@ final class ContactControllerTest extends TestCase
         }
 
         $emailService = $this->getMockBuilder(ContactEmailService::class)
-                             ->disableOriginalConstructor()
-                             ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $contactController = new ContactController($emailService, $spamCheckService);
 
@@ -76,20 +76,20 @@ final class ContactControllerTest extends TestCase
 
         if ($emailShouldBeSent) {
             $viewMock = $this->getMockBuilder(ApiView::class)
-                             ->disableOriginalConstructor()
-                             ->getMock();
+                ->disableOriginalConstructor()
+                ->getMock();
 
             $viewMock->expects($this->once())
-                     ->method('setResponseCode')
-                     ->with(Http::ACCEPTED);
+                ->method('setResponseCode')
+                ->with(Http::ACCEPTED);
 
             $viewMock->expects($this->once())
-                     ->method('setHeader')
-                     ->with('Content-Length', 0);
+                ->method('setHeader')
+                ->with('Content-Length', 0);
 
             $request->expects($this->once())
-                    ->method('getView')
-                    ->willReturn($viewMock);
+                ->method('getView')
+                ->willReturn($viewMock);
 
             $emailService
                 ->expects($this->once())

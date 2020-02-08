@@ -10,7 +10,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class JsonViewTest extends TestCase
 {
-
     /**
      * DataProvider for testBuildOutput
      *

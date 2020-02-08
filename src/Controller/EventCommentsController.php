@@ -38,8 +38,10 @@ class EventCommentsController extends BaseApiController
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = new EventCommentMapper($db, $request);
+
         if ($comment_id) {
             $list = $mapper->getCommentById($comment_id, $verbose);
+
             if (false === $list) {
                 throw new Exception('Comment not found', Http::NOT_FOUND);
             }
@@ -53,6 +55,7 @@ class EventCommentsController extends BaseApiController
     public function getReported(Request $request, PDO $db)
     {
         $event_id = $this->getItemId($request);
+
         if (empty($event_id)) {
             throw new UnexpectedValueException("Event not found", Http::NOT_FOUND);
         }
@@ -80,6 +83,7 @@ class EventCommentsController extends BaseApiController
     {
         $comment             = [];
         $comment['event_id'] = $this->getItemId($request);
+
         if (empty($comment['event_id'])) {
             throw new Exception(
                 "POST expects a comment representation sent to a specific event URL",
@@ -96,6 +100,7 @@ class EventCommentsController extends BaseApiController
         $thisUser    = $users['users'][0];
 
         $rating = $request->getParameter('rating', false);
+
         if (false === $rating) {
             throw new Exception('The field "rating" is required', Http::BAD_REQUEST);
         }
@@ -105,6 +110,7 @@ class EventCommentsController extends BaseApiController
         }
 
         $commentText = $request->getParameter('comment');
+
         if (empty($commentText)) {
             throw new Exception('The field "comment" is required', Http::BAD_REQUEST);
         }
@@ -174,6 +180,7 @@ class EventCommentsController extends BaseApiController
 
         $commentId   = $this->getItemId($request);
         $commentInfo = $comment_mapper->getCommentInfo($commentId);
+
         if (false === $commentInfo) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
@@ -224,17 +231,20 @@ class EventCommentsController extends BaseApiController
 
         $commentId   = $this->getItemId($request);
         $commentInfo = $comment_mapper->getCommentInfo($commentId);
+
         if (false === $commentInfo) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
         $event_mapper = new EventMapper($db, $request);
         $event_id     = $commentInfo['event_id'];
+
         if (false == $event_mapper->thisUserHasAdminOn($event_id)) {
             throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
 
         $decision = $request->getParameter('decision');
+
         if (!in_array($decision, ['approved', 'denied'])) {
             throw new Exception('Unexpected decision', Http::BAD_REQUEST);
         }

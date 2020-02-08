@@ -44,6 +44,7 @@ class EventCommentMapper extends ApiMapper
         $response = $stmt->execute([
             ':event_id' => $event_id
         ]);
+
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, [':event_id' => $event_id]);
@@ -69,8 +70,10 @@ class EventCommentMapper extends ApiMapper
         $response = $stmt->execute([
             ':comment_id' => $comment_id
         ]);
+
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             if ($results) {
                 $results['total'] = $this->getTotalCount($sql, [':comment_id' => $comment_id]);
 
@@ -316,6 +319,7 @@ class EventCommentMapper extends ApiMapper
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $total++;
             $comment_result = $comment_stmt->execute(['comment_id' => $row['event_comment_id']]);
+
             if ($comment_result && $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
                 // work around the existing transform logic
                 $comment_array  = [$comment];

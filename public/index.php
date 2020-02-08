@@ -1,4 +1,5 @@
 <?php
+
 // @codingStandardsIgnoreFile
 use Joindin\Api\ContainerFactory;
 use Joindin\Api\Request;
@@ -8,9 +9,11 @@ use Joindin\Api\Router\VersionedRouter;
 use Teapot\StatusCode\Http;
 
 include __DIR__ . '/../vendor/autoload.php';
+
 if (!function_exists('apache_request_headers')) {
     require __DIR__ . '/../inc/nginx-helper.php';
 }
+
 if (!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
 }
@@ -45,7 +48,7 @@ set_exception_handler('handle_exception');
 
 // config setup
 define('BASEPATH', '.');
-$config = require __DIR__. '/../src/config.php';
+$config = require __DIR__ . '/../src/config.php';
 
 $container = ContainerFactory::build($config);
 
@@ -55,6 +58,7 @@ if ($config['mode'] == "development") {
 
 // database setup
 $db = [];
+
 require __DIR__ . '/../src/database.php';
 $ji_db = new PDO(
     'mysql:host=' . $db['default']['hostname'] .
@@ -69,11 +73,12 @@ $request = new Request($config, $_SERVER);
 
 // identify our user if applicable
 $headers = array_change_key_case(apache_request_headers(), CASE_LOWER);
+
 if (isset($headers['authorization'])) {
     $request->identifyUser($headers['authorization'], $ji_db);
 }
 
-$rules = require __DIR__ .'/../src/config/routes/2.1.php';
+$rules = require __DIR__ . '/../src/config/routes/2.1.php';
 
 $routers = [
     "v2.1" => new VersionedRouter('2.1', $config, $rules),
@@ -83,6 +88,7 @@ $router = new ApiRouter($config, $routers, ['2']);
 
 $route = $router->getRoute($request);
 $return_data = $route->dispatch($request, $ji_db, $container);
+
 if (is_array($return_data) && isset($request->user_id)) {
     $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;
 }

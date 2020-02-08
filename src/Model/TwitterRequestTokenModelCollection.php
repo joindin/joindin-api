@@ -45,6 +45,7 @@ class TwitterRequestTokenModelCollection extends BaseModelCollection
     {
         // handle the collection first
         $retval = ['twitter_request_tokens' => []];
+
         foreach ($this->list as $item) {
             $retval['twitter_request_tokens'][] = $item->getOutputView($request, $verbose);
         }

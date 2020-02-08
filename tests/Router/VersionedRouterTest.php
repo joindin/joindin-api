@@ -15,7 +15,6 @@ use Teapot\StatusCode\Http;
  */
 final class VersionedRouterTest extends TestCase
 {
-
     /**
      * DataProvider for testGetRoute
      *
@@ -166,6 +165,7 @@ final class VersionedRouterTest extends TestCase
     ) {
         $request = new Request([], ['REQUEST_URI' => $url, 'REQUEST_METHOD' => $method]);
         $router  = new VersionedRouter($version, [], $rules);
+
         try {
             $route = $router->getRoute($request);
         } catch (Exception $ex) {

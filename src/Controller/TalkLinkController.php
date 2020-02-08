@@ -90,6 +90,7 @@ class TalkLinkController extends BaseTalkController
         //Check the content is in the correct format
         $display_name = $request->getParameter('display_name');
         $url          = $request->getParameter('url');
+
         if (!$display_name || ! $url) {
             throw new Exception(
                 "Missing required fields URL OR Display Name",
@@ -98,6 +99,7 @@ class TalkLinkController extends BaseTalkController
         }
 
         $link_id = $talk_mapper->addTalkLink($talk_id, $display_name, $url);
+
         if (!$link_id) {
             throw new Exception(
                 "The Link has not been inserted",
@@ -121,6 +123,7 @@ class TalkLinkController extends BaseTalkController
     {
         $is_admin   = $mapper->thisUserHasAdminOn($talk_id);
         $is_speaker = $mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
+
         if (!($is_admin || $is_speaker)) {
             throw new Exception(
                 "You do not have permission to add links to this talk",

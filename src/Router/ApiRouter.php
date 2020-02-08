@@ -63,6 +63,7 @@ class ApiRouter extends BaseRouter
     public function getRoute(Request $request)
     {
         $version = $request->getUrlElement(1);
+
         if (!$version) {
             // empty version, set request to use the latest
             $request->version = $this->latestVersion;

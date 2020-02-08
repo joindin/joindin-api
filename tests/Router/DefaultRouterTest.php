@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class DefaultRouterTest extends TestCase
 {
-
     /**
      * DataProvider for testGetRoute
      *

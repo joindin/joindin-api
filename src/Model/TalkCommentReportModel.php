@@ -75,6 +75,7 @@ class TalkCommentReportModel extends BaseModel
         $version = $request->version;
 
         $item['reporting_user_uri'] = $base . '/' . $version . '/users/' . $this->reporting_user_id;
+
         if (!empty($this->deciding_user_id)) {
             $item['deciding_user_uri'] = $base . '/' . $version . '/users/' . $this->deciding_user_id;
         }

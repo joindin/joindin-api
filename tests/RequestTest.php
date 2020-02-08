@@ -172,8 +172,7 @@ final class RequestTest extends TestCase
     public function testAcceptsHeadersAreParsedCorrectly()
     {
         $server  = [
-            'HTTP_ACCEPT' =>
-                'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         ];
         $request = new Request($this->config, $server);
 
@@ -195,8 +194,7 @@ final class RequestTest extends TestCase
     public function testPreferredContentTypeOfReturnsADesiredFormatIfItIsAccepted()
     {
         $server  = [
-            'HTTP_ACCEPT' =>
-                'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
+            'HTTP_ACCEPT' => 'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
         ];
         $request = new Request($this->config, $server);
 
@@ -222,8 +220,7 @@ final class RequestTest extends TestCase
     public function testIfPreferredFormatIsNotAcceptedReturnJson()
     {
         $server  = [
-            'HTTP_ACCEPT' =>
-                'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
+            'HTTP_ACCEPT' => 'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
         ];
         $request = new Request($this->config, $server);
 
@@ -725,8 +722,8 @@ final class RequestTest extends TestCase
                 'expectedClass' => HtmlView::class,
                 'accepts'       => 'text/html,applicaton/json',
                 'view'          => new \Joindin\Api\View\HtmlView(),
-//                'skip' => true // Currently we're not applying Accept correctly
-// Can @choult check what's the reason for the skip?
+                //                'skip' => true // Currently we're not applying Accept correctly
+                // Can @choult check what's the reason for the skip?
             ],
             [ // #8
                 'parameters'    => ['format' => 'html'],
@@ -772,6 +769,7 @@ final class RequestTest extends TestCase
         ];
 
         $request = new Request($this->config, $server);
+
         if ($view) {
             $request->setView($view);
             $this->assertEquals($view, $request->getView());
@@ -827,6 +825,7 @@ final class RequestTest extends TestCase
         array $choices = null
     ) {
         $request = new Request($this->config, []);
+
         if ($choices) {
             $request->setFormatChoices($choices);
         }
