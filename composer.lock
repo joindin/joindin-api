@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "41f0ab707762fdea4a21f54e529ee59a",
+    "content-hash": "19c879e79a5173de2a319fc1980b5dfc",
     "packages": [
         {
             "name": "doctrine/lexer",
@@ -414,51 +414,6 @@
                 "markdown"
             ],
             "time": "2019-12-02T02:32:27+00:00"
-        },
-        {
-            "name": "phpstan/phpstan-shim",
-            "version": "0.11.19",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan-shim.git",
-                "reference": "e3c06b1d63691dae644ae1e5b540905c8c021801"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-shim/zipball/e3c06b1d63691dae644ae1e5b540905c8c021801",
-                "reference": "e3c06b1d63691dae644ae1e5b540905c8c021801",
-                "shasum": ""
-            },
-            "require": {
-                "php": "~7.1"
-            },
-            "replace": {
-                "nikic/php-parser": "^4.0.2",
-                "phpstan/phpdoc-parser": "^0.3.3",
-                "phpstan/phpstan": "self.version"
-            },
-            "bin": [
-                "phpstan",
-                "phpstan.phar"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.11-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "PHPStan Phar distribution",
-            "abandoned": "phpstan/phpstan",
-            "time": "2019-10-22T20:46:16+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -1313,16 +1268,16 @@
         },
         {
             "name": "infection/infection",
-            "version": "0.15.1",
+            "version": "0.15.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/infection/infection.git",
-                "reference": "96c6a3fc5714f96345ecfa27ade6f361adde5ddc"
+                "reference": "91e935e02d3cc5bf764138e23f1d276683ffab78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/infection/infection/zipball/96c6a3fc5714f96345ecfa27ade6f361adde5ddc",
-                "reference": "96c6a3fc5714f96345ecfa27ade6f361adde5ddc",
+                "url": "https://api.github.com/repos/infection/infection/zipball/91e935e02d3cc5bf764138e23f1d276683ffab78",
+                "reference": "91e935e02d3cc5bf764138e23f1d276683ffab78",
                 "shasum": ""
             },
             "require": {
@@ -1335,7 +1290,7 @@
                 "ocramius/package-versions": "^1.2",
                 "php": "^7.2.9",
                 "pimple/pimple": "^3.2",
-                "sebastian/diff": "^3.0.2",
+                "sebastian/diff": "^3.0.2 || ^4.0",
                 "seld/jsonlint": "^1.7",
                 "symfony/console": "^3.4.29 || ^4.0 || ^5.0",
                 "symfony/filesystem": "^3.4.29 || ^4.0 || ^5.0",
@@ -1406,33 +1361,34 @@
                 "testing",
                 "unit testing"
             ],
-            "time": "2020-02-06T12:53:30+00:00"
+            "time": "2020-02-12T06:37:09+00:00"
         },
         {
             "name": "jangregor/phpstan-prophecy",
-            "version": "0.4.2",
+            "version": "0.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Jan0707/phpstan-prophecy.git",
-                "reference": "23301ff577da974e47e8670bf9313c885d306011"
+                "reference": "ecd367a2551da3d4921bbd9ae8eefbe2fc04eb8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Jan0707/phpstan-prophecy/zipball/23301ff577da974e47e8670bf9313c885d306011",
-                "reference": "23301ff577da974e47e8670bf9313c885d306011",
+                "url": "https://api.github.com/repos/Jan0707/phpstan-prophecy/zipball/ecd367a2551da3d4921bbd9ae8eefbe2fc04eb8f",
+                "reference": "ecd367a2551da3d4921bbd9ae8eefbe2fc04eb8f",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1",
-                "phpstan/phpstan": "^0.10.0 || ^0.11.0"
+                "phpstan/phpstan": "^0.12.0"
             },
             "conflict": {
                 "phpspec/prophecy": "<1.7,>=2.0",
                 "phpunit/phpunit": "<6.0,>=9.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "~2.15.0",
-                "localheinz/composer-normalize": "^1.1.3",
+                "ergebnis/composer-normalize": "^2.1.1",
+                "ergebnis/license": "~0.1.0",
+                "ergebnis/php-cs-fixer-config": "~1.1.2",
                 "phpspec/prophecy": "^1.7",
                 "phpunit/phpunit": "^6.0 || ^7.0"
             },
@@ -1442,6 +1398,11 @@
                     "includes": [
                         "src/extension.neon"
                     ]
+                },
+                "violinist": {
+                    "allow_updates_beyond_constraint": 0,
+                    "one_pull_request_per_package": 1,
+                    "update_with_dependencies": 1
                 }
             },
             "autoload": {
@@ -1460,7 +1421,7 @@
                 }
             ],
             "description": "Provides a phpstan/phpstan extension for phpspec/prophecy",
-            "time": "2019-07-31T13:51:23+00:00"
+            "time": "2020-02-05T16:38:06+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -1647,6 +1608,58 @@
                 "object graph"
             ],
             "time": "2019-12-15T19:12:40+00:00"
+        },
+        {
+            "name": "nikic/php-parser",
+            "version": "v4.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikic/PHP-Parser.git",
+                "reference": "9a9981c347c5c49d6dfe5cf826bb882b824080dc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/9a9981c347c5c49d6dfe5cf826bb882b824080dc",
+                "reference": "9a9981c347c5c49d6dfe5cf826bb882b824080dc",
+                "shasum": ""
+            },
+            "require": {
+                "ext-tokenizer": "*",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "ircmaxell/php-yacc": "0.0.5",
+                "phpunit/phpunit": "^6.5 || ^7.0 || ^8.0"
+            },
+            "bin": [
+                "bin/php-parse"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PhpParser\\": "lib/PhpParser"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Nikita Popov"
+                }
+            ],
+            "description": "A PHP parser written in PHP",
+            "keywords": [
+                "parser",
+                "php"
+            ],
+            "time": "2019-11-08T13:50:10+00:00"
         },
         {
             "name": "ocramius/package-versions",
@@ -2156,42 +2169,80 @@
             "time": "2019-10-18T17:09:48+00:00"
         },
         {
-            "name": "phpstan/phpstan-phpunit",
-            "version": "0.11.2",
+            "name": "phpstan/phpstan",
+            "version": "0.12.9",
             "source": {
                 "type": "git",
-                "url": "https://github.com/phpstan/phpstan-phpunit.git",
-                "reference": "fbf2ad56c3b13189d29655e226c9b1da47c2fad9"
+                "url": "https://github.com/phpstan/phpstan.git",
+                "reference": "297cb2458a96ea96d5e9d6ef38f1b7305c071f32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-phpunit/zipball/fbf2ad56c3b13189d29655e226c9b1da47c2fad9",
-                "reference": "fbf2ad56c3b13189d29655e226c9b1da47c2fad9",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/297cb2458a96ea96d5e9d6ef38f1b7305c071f32",
+                "reference": "297cb2458a96ea96d5e9d6ef38f1b7305c071f32",
                 "shasum": ""
             },
             "require": {
-                "nikic/php-parser": "^4.0",
+                "php": "^7.1"
+            },
+            "bin": [
+                "phpstan",
+                "phpstan.phar"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.12-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan - PHP Static Analysis Tool",
+            "time": "2020-02-04T22:30:27+00:00"
+        },
+        {
+            "name": "phpstan/phpstan-phpunit",
+            "version": "0.12.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpstan-phpunit.git",
+                "reference": "26394996368b6d033d012547d3197f4e07e23021"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpstan-phpunit/zipball/26394996368b6d033d012547d3197f4e07e23021",
+                "reference": "26394996368b6d033d012547d3197f4e07e23021",
+                "shasum": ""
+            },
+            "require": {
                 "php": "~7.1",
-                "phpstan/phpdoc-parser": "^0.3",
-                "phpstan/phpstan": "^0.11.4"
+                "phpstan/phpstan": "^0.12.4"
             },
             "conflict": {
                 "phpunit/phpunit": "<7.0"
             },
             "require-dev": {
-                "consistence/coding-standard": "^3.0.1",
+                "consistence/coding-standard": "^3.5",
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+                "ergebnis/composer-normalize": "^2.0.2",
                 "jakub-onderka/php-parallel-lint": "^1.0",
                 "phing/phing": "^2.16.0",
-                "phpstan/phpstan-strict-rules": "^0.11",
+                "phpstan/phpstan-strict-rules": "^0.12",
                 "phpunit/phpunit": "^7.0",
                 "satooshi/php-coveralls": "^1.0",
-                "slevomat/coding-standard": "^4.5.2"
+                "slevomat/coding-standard": "^4.7.2"
             },
             "type": "phpstan-extension",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.11-dev"
+                    "dev-master": "0.12-dev"
                 },
                 "phpstan": {
                     "includes": [
@@ -2210,7 +2261,7 @@
                 "MIT"
             ],
             "description": "PHPUnit extensions and rules for PHPStan",
-            "time": "2019-05-17T17:50:16+00:00"
+            "time": "2020-01-10T12:07:21+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -2600,12 +2651,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "7d271200b041d3e4be5927fdb03122508b9f8ebb"
+                "reference": "0365bf26eddd4a8be9980d7dabf05ceb2aba2f02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/7d271200b041d3e4be5927fdb03122508b9f8ebb",
-                "reference": "7d271200b041d3e4be5927fdb03122508b9f8ebb",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/0365bf26eddd4a8be9980d7dabf05ceb2aba2f02",
+                "reference": "0365bf26eddd4a8be9980d7dabf05ceb2aba2f02",
                 "shasum": ""
             },
             "conflict": {
@@ -2617,11 +2668,14 @@
                 "api-platform/core": ">=2.2,<2.2.10|>=2.3,<2.3.6",
                 "asymmetricrypt/asymmetricrypt": ">=0,<9.9.99",
                 "aws/aws-sdk-php": ">=3,<3.2.1",
+                "bagisto/bagisto": "<0.1.5",
+                "bolt/bolt": "<3.6.10",
                 "brightlocal/phpwhois": "<=4.2.5",
                 "bugsnag/bugsnag-laravel": ">=2,<2.0.2",
                 "cakephp/cakephp": ">=1.3,<1.3.18|>=2,<2.4.99|>=2.5,<2.5.99|>=2.6,<2.6.12|>=2.7,<2.7.6|>=3,<3.5.18|>=3.6,<3.6.15|>=3.7,<3.7.7",
                 "cart2quote/module-quotation": ">=4.1.6,<=4.4.5|>=5,<5.4.4",
                 "cartalyst/sentry": "<=2.1.6",
+                "cesnet/simplesamlphp-module-proxystatistics": "<3.1",
                 "codeigniter/framework": "<=3.0.6",
                 "composer/composer": "<=1-alpha.11",
                 "contao-components/mediaelement": ">=2.14.2,<2.21.1",
@@ -2639,10 +2693,12 @@
                 "doctrine/mongodb-odm": ">=1,<1.0.2",
                 "doctrine/mongodb-odm-bundle": ">=2,<3.0.1",
                 "doctrine/orm": ">=2,<2.4.8|>=2.5,<2.5.1",
+                "dolibarr/dolibarr": "<=10.0.6",
                 "dompdf/dompdf": ">=0.6,<0.6.2",
                 "drupal/core": ">=7,<7.69|>=8,<8.7.11|>=8.8,<8.8.1",
                 "drupal/drupal": ">=7,<7.69|>=8,<8.7.11|>=8.8,<8.8.1",
                 "endroid/qr-code-bundle": "<3.4.2",
+                "enshrined/svg-sanitize": "<0.12",
                 "erusev/parsedown": "<1.7.2",
                 "ezsystems/ezfind-ls": ">=5.3,<5.3.6.1|>=5.4,<5.4.11.1|>=2017.12,<2017.12.0.1",
                 "ezsystems/ezplatform": ">=1.7,<1.7.9.1|>=1.13,<1.13.5.1|>=2.5,<2.5.4",
@@ -2659,6 +2715,7 @@
                 "friendsofsymfony/rest-bundle": ">=1.2,<1.2.2",
                 "friendsofsymfony/user-bundle": ">=1.2,<1.3.5",
                 "fuel/core": "<1.8.1",
+                "getgrav/grav": "<1.7-beta.8",
                 "gree/jose": "<=2.2",
                 "gregwar/rst": "<1.0.3",
                 "guzzlehttp/guzzle": ">=4-rc.2,<4.2.4|>=5,<5.3.1|>=6,<6.2.1",
@@ -2676,6 +2733,8 @@
                 "laravel/framework": ">=4,<4.0.99|>=4.1,<=4.1.31|>=4.2,<=4.2.22|>=5,<=5.0.35|>=5.1,<=5.1.46|>=5.2,<=5.2.45|>=5.3,<=5.3.31|>=5.4,<=5.4.36|>=5.5,<5.5.42|>=5.6,<5.6.30",
                 "laravel/socialite": ">=1,<1.0.99|>=2,<2.0.10",
                 "league/commonmark": "<0.18.3",
+                "librenms/librenms": "<1.53",
+                "magento/community-edition": ">=2,<2.2.10|>=2.3,<2.3.3",
                 "magento/magento1ce": "<1.9.4.3",
                 "magento/magento1ee": ">=1,<1.14.4.3",
                 "magento/product-community-edition": ">=2,<2.2.10|>=2.3,<2.3.2-p.2",
@@ -2691,16 +2750,23 @@
                 "paragonie/random_compat": "<2",
                 "paypal/merchant-sdk-php": "<3.12",
                 "pear/archive_tar": "<1.4.4",
+                "phpfastcache/phpfastcache": ">=5,<5.0.13",
                 "phpmailer/phpmailer": ">=5,<5.2.27|>=6,<6.0.6",
+                "phpmyadmin/phpmyadmin": "<4.9.2",
                 "phpoffice/phpexcel": "<1.8.2",
-                "phpoffice/phpspreadsheet": "<=1.5",
+                "phpoffice/phpspreadsheet": "<1.8",
                 "phpunit/phpunit": ">=4.8.19,<4.8.28|>=5.0.10,<5.6.3",
                 "phpwhois/phpwhois": "<=4.2.5",
                 "phpxmlrpc/extras": "<0.6.1",
+                "pimcore/pimcore": "<6.3",
+                "prestashop/autoupgrade": ">=4,<4.10.1",
+                "prestashop/gamification": "<2.3.2",
+                "prestashop/ps_facetedsearch": "<3.4.1",
+                "privatebin/privatebin": "<1.2.2|>=1.3,<1.3.2",
                 "propel/propel": ">=2-alpha.1,<=2-alpha.7",
                 "propel/propel1": ">=1,<=1.7.1",
                 "pusher/pusher-php-server": "<2.2.1",
-                "robrichards/xmlseclibs": ">=1,<3.0.4",
+                "robrichards/xmlseclibs": "<3.0.4",
                 "sabre/dav": ">=1.6,<1.6.99|>=1.7,<1.7.11|>=1.8,<1.8.9",
                 "scheb/two-factor-bundle": ">=0,<3.26|>=4,<4.11",
                 "sensiolabs/connect": "<4.2.3",
@@ -2708,10 +2774,10 @@
                 "shopware/shopware": "<5.3.7",
                 "silverstripe/admin": ">=1.0.3,<1.0.4|>=1.1,<1.1.1",
                 "silverstripe/assets": ">=1,<1.3.5",
-                "silverstripe/cms": ">=3,<=3.0.11|>=3.1,<3.1.11",
+                "silverstripe/cms": "<4.3.6|>=4.4,<4.4.4",
                 "silverstripe/comments": ">=1.3,<1.9.99|>=2,<2.9.99|>=3,<3.1.1",
                 "silverstripe/forum": "<=0.6.1|>=0.7,<=0.7.3",
-                "silverstripe/framework": ">=3,<3.9.99|>=4,<4.4.4",
+                "silverstripe/framework": "<4.4.4",
                 "silverstripe/graphql": ">=2,<2.0.5|>=3,<3.1.2",
                 "silverstripe/registry": ">=2.1,<2.1.2|>=2.2,<2.2.1",
                 "silverstripe/restfulserver": ">=1,<1.0.9|>=2,<2.0.4",
@@ -2720,8 +2786,9 @@
                 "silverstripe/userforms": "<3",
                 "simple-updates/phpwhois": "<=1",
                 "simplesamlphp/saml2": "<1.10.6|>=2,<2.3.8|>=3,<3.1.4",
-                "simplesamlphp/simplesamlphp": "<1.17.8",
+                "simplesamlphp/simplesamlphp": "<1.18.4",
                 "simplesamlphp/simplesamlphp-module-infocard": "<1.0.1",
+                "simplito/elliptic-php": "<1.0.6",
                 "slim/slim": "<2.6",
                 "smarty/smarty": "<3.1.33",
                 "socalnick/scn-social-auth": "<1.15.2",
@@ -2733,9 +2800,10 @@
                 "sylius/admin-bundle": ">=1,<1.0.17|>=1.1,<1.1.9|>=1.2,<1.2.2",
                 "sylius/grid": ">=1,<1.1.19|>=1.2,<1.2.18|>=1.3,<1.3.13|>=1.4,<1.4.5|>=1.5,<1.5.1",
                 "sylius/grid-bundle": ">=1,<1.1.19|>=1.2,<1.2.18|>=1.3,<1.3.13|>=1.4,<1.4.5|>=1.5,<1.5.1",
-                "sylius/resource-bundle": ">=1,<1.3.13|>=1.4,<1.4.6|>=1.5,<1.5.1|>=1.6,<1.6.3",
-                "sylius/sylius": ">=1,<1.3.12|>=1.4,<1.4.4",
+                "sylius/resource-bundle": "<1.3.13|>=1.4,<1.4.6|>=1.5,<1.5.1|>=1.6,<1.6.3",
+                "sylius/sylius": "<1.3.16|>=1.4,<1.4.12|>=1.5,<1.5.9|>=1.6,<1.6.5",
                 "symbiote/silverstripe-multivaluefield": ">=3,<3.0.99",
+                "symbiote/silverstripe-versionedfiles": "<=2.0.3",
                 "symfony/cache": ">=3.1,<3.4.35|>=4,<4.2.12|>=4.3,<4.3.8",
                 "symfony/dependency-injection": ">=2,<2.0.17|>=2.7,<2.7.51|>=2.8,<2.8.50|>=3,<3.4.26|>=4,<4.1.12|>=4.2,<4.2.7",
                 "symfony/form": ">=2.3,<2.3.35|>=2.4,<2.6.12|>=2.7,<2.7.50|>=2.8,<2.8.49|>=3,<3.4.20|>=4,<4.0.15|>=4.1,<4.1.9|>=4.2,<4.2.1",
@@ -2775,8 +2843,11 @@
                 "typo3/neos": ">=1.1,<1.1.3|>=1.2,<1.2.13|>=2,<2.0.4",
                 "typo3/phar-stream-wrapper": ">=1,<2.1.1|>=3,<3.1.1",
                 "ua-parser/uap-php": "<3.8",
+                "usmanhalalit/pixie": "<1.0.3|>=2,<2.0.2",
+                "verot/class.upload.php": "<1.0.3|>=2,<2.0.4",
                 "wallabag/tcpdf": "<6.2.22",
                 "willdurand/js-translation-bundle": "<2.1.1",
+                "yii2mod/yii2-cms": "<1.9.2",
                 "yiisoft/yii": ">=1.1.14,<1.1.15",
                 "yiisoft/yii2": "<2.0.15",
                 "yiisoft/yii2-bootstrap": "<2.0.4",
@@ -2785,6 +2856,7 @@
                 "yiisoft/yii2-gii": "<2.0.4",
                 "yiisoft/yii2-jui": "<2.0.4",
                 "yiisoft/yii2-redis": "<2.0.8",
+                "yourls/yourls": "<1.7.4",
                 "zendframework/zend-cache": ">=2.4,<2.4.8|>=2.5,<2.5.3",
                 "zendframework/zend-captcha": ">=2,<2.4.9|>=2.5,<2.5.2",
                 "zendframework/zend-crypt": ">=2,<2.4.9|>=2.5,<2.5.2",
@@ -2829,7 +2901,7 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2020-02-06T16:34:55+00:00"
+            "time": "2020-02-10T16:13:40+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
