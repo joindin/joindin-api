@@ -30,7 +30,7 @@ class ContactController extends BaseApiController
         SpamCheckServiceInterface $spamCheckService,
         array $config = []
     ) {
-        $this->emailService     = $emailService;
+        $this->emailService = $emailService;
         $this->spamCheckService = $spamCheckService;
 
         parent::__construct($config);
@@ -61,17 +61,17 @@ class ContactController extends BaseApiController
     public function contact(Request $request, PDO $db)
     {
         // only trusted clients can contact us to save on spam
-        $clientId     = $request->getParameter('client_id');
+        $clientId = $request->getParameter('client_id');
         $clientSecret = $request->getParameter('client_secret');
-        $oauthModel   = $request->getOauthModel($db);
+        $oauthModel = $request->getOauthModel($db);
 
         if (!$oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
             throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
 
         $fields = ['name', 'email', 'subject', 'comment'];
-        $error  = [];
-        $data   = [];
+        $error = [];
+        $data = [];
 
         foreach ($fields as $name) {
             $value = $request->getParameter($name);

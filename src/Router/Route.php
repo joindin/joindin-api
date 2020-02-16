@@ -120,7 +120,7 @@ class Route
     public function dispatch(Request $request, $db, ContainerInterface $container)
     {
         $className = $this->getController();
-        $method    = $this->getAction();
+        $method = $this->getAction();
 
         if (!$container->has($className)) {
             throw new RuntimeException('Unknown controller ' . $request->url_elements[2], Http::BAD_REQUEST);

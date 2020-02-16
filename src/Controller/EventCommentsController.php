@@ -34,7 +34,7 @@ class EventCommentsController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start          = $this->getStart($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = new EventCommentMapper($db, $request);
@@ -63,7 +63,7 @@ class EventCommentsController extends BaseApiController
         // verbosity
         $verbose = $this->getVerbosity($request);
 
-        $event_mapper   = new EventMapper($db, $request);
+        $event_mapper = new EventMapper($db, $request);
         $comment_mapper = new EventCommentMapper($db, $request);
 
         if (!isset($request->user_id) || empty($request->user_id)) {
@@ -81,7 +81,7 @@ class EventCommentsController extends BaseApiController
 
     public function createComment(Request $request, PDO $db)
     {
-        $comment             = [];
+        $comment = [];
         $comment['event_id'] = $this->getItemId($request);
 
         if (empty($comment['event_id'])) {
@@ -96,8 +96,8 @@ class EventCommentsController extends BaseApiController
             throw new Exception('You must log in to comment');
         }
         $user_mapper = new UserMapper($db, $request);
-        $users       = $user_mapper->getUserById($request->user_id);
-        $thisUser    = $users['users'][0];
+        $users = $user_mapper->getUserById($request->user_id);
+        $thisUser = $users['users'][0];
 
         $rating = $request->getParameter('rating', false);
 
@@ -116,14 +116,14 @@ class EventCommentsController extends BaseApiController
         }
 
         // Get the API key reference to save against the comment
-        $oauth_model   = $request->getOauthModel($db);
+        $oauth_model = $request->getOauthModel($db);
         $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
         $comment['user_id'] = $request->user_id;
         $comment['comment'] = $commentText;
-        $comment['rating']  = $rating;
-        $comment['cname']   = $thisUser['full_name'];
-        $comment['source']  = $consumer_name;
+        $comment['rating'] = $rating;
+        $comment['cname'] = $thisUser['full_name'];
+        $comment['source'] = $consumer_name;
 
         $isValid = $this->spamCheckService->isCommentAcceptable(
             $commentText,
@@ -135,7 +135,7 @@ class EventCommentsController extends BaseApiController
             throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
         }
 
-        $event_mapper   = new EventMapper($db, $request);
+        $event_mapper = new EventMapper($db, $request);
         $comment_mapper = new EventCommentMapper($db, $request);
 
         // should rating be allowed?
@@ -178,7 +178,7 @@ class EventCommentsController extends BaseApiController
 
         $comment_mapper = new EventCommentMapper($db, $request);
 
-        $commentId   = $this->getItemId($request);
+        $commentId = $this->getItemId($request);
         $commentInfo = $comment_mapper->getCommentInfo($commentId);
 
         if (false === $commentInfo) {
@@ -190,10 +190,10 @@ class EventCommentsController extends BaseApiController
         $comment_mapper->userReportedComment($commentId, $request->user_id);
 
         // notify event admins
-        $comment      = $comment_mapper->getCommentById($commentId, true, true);
+        $comment = $comment_mapper->getCommentById($commentId, true, true);
         $event_mapper = new EventMapper($db, $request);
-        $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
-        $event        = $event_mapper->getEventById($eventId, true, true);
+        $recipients = $event_mapper->getHostsEmailAddresses($eventId);
+        $event = $event_mapper->getEventById($eventId, true, true);
 
         $emailService = new EventCommentReportedEmailService($this->config, $recipients, $comment, $event);
         $emailService->sendEmail();
@@ -229,7 +229,7 @@ class EventCommentsController extends BaseApiController
 
         $comment_mapper = new EventCommentMapper($db, $request);
 
-        $commentId   = $this->getItemId($request);
+        $commentId = $this->getItemId($request);
         $commentInfo = $comment_mapper->getCommentInfo($commentId);
 
         if (false === $commentInfo) {
@@ -237,7 +237,7 @@ class EventCommentsController extends BaseApiController
         }
 
         $event_mapper = new EventMapper($db, $request);
-        $event_id     = $commentInfo['event_id'];
+        $event_id = $commentInfo['event_id'];
 
         if (false == $event_mapper->thisUserHasAdminOn($event_id)) {
             throw new Exception("You don't have permission to do that", Http::FORBIDDEN);

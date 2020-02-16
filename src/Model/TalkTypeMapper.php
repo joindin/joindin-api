@@ -12,7 +12,7 @@ class TalkTypeMapper extends ApiMapper
     public function getDefaultFields()
     {
         return [
-            'title'       => 'cat_title',
+            'title' => 'cat_title',
             'description' => 'cat_desc',
         ];
     }
@@ -23,7 +23,7 @@ class TalkTypeMapper extends ApiMapper
     public function getVerboseFields()
     {
         return [
-            'title'       => 'cat_title',
+            'title' => 'cat_title',
             'description' => 'cat_desc',
         ];
     }
@@ -77,7 +77,7 @@ class TalkTypeMapper extends ApiMapper
 
         if (count($params) > 0) {
             $value = reset($params);
-            $key   = key($params);
+            $key = key($params);
 
             $sql .= 'where c.' . $key . ' = :' . $key . ' ';
 
@@ -91,11 +91,11 @@ class TalkTypeMapper extends ApiMapper
         $sql .= 'order by c.ID ';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute($params);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $params);
 
             return $results;
@@ -114,19 +114,19 @@ class TalkTypeMapper extends ApiMapper
 
         $list = parent::transformResults($results, $verbose);
 
-        $base    = $this->_request->base;
+        $base = $this->_request->base;
         $version = $this->_request->version;
 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                $list[$key]['uri']         = $base . '/' . $version . '/talk_types/' . $row['ID'];
+                $list[$key]['uri'] = $base . '/' . $version . '/talk_types/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_types/' . $row['ID'] . '?verbose=yes';
             }
         }
 
         return [
             'talk_types' => $list,
-            'meta'       => $this->getPaginationLinks($list, $total)
+            'meta' => $this->getPaginationLinks($list, $total)
         ];
     }
 
@@ -137,7 +137,7 @@ class TalkTypeMapper extends ApiMapper
      */
     public function getTalkTypesLookupList()
     {
-        $sql  = "select ID, cat_title from categories";
+        $sql = "select ID, cat_title from categories";
         $stmt = $this->_db->prepare($sql);
         $stmt->execute();
 

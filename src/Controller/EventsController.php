@@ -41,20 +41,20 @@ class EventsController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start          = $this->getStart($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'talks':
                     $talk_mapper = new TalkMapper($db, $request);
-                    $talks       = $talk_mapper->getTalksByEventId($event_id, $resultsperpage, $start);
-                    $list        = $talks->getOutputView($request, $verbose);
+                    $talks = $talk_mapper->getTalksByEventId($event_id, $resultsperpage, $start);
+                    $list = $talks->getOutputView($request, $verbose);
 
                     break;
                 case 'comments':
                     $event_comment_mapper = new EventCommentMapper($db, $request);
-                    $list                 = $event_comment_mapper->getEventCommentsByEventId(
+                    $list = $event_comment_mapper->getEventCommentsByEventId(
                         $event_id,
                         $resultsperpage,
                         $start,
@@ -64,7 +64,7 @@ class EventsController extends BaseApiController
                     break;
                 case 'talk_comments':
                     $talk_comment_mapper = new TalkCommentMapper($db, $request);
-                    $list                = $talk_comment_mapper->getCommentsByEventId(
+                    $list = $talk_comment_mapper->getCommentsByEventId(
                         $event_id,
                         $resultsperpage,
                         $start,
@@ -74,17 +74,17 @@ class EventsController extends BaseApiController
                     break;
                 case 'attendees':
                     $user_mapper = new UserMapper($db, $request);
-                    $list        = $user_mapper->getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose);
+                    $list = $user_mapper->getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose);
 
                     break;
                 case 'attending':
                     $mapper = new EventMapper($db, $request);
-                    $list   = $mapper->getUserAttendance($event_id, $request->user_id);
+                    $list = $mapper->getUserAttendance($event_id, $request->user_id);
 
                     break;
                 case 'tracks':
                     $mapper = new TrackMapper($db, $request);
-                    $list   = $mapper->getTracksByEventId($event_id, $resultsperpage, $start, $verbose);
+                    $list = $mapper->getTracksByEventId($event_id, $resultsperpage, $start, $verbose);
 
                     break;
 
@@ -92,9 +92,9 @@ class EventsController extends BaseApiController
                     throw new InvalidArgumentException('Unknown Subrequest', Http::NOT_FOUND);
             }
         } else {
-            $mapper           = new EventMapper($db, $request);
-            $user_mapper      = new UserMapper($db, $request);
-            $isSiteAdmin      = $user_mapper->isSiteAdmin($request->user_id);
+            $mapper = new EventMapper($db, $request);
+            $user_mapper = new UserMapper($db, $request);
+            $isSiteAdmin = $user_mapper->isSiteAdmin($request->user_id);
             $activeEventsOnly = $isSiteAdmin ? false : true;
 
             if ($event_id) {
@@ -118,7 +118,7 @@ class EventsController extends BaseApiController
                         if (!isset($request->user_id)) {
                             throw new Exception("You must be logged in to view pending events", Http::BAD_REQUEST);
                         }
-                        $user_mapper      = new UserMapper($db, $request);
+                        $user_mapper = new UserMapper($db, $request);
                         $canApproveEvents = $user_mapper->isSiteAdmin($request->user_id);
 
                         if (!$canApproveEvents) {
@@ -128,7 +128,7 @@ class EventsController extends BaseApiController
                 }
 
                 if (isset($request->parameters['title'])) {
-                    $title           = filter_var(
+                    $title = filter_var(
                         $request->parameters['title'],
                         FILTER_SANITIZE_STRING,
                         FILTER_FLAG_NO_ENCODE_QUOTES
@@ -137,7 +137,7 @@ class EventsController extends BaseApiController
                 }
 
                 if (isset($request->parameters['stub'])) {
-                    $stub           = filter_var(
+                    $stub = filter_var(
                         $request->parameters['stub'],
                         FILTER_SANITIZE_STRING,
                         FILTER_FLAG_NO_ENCODE_QUOTES
@@ -203,7 +203,7 @@ class EventsController extends BaseApiController
                 case 'attending':
                     // the body of this request is completely irrelevant
                     // The logged in user *is* attending the event.  Use DELETE to unattend
-                    $event_id     = $this->getItemId($request);
+                    $event_id = $this->getItemId($request);
                     $event_mapper = new EventMapper($db, $request);
                     $event_mapper->setUserAttendance($event_id, $request->user_id);
 
@@ -220,7 +220,7 @@ class EventsController extends BaseApiController
             // Create a new event, pending unless user has privs
 
             // incoming data
-            $event  = [];
+            $event = [];
             $errors = [];
 
             $event['name'] = filter_var(
@@ -256,7 +256,7 @@ class EventsController extends BaseApiController
             $tz = new DateTimeZone('UTC');
 
             $start_date = strtotime($request->getParameter("start_date"));
-            $end_date   = strtotime($request->getParameter("end_date"));
+            $end_date = strtotime($request->getParameter("end_date"));
 
             if (!$start_date || ! $end_date) {
                 $errors[] = "Both 'start_date' and 'end_date' must be supplied in a recognised format";
@@ -270,7 +270,7 @@ class EventsController extends BaseApiController
                     FILTER_SANITIZE_STRING,
                     FILTER_FLAG_NO_ENCODE_QUOTES
                 );
-                $event['tz_place']     = filter_var(
+                $event['tz_place'] = filter_var(
                     $request->getParameter("tz_place"),
                     FILTER_SANITIZE_STRING,
                     FILTER_FLAG_NO_ENCODE_QUOTES
@@ -280,10 +280,10 @@ class EventsController extends BaseApiController
                     // make the timezone, and read in times with respect to that
                     $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
 
-                    $start_date          = new DateTime($request->getParameter("start_date"), $tz);
-                    $end_date            = new DateTime($request->getParameter("end_date"), $tz);
+                    $start_date = new DateTime($request->getParameter("start_date"), $tz);
+                    $end_date = new DateTime($request->getParameter("end_date"), $tz);
                     $event['start_date'] = $start_date->format('U');
-                    $event['end_date']   = $end_date->format('U');
+                    $event['end_date'] = $end_date->format('U');
                 } catch (Exception $e) {
                     // the time zone isn't right
                     $errors[] = "The fields 'tz_continent' and 'tz_place' must be supplied and valid " .
@@ -307,13 +307,13 @@ class EventsController extends BaseApiController
                 $cfp_start_date = strtotime($request->getParameter("cfp_start_date"));
 
                 if ($cfp_start_date) {
-                    $cfp_start_date          = new DateTime($request->getParameter("cfp_start_date"), $tz);
+                    $cfp_start_date = new DateTime($request->getParameter("cfp_start_date"), $tz);
                     $event['cfp_start_date'] = $cfp_start_date->format('U');
                 }
                 $cfp_end_date = strtotime($request->getParameter("cfp_end_date"));
 
                 if ($cfp_end_date) {
-                    $cfp_end_date          = new DateTime($request->getParameter("cfp_end_date"), $tz);
+                    $cfp_end_date = new DateTime($request->getParameter("cfp_end_date"), $tz);
                     $event['cfp_end_date'] = $cfp_end_date->format('U');
                 }
                 $latitude = filter_var(
@@ -363,7 +363,7 @@ class EventsController extends BaseApiController
             $current_pending = $event_mapper->getPendingEventsCountByUser($request->user_id);
 
             if ($current_pending >= $max_pending_events) {
-                $suffix   = $max_pending_events == 1 ? '' : 's';
+                $suffix = $max_pending_events == 1 ? '' : 's';
                 $errors[] = sprintf('You may only have %d pending event%s at one time', $max_pending_events, $suffix);
             }
 
@@ -374,7 +374,7 @@ class EventsController extends BaseApiController
 
             $user_mapper = new UserMapper($db, $request);
 
-            $event_owner           = $user_mapper->getUserById($request->user_id);
+            $event_owner = $user_mapper->getUserById($request->user_id);
             $event['contact_name'] = $event_owner['users'][0]['full_name'];
 
             /**
@@ -422,9 +422,9 @@ class EventsController extends BaseApiController
 
             // Send an email if we didn't auto-approve
             if (!$user_mapper->isSiteAdmin($request->user_id)) {
-                $event        = $event_mapper->getPendingEventById($event_id);
-                $count        = $event_mapper->getPendingEventsCount();
-                $recipients   = $user_mapper->getSiteAdminEmails();
+                $event = $event_mapper->getPendingEventById($event_id);
+                $count = $event_mapper->getPendingEventsCount();
+                $recipients = $user_mapper->getSiteAdminEmails();
                 $emailService = new EventSubmissionEmailService($this->config, $recipients, $event, $count);
                 $emailService->sendEmail();
             }
@@ -440,7 +440,7 @@ class EventsController extends BaseApiController
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'attending':
-                    $event_id     = $this->getItemId($request);
+                    $event_id = $this->getItemId($request);
                     $event_mapper = new EventMapper($db, $request);
                     $event_mapper->setUserNonAttendance($event_id, $request->user_id);
 
@@ -472,7 +472,7 @@ class EventsController extends BaseApiController
 
         if (!isset($request->url_elements[4])) {
             // Edit an Event
-            $event_mapper   = new EventMapper($db, $request);
+            $event_mapper = new EventMapper($db, $request);
             $existing_event = $event_mapper->getEventById($event_id, true);
 
             if (!$existing_event) {
@@ -487,7 +487,7 @@ class EventsController extends BaseApiController
             }
 
             // initialise a new set of fields to save
-            $event  = ["event_id" => $event_id];
+            $event = ["event_id" => $event_id];
             $errors = [];
 
             $event['name'] = filter_var(
@@ -521,7 +521,7 @@ class EventsController extends BaseApiController
             }
 
             $start_date = strtotime($request->getParameter("start_date"));
-            $end_date   = strtotime($request->getParameter("end_date"));
+            $end_date = strtotime($request->getParameter("end_date"));
 
             if (!$start_date || ! $end_date) {
                 $errors[] = "Both 'start_date' and 'end_date' must be supplied in a recognised format";
@@ -534,7 +534,7 @@ class EventsController extends BaseApiController
                     FILTER_SANITIZE_STRING,
                     FILTER_FLAG_NO_ENCODE_QUOTES
                 );
-                $event['tz_place']     = filter_var(
+                $event['tz_place'] = filter_var(
                     $request->getParameter("tz_place"),
                     FILTER_SANITIZE_STRING,
                     FILTER_FLAG_NO_ENCODE_QUOTES
@@ -542,11 +542,11 @@ class EventsController extends BaseApiController
 
                 try {
                     // make the timezone, and read in times with respect to that
-                    $tz                  = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
-                    $start_date          = new DateTime($request->getParameter("start_date"), $tz);
-                    $end_date            = new DateTime($request->getParameter("end_date"), $tz);
+                    $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+                    $start_date = new DateTime($request->getParameter("start_date"), $tz);
+                    $end_date = new DateTime($request->getParameter("end_date"), $tz);
                     $event['start_date'] = $start_date->format('U');
-                    $event['end_date']   = $end_date->format('U');
+                    $event['end_date'] = $end_date->format('U');
                 } catch (Exception $e) {
                     // the time zone isn't right
                     $errors[] = "The fields 'tz_continent' and 'tz_place' must be supplied and valid " .
@@ -573,17 +573,17 @@ class EventsController extends BaseApiController
             }
 
             $event['cfp_start_date'] = null;
-            $cfp_start_date          = $request->getParameter("cfp_start_date", false);
+            $cfp_start_date = $request->getParameter("cfp_start_date", false);
 
             if (false !== $cfp_start_date && strtotime($cfp_start_date)) {
-                $cfp_start_date          = new DateTime($cfp_start_date, $tz);
+                $cfp_start_date = new DateTime($cfp_start_date, $tz);
                 $event['cfp_start_date'] = $cfp_start_date->format('U');
             }
             $event['cfp_end_date'] = null;
-            $cfp_end_date          = $request->getParameter("cfp_end_date", false);
+            $cfp_end_date = $request->getParameter("cfp_end_date", false);
 
             if (false !== $cfp_end_date && strtotime($cfp_end_date)) {
-                $cfp_end_date          = new DateTime($cfp_end_date, $tz);
+                $cfp_end_date = new DateTime($cfp_end_date, $tz);
                 $event['cfp_end_date'] = $cfp_end_date->format('U');
             }
             $latitude = $request->getParameter("latitude", false);
@@ -598,7 +598,7 @@ class EventsController extends BaseApiController
             $longitude = $request->getParameter("longitude", false);
 
             if (false !== $longitude) {
-                $longitude          = filter_var($longitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $longitude = filter_var($longitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
                 $event['longitude'] = $longitude;
             }
             $incoming_tag_list = $request->getParameter('tags');
@@ -635,7 +635,7 @@ class EventsController extends BaseApiController
             throw new Exception("You must be logged in to view pending claims", Http::UNAUTHORIZED);
         }
 
-        $event_id     = $this->getItemId($request);
+        $event_id = $this->getItemId($request);
         $event_mapper = $this->getEventMapper($db, $request);
 
         $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
@@ -670,8 +670,8 @@ class EventsController extends BaseApiController
             throw new Exception("You must be logged in to create a track", Http::UNAUTHORIZED);
         }
 
-        $track             = [];
-        $event_id          = $this->getItemId($request);
+        $track = [];
+        $event_id = $this->getItemId($request);
         $track['event_id'] = $event_id;
 
         if (empty($track['event_id'])) {
@@ -682,7 +682,7 @@ class EventsController extends BaseApiController
         }
 
         $event_mapper = new EventMapper($db, $request);
-        $events       = $event_mapper->getEventById($event_id, true);
+        $events = $event_mapper->getEventById($event_id, true);
 
         if (!$events || $events['meta']['count'] == 0) {
             throw new Exception("Associated event not found", Http::NOT_FOUND);
@@ -693,7 +693,7 @@ class EventsController extends BaseApiController
         }
 
         // validate fields
-        $errors              = [];
+        $errors = [];
         $track['track_name'] = filter_var(
             $request->getParameter("track_name"),
             FILTER_SANITIZE_STRING,
@@ -718,7 +718,7 @@ class EventsController extends BaseApiController
         }
 
         $track_mapper = new TrackMapper($db, $request);
-        $track_id     = $track_mapper->createEventTrack($track, $event_id);
+        $track_id = $track_mapper->createEventTrack($track, $event_id);
 
         $uri = $request->base . '/' . $request->version . '/tracks/' . $track_id;
 
@@ -745,7 +745,7 @@ class EventsController extends BaseApiController
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
-        $event_id     = $this->getItemId($request);
+        $event_id = $this->getItemId($request);
         $event_mapper = new EventMapper($db, $request);
 
         if (!$event_mapper->thisUserCanApproveEvents()) {
@@ -759,8 +759,8 @@ class EventsController extends BaseApiController
         }
 
         // Send a notification email as we have approved
-        $event        = $event_mapper->getEventById($event_id, true)['events'][0];
-        $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
+        $event = $event_mapper->getEventById($event_id, true)['events'][0];
+        $recipients = $event_mapper->getHostsEmailAddresses($event_id);
         $emailService = new EventApprovedEmailService($this->config, $recipients, $event);
         $emailService->sendEmail();
 
@@ -786,7 +786,7 @@ class EventsController extends BaseApiController
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
-        $event_id     = $this->getItemId($request);
+        $event_id = $this->getItemId($request);
         $event_mapper = new EventMapper($db, $request);
         $reason = filter_var($request->getParameter('reason'), FILTER_SANITIZE_STRING);
 
@@ -802,8 +802,8 @@ class EventsController extends BaseApiController
 
         // Only send an email if we provided a reason
         if (!empty($reason)) {
-            $event        = $event_mapper->getEventById($event_id, true, false)['events'][0];
-            $recipients   = array_merge([$this->config['email']['from']], $event_mapper->getHostsEmailAddresses($event_id));
+            $event = $event_mapper->getEventById($event_id, true, false)['events'][0];
+            $recipients = array_merge([$this->config['email']['from']], $event_mapper->getHostsEmailAddresses($event_id));
             $emailService = new EventRejectedEmailService($this->config, $recipients, $event);
             $emailService->sendEmail();
         }

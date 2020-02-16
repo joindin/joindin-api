@@ -20,8 +20,8 @@ class DataGenerator
      */
     public function __construct(Generator_Data_Interface $data)
     {
-        $this->_data            = $data;
-        $this->_existing_stubs  = [];
+        $this->_data = $data;
+        $this->_existing_stubs = [];
         $this->_users_attending = [];
         $this->_talk_comment_max_timestamp = [];
         $this->_event_comment_max_timestamp = [];
@@ -169,9 +169,9 @@ class DataGenerator
 
         $first = true;
 
-        for ($id=1; $id!=$count+1; $id++) {
+        for ($id = 1; $id != $count + 1; $id++) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "TALK: $id         (" . (memory_get_usage(true)/1024) . " Kb)        \r");
+                fwrite(STDERR, "TALK: $id         (" . (memory_get_usage(true) / 1024) . " Kb)        \r");
             }
             
             $talk = new StdClass();
@@ -251,7 +251,7 @@ class DataGenerator
             // Check if we need multiple speakers or not
             $speaker_count = $this->_chance(TALK_HAS_MULTIPLE_SPEAKERS) ? rand(2, 4) : 1;
 
-            for ($i=0; $i!=$speaker_count; $i++) {
+            for ($i = 0; $i != $speaker_count; $i++) {
                 if ($this->_chance(TALK_IS_CLAIMED_BY_REGISTERED_USER)) {
                     $user = $this->_cacheFetchRandom('users');
                     $speaker_name = $user->fullname;
@@ -288,9 +288,9 @@ class DataGenerator
 
         $first = true;
 
-        for ($id=1; $id!=$count+1; $id++) {
+        for ($id = 1; $id != $count + 1; $id++) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "TRACK: $id       (" . (memory_get_usage(true)/1024) . " Kb)        \r");
+                fwrite(STDERR, "TRACK: $id       (" . (memory_get_usage(true) / 1024) . " Kb)        \r");
             }
             $event = $this->_cacheFetchRandom('events');
 
@@ -340,9 +340,9 @@ class DataGenerator
 
         $first = true;
 
-        for ($id=1; $id!=$count+1; $id++) {
+        for ($id = 1; $id != $count + 1; $id++) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "TALK COMMENT ID: $id       (" . (memory_get_usage(true)/1024) . " Kb)        \r");
+                fwrite(STDERR, "TALK COMMENT ID: $id       (" . (memory_get_usage(true) / 1024) . " Kb)        \r");
             }
 
             $talk = $this->_cacheFetchRandom('talks');
@@ -367,7 +367,7 @@ class DataGenerator
 
             // Exponential randomness, 0 will be the least given, 5 the most. Will take the dampening
             // factor of the talk into account.
-            $rating = floor(log(rand(1, 1 << (3+$talk->dampening)) / log(2)));
+            $rating = floor(log(rand(1, 1 << (3 + $talk->dampening)) / log(2)));
 
             $private = $this->_chance("COMMENT_IS_PRIVATE") ? 1 : 0;
 
@@ -411,9 +411,9 @@ class DataGenerator
         $first = true;
         $have_event_comments = false;
 
-        for ($id=1; $id!=$count+1; $id++) {
+        for ($id = 1; $id != $count + 1; $id++) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "EVENT COMMENT ID: $id       (" . (memory_get_usage(true)/1024) . " Kb)        \r");
+                fwrite(STDERR, "EVENT COMMENT ID: $id       (" . (memory_get_usage(true) / 1024) . " Kb)        \r");
             }
 
             $event = $this->_cacheFetchRandom('events');
@@ -447,7 +447,7 @@ class DataGenerator
 
             // Exponential randomness, 0 will be the least given, 5 the most. Will take the dampening
             // factor of the talk into account.
-            $rating = floor(log(rand(1, 1 << (3+$event->dampening)) / log(2)));
+            $rating = floor(log(rand(1, 1 << (3 + $event->dampening)) / log(2)));
 
             $tmp = $this->getData()->getCommentSourceData();
             $source = $tmp[array_rand($tmp)];
@@ -505,7 +505,7 @@ class DataGenerator
             // query. This is here to make sure that never can happen.
             $attended_events = rand($first ? 1 : 0, $event_count / 2);
 
-            for ($i=0; $i!=$attended_events; $i++) {
+            for ($i = 0; $i != $attended_events; $i++) {
                 $event = $this->_cacheFetchRandom('events');
 
                 // if the user is already attending this event, move on
@@ -545,7 +545,7 @@ class DataGenerator
 
             $userids = [];
 
-            for ($i=0; $i!=$admin_count; $i++) {
+            for ($i = 0; $i != $admin_count; $i++) {
                 // Make sure we don't add the same user twice
                 do {
                     $user = $this->_cacheFetchRandom('users');
@@ -593,9 +593,9 @@ class DataGenerator
 
         $first = true;
 
-        for ($id=1; $id!=$count+1; $id++) {
+        for ($id = 1; $id != $count + 1; $id++) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "EVENT ID: $id       (" . (memory_get_usage(true)/1024) . " Kb)        \r");
+                fwrite(STDERR, "EVENT ID: $id       (" . (memory_get_usage(true) / 1024) . " Kb)        \r");
             }
 
             $event = new StdClass();
@@ -718,9 +718,9 @@ class DataGenerator
         $usernames = [];
         $id = 2;
 
-        while ($id < ($count+2)) {
+        while ($id < ($count + 2)) {
             if ($id % 100 == 0) {
-                fwrite(STDERR, "USER ID: $id    (" . (memory_get_usage(true)/1024) . " Kb)        \r");
+                fwrite(STDERR, "USER ID: $id    (" . (memory_get_usage(true) / 1024) . " Kb)        \r");
             }
 
             // Generate and store user
@@ -866,10 +866,10 @@ class DataGenerator
 
         $number = rand(1, $max);
 
-        for ($i=0, $ret="", $r=$number; $i!=$r; $i++) {
+        for ($i = 0, $ret = "", $r = $number; $i != $r; $i++) {
             $ret .= $lorum[array_rand($lorum)];
 
-            if ($number > 10 && $i == (int) ($number/2)) {
+            if ($number > 10 && $i == (int) ($number / 2)) {
                 $ret .= "\\n\\n";
             }
         }

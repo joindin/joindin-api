@@ -14,8 +14,8 @@ class EventCommentReportedEmailService extends BaseEmailService
         parent::__construct($config, $recipients);
 
         // this email needs comment info
-        $this->comment     = $comment['comments'][0];
-        $this->event       = $event['events'][0];
+        $this->comment = $comment['comments'][0];
+        $this->event = $event['events'][0];
         $this->website_url = $config['website_url'];
     }
 
@@ -44,11 +44,11 @@ class EventCommentReportedEmailService extends BaseEmailService
         }
 
         $replacements = [
-            "name"    => $this->event['name'],
-            "rating"  => $rating,
+            "name" => $this->event['name'],
+            "rating" => $rating,
             "comment" => $this->comment['comment'],
-            "byline"  => $byLine,
-            "link"    => $this->linkToReportedCommentsForEvent()
+            "byline" => $byLine,
+            "link" => $this->linkToReportedCommentsForEvent()
         ];
 
         $messageBody = $this->parseEmail("eventCommentReported.md", $replacements);

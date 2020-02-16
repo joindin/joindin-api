@@ -21,7 +21,7 @@ class BaseTalkController extends BaseApiController
     protected $request;
 
     protected $classMappings = [
-        'talk'        => TalkMapper::class,
+        'talk' => TalkMapper::class,
         'talkcomment' => TalkCommentMapper::class,
     ];
 
@@ -45,10 +45,10 @@ class BaseTalkController extends BaseApiController
     protected function checkLoggedIn(Request $request)
     {
         $failMessages = [
-            'POST'   => 'create data',
+            'POST' => 'create data',
             'DELETE' => 'remove data',
-            'GET'    => 'view data',
-            'PUT'    => 'update data'
+            'GET' => 'view data',
+            'PUT' => 'update data'
         ];
 
         if (!isset($request->user_id)) {
@@ -138,7 +138,7 @@ class BaseTalkController extends BaseApiController
 
     protected function setDbAndRequest(PDO $db, Request $request)
     {
-        $this->db      = $db;
+        $this->db = $db;
         $this->request = $request;
     }
 

@@ -74,19 +74,19 @@ class LanguageMapper extends ApiMapper
 
         $list = parent::transformResults($results, $verbose);
 
-        $base    = $this->_request->base;
+        $base = $this->_request->base;
         $version = $this->_request->version;
 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                $list[$key]['uri']         = $base . '/' . $version . '/languages/' . $row['ID'];
+                $list[$key]['uri'] = $base . '/' . $version . '/languages/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/languages/' . $row['ID'] . '?verbose=yes';
             }
         }
 
         return [
             'languages' => $list,
-            'meta'      => $this->getPaginationLinks($list, $total)
+            'meta' => $this->getPaginationLinks($list, $total)
         ];
     }
 
@@ -104,7 +104,7 @@ class LanguageMapper extends ApiMapper
 
         if (count($params) > 0) {
             $value = reset($params);
-            $key   = key($params);
+            $key = key($params);
 
             $sql .= 'where l.' . $key . ' = :' . $key . ' ';
 
@@ -118,11 +118,11 @@ class LanguageMapper extends ApiMapper
         $sql .= 'order by l.lang_name ';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute($params);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $params);
 
             return $results;

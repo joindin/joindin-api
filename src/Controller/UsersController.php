@@ -34,14 +34,14 @@ class UsersController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start          = $this->getStart($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'talks':
                     $talkMapper = new TalkMapper($db, $request);
-                    $talks       = $talkMapper->getTalksBySpeaker($userId, $resultsperpage, $start, $verbose);
+                    $talks = $talkMapper->getTalksBySpeaker($userId, $resultsperpage, $start, $verbose);
 
                     return $talks->getOutputView($request, $verbose);
                 case 'hosted':
@@ -85,7 +85,7 @@ class UsersController extends BaseApiController
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
-            $list     = $mapper->getUserByUsername($username, $verbose);
+            $list = $mapper->getUserByUsername($username, $verbose);
 
             if ($list === false) {
                 throw new Exception('Username not found', Http::NOT_FOUND);
@@ -114,7 +114,7 @@ class UsersController extends BaseApiController
             switch ($request->url_elements[3]) {
                 case 'verifications':
                     $userMapper = new UserMapper($db, $request);
-                    $token       = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
+                    $token = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
 
                     if (empty($token)) {
                         throw new Exception("Verification token must be supplied", Http::BAD_REQUEST);
@@ -136,7 +136,7 @@ class UsersController extends BaseApiController
                     throw new InvalidArgumentException('Unknown Subrequest', Http::NOT_FOUND);
             }
         } else {
-            $user   = [];
+            $user = [];
             $errors = [];
 
             $userMapper = $this->getUserMapper($db, $request);
@@ -209,7 +209,7 @@ class UsersController extends BaseApiController
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
-            $user['biography']        = filter_var(
+            $user['biography'] = filter_var(
                 trim($request->getParameter("biography")),
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
@@ -221,7 +221,7 @@ class UsersController extends BaseApiController
             }
 
             $userId = $userMapper->createUser($user);
-            $view    = $request->getView();
+            $view = $request->getView();
             $view->setHeader('Location', $request->base . $request->path_info . '/' . $userId);
             $view->setResponseCode(Http::CREATED);
 
@@ -240,7 +240,7 @@ class UsersController extends BaseApiController
             // Generate a verification token and email it to the user
             $token = $userMapper->generateEmailVerificationTokenForUserId($userId);
 
-            $recipients   = [$user['email']];
+            $recipients = [$user['email']];
             $emailService = $this->getUserRegistrationEmailService($this->config, $recipients, $token);
             $emailService->sendEmail();
         }
@@ -268,7 +268,7 @@ class UsersController extends BaseApiController
         if (!$userMapper->thisUserHasAdminOn($userId)) {
             throw new Exception("Could not update user", Http::BAD_REQUEST);
         }
-        $oauthModel  = $request->getOauthModel($db);
+        $oauthModel = $request->getOauthModel($db);
         $accessToken = $request->getAccessToken();
 
         // only trusted clients can change account details
@@ -277,7 +277,7 @@ class UsersController extends BaseApiController
         }
 
         // start building up a representation of the user
-        $user   = ["user_id" => $userId];
+        $user = ["user_id" => $userId];
         $errors = [];
 
         // start with passwords
@@ -415,7 +415,7 @@ class UsersController extends BaseApiController
         }
         // now check the password complies with our rules
         $userMapper = new UserMapper($db, $request);
-        $validity    = $userMapper->checkPasswordValidity($password);
+        $validity = $userMapper->checkPasswordValidity($password);
 
         if (true !== $validity) {
             // the password wasn't acceptable, tell the user why

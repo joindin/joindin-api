@@ -21,7 +21,7 @@ final class ApiRouterTest extends TestCase
     {
         return [
             [
-                'routers'  => [
+                'routers' => [
                     2 => 'B',
                     1 => 'A',
                     3 => 'C'

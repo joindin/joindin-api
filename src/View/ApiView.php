@@ -16,9 +16,9 @@ class ApiView
 
     public function __construct(array $headers = [], $responseCode = Http::OK, $noRender = false)
     {
-        $this->headers      = $headers;
+        $this->headers = $headers;
         $this->responseCode = $responseCode;
-        $this->noRender     = $noRender;
+        $this->noRender = $noRender;
     }
 
     /**

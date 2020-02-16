@@ -17,7 +17,7 @@ class LanguagesController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         $mapper = new LanguageMapper($db, $request);
-        $list   = $mapper->getLanguageById($language_id, $verbose);
+        $list = $mapper->getLanguageById($language_id, $verbose);
 
         if (count($list['languages']) == 0) {
             throw new Exception('Language not found', Http::NOT_FOUND);
@@ -32,7 +32,7 @@ class LanguagesController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start          = $this->getStart($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = new LanguageMapper($db, $request);

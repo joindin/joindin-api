@@ -30,7 +30,7 @@ class ApiMapper
         $this->_db = $db;
 
         if (isset($request)) {
-            $this->_request    = $request;
+            $this->_request = $request;
             $this->website_url = $request->getConfigValue('website_url');
         }
     }
@@ -117,7 +117,7 @@ class ApiMapper
         if (false !== $limitPos) {
             $sqlQuery = substr($sqlQuery, 0, $limitPos);
         }
-        $countSql  = sprintf(
+        $countSql = sprintf(
             'SELECT count(*) AS count FROM (%s) as counter',
             $sqlQuery
         );
@@ -136,20 +136,20 @@ class ApiMapper
     {
         $request = $this->_request;
 
-        $meta['count']     = count($list);
-        $meta['total']     = $total;
+        $meta['count'] = count($list);
+        $meta['total'] = $total;
         $meta['this_page'] = $request->base . $request->path_info . '?' .
                              http_build_query($request->paginationParameters);
-        $next_params       = $request->paginationParameters;
-        $prev_params       = $request->paginationParameters;
-        $counter_params    = $request->paginationParameters;
-        $firstOnNextPage   = $counter_params['start'] +
+        $next_params = $request->paginationParameters;
+        $prev_params = $request->paginationParameters;
+        $counter_params = $request->paginationParameters;
+        $firstOnNextPage = $counter_params['start'] +
                              $counter_params['resultsperpage'];
-        $firstOnThisPage   = $counter_params['start'];
+        $firstOnThisPage = $counter_params['start'];
 
         if ($firstOnNextPage < $total) {
             $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
-            $meta['next_page']    = $request->base . $request->path_info . '?' .
+            $meta['next_page'] = $request->base . $request->path_info . '?' .
                                     http_build_query($next_params);
         }
 

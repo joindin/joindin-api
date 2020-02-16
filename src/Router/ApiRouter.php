@@ -44,7 +44,7 @@ class ApiRouter extends BaseRouter
         $k = array_keys($routers);
         rsort($k);
         $this->latestVersion = current($k);
-        $this->routers       = $routers;
+        $this->routers = $routers;
     }
 
     /**

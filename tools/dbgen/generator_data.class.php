@@ -10,7 +10,7 @@ class Generator_Data implements Generator_Data_Interface
     {
         $events = new StdClass();
         $events->firstpart = ["PHP", "Perl", "Python", "Ruby", "C", "MySQL", "DevOp", "Linux", "Debian", "CentOS", "Zend", "Developer", "Web", "Symfony", "Apache", "Computer", "IT", "Dev"];
-        $events->lastpart  = ["Con", "Conf", " meetup", "UUG", " day", "Congress"];
+        $events->lastpart = ["Con", "Conf", " meetup", "UUG", " day", "Congress"];
 
         return $events;
     }

@@ -50,7 +50,7 @@ class TokenMapper extends ApiMapper
                . 'WHERE a.user_id = :user_id ';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
             ':user_id' => $user_id
         ]);
@@ -60,7 +60,7 @@ class TokenMapper extends ApiMapper
         }
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $total   = $this->getTotalCount($sql, [':user_id' => $user_id]);
+        $total = $this->getTotalCount($sql, [':user_id' => $user_id]);
         $results = $this->processResults($results);
 
         return new TokenModelCollection($results, $total);
@@ -84,7 +84,7 @@ class TokenMapper extends ApiMapper
                . 'WHERE a.user_id = :user_id AND b.can_be_revoked = 1';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
             ':user_id' => $user_id
         ]);
@@ -94,7 +94,7 @@ class TokenMapper extends ApiMapper
         }
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $total   = $this->getTotalCount($sql, [':user_id' => $user_id]);
+        $total = $this->getTotalCount($sql, [':user_id' => $user_id]);
         $results = $this->processResults($results);
 
         return new TokenModelCollection($results, $total);
@@ -117,9 +117,9 @@ class TokenMapper extends ApiMapper
                . 'WHERE a.user_id = :user_id AND a.id = :token_id';
         $sql .= $this->buildLimit(1, 0);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
-            ':user_id'  => $user_id,
+            ':user_id' => $user_id,
             ':token_id' => $token_id,
         ]);
 
@@ -150,9 +150,9 @@ class TokenMapper extends ApiMapper
                . 'WHERE a.user_id = :user_id AND a.id = :token_id AND b.can_be_revoked = 1';
         $sql .= $this->buildLimit(1, 0);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
-            ':user_id'  => $user_id,
+            ':user_id' => $user_id,
             ':token_id' => $token_id,
         ]);
 
@@ -202,7 +202,7 @@ class TokenMapper extends ApiMapper
                . 'WHERE a.access_token = :token';
         $sql .= $this->buildLimit(1, 0);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
             ':token' => $accessToken,
         ]);

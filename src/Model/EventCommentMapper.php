@@ -11,8 +11,8 @@ class EventCommentMapper extends ApiMapper
     {
         // warning, users added in build array
         return [
-            'rating'       => 'rating',
-            'comment'      => 'comment',
+            'rating' => 'rating',
+            'comment' => 'comment',
             'created_date' => 'date_made'
         ];
     }
@@ -20,9 +20,9 @@ class EventCommentMapper extends ApiMapper
     public function getVerboseFields()
     {
         return [
-            'rating'       => 'rating',
-            'comment'      => 'comment',
-            'source'       => 'source',
+            'rating' => 'rating',
+            'comment' => 'comment',
+            'source' => 'source',
             'created_date' => 'date_made',
         ];
     }
@@ -37,16 +37,16 @@ class EventCommentMapper extends ApiMapper
      */
     public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
     {
-        $sql      = $this->getBasicSQL();
-        $sql      .= 'and event_id = :event_id order by date_made desc ';
-        $sql      .= $this->buildLimit($resultsperpage, $start);
-        $stmt     = $this->_db->prepare($sql);
+        $sql = $this->getBasicSQL();
+        $sql .= 'and event_id = :event_id order by date_made desc ';
+        $sql .= $this->buildLimit($resultsperpage, $start);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
             ':event_id' => $event_id
         ]);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, [':event_id' => $event_id]);
 
             return $this->transformResults($results, $verbose);
@@ -64,9 +64,9 @@ class EventCommentMapper extends ApiMapper
      */
     public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
     {
-        $sql      = $this->getBasicSQL($include_hidden);
-        $sql      .= 'and ec.ID = :comment_id ';
-        $stmt     = $this->_db->prepare($sql);
+        $sql = $this->getBasicSQL($include_hidden);
+        $sql .= 'and ec.ID = :comment_id ';
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
             ':comment_id' => $comment_id
         ]);
@@ -105,7 +105,7 @@ class EventCommentMapper extends ApiMapper
 
         return [
             'comments' => $list,
-            'meta'     => $this->getPaginationLinks($list, $total),
+            'meta' => $this->getPaginationLinks($list, $total),
         ];
     }
 
@@ -121,9 +121,9 @@ class EventCommentMapper extends ApiMapper
      */
     protected function formatOneComment($row, $verbose)
     {
-        $base    = $this->_request->base;
+        $base = $this->_request->base;
         $version = $this->_request->version;
-        $result  = []; // store formatted item here
+        $result = []; // store formatted item here
 
         if (true === $verbose) {
             $result['gravatar_hash'] = md5(strtolower($row['email']));
@@ -131,23 +131,23 @@ class EventCommentMapper extends ApiMapper
         // figure out user
         if ($row['user_id']) {
             $result['user_display_name'] = $row['full_name'];
-            $result['username']          = $row['username'];
-            $result['user_uri']          = $base . '/' . $version . '/users/'
+            $result['username'] = $row['username'];
+            $result['user_uri'] = $base . '/' . $version . '/users/'
                                            . $row['user_id'];
         } else {
             $result['user_display_name'] = $row['cname'];
         }
 
         // useful links
-        $result['comment_uri']         = $base . '/' . $version . '/event_comments/'
+        $result['comment_uri'] = $base . '/' . $version . '/event_comments/'
                                          . $row['ID'];
         $result['verbose_comment_uri'] = $base . '/' . $version . '/event_comments/'
                                          . $row['ID'] . '?verbose=yes';
-        $result['event_uri']           = $base . '/' . $version . '/events/'
+        $result['event_uri'] = $base . '/' . $version . '/events/'
                                          . $row['event_id'];
-        $result['event_comments_uri']  = $base . '/' . $version . '/events/'
+        $result['event_comments_uri'] = $base . '/' . $version . '/events/'
                                          . $row['event_id'] . '/comments';
-        $result['reported_uri']        = $base . '/' . $version . '/event_comments/'
+        $result['reported_uri'] = $base . '/' . $version . '/event_comments/'
                                          . $row['ID'] . '/reported';
 
         return $result;
@@ -177,8 +177,8 @@ class EventCommentMapper extends ApiMapper
         $dupe_stmt = $this->_db->prepare($dupe_sql);
         $dupe_stmt->execute([
             ':event_id' => $data['event_id'],
-            ':comment'  => $data['comment'],
-            ':user_id'  => $data['user_id'],
+            ':comment' => $data['comment'],
+            ':user_id' => $data['user_id'],
         ]);
 
         // only proceed if we didn't already find a row like this
@@ -190,14 +190,14 @@ class EventCommentMapper extends ApiMapper
                . 'source, date_made, active) '
                . 'values (:event_id, :rating, :comment, :user_id, :cname, :source, UNIX_TIMESTAMP(), 1)';
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
             ':event_id' => $data['event_id'],
-            ':rating'   => $data['rating'],
-            ':comment'  => $data['comment'],
-            ':cname'    => $data['cname'],
-            ':user_id'  => $data['user_id'],
-            ':source'   => $data['source'],
+            ':rating' => $data['rating'],
+            ':comment' => $data['comment'],
+            ':cname' => $data['cname'],
+            ':user_id' => $data['user_id'],
+            ':source' => $data['source'],
         ]);
 
         return $this->_db->lastInsertId();
@@ -219,7 +219,7 @@ class EventCommentMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $stmt->execute([
             ':event_id' => $event_id,
-            ':user_id'  => $user_id,
+            ':user_id' => $user_id,
         ]);
 
         if ($stmt->fetch()) {
@@ -267,15 +267,15 @@ class EventCommentMapper extends ApiMapper
             reporting_date = NOW()";
 
         $report_stmt = $this->_db->prepare($report_sql);
-        $result      = $report_stmt->execute([
+        $result = $report_stmt->execute([
             "event_comment_id" => $comment_id,
-            "user_id"          => $user_id
+            "user_id" => $user_id
         ]);
 
-        $hide_sql  = "update event_comments
+        $hide_sql = "update event_comments
             set active = 0 where ID = :event_comment_id";
         $hide_stmt = $this->_db->prepare($hide_sql);
-        $result    = $hide_stmt->execute(["event_comment_id" => $comment_id]);
+        $result = $hide_stmt->execute(["event_comment_id" => $comment_id]);
     }
 
     /**
@@ -306,13 +306,13 @@ class EventCommentMapper extends ApiMapper
             $sql .= " and rc.decision is null";
         }
 
-        $stmt   = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $result = $stmt->execute(['event_id' => $event_id]);
 
         // need to also set the comment info
-        $list         = [];
-        $total        = 0;
-        $comment_sql  = $this->getBasicSQL(true)
+        $list = [];
+        $total = 0;
+        $comment_sql = $this->getBasicSQL(true)
                         . " and ec.ID = :comment_id";
         $comment_stmt = $this->_db->prepare($comment_sql);
 
@@ -322,9 +322,9 @@ class EventCommentMapper extends ApiMapper
 
             if ($comment_result && $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
                 // work around the existing transform logic
-                $comment_array  = [$comment];
-                $comment_array  = parent::transformResults($comment_array, true);
-                $item           = current($comment_array);
+                $comment_array = [$comment];
+                $comment_array = parent::transformResults($comment_array, true);
+                $item = current($comment_array);
                 $row['comment'] = array_merge($item, $this->formatOneComment($comment, true));
             }
             $list[] = new EventCommentReportModel($row);
@@ -345,21 +345,21 @@ class EventCommentMapper extends ApiMapper
     {
         if (in_array($decision, ['approved', 'denied'])) {
             // record the decision
-            $sql  = 'update reported_event_comments set 
+            $sql = 'update reported_event_comments set 
                         decision = :decision,
                         deciding_user_id = :user_id,
                         deciding_date = NOW()
                     where event_comment_id = :comment_id';
             $stmt = $this->_db->prepare($sql);
             $stmt->execute([
-                'decision'   => $decision,
-                'user_id'    => $user_id,
+                'decision' => $decision,
+                'user_id' => $user_id,
                 'comment_id' => $comment_id,
             ]);
 
             if ($decision == 'denied') {
                 // the report is denied, therefore make the comment active again
-                $show_sql  = "update event_comments set active = 1 where ID = :comment_id";
+                $show_sql = "update event_comments set active = 1 where ID = :comment_id";
                 $show_stmt = $this->_db->prepare($show_sql);
                 $show_stmt->execute(["comment_id" => $comment_id]);
             }

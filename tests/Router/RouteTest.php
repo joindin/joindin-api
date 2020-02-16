@@ -93,27 +93,27 @@ final class RouteTest extends TestCase
     {
         return [
             [ // #0
-                'config'              => ['config'],
-                'controller'          => TestController3::class,
-                'action'              => 'action',
+                'config' => ['config'],
+                'controller' => TestController3::class,
+                'action' => 'action',
                 Request::class => $this->getRequest('v1')
             ],
             [ // #1
-                'config'                => ['config'],
-                'controller'            => TestController3::class,
-                'action'                => 'action2',
+                'config' => ['config'],
+                'controller' => TestController3::class,
+                'action' => 'action2',
                 Request::class => $this->getRequest('v1'),
-                'expectedException'     => 'Exception',
+                'expectedException' => 'Exception',
                 'expectedExceptionCode' => Http::INTERNAL_SERVER_ERROR,
             ],
             [ // #2
-                'config'                => ['config'],
-                'controller'            => 'TestController4',
-                'action'                => 'action2',
+                'config' => ['config'],
+                'controller' => 'TestController4',
+                'action' => 'action2',
                 Request::class => $this->getRequest('v1'),
-                'expectedException'     => 'Exception',
+                'expectedException' => 'Exception',
                 'expectedExceptionCode' => Http::BAD_REQUEST,
-                'controllerExists'      => false
+                'controllerExists' => false
             ]
         ];
     }
@@ -141,7 +141,7 @@ final class RouteTest extends TestCase
         $expectedExceptionCode = false,
         $controllerExists = true
     ) {
-        $db        = 'database';
+        $db = 'database';
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();

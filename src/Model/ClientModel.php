@@ -23,8 +23,8 @@ class ClientModel extends BaseModel
         return [
             'consumer_key' => 'consumer_key',
             'created_date' => 'created_date',
-            'application'  => 'application',
-            'description'  => 'description',
+            'application' => 'application',
+            'description' => 'description',
             'callback_url' => 'callback_url',
         ];
     }
@@ -41,7 +41,7 @@ class ClientModel extends BaseModel
         $fields = $this->getDefaultFields();
 
         $fields['consumer_secret'] = 'consumer_secret';
-        $fields['user_id']         = 'user_id';
+        $fields['user_id'] = 'user_id';
 
         return $fields;
     }

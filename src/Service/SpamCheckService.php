@@ -26,7 +26,7 @@ class SpamCheckService implements SpamCheckServiceInterface
     {
         $this->httpClient = $httpClient;
         $this->akismetUrl = 'https://' . $apiKey . '.rest.akismet.com';
-        $this->blog       = $blog;
+        $this->blog = $blog;
     }
 
     /**

@@ -18,7 +18,7 @@ final class TokenControllerTest extends TestCase
     public function setup(): void
     {
         $this->request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $this->pdo     = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+        $this->pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
     }
 
     public function testThatDeletingATokenWithoutLoginThrowsException()

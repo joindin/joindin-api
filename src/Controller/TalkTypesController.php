@@ -16,7 +16,7 @@ class TalkTypesController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start          = $this->getStart($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = new TalkTypeMapper($db, $request);
@@ -31,7 +31,7 @@ class TalkTypesController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         $mapper = new TalkTypeMapper($db, $request);
-        $list   = $mapper->getTalkTypeById($talk_type_id, $verbose);
+        $list = $mapper->getTalkTypeById($talk_type_id, $verbose);
 
         if (count($list['talk_types']) == 0) {
             throw new Exception('Talk type not found', Http::NOT_FOUND);

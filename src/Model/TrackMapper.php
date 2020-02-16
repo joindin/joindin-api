@@ -13,9 +13,9 @@ class TrackMapper extends ApiMapper
     public function getDefaultFields()
     {
         return [
-            'track_name'        => 'track_name',
+            'track_name' => 'track_name',
             'track_description' => 'track_desc',
-            'talks_count'       => 'talks_count',
+            'talks_count' => 'talks_count',
         ];
     }
 
@@ -25,9 +25,9 @@ class TrackMapper extends ApiMapper
     public function getVerboseFields()
     {
         return [
-            'track_name'        => 'track_name',
+            'track_name' => 'track_name',
             'track_description' => 'track_desc',
-            'talks_count'       => 'talks_count',
+            'talks_count' => 'talks_count',
         ];
     }
 
@@ -46,13 +46,13 @@ class TrackMapper extends ApiMapper
         $sql .= ' order by t.track_name';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
             ':event_id' => $event_id
         ]);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, [':event_id' => $event_id]);
 
             return $this->transformResults($results, $verbose);
@@ -68,22 +68,22 @@ class TrackMapper extends ApiMapper
     {
         $total = $results['total'];
         unset($results['total']);
-        $list    = parent::transformResults($results, $verbose);
-        $base    = $this->_request->base;
+        $list = parent::transformResults($results, $verbose);
+        $base = $this->_request->base;
         $version = $this->_request->version;
 
         // loop again and add links specific to this item
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                $list[$key]['uri']         = $base . '/' . $version . '/tracks/' . $row['ID'];
+                $list[$key]['uri'] = $base . '/' . $version . '/tracks/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/tracks/' . $row['ID'] . '?verbose=yes';
-                $list[$key]['event_uri']   = $base . '/' . $version . '/events/' . $row['event_id'];
+                $list[$key]['event_uri'] = $base . '/' . $version . '/events/' . $row['event_id'];
             }
         }
 
         return [
             'tracks' => $list,
-            'meta'   => $this->getPaginationLinks($list, $total),
+            'meta' => $this->getPaginationLinks($list, $total),
         ];
     }
 
@@ -95,9 +95,9 @@ class TrackMapper extends ApiMapper
      */
     public function getTrackById($track_id, $verbose = false)
     {
-        $sql      = $this->getBasicSQL();
-        $sql      .= ' where t.ID = :track_id';
-        $stmt     = $this->_db->prepare($sql);
+        $sql = $this->getBasicSQL();
+        $sql .= ' where t.ID = :track_id';
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(["track_id" => $track_id]);
 
         if ($response) {
@@ -139,20 +139,20 @@ class TrackMapper extends ApiMapper
             }
 
             if (array_key_exists($api_name, $data)) {
-                $column_names[]         = $column_name;
-                $placeholders[]         = ':' . $api_name;
+                $column_names[] = $column_name;
+                $placeholders[] = ':' . $api_name;
                 $data_values[$api_name] = $data[$api_name];
             }
         }
 
         // we also need to store the event_id
-        $column_names[]          = 'event_id';
-        $placeholders[]          = ':event_id';
+        $column_names[] = 'event_id';
+        $placeholders[] = ':event_id';
         $data_values['event_id'] = $event_id;
 
         // insert row
-        $sql  = 'insert into event_track (' . implode(', ', $column_names) . ') ';
-        $sql  .= 'values (' . implode(', ', $placeholders) . ')';
+        $sql = 'insert into event_track (' . implode(', ', $column_names) . ') ';
+        $sql .= 'values (' . implode(', ', $placeholders) . ')';
         $stmt = $this->_db->prepare($sql);
 
         try {
@@ -201,8 +201,8 @@ class TrackMapper extends ApiMapper
 
         // get the list of column to API field name for all valid fields
         $fields = $this->getVerboseFields();
-        $items  = [];
-        $pairs  = [];
+        $items = [];
+        $pairs = [];
 
         foreach ($fields as $api_name => $column_name) {
             // We don't change any activation stuff here!!
@@ -211,7 +211,7 @@ class TrackMapper extends ApiMapper
             }
 
             if (array_key_exists($api_name, $data)) {
-                $pairs[]          = "$column_name = :$api_name";
+                $pairs[] = "$column_name = :$api_name";
                 $items[$api_name] = $data[$api_name];
             }
         }
@@ -241,12 +241,12 @@ class TrackMapper extends ApiMapper
     public function deleteEventTrack($track_id)
     {
         // delete talk associations
-        $sql  = "delete from event_track where ID = :track_id";
+        $sql = "delete from event_track where ID = :track_id";
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(['track_id' => $track_id]);
 
         // delete track
-        $sql  = "delete from talk_track where track_id = :track_id";
+        $sql = "delete from talk_track where track_id = :track_id";
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(['track_id' => $track_id]);
     }

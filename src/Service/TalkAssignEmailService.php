@@ -27,10 +27,10 @@ class TalkAssignEmailService extends BaseEmailService
         parent::__construct($config, $recipients);
 
         // this email needs comment info
-        $this->talk        = $talk;
+        $this->talk = $talk;
         $this->website_url = $config['website_url'];
-        $this->event       = $event['events'][0];
-        $this->username    = $username;
+        $this->event = $event['events'][0];
+        $this->username = $username;
     }
 
     public function sendEmail()
@@ -40,7 +40,7 @@ class TalkAssignEmailService extends BaseEmailService
         $replacements = [
             "eventName" => $this->event['name'],
             "talkTitle" => $this->talk->talk_title,
-            "link"      => $this->linkToEditUserPage()
+            "link" => $this->linkToEditUserPage()
         ];
 
         $messageBody = $this->parseEmail("talkAssigned.md", $replacements);

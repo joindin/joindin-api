@@ -14,14 +14,14 @@ final class ContainerFactoryTest extends TestCase
     private $config = [
         'akismet' => [
             'apiKey' => 'key',
-            'blog'   => 'blog'
+            'blog' => 'blog'
         ],
         'email' => [
             'contact' => 'excample@example.com',
             'from' => 'example@example.com',
             'smtp' => [
-                'host'     => 'localhost',
-                'port'     => 25,
+                'host' => 'localhost',
+                'port' => 25,
                 'username' => 'username',
                 'password' => 'ChangeMeSeymourChangeMe',
                 'security' => null,

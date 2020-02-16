@@ -21,9 +21,9 @@ class UserMapper extends ApiMapper
     public function getDefaultFields()
     {
         return [
-            "username"         => "username",
-            "full_name"        => "full_name",
-            "biography"        => "biography",
+            "username" => "username",
+            "full_name" => "full_name",
+            "biography" => "biography",
             "twitter_username" => "twitter_username"
         ];
     }
@@ -38,11 +38,11 @@ class UserMapper extends ApiMapper
     public function getVerboseFields()
     {
         return [
-            "username"         => "username",
-            "full_name"        => "full_name",
+            "username" => "username",
+            "full_name" => "full_name",
             "twitter_username" => "twitter_username",
-            "biography"        => "biography",
-            "trusted"          => "trusted"
+            "biography" => "biography",
+            "trusted" => "trusted"
         ];
     }
 
@@ -85,7 +85,7 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
 
             if ($results) {
@@ -123,11 +123,11 @@ class UserMapper extends ApiMapper
             ':keyword' => '%' . strtolower($keyword) . '%',
         ];
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
 
             return $this->transformResults($results, $verbose);
@@ -141,7 +141,7 @@ class UserMapper extends ApiMapper
      */
     public function getSiteAdminEmails()
     {
-        $sql  = 'select email from user where admin = 1';
+        $sql = 'select email from user where admin = 1';
         $stmt = $this->_db->prepare($sql);
 
         $response = $stmt->execute();
@@ -192,7 +192,7 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute();
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql);
 
             return $results;
@@ -210,7 +210,7 @@ class UserMapper extends ApiMapper
      */
     public function getUserList($resultsperpage, $start, $verbose = false)
     {
-        $order   = 'user.ID';
+        $order = 'user.ID';
         $results = $this->getUsers($resultsperpage, $start, null, $order);
 
         if (is_array($results)) {
@@ -230,7 +230,7 @@ class UserMapper extends ApiMapper
      */
     public function getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose)
     {
-        $where   = "ua.eid = " . $event_id;
+        $where = "ua.eid = " . $event_id;
         $results = $this->getUsers($resultsperpage, $start, $where);
 
         if (is_array($results)) {
@@ -248,8 +248,8 @@ class UserMapper extends ApiMapper
         $total = $results['total'];
         unset($results['total']);
 
-        $list    = parent::transformResults($results, $verbose);
-        $base    = $this->_request->base;
+        $list = parent::transformResults($results, $verbose);
+        $base = $this->_request->base;
         $version = $this->_request->version;
 
         // add per-item links
@@ -281,13 +281,13 @@ class UserMapper extends ApiMapper
                         $list[$key]['admin'] = $row['admin'];
                     }
                 }
-                $list[$key]['uri']                 = $base . '/' . $version . '/users/' . $row['ID'];
-                $list[$key]['verbose_uri']         = $base . '/' . $version . '/users/' . $row['ID'] . '?verbose=yes';
-                $list[$key]['website_uri']         = $this->website_url . '/user/' . $row['username'];
-                $list[$key]['talks_uri']           = $base . '/' . $version . '/users/' . $row['ID'] . '/talks/';
+                $list[$key]['uri'] = $base . '/' . $version . '/users/' . $row['ID'];
+                $list[$key]['verbose_uri'] = $base . '/' . $version . '/users/' . $row['ID'] . '?verbose=yes';
+                $list[$key]['website_uri'] = $this->website_url . '/user/' . $row['username'];
+                $list[$key]['talks_uri'] = $base . '/' . $version . '/users/' . $row['ID'] . '/talks/';
                 $list[$key]['attended_events_uri'] = $base . '/' . $version . '/users/' . $row['ID'] . '/attended/';
-                $list[$key]['hosted_events_uri']   = $base . '/' . $version . '/users/' . $row['ID'] . '/hosted/';
-                $list[$key]['talk_comments_uri']   = $base . '/' . $version . '/users/' . $row['ID']
+                $list[$key]['hosted_events_uri'] = $base . '/' . $version . '/users/' . $row['ID'] . '/hosted/';
+                $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/users/' . $row['ID']
                                                      . '/talk_comments/';
 
                 if ($verbose && isset($this->_request->user_id)) {
@@ -298,7 +298,7 @@ class UserMapper extends ApiMapper
 
         return [
             'users' => $list,
-            'meta'  => $this->getPaginationLinks($list, $total),
+            'meta' => $this->getPaginationLinks($list, $total),
         ];
     }
 
@@ -364,7 +364,7 @@ class UserMapper extends ApiMapper
     public function createUser($user)
     {
         // Sanity check: ensure all mandatory fields are present.
-        $mandatory_fields          = [
+        $mandatory_fields = [
             'username',
             'full_name',
             'email',
@@ -384,7 +384,7 @@ class UserMapper extends ApiMapper
         // create list of column to API field name for all valid fields
         $fields = $this->getVerboseFields();
         // add the fields that we don't expose for users
-        $fields["email"]    = "email";
+        $fields["email"] = "email";
         $fields["password"] = "password";
 
         $pairs = [];
@@ -398,7 +398,7 @@ class UserMapper extends ApiMapper
         // comma separate all pairs and add to SQL string
         $sql .= implode(', ', $pairs);
 
-        $stmt   = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $result = $stmt->execute($user);
 
         if ($result) {
@@ -430,7 +430,7 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
 
             if ($results) {
@@ -478,7 +478,7 @@ class UserMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $data = [
             "user_id" => $user_id,
-            "token"   => $token
+            "token" => $token
         ];
 
         $response = $stmt->execute($data);
@@ -504,7 +504,7 @@ class UserMapper extends ApiMapper
                       . "where token = :token";
 
         $select_stmt = $this->_db->prepare($select_sql);
-        $data        = [
+        $data = [
             "token" => $token
         ];
 
@@ -546,8 +546,8 @@ class UserMapper extends ApiMapper
         $sql = "select ID from user "
                . "where email = :email and active = 1";
 
-        $data     = ["email" => $email];
-        $stmt     = $this->_db->prepare($sql);
+        $data = ["email" => $email];
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
 
         if ($response) {
@@ -635,7 +635,7 @@ class UserMapper extends ApiMapper
     public function editUser(array $user, $userId)
     {
         // Sanity check: ensure all mandatory fields are present.
-        $mandatory_fields          = [
+        $mandatory_fields = [
             'full_name',
             'email',
         ];
@@ -650,7 +650,7 @@ class UserMapper extends ApiMapper
 
         // encode the password
         if (isset($user['password'])) {
-            $user['password']   = password_hash(md5($user['password']), PASSWORD_DEFAULT);
+            $user['password'] = password_hash(md5($user['password']), PASSWORD_DEFAULT);
             $fields["password"] = "password";
         }
 
@@ -671,7 +671,7 @@ class UserMapper extends ApiMapper
         $sql .= implode(', ', $pairs);
         $sql .= " where ID = :user_id ";
 
-        $stmt   = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $result = $stmt->execute($user);
 
         if ($result) {
@@ -692,8 +692,8 @@ class UserMapper extends ApiMapper
     {
         $sql = "select ID from user where username = :username";
 
-        $data     = ["username" => $username];
-        $stmt     = $this->_db->prepare($sql);
+        $data = ["username" => $username];
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
 
         if ($response) {
@@ -717,8 +717,8 @@ class UserMapper extends ApiMapper
      */
     public function getEmailByUserId($user_id)
     {
-        $sql      = "select email from user where ID = :user_id";
-        $stmt     = $this->_db->prepare($sql);
+        $sql = "select email from user where ID = :user_id";
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(["user_id" => $user_id]);
 
         if ($response) {
@@ -751,7 +751,7 @@ class UserMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $data = [
             "user_id" => $user_id,
-            "token"   => $token
+            "token" => $token
         ];
 
         $response = $stmt->execute($data);
@@ -780,7 +780,7 @@ class UserMapper extends ApiMapper
                       . "where token = :token";
 
         $select_stmt = $this->_db->prepare($select_sql);
-        $data        = ["token" => $token];
+        $data = ["token" => $token];
 
         $response = $select_stmt->execute($data);
 
@@ -794,10 +794,10 @@ class UserMapper extends ApiMapper
                 $update_sql = "update user set password = :password "
                               . "where ID = :user_id";
 
-                $update_stmt     = $this->_db->prepare($update_sql);
-                $update_data     = [
+                $update_stmt = $this->_db->prepare($update_sql);
+                $update_data = [
                     "password" => password_hash(md5($password), PASSWORD_DEFAULT),
-                    "user_id"  => $user_id
+                    "user_id" => $user_id
                 ];
                 $update_response = $update_stmt->execute($update_data);
 
@@ -835,32 +835,32 @@ class UserMapper extends ApiMapper
 
         try {
             // Delete the user
-            $sql  = "delete from user where ID = :user_id";
+            $sql = "delete from user where ID = :user_id";
             $stmt = $this->_db->prepare($sql);
             $stmt->execute(["user_id" => $user_id]);
 
             // Unassign any talks
-            $sql  = "update talk_speaker SET speaker_id = 0, status = NULL WHERE speaker_id = :speaker_id";
+            $sql = "update talk_speaker SET speaker_id = 0, status = NULL WHERE speaker_id = :speaker_id";
             $stmt = $this->_db->prepare($sql);
             $stmt->execute(["speaker_id" => $user_id]);
 
             // Remove any pending talk claims
-            $sql  = "delete from pending_talk_claims where speaker_id = :speaker_id";
+            $sql = "delete from pending_talk_claims where speaker_id = :speaker_id";
             $stmt = $this->_db->prepare($sql);
             $stmt->execute(["speaker_id" => $user_id]);
 
             // Anonymise any comments
-            $sql  = "update talk_comments SET user_id = 0 WHERE user_id = :user_id";
+            $sql = "update talk_comments SET user_id = 0 WHERE user_id = :user_id";
             $stmt = $this->_db->prepare($sql);
             $stmt->execute(["user_id" => $user_id]);
 
             // Remove any starred talks
-            $sql  = "delete from user_talk_star where uid = :user_id";
+            $sql = "delete from user_talk_star where uid = :user_id";
             $stmt = $this->_db->prepare($sql);
             $stmt->execute(["user_id" => $user_id]);
 
             // Remove user attendence
-            $sql  = "delete from user_attend where uid = :user_id";
+            $sql = "delete from user_attend where uid = :user_id";
             $stmt = $this->_db->prepare($sql);
             $stmt->execute(["user_id" => $user_id]);
 

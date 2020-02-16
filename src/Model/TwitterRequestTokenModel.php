@@ -35,7 +35,7 @@ class TwitterRequestTokenModel extends BaseModel
     protected function getVerboseFields()
     {
         return [
-            'token'  => 'token',
+            'token' => 'token',
             'secret' => 'secret',
         ];
     }
@@ -53,10 +53,10 @@ class TwitterRequestTokenModel extends BaseModel
         $item = parent::getOutputView($request, $verbose);
 
         // add Hypermedia
-        $base    = $request->base;
+        $base = $request->base;
         $version = $request->version;
 
-        $item['uri']         = $base . '/' . $version . '/twitter/request_tokens/' . $this->ID;
+        $item['uri'] = $base . '/' . $version . '/twitter/request_tokens/' . $this->ID;
         $item['verbose_uri'] = $base . '/' . $version . '/twitter/request_tokens/' . $this->ID . '?verbose=yes';
 
         return $item;

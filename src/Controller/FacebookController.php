@@ -36,8 +36,8 @@ class FacebookController extends BaseApiController
             throw new Exception("Cannot login via Facebook", Http::NOT_IMPLEMENTED);
         }
 
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId = $request->getParameter('client_id');
+        $clientSecret = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
 
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
@@ -56,10 +56,10 @@ class FacebookController extends BaseApiController
 
         $res = $client->get('https://graph.facebook.com/v2.10/oauth/access_token', [
             'query' => [
-                'client_id'     => $this->config['facebook']['app_id'],
-                'redirect_uri'  => $this->config['website_url'] . '/user/facebook-access',
+                'client_id' => $this->config['facebook']['app_id'],
+                'redirect_uri' => $this->config['website_url'] . '/user/facebook-access',
                 'client_secret' => $this->config['facebook']['app_secret'],
-                'code'          => $code,
+                'code' => $code,
             ]
         ]);
 
@@ -76,14 +76,14 @@ class FacebookController extends BaseApiController
             throw new Exception("Unexpected Facebook error", Http::INTERNAL_SERVER_ERROR);
         }
 
-        $data         = json_decode((string) $res->getBody(), true);
+        $data = json_decode((string) $res->getBody(), true);
         $access_token = $data['access_token'];
 
         // retrieve email address from Facebook profile
         $res = $client->get('https://graph.facebook.com/me', [
             'query' => [
                 'access_token' => $access_token,
-                'fields'       => 'name,email',
+                'fields' => 'name,email',
             ]
         ]);
 
@@ -96,9 +96,9 @@ class FacebookController extends BaseApiController
         if (!array_key_exists('email', $data)) {
             throw new Exception("Email address is unavailable", Http::FORBIDDEN);
         }
-        $email    = $data['email'];
+        $email = $data['email'];
         $fullName = $data['name'];
-        $id       = $data['id'];
+        $id = $data['id'];
 
         $result = $this->oauthModel->createAccessTokenFromTrustedEmail(
             $clientId,

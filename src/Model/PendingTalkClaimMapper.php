@@ -24,7 +24,7 @@ class PendingTalkClaimMapper extends ApiMapper
     public function getDefaultFields()
     {
         return [
-            "talk_id"    => "username",
+            "talk_id" => "username",
             "speaker_id" => "full_name",
         ];
     }
@@ -39,10 +39,10 @@ class PendingTalkClaimMapper extends ApiMapper
     public function getVerboseFields()
     {
         return [
-            "talk_id"          => "username",
-            "speaker_id"       => "full_name",
-            "date_added"       => "date_added",
-            "claim_id"         => "claim_id",
+            "talk_id" => "username",
+            "speaker_id" => "full_name",
+            "date_added" => "date_added",
+            "claim_id" => "claim_id",
             "user_approved_at" => "user_approved_at",
             "host_approved_at" => "host_approved_at",
         ];
@@ -59,7 +59,7 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function claimTalkAsSpeaker($talk_id, $speaker_id, $claim_id)
     {
-        $sql  = 'insert into pending_talk_claims 
+        $sql = 'insert into pending_talk_claims 
                     (talk_id,submitted_by,speaker_id,date_added,claim_id,user_approved_at) 
                   values
                     (:talk_id,:submitted_by,:speaker_id,UNIX_TIMESTAMP(),:claim_id,NOW())
@@ -68,10 +68,10 @@ class PendingTalkClaimMapper extends ApiMapper
 
         return $stmt->execute(
             [
-                'talk_id'      => $talk_id,
+                'talk_id' => $talk_id,
                 'submitted_by' => $speaker_id,
-                'speaker_id'   => $speaker_id,
-                'claim_id'     => $claim_id
+                'speaker_id' => $speaker_id,
+                'claim_id' => $claim_id
             ]
         );
     }
@@ -88,7 +88,7 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function assignTalkAsHost($talk_id, $speaker_id, $claim_id, $user_id)
     {
-        $sql  = 'insert into pending_talk_claims 
+        $sql = 'insert into pending_talk_claims 
                     (talk_id,submitted_by,speaker_id,date_added,claim_id,host_approved_at) 
                   values
                     (:talk_id,:submitted_by,:speaker_id,UNIX_TIMESTAMP(),:claim_id,NOW())
@@ -97,10 +97,10 @@ class PendingTalkClaimMapper extends ApiMapper
 
         return $stmt->execute(
             [
-                'talk_id'      => $talk_id,
+                'talk_id' => $talk_id,
                 'submitted_by' => $user_id,
-                'speaker_id'   => $speaker_id,
-                'claim_id'     => $claim_id
+                'speaker_id' => $speaker_id,
+                'claim_id' => $claim_id
             ]
         );
     }
@@ -114,16 +114,16 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function claimExists($talk_id, $speaker_id, $claim_id)
     {
-        $sql      = 'select * from pending_talk_claims WHERE 
+        $sql = 'select * from pending_talk_claims WHERE 
                   talk_id = :talk_id AND claim_id = :claim_id AND speaker_id = :speaker_id
                   LIMIT 1
                ';
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(
             [
-                'talk_id'    => $talk_id,
+                'talk_id' => $talk_id,
                 'speaker_id' => $speaker_id,
-                'claim_id'   => $claim_id
+                'claim_id' => $claim_id
             ]
         );
 
@@ -157,7 +157,7 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function approveAssignmentAsSpeaker($talk_id, $speaker_id, $claim_id)
     {
-        $sql  = 'update pending_talk_claims SET user_approved_at = NOW() WHERE 
+        $sql = 'update pending_talk_claims SET user_approved_at = NOW() WHERE 
                   talk_id = :talk_id AND claim_id = :claim_id 
                   AND speaker_id = :speaker_id AND user_approved_at IS NULL
                   LIMIT 1
@@ -166,9 +166,9 @@ class PendingTalkClaimMapper extends ApiMapper
 
         return $stmt->execute(
             [
-                'talk_id'    => $talk_id,
+                'talk_id' => $talk_id,
                 'speaker_id' => $speaker_id,
-                'claim_id'   => $claim_id
+                'claim_id' => $claim_id
             ]
         );
     }
@@ -182,7 +182,7 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function approveClaimAsHost($talk_id, $speaker_id, $claim_id)
     {
-        $sql  = 'update pending_talk_claims SET host_approved_at = NOW() WHERE 
+        $sql = 'update pending_talk_claims SET host_approved_at = NOW() WHERE 
                   talk_id = :talk_id AND claim_id = :claim_id 
                   AND speaker_id = :speaker_id AND host_approved_at IS NULL
                   LIMIT 1
@@ -191,9 +191,9 @@ class PendingTalkClaimMapper extends ApiMapper
 
         return $stmt->execute(
             [
-                'talk_id'    => $talk_id,
+                'talk_id' => $talk_id,
                 'speaker_id' => $speaker_id,
-                'claim_id'   => $claim_id
+                'claim_id' => $claim_id
             ]
         );
     }
@@ -207,7 +207,7 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function rejectClaimAsHost($talk_id, $speaker_id, $claim_id)
     {
-        $sql  = 'DELETE FROM pending_talk_claims
+        $sql = 'DELETE FROM pending_talk_claims
                   WHERE
                   talk_id = :talk_id AND claim_id = :claim_id
                   AND speaker_id = :speaker_id AND host_approved_at IS NULL
@@ -217,9 +217,9 @@ class PendingTalkClaimMapper extends ApiMapper
 
         return $stmt->execute(
             [
-                'talk_id'    => $talk_id,
+                'talk_id' => $talk_id,
                 'speaker_id' => $speaker_id,
-                'claim_id'   => $claim_id
+                'claim_id' => $claim_id
             ]
         );
     }
@@ -231,22 +231,22 @@ class PendingTalkClaimMapper extends ApiMapper
      */
     public function getPendingClaimsByEventId($event_id)
     {
-        $base    = $this->_request->base;
+        $base = $this->_request->base;
         $version = $this->_request->version;
 
-        $sql      = 'select c.*, s.speaker_name from pending_talk_claims c
+        $sql = 'select c.*, s.speaker_name from pending_talk_claims c
                     inner join talks t on t.ID = c.talk_id
                     inner join talk_speaker s on s.ID = c.claim_id
                     where t.event_id = :event_id and
                     (host_approved_at IS NULL or user_approved_at IS NULL)';
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(['event_id' => $event_id]);
 
         if (!$response || $stmt->rowCount() < 1) {
             return false;
         }
 
-        $list   = [];
+        $list = [];
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($result as $row) {
@@ -254,10 +254,10 @@ class PendingTalkClaimMapper extends ApiMapper
 
             $list[] = new PendingTalkClaimModel(
                 [
-                    'date_added'        => $date->format("c"),
-                    'display_name'      => $row['speaker_name'],
-                    'talk_uri'          => $base . '/' . $version . '/talks/' . $row['talk_id'],
-                    'speaker_uri'       => $base . '/' . $version . '/users/' . $row['speaker_id'],
+                    'date_added' => $date->format("c"),
+                    'display_name' => $row['speaker_name'],
+                    'talk_uri' => $base . '/' . $version . '/talks/' . $row['talk_id'],
+                    'speaker_uri' => $base . '/' . $version . '/users/' . $row['speaker_id'],
                     'approve_claim_uri' => $base . '/' . $version . '/talks/' . $row['talk_id'] . '/speakers'
                 ]
             );

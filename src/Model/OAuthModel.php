@@ -75,14 +75,14 @@ class OAuthModel
      */
     public function verifyAccessToken($token)
     {
-        $sql  = 'select id, user_id from oauth_access_tokens'
+        $sql = 'select id, user_id from oauth_access_tokens'
                 . ' where access_token=:access_token';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["access_token" => $token]);
         $result = $stmt->fetch();
 
         // log that we used this token
-        $update_sql  = 'update oauth_access_tokens '
+        $update_sql = 'update oauth_access_tokens '
                        . ' set last_used_date = NOW()'
                        . ' where id = :id';
         $update_stmt = $this->_db->prepare($update_sql);
@@ -129,7 +129,7 @@ class OAuthModel
      */
     protected function getUserId($username, $password)
     {
-        $sql  = 'SELECT ID, password, email, verified FROM user
+        $sql = 'SELECT ID, password, email, verified FROM user
             WHERE username=:username';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["username" => $username]);
@@ -172,7 +172,7 @@ class OAuthModel
      */
     public function createAccessToken($consumer_key, $user_id)
     {
-        $hash        = $this->generateToken();
+        $hash = $this->generateToken();
         $accessToken = substr($hash, 0, 16);
 
         $sql = "INSERT INTO oauth_access_tokens set
@@ -182,12 +182,12 @@ class OAuthModel
                 last_used_date = NOW()
                 ";
 
-        $stmt   = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $result = $stmt->execute(
             [
                 'access_token' => $accessToken,
                 'consumer_key' => $consumer_key,
-                'user_id'      => $user_id,
+                'user_id' => $user_id,
             ]
         );
 
@@ -208,7 +208,7 @@ class OAuthModel
      */
     public function generateToken()
     {
-        $fp      = fopen('/dev/urandom', 'rb');
+        $fp = fopen('/dev/urandom', 'rb');
         $entropy = fread($fp, 32);
         fclose($fp);
 
@@ -234,7 +234,7 @@ class OAuthModel
             $stmt->execute(
                 [
                     'consumer_key' => $clientId,
-                    'expiry_date'  => date('Y-m-d', strtotime('-1 day'))
+                    'expiry_date' => date('Y-m-d', strtotime('-1 day'))
                 ]
             );
         }
@@ -251,7 +251,7 @@ class OAuthModel
      */
     public function getConsumerName($token)
     {
-        $sql  = 'select at.consumer_key, c.id, c.application '
+        $sql = 'select at.consumer_key, c.id, c.application '
                 . 'from oauth_access_tokens at '
                 . 'left join oauth_consumers c using (consumer_key) '
                 . 'where at.access_token=:access_token ';
@@ -279,7 +279,7 @@ class OAuthModel
      */
     public function isClientPermittedPasswordGrant($key, $secret)
     {
-        $sql  = 'select c.enable_password_grant from '
+        $sql = 'select c.enable_password_grant from '
                 . 'oauth_consumers c '
                 . 'where c.consumer_key=:key '
                 . 'and c.consumer_secret=:secret '
@@ -304,7 +304,7 @@ class OAuthModel
      */
     public function isAccessTokenPermittedPasswordGrant($token)
     {
-        $sql  = 'select c.enable_password_grant from '
+        $sql = 'select c.enable_password_grant from '
                 . 'oauth_consumers c '
                 . 'inner join oauth_access_tokens at using (consumer_key) '
                 . 'where at.access_token = :token '
@@ -331,7 +331,7 @@ class OAuthModel
      */
     public function reverifyUserPassword($userId, $password)
     {
-        $sql  = 'SELECT ID, password FROM user
+        $sql = 'SELECT ID, password FROM user
             WHERE ID = :user_id
             AND verified = 1';
         $stmt = $this->_db->prepare($sql);
@@ -418,8 +418,8 @@ class OAuthModel
         if (
             !$stmt->execute([
                 'screen_name' => $values['screen_name'],
-                'name'        => $values['name'],
-                'email'       => $values['email'],
+                'name' => $values['name'],
+                'email' => $values['email'],
             ])
         ) {
             throw new Exception('Something went wrong');
@@ -482,7 +482,7 @@ class OAuthModel
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(
             [
-                "email"    => $email,
+                "email" => $email,
                 'fullName' => $fullName,
                 'userName' => $userName
             ]

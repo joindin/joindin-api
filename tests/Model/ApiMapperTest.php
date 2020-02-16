@@ -20,7 +20,7 @@ final class ApiMapperTest extends TestCase
 
     public function setup(): void
     {
-        $this->pdo     = $this->getMockBuilder(PDO::class)
+        $this->pdo = $this->getMockBuilder(PDO::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->request = $this->getMockBuilder(Request::class)
@@ -63,16 +63,16 @@ final class ApiMapperTest extends TestCase
                 [
                     [
                         'event_start_date' => '2016-09-19T05:54:18+00:00',
-                        'event_tz_place'   => null,
-                        'event_tz_cont'    => null,
-                        'name'             => null,
+                        'event_tz_place' => null,
+                        'event_tz_cont' => null,
+                        'name' => null,
                     ],
                 ],
                 [
                     [
                         'event_start_date' => 1474264458,
-                        'event_tz_place'   => null,
-                        'event_tz_cont'    => null,
+                        'event_tz_place' => null,
+                        'event_tz_cont' => null,
                     ]
                 ]
             ],
@@ -80,16 +80,16 @@ final class ApiMapperTest extends TestCase
                 [
                     [
                         'event_start_date' => '2016-09-19T07:54:18+02:00',
-                        'event_tz_place'   => 'Berlin',
-                        'event_tz_cont'    => 'Europe',
-                        'name'             => null,
+                        'event_tz_place' => 'Berlin',
+                        'event_tz_cont' => 'Europe',
+                        'name' => null,
                     ]
                 ],
                 [
                     [
                         'event_start_date' => 1474264458,
-                        'event_tz_place'   => 'Berlin',
-                        'event_tz_cont'    => 'Europe',
+                        'event_tz_place' => 'Berlin',
+                        'event_tz_cont' => 'Europe',
                     ]
                 ]
             ],
@@ -101,10 +101,10 @@ final class ApiMapperTest extends TestCase
         $mapper = new TestApiMapper($this->pdo, $this->request);
 
         $this->assertEquals([
-            'event_tz_place'   => 'event_tz_place',
-            'event_tz_cont'    => 'event_tz_cont',
+            'event_tz_place' => 'event_tz_place',
+            'event_tz_cont' => 'event_tz_cont',
             'event_start_date' => 'event_start_date',
-            'name'             => 'name',
+            'name' => 'name',
         ], $mapper->getDefaultFields());
     }
 
@@ -145,7 +145,7 @@ final class ApiMapperTest extends TestCase
 
         $mapper = new ApiMapper($pdo, $this->request);
 
-        $obj    = new ReflectionClass(ApiMapper::class);
+        $obj = new ReflectionClass(ApiMapper::class);
         $method = $obj->getMethod('getTotalCount');
         $method->setAccessible(true);
 

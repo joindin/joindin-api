@@ -12,8 +12,8 @@ final class TalkCommentEmailServiceTest extends Testcase
         'email' => [
             "from" => "test@joind.in",
             'smtp' => [
-                'host'     => 'localhost',
-                'port'     => 25,
+                'host' => 'localhost',
+                'port' => 25,
                 'username' => 'username',
                 'password' => 'ChangeMeSeymourChangeMe',
                 'security' => null,
@@ -27,8 +27,8 @@ final class TalkCommentEmailServiceTest extends Testcase
     public function testCreateService()
     {
         $recipients = ["test@joind.in"];
-        $talk       = new TalkModel(["talk_title" => "sample talk"]);
-        $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
+        $talk = new TalkModel(["talk_title" => "sample talk"]);
+        $comment = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
         $service = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
         $this->assertInstanceOf(TalkCommentEmailService::class, $service);
@@ -39,11 +39,11 @@ final class TalkCommentEmailServiceTest extends Testcase
      */
     public function testCreateServiceWithEmailRedirect()
     {
-        $config                   = $this->config;
+        $config = $this->config;
         $config["email"]["forward_all_to"] = "blackhole@joind.in";
-        $recipients               = ["test@joind.in"];
-        $talk                     = new TalkModel(["talk_title" => "sample talk"]);
-        $comment                  = ["comments" => [["comment" => "test comment", "rating" => 3]]];
+        $recipients = ["test@joind.in"];
+        $talk = new TalkModel(["talk_title" => "sample talk"]);
+        $comment = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
         $service = new TalkCommentEmailService($config, $recipients, $talk, $comment);
         $this->assertEquals(["blackhole@joind.in"], $service->getRecipients());
@@ -55,16 +55,16 @@ final class TalkCommentEmailServiceTest extends Testcase
     public function testTemplateReplacements()
     {
         $recipients = ["test@joind.in"];
-        $talk       = new TalkModel(["talk_title" => "sample talk"]);
-        $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
+        $talk = new TalkModel(["talk_title" => "sample talk"]);
+        $comment = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
-        $service               = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
+        $service = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
         $service->templatePath = __DIR__ . '/../../src/View/emails/';
 
-        $template     = "testTemplate.md";
+        $template = "testTemplate.md";
         $replacements = ["cat" => "Camel", "mat" => "magic carpet"];
-        $message      = $service->parseEmail($template, $replacements);
-        $expected     = "The Camel sat on the magic carpet
+        $message = $service->parseEmail($template, $replacements);
+        $expected = "The Camel sat on the magic carpet
 
 
 ----
@@ -80,10 +80,10 @@ Questions? Comments?  Get in touch: [feedback@joind.in](mailto:feedback@joind.in
      */
     public function testMarkdownTransform()
     {
-        $markdown   = "A *sunny* day";
+        $markdown = "A *sunny* day";
         $recipients = ["test@joind.in"];
-        $talk       = new TalkModel(["talk_title" => "sample talk"]);
-        $comment    = ["comments" => [["comment" => "test comment", "rating" => 3]]];
+        $talk = new TalkModel(["talk_title" => "sample talk"]);
+        $comment = ["comments" => [["comment" => "test comment", "rating" => 3]]];
 
         $service = new TalkCommentEmailService($this->config, $recipients, $talk, $comment);
 

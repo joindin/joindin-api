@@ -58,7 +58,7 @@ abstract class BaseEmailService
             ->setUsername($config['email']['smtp']['username'])
             ->setPassword($config['email']['smtp']['password']);
 
-        $this->mailer  = new Swift_Mailer($transport);
+        $this->mailer = new Swift_Mailer($transport);
         $this->message = new Swift_Message();
 
         if (

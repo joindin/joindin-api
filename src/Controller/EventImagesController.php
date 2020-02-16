@@ -73,12 +73,12 @@ class EventImagesController extends BaseApiController
         }
 
         // save the file - overwrite current one if there is one
-        $extensions[IMAGETYPE_GIF]  = '.gif';
+        $extensions[IMAGETYPE_GIF] = '.gif';
         $extensions[IMAGETYPE_JPEG] = '.jpg';
-        $extensions[IMAGETYPE_PNG]  = '.png';
-        $saved_filename             = 'icon-' . $event_id . '-orig' . $extensions[$filetype];
-        $event_image_path           = $request->getConfigValue('event_image_path');
-        $result                     = move_uploaded_file($uploaded_name, $event_image_path . $saved_filename);
+        $extensions[IMAGETYPE_PNG] = '.png';
+        $saved_filename = 'icon-' . $event_id . '-orig' . $extensions[$filetype];
+        $event_image_path = $request->getConfigValue('event_image_path');
+        $result = move_uploaded_file($uploaded_name, $event_image_path . $saved_filename);
 
         if (false === $result) {
             throw new Exception("The file could not be saved");
@@ -92,7 +92,7 @@ class EventImagesController extends BaseApiController
         $orig_image = imagecreatefromstring(file_get_contents($event_image_path . $saved_filename));
         imagealphablending($orig_image, false);
         imagesavealpha($orig_image, true);
-        $small_width  = 140;
+        $small_width = 140;
         $small_height = 140;
 
         $small_image = imagecreatetruecolor($small_width, $small_height);
@@ -125,7 +125,7 @@ class EventImagesController extends BaseApiController
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
-        $event_id     = $this->getItemId($request);
+        $event_id = $this->getItemId($request);
         $event_mapper = new EventMapper($db, $request);
         $event_mapper->removeImages($event_id);
 

@@ -7,7 +7,7 @@
  */
 function new_consumer_key()
 {
-    $fp      = fopen('/dev/urandom', 'rb');
+    $fp = fopen('/dev/urandom', 'rb');
     $entropy = fread($fp, 32);
     fclose($fp);
     // in case /dev/urandom is reusing entropy from its pool,

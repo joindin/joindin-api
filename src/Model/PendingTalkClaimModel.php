@@ -19,10 +19,10 @@ class PendingTalkClaimModel extends BaseModel
     public function getDefaultFields()
     {
         return [
-            'date_added'   => 'date_added',
+            'date_added' => 'date_added',
             'display_name' => 'display_name',
-            'speaker_uri'  => 'speaker_uri',
-            'talk_uri'     => 'talk_uri',
+            'speaker_uri' => 'speaker_uri',
+            'talk_uri' => 'talk_uri',
         ];
     }
 
@@ -55,7 +55,7 @@ class PendingTalkClaimModel extends BaseModel
         $item = parent::getOutputView($request, $verbose);
 
         // add Hypermedia
-        $base    = $request->base;
+        $base = $request->base;
         $version = $request->version;
 
         return $item;

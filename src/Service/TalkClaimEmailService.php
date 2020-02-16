@@ -16,9 +16,9 @@ class TalkClaimEmailService extends BaseEmailService
         parent::__construct($config, $recipients);
 
         // this email needs comment info
-        $this->talk        = $talk;
+        $this->talk = $talk;
         $this->website_url = $config['website_url'];
-        $this->event       = $event['events'][0];
+        $this->event = $event['events'][0];
     }
 
     public function sendEmail()
@@ -28,7 +28,7 @@ class TalkClaimEmailService extends BaseEmailService
         $replacements = [
             "eventName" => $this->event['name'],
             "talkTitle" => $this->talk->talk_title,
-            "link"      => $this->linkToPendingClaimsForEvent()
+            "link" => $this->linkToPendingClaimsForEvent()
         ];
 
         $messageBody = $this->parseEmail("talkClaimed.md", $replacements);

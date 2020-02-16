@@ -254,8 +254,8 @@ final class TalkLinkControllerTest extends TalkBase
 
         $this->request->user_id = 2;
         $this->request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  =>  'P Sherman'
+            'username' => 'janebloggs',
+            'display_name' => 'P Sherman'
         ];
 
         $this->talks_controller = new TalkLinkController();

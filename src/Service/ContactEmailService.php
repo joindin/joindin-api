@@ -32,7 +32,7 @@ class ContactEmailService extends BaseEmailService
         array_unshift($replyTo, $data['email']);
         $this->setReplyTo($replyTo);
 
-        $replacements                = $data;
+        $replacements = $data;
         $replacements["website_url"] = $this->website_url;
 
         $messageBody = $this->parseEmail("contact.md", $replacements);

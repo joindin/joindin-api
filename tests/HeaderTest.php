@@ -10,7 +10,7 @@ final class HeaderTest extends TestCase
     public function testParseParamsWithEmbededSeparator()
     {
         $headerStr = 'For=10.0.0.1,For=10.0.0.2;user-agent="test;test;test;test";For=10.0.0.3';
-        $header    = new Header('Forwarded', $headerStr, ';');
+        $header = new Header('Forwarded', $headerStr, ';');
 
         $header->parseParams();
         $this->assertEquals(3, $header->count());
@@ -19,7 +19,7 @@ final class HeaderTest extends TestCase
     public function testParseParamsWithTwoGlues()
     {
         $headerStr = 'For=10.0.0.1,For=10.0.0.2;user-agent="test;test;test;test";For=10.0.0.3;user-agent="secondLevel;some date"';
-        $header    = new Header('Forwarded', $headerStr, ';');
+        $header = new Header('Forwarded', $headerStr, ';');
 
         $header->parseParams();
         $header->setGlue(',');
@@ -41,7 +41,7 @@ final class HeaderTest extends TestCase
     {
         $headerStr = 'For=10.0.0.1;user-agent="test;test;test;test";For=10.0.0.2;user-agent="secondLevel;
         some date";for=10.0.0.3;user-agent="thirdLevel"';
-        $header    = new Header('Forwarded', $headerStr, ';');
+        $header = new Header('Forwarded', $headerStr, ';');
 
         $header->parseParams();
         $header->setGlue(',');
@@ -54,7 +54,7 @@ final class HeaderTest extends TestCase
     public function testBuildEntityArrayWithValueOnly()
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
-        $header    = new Header('X-Forwarded-For', $headerStr, ',');
+        $header = new Header('X-Forwarded-For', $headerStr, ',');
         $header->parseParams();
         $this->assertEquals(3, $header->count());
         $partsArray = $header->toArray();
@@ -68,7 +68,7 @@ final class HeaderTest extends TestCase
      */
     public function getNameReturnsTheHeaderName()
     {
-        $name   = uniqid('headername', true);
+        $name = uniqid('headername', true);
         $header = new Header($name, '', ',');
         $this->assertEquals($name, $header->getName());
     }
@@ -78,7 +78,7 @@ final class HeaderTest extends TestCase
      */
     public function getGlueReturnsGlueValue()
     {
-        $glue   = uniqid('glue', true);
+        $glue = uniqid('glue', true);
         $header = new Header('X-Forwarded-For', '', $glue);
         $this->assertEquals($glue, $header->getGlue());
     }
@@ -89,7 +89,7 @@ final class HeaderTest extends TestCase
     public function getIteratorWorks()
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
-        $header    = new Header('X-Forwarded-For', $headerStr, ',');
+        $header = new Header('X-Forwarded-For', $headerStr, ',');
         $header->parseParams();
         $iterator = $header->getIterator();
 
@@ -109,7 +109,7 @@ final class HeaderTest extends TestCase
     public function toStringWorks()
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
-        $header    = new Header('X-Forwarded-For', $headerStr, ',');
+        $header = new Header('X-Forwarded-For', $headerStr, ',');
         $this->assertEquals($headerStr, (string) $header);
         $header->parseParams();
         $this->assertEquals('10.0.0.1, 10.0.0.2, 10.0.0.3', (string) $header);
@@ -121,7 +121,7 @@ final class HeaderTest extends TestCase
     public function removeValueWorks()
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
-        $header    = new Header('X-Forwarded-For', $headerStr, ',');
+        $header = new Header('X-Forwarded-For', $headerStr, ',');
         $header->parseParams();
         $header->removeValue('10.0.0.2');
         $this->assertEquals(['10.0.0.1', '10.0.0.3'], $header->toArray());
@@ -133,7 +133,7 @@ final class HeaderTest extends TestCase
     public function hasValueReturnsTrueIfValueFound()
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
-        $header    = new Header('X-Forwarded-For', $headerStr, ',');
+        $header = new Header('X-Forwarded-For', $headerStr, ',');
         $header->parseParams();
         $this->assertTrue($header->hasValue('10.0.0.1'));
         $this->assertTrue($header->hasValue('10.0.0.2'));
@@ -146,7 +146,7 @@ final class HeaderTest extends TestCase
     public function hasValueReturnsFalseIfValueNotFound()
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
-        $header    = new Header('X-Forwarded-For', $headerStr, ',');
+        $header = new Header('X-Forwarded-For', $headerStr, ',');
         $header->parseParams();
         $this->assertFalse($header->hasValue('10.0.0.4'));
     }
@@ -157,7 +157,7 @@ final class HeaderTest extends TestCase
     public function setNameCanBeUsedAfterHeadersAreCreated()
     {
         $headerStr = 'application/json';
-        $header    = new Header('Accept', $headerStr, '/');
+        $header = new Header('Accept', $headerStr, '/');
         $this->assertEquals('Accept', $header->getName());
         $header->setName('Content-Type');
         $this->assertEquals('Content-Type', $header->getName());
@@ -173,7 +173,7 @@ final class HeaderTest extends TestCase
         $headerChunks = [
             ';abc',
         ];
-        $header       = new Header('Foo', $headerChunks, ';');
+        $header = new Header('Foo', $headerChunks, ';');
         $header->parseParams();
         $header->setGlue('=');
         $header->parseParams();

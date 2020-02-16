@@ -23,11 +23,11 @@ class TalkCommentReportModel extends BaseModel
     public function getDefaultFields()
     {
         return [
-            'reporting_date'          => 'reporting_date',
-            'decision'                => 'decision',
-            'deciding_date'           => 'deciding_date',
+            'reporting_date' => 'reporting_date',
+            'decision' => 'decision',
+            'deciding_date' => 'deciding_date',
             'reporting_user_username' => 'reporting_username',
-            'deciding_user_username'  => 'deciding_username',
+            'deciding_user_username' => 'deciding_username',
         ];
     }
 
@@ -71,7 +71,7 @@ class TalkCommentReportModel extends BaseModel
         $item = parent::getOutputView($request, $verbose);
 
         // add Hypermedia
-        $base    = $request->base;
+        $base = $request->base;
         $version = $request->version;
 
         $item['reporting_user_uri'] = $base . '/' . $version . '/users/' . $this->reporting_user_id;
@@ -80,7 +80,7 @@ class TalkCommentReportModel extends BaseModel
             $item['deciding_user_uri'] = $base . '/' . $version . '/users/' . $this->deciding_user_id;
         }
         $item['event_uri'] = $base . '/' . $version . '/events/' . $this->event_id;
-        $item['talk_uri']  = $base . '/' . $version . '/talks/' . $this->talk_id;
+        $item['talk_uri'] = $base . '/' . $version . '/talks/' . $this->talk_id;
 
         return $item;
     }

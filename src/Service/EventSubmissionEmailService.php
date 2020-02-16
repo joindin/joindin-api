@@ -26,7 +26,7 @@ class EventSubmissionEmailService extends BaseEmailService
         parent::__construct($config, $recipients);
 
         // this email needs event info
-        $this->event       = $event;
+        $this->event = $event;
         $this->website_url = $config['website_url'];
 
         $this->count = $count;
@@ -39,11 +39,11 @@ class EventSubmissionEmailService extends BaseEmailService
         $date = new DateTime($this->event['start_date']);
 
         $replacements = [
-            "title"        => $this->event['name'],
-            "description"  => $this->event['description'],
-            "date"         => $date->format('jS M, Y'),
+            "title" => $this->event['name'],
+            "description" => $this->event['description'],
+            "date" => $date->format('jS M, Y'),
             "contact_name" => $this->event['contact_name'],
-            "website_url"  => $this->website_url,
+            "website_url" => $this->website_url,
         ];
 
         if ($this->count) {

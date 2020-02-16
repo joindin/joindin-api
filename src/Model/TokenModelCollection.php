@@ -23,7 +23,7 @@ class TokenModelCollection extends BaseModelCollection
      */
     public function __construct(array $data, $total)
     {
-        $this->list  = [];
+        $this->list = [];
         $this->total = $total;
 
         // hydrate the model objects if necessary and store to list

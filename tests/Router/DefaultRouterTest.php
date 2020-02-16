@@ -38,8 +38,8 @@ final class DefaultRouterTest extends TestCase
     public function testGetRoute($url)
     {
         $request = new Request([], ['REQUEST_URI' => $url]);
-        $router  = new DefaultRouter([]);
-        $route   = $router->getRoute($request);
+        $router = new DefaultRouter([]);
+        $route = $router->getRoute($request);
         $this->assertEquals(DefaultController::class, $route->getController());
         $this->assertEquals('handle', $route->getAction());
     }

@@ -41,7 +41,7 @@ class VersionedRouter extends BaseRouter
     {
         parent::__construct($config);
         $this->version = $version;
-        $this->rules   = $rules;
+        $this->rules = $rules;
     }
 
     /**

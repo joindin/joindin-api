@@ -16,9 +16,9 @@ class TalkCommentEmailService extends BaseEmailService
         parent::__construct($config, $recipients);
 
         // this email needs talk and comment info
-        $this->talk    = $talk;
+        $this->talk = $talk;
         $this->comment = $comment['comments'][0];
-        $this->config  = $config;
+        $this->config = $config;
     }
 
     public function sendEmail()
@@ -36,11 +36,11 @@ class TalkCommentEmailService extends BaseEmailService
         }
 
         $replacements = [
-            "title"   => $this->talk->talk_title,
-            "rating"  => $this->comment['rating'],
+            "title" => $this->talk->talk_title,
+            "rating" => $this->comment['rating'],
             "comment" => $this->comment['comment'],
-            "url"     => $this->talk->getWebsiteUrl($this->config['website_url']),
-            "byline"  => $byLine
+            "url" => $this->talk->getWebsiteUrl($this->config['website_url']),
+            "byline" => $byLine
         ];
 
         $messageBody = $this->parseEmail("commentTalk.md", $replacements);

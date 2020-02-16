@@ -24,7 +24,7 @@ class ClientModelCollection extends BaseModelCollection
     public function __construct(array $data, $total)
     {
         $this->total = $total;
-        $this->list  = [];
+        $this->list = [];
 
         // hydrate the model objects if necessary and store to list
         foreach ($data as $item) {

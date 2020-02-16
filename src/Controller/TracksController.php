@@ -20,7 +20,7 @@ class TracksController extends BaseApiController
 
         if ($track_id) {
             $mapper = new TrackMapper($db, $request);
-            $list   = $mapper->getTrackById($track_id, $verbose);
+            $list = $mapper->getTrackById($track_id, $verbose);
 
             if (false === $list) {
                 throw new Exception('Track not found', Http::NOT_FOUND);
@@ -43,14 +43,14 @@ class TracksController extends BaseApiController
         $track_id = $this->getItemId($request);
 
         $track_mapper = new TrackMapper($db, $request);
-        $tracks       = $track_mapper->getTrackById($track_id, true);
+        $tracks = $track_mapper->getTrackById($track_id, true);
 
         if (!$tracks) {
             throw new Exception("Track not found", Http::NOT_FOUND);
         }
 
         $event_mapper = new EventMapper($db, $request);
-        $events       = $event_mapper->getEventByTrackId($track_id, true, false, false);
+        $events = $event_mapper->getEventByTrackId($track_id, true, false, false);
 
         if (!$events || ! $events[0]['ID']) {
             throw new Exception("Associated event not found", Http::NOT_FOUND);
@@ -62,7 +62,7 @@ class TracksController extends BaseApiController
         }
 
         // validate fields
-        $errors              = [];
+        $errors = [];
         $track['track_name'] = filter_var(
             $request->getParameter("track_name"),
             FILTER_SANITIZE_STRING,
@@ -105,14 +105,14 @@ class TracksController extends BaseApiController
         $track_id = $this->getItemId($request);
 
         $track_mapper = new TrackMapper($db, $request);
-        $tracks       = $track_mapper->getTrackById($track_id, true);
+        $tracks = $track_mapper->getTrackById($track_id, true);
 
         if (!$tracks) {
             throw new Exception("Track not found", Http::NOT_FOUND);
         }
 
         $event_mapper = new EventMapper($db, $request);
-        $events       = $event_mapper->getEventByTrackId($track_id, true, false, false);
+        $events = $event_mapper->getEventByTrackId($track_id, true, false, false);
 
         if (!$events || ! $events[0]['ID']) {
             throw new Exception("Associated event not found", Http::NOT_FOUND);

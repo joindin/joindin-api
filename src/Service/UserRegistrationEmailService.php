@@ -20,7 +20,7 @@ class UserRegistrationEmailService extends BaseEmailService
         // set up the common stuff first
         parent::__construct($config, $recipients);
 
-        $this->token       = $token;
+        $this->token = $token;
         $this->website_url = $config['website_url'];
     }
 
@@ -29,7 +29,7 @@ class UserRegistrationEmailService extends BaseEmailService
         $this->setSubject('Welcome to joind.in');
 
         $replacements = [
-            "token"       => $this->token,
+            "token" => $this->token,
             "website_url" => $this->website_url,
         ];
 

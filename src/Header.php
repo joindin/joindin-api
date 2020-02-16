@@ -36,7 +36,7 @@ class Header
     public function __construct($header, $values = [], $glue = ',')
     {
         $this->header = trim($header);
-        $this->glue   = $glue;
+        $this->glue = $glue;
 
         foreach ((array) $values as $value) {
             foreach ((array) $value as $v) {
@@ -141,19 +141,19 @@ class Header
 
         foreach ($this->values as $value) {
             $parts = explode('=', $value);
-            $key   = ucwords($parts[0]);
+            $key = ucwords($parts[0]);
 
             if (count($parts) === 1) {
                 if (array_key_exists(0, $assocArray)) {
                     $assocArray[0][] = $parts[0];
                 } else {
-                    $assocArray[0]   = [];
+                    $assocArray[0] = [];
                     $assocArray[0][] = $parts[0];
                 }
             } elseif (array_key_exists($key, $assocArray)) {
                 $assocArray[$key][] = $parts[1];
             } else {
-                $assocArray[$key]   = [];
+                $assocArray[$key] = [];
                 $assocArray[$key][] = $parts[1];
             }
         }
@@ -163,7 +163,7 @@ class Header
 
     public function parseParams()
     {
-        $params   = $matches = [];
+        $params = $matches = [];
         $callback = [$this, 'trimHeader'];
 
         // Normalize the header into a single array and iterate over all values
@@ -174,7 +174,7 @@ class Header
                 if (!preg_match_all('/<[^>]+>|[^=]+/', $kvp, $matches)) {
                     continue;
                 }
-                $pieces           = array_map($callback, $matches[0]);
+                $pieces = array_map($callback, $matches[0]);
                 $part[$pieces[0]] = $pieces[1] ?? '';
             }
 

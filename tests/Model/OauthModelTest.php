@@ -18,13 +18,13 @@ final class OauthModelTest extends TestCase
 
     public function setup(): void
     {
-        $this->pdo              = $this->getMockBuilder(PDO::class)
+        $this->pdo = $this->getMockBuilder(PDO::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->request          = $this->getMockBuilder(Request::class)
+        $this->request = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->request->base    = "";
+        $this->request->base = "";
         $this->request->version = "2.1";
 
         $this->oauth = new OAuthModel($this->pdo, $this->request);
@@ -74,7 +74,7 @@ final class OauthModelTest extends TestCase
             [
                 'password' => password_hash(md5($pass), PASSWORD_BCRYPT),
                 'verified' => 1,
-                'ID'       => 1234,
+                'ID' => 1234,
             ]
         );
         $this->pdo->method('prepare')->willReturn($stmt);

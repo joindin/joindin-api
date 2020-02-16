@@ -14,7 +14,7 @@ class EventRejectedEmailService extends BaseEmailService
         // set up the common stuff first
         parent::__construct($config, $recipients);
 
-        $this->event       = $event;
+        $this->event = $event;
         $this->website_url = $config['website_url'];
     }
 
@@ -22,15 +22,15 @@ class EventRejectedEmailService extends BaseEmailService
     {
         $this->setSubject('Event Rejected');
 
-        $date         = new DateTime($this->event['start_date']);
+        $date = new DateTime($this->event['start_date']);
         $replacements = [
-            "title"        => $this->event['name'],
-            "description"  => $this->event['description'],
-            "reason"       => $this->event['rejection_reason'],
-            "date"         => $date->format('jS M, Y'),
+            "title" => $this->event['name'],
+            "description" => $this->event['description'],
+            "reason" => $this->event['rejection_reason'],
+            "date" => $date->format('jS M, Y'),
             "contact_name" => $this->event['contact_name'],
-            "website_url"  => $this->website_url,
-            "event_url"    => $this->website_url . '/event/' . $this->event['url_friendly_name'] . '/edit',
+            "website_url" => $this->website_url,
+            "event_url" => $this->website_url . '/event/' . $this->event['url_friendly_name'] . '/edit',
         ];
 
         $messageBody = $this->parseEmail("eventRejected.md", $replacements);

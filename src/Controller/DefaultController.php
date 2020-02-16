@@ -11,12 +11,12 @@ class DefaultController extends BaseApiController
     {
         // just add the available methods, with links
         return [
-            'events'          => $request->base . '/' . $request->version . '/events',
-            'hot-events'      => $request->base . '/' . $request->version . '/events?filter=hot',
+            'events' => $request->base . '/' . $request->version . '/events',
+            'hot-events' => $request->base . '/' . $request->version . '/events?filter=hot',
             'upcoming-events' => $request->base . '/' . $request->version . '/events?filter=upcoming',
-            'past-events'     => $request->base . '/' . $request->version . '/events?filter=past',
-            'open-cfps'       => $request->base . '/' . $request->version . '/events?filter=cfp',
-            'docs'            => 'http://joindin.github.io/joindin-api/',
+            'past-events' => $request->base . '/' . $request->version . '/events?filter=past',
+            'open-cfps' => $request->base . '/' . $request->version . '/events?filter=cfp',
+            'docs' => 'http://joindin.github.io/joindin-api/',
         ];
     }
 }

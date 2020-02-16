@@ -49,7 +49,7 @@ class ApplicationsController extends BaseApiController
             throw new Exception("You must be logged in", Http::UNAUTHORIZED);
         }
 
-        $app    = [];
+        $app = [];
         $errors = [];
 
         $app['name'] = filter_var(
@@ -88,13 +88,13 @@ class ApplicationsController extends BaseApiController
         $app['user_id'] = $request->user_id;
 
         $clientMapper = $this->getClientMapper($db, $request);
-        $clientId     = $clientMapper->createClient($app);
+        $clientId = $clientMapper->createClient($app);
 
         $uri = $request->base . '/' . $request->version . '/applications/' . $clientId;
         $request->getView()->setResponseCode(Http::CREATED);
         $request->getView()->setHeader('Location', $uri);
 
-        $mapper    = $this->getClientMapper($db, $request);
+        $mapper = $this->getClientMapper($db, $request);
         $newClient = $mapper->getClientByIdAndUser($clientId, $request->user_id);
 
         return $newClient->getOutputView($request);
@@ -106,7 +106,7 @@ class ApplicationsController extends BaseApiController
             throw new Exception("You must be logged in", Http::UNAUTHORIZED);
         }
 
-        $app    = [];
+        $app = [];
         $errors = [];
 
         $app['name'] = filter_var(
@@ -141,7 +141,7 @@ class ApplicationsController extends BaseApiController
         $app['user_id'] = $request->user_id;
 
         $clientMapper = $this->getClientMapper($db, $request);
-        $clientId     = $clientMapper->updateClient($this->getItemId($request), $app);
+        $clientId = $clientMapper->updateClient($this->getItemId($request), $app);
 
         $uri = $request->base . '/' . $request->version . '/applications/' . $clientId;
         $request->getView()->setResponseCode(Http::CREATED);

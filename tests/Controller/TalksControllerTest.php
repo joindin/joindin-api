@@ -26,9 +26,9 @@ final class TalksControllerTest extends TalkBase
         $this->config = [
             'email' => [
                 'from' => 'source@example.com',
-                'smtp'           => [
-                    'host'     => 'localhost',
-                    'port'     => 25,
+                'smtp' => [
+                    'host' => 'localhost',
+                    'port' => 25,
                     'username' => 'username',
                     'password' => 'ChangeMeSeymourChangeMe',
                     'security' => null
@@ -130,7 +130,7 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = 2;
         $request->parameters = [
-            'display_name'  => 'Jane Bloggs'
+            'display_name' => 'Jane Bloggs'
         ];
 
         $talks_controller = new TalksController(new NullSpamCheckService());
@@ -171,7 +171,7 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = 2;
         $request->parameters = [
-            'username'  => 'janebloggs'
+            'username' => 'janebloggs'
         ];
 
         $talks_controller = new TalksController(new NullSpamCheckService());
@@ -212,8 +212,8 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  =>  'P Sherman'
+            'username' => 'janebloggs',
+            'display_name' => 'P Sherman'
         ];
 
         $talks_controller = new TalksController(new NullSpamCheckService());
@@ -257,8 +257,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  => 'P Sherman'
+            'username' => 'janebloggs',
+            'display_name' => 'P Sherman'
         ];
 
         $talks_controller = new TalksController(new NullSpamCheckService());
@@ -305,8 +305,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman'
+            'username' => 'psherman',
+            'display_name' => 'P Sherman'
         ];
 
         $talks_controller = new TalksController(new NullSpamCheckService());
@@ -371,8 +371,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman'
+            'username' => 'psherman',
+            'display_name' => 'P Sherman'
         ];
 
         $talks_controller = new TalksController(new NullSpamCheckService());
@@ -419,8 +419,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  => 'Jane Bloggs'
+            'username' => 'janebloggs',
+            'display_name' => 'Jane Bloggs'
         ];
 
         $talks_controller = new TalksController(
@@ -484,8 +484,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman'
+            'username' => 'psherman',
+            'display_name' => 'P Sherman'
         ];
 
         $talks_controller = new TalksController(
@@ -554,8 +554,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  => 'Jane Bloggs'
+            'username' => 'janebloggs',
+            'display_name' => 'Jane Bloggs'
         ];
 
         $talks_controller = new TalksController(new NullSpamCheckService());
@@ -618,8 +618,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  => 'Jane Bloggs'
+            'username' => 'janebloggs',
+            'display_name' => 'Jane Bloggs'
         ];
 
         $talks_controller = new TalksController(new NullSpamCheckService());
@@ -682,8 +682,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman'
+            'username' => 'psherman',
+            'display_name' => 'P Sherman'
         ];
 
         $talks_controller = new TalksController(new NullSpamCheckService());
@@ -737,8 +737,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  => 'Jane Bloggs',
+            'username' => 'janebloggs',
+            'display_name' => 'Jane Bloggs',
         ];
 
         $talks_controller = new TalksController(new NullSpamCheckService());
@@ -801,8 +801,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
         ];
 
         $talks_controller = new TalksController(
@@ -876,8 +876,8 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = $commenterId;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
             'comment' => 'Test Comment',
             'rating' => '3',
         ];
@@ -1012,8 +1012,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 1;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
             'rating' => '3',
         ];
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -1042,8 +1042,8 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 1;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
             'comment' => 'Test Comment',
         ];
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -1073,8 +1073,8 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
         ];
 
         $talks_controller = new TalksController(
@@ -1175,7 +1175,7 @@ final class TalksControllerTest extends TalkBase
         );
 
         $request->parameters = [
-            'verbose'      => 'yes',
+            'verbose' => 'yes',
         ];
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -1282,7 +1282,7 @@ final class TalksControllerTest extends TalkBase
         );
 
         $request->parameters = [
-            'title'      => 'linux',
+            'title' => 'linux',
         ];
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();

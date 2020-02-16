@@ -24,7 +24,7 @@ final class EventHostsControllerTest extends TestCase
         $controller = new EventHostsController();
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $db      = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $controller->addHost($request, $db);
     }
@@ -57,9 +57,9 @@ final class EventHostsControllerTest extends TestCase
 
         $controller->setEventMapper($em);
 
-        $request               = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->url_elements = [3 => 'foo'];
-        $request->user_id      = 2;
+        $request->user_id = 2;
 
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 

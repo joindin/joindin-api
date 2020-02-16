@@ -40,7 +40,7 @@ final class RequestTest extends TestCase
             ]
         );
 
-        $server  = [
+        $server = [
             'QUERY_STRING' => $queryString,
         ];
         $request = new Request($this->config, $server);
@@ -57,9 +57,9 @@ final class RequestTest extends TestCase
      */
     public function testGetParameterReturnsDefaultIfParameterNotSet()
     {
-        $uniq    = uniqid();
+        $uniq = uniqid();
         $request = new Request($this->config, []);
-        $result  = $request->getParameter('samoflange', $uniq);
+        $result = $request->getParameter('samoflange', $uniq);
 
         $this->assertSame($uniq, $result);
     }
@@ -140,7 +140,7 @@ final class RequestTest extends TestCase
         $request = new Request($this->config, []);
 
         $default = uniqid('', true);
-        $result  = $request->getUrlElement(22, $default);
+        $result = $request->getUrlElement(22, $default);
 
         $this->assertEquals($default, $result);
     }
@@ -155,7 +155,7 @@ final class RequestTest extends TestCase
      */
     public function testGetUrlElementReturnsRequestedElementFromPath()
     {
-        $server  = ['PATH_INFO' => 'foo/bar/baz'];
+        $server = ['PATH_INFO' => 'foo/bar/baz'];
         $request = new Request($this->config, $server);
         $this->assertEquals('foo', $request->getUrlElement(0));
         $this->assertEquals('bar', $request->getUrlElement(1));
@@ -171,7 +171,7 @@ final class RequestTest extends TestCase
      */
     public function testAcceptsHeadersAreParsedCorrectly()
     {
-        $server  = [
+        $server = [
             'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         ];
         $request = new Request($this->config, $server);
@@ -193,7 +193,7 @@ final class RequestTest extends TestCase
      */
     public function testPreferredContentTypeOfReturnsADesiredFormatIfItIsAccepted()
     {
-        $server  = [
+        $server = [
             'HTTP_ACCEPT' => 'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
         ];
         $request = new Request($this->config, $server);
@@ -219,7 +219,7 @@ final class RequestTest extends TestCase
      */
     public function testIfPreferredFormatIsNotAcceptedReturnJson()
     {
-        $server  = [
+        $server = [
             'HTTP_ACCEPT' => 'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
         ];
         $request = new Request($this->config, $server);
@@ -241,7 +241,7 @@ final class RequestTest extends TestCase
      */
     public function testHostIsSetCorrectlyFromTheHeaders()
     {
-        $server  = ['HTTP_HOST' => 'joind.in'];
+        $server = ['HTTP_HOST' => 'joind.in'];
         $request = new Request($this->config, $server);
 
         $this->assertEquals('joind.in', $request->host);
@@ -266,7 +266,7 @@ final class RequestTest extends TestCase
      */
     public function testHostCanBeSetWithSetHost()
     {
-        $host    = uniqid() . '.com';
+        $host = uniqid() . '.com';
         $request = new Request($this->config, []);
         $request->setHost($host);
 
@@ -289,17 +289,17 @@ final class RequestTest extends TestCase
     {
         $body = json_encode(
             [
-                'a'     => 'b',
+                'a' => 'b',
                 'array' => ['joind' => 'in'],
             ]
         );
 
-        $inside        = new \stdClass();
+        $inside = new \stdClass();
         $inside->joind = 'in';
 
         $server = [
             'REQUEST_METHOD' => $method,
-            'CONTENT_TYPE'   => 'application/json',
+            'CONTENT_TYPE' => 'application/json',
         ];
         /* @var $request Request */
         $request = $this->getMockBuilder('\Joindin\Api\Request')
@@ -353,7 +353,7 @@ final class RequestTest extends TestCase
      */
     public function testSchemeIsHttpsIfHttpsValueIsOn()
     {
-        $server  = ['HTTPS' => 'on'];
+        $server = ['HTTPS' => 'on'];
         $request = new Request($this->config, $server);
 
         $this->assertEquals('https://', $request->scheme);
@@ -440,7 +440,7 @@ final class RequestTest extends TestCase
      */
     public function testIfRequestIsntHTTPSReturnsFalse()
     {
-        $config  = array_merge($this->config, ['mode' => 'production']);
+        $config = array_merge($this->config, ['mode' => 'production']);
         $request = new Request($config, []);
         $request->setScheme('http://');
         $this->assertFalse($request->identifyUser('This is a bad header'));
@@ -463,7 +463,7 @@ final class RequestTest extends TestCase
         $db->method('getAvailableDrivers');
 
         $request = new Request($this->config, []);
-        $result  = $request->getOAuthModel($db);
+        $result = $request->getOAuthModel($db);
 
         $this->assertInstanceOf('Joindin\Api\Model\OAuthModel', $result);
     }
@@ -494,7 +494,7 @@ final class RequestTest extends TestCase
     {
         /* @var $mockOauth \Joindin\Api\Model\OAuthModel */
         $mockOauth = $this->getMockBuilder('Joindin\Api\Model\OAuthModel')->disableOriginalConstructor()->getMock();
-        $request   = new Request($this->config, []);
+        $request = new Request($this->config, []);
 
         $this->assertSame($request, $request->setOauthModel($mockOauth));
     }
@@ -510,7 +510,7 @@ final class RequestTest extends TestCase
     {
         /* @var $mockOauth \Joindin\Api\Model\OAuthModel */
         $mockOauth = $this->getMockBuilder(OAuthModel::class)->disableOriginalConstructor()->getMock();
-        $request   = new Request($this->config, []);
+        $request = new Request($this->config, []);
         $request->setOauthModel($mockOauth);
 
         $this->assertSame($mockOauth, $request->getOauthModel());
@@ -525,7 +525,7 @@ final class RequestTest extends TestCase
      */
     public function testIdentifyUserWithOauthTokenTypeSetsUserIdForValidHeader()
     {
-        $request   = new Request($this->config, ['HTTPS' => 'on']);
+        $request = new Request($this->config, ['HTTPS' => 'on']);
         $mockOauth = $this->getMockBuilder(OAuthModel::class)->disableOriginalConstructor()->getMock();
         $mockOauth->expects($this->once())
             ->method('verifyAccessToken')
@@ -549,7 +549,7 @@ final class RequestTest extends TestCase
      */
     public function testIdentifyUserWithBearerTokenTypeSetsUserIdForValidHeader()
     {
-        $request   = new Request($this->config, ['HTTPS' => 'on']);
+        $request = new Request($this->config, ['HTTPS' => 'on']);
         $mockOauth = $this->getMockBuilder(OAuthModel::class)->disableOriginalConstructor()->getMock();
         $mockOauth->expects($this->once())
             ->method('verifyAccessToken')
@@ -584,7 +584,7 @@ final class RequestTest extends TestCase
     public function testSetUserIdAllowsForSettingOfUserId()
     {
         $request = new Request($this->config, []);
-        $user    = uniqid('', true);
+        $user = uniqid('', true);
 
         $request->setUserId($user);
         $this->assertEquals($user, $request->getUserId());
@@ -597,8 +597,8 @@ final class RequestTest extends TestCase
      */
     public function testSetPathInfoAllowsSettingOfPathInfo()
     {
-        $path    = uniqid('', true) . '/' . uniqid('', true) . '/' . uniqid('', true);
-        $parts   = explode('/', $path);
+        $path = uniqid('', true) . '/' . uniqid('', true) . '/' . uniqid('', true);
+        $parts = explode('/', $path);
         $request = new Request($this->config, []);
         $request->setPathInfo($path);
 
@@ -628,7 +628,7 @@ final class RequestTest extends TestCase
      */
     public function testSetAcceptSetsTheAcceptVariable()
     {
-        $accept      = uniqid('', true) . ',' . uniqid('', true) . ',' . uniqid('', true);
+        $accept = uniqid('', true) . ',' . uniqid('', true) . ',' . uniqid('', true);
         $acceptParts = explode(',', $accept);
 
         $request = new Request($this->config, []);
@@ -659,7 +659,7 @@ final class RequestTest extends TestCase
     public function testSetBaseAllowsSettingOfBase()
     {
         $request = new Request($this->config, []);
-        $base    = uniqid('', true);
+        $base = uniqid('', true);
         $request->setBase($base);
         $this->assertEquals($base, $request->getBase());
         $this->assertEquals($base, $request->base);
@@ -687,54 +687,54 @@ final class RequestTest extends TestCase
     {
         return [
             [ // #0
-                'parameters'    => [],
+                'parameters' => [],
                 'expectedClass' => JsonView::class,
             ],
             [ // #1
-                'parameters'    => ['format' => 'html'],
+                'parameters' => ['format' => 'html'],
                 'expectedClass' => HtmlView::class,
             ],
             [ // #2
-                'parameters'    => ['callback' => 'dave'],
+                'parameters' => ['callback' => 'dave'],
                 'expectedClass' => JsonPView::class,
             ],
             [ // #3
-                'parameters'    => ['format' => 'html'],
+                'parameters' => ['format' => 'html'],
                 'expectedClass' => HtmlView::class,
             ],
             [ // #4
-                'parameters'    => ['format' => 'html'],
+                'parameters' => ['format' => 'html'],
                 'expectedClass' => HtmlView::class,
-                'accepts'       => 'text/html',
+                'accepts' => 'text/html',
             ],
             [ // #5
-                'parameters'    => [],
+                'parameters' => [],
                 'expectedClass' => JsonView::class,
-                'accepts'       => 'application/json',
+                'accepts' => 'application/json',
             ],
             [ // #6
-                'parameters'    => [],
+                'parameters' => [],
                 'expectedClass' => JsonView::class,
-                'accepts'       => 'application/json,text/html',
+                'accepts' => 'application/json,text/html',
             ],
             [ // #7
-                'parameters'    => [],
+                'parameters' => [],
                 'expectedClass' => HtmlView::class,
-                'accepts'       => 'text/html,applicaton/json',
-                'view'          => new \Joindin\Api\View\HtmlView(),
+                'accepts' => 'text/html,applicaton/json',
+                'view' => new \Joindin\Api\View\HtmlView(),
                 //                'skip' => true // Currently we're not applying Accept correctly
                 // Can @choult check what's the reason for the skip?
             ],
             [ // #8
-                'parameters'    => ['format' => 'html'],
+                'parameters' => ['format' => 'html'],
                 'expectedClass' => HtmlView::class,
-                'accepts'       => 'applicaton/json,text/html',
+                'accepts' => 'applicaton/json,text/html',
             ],
             [ // #9
-                'parameters'    => [],
+                'parameters' => [],
                 'expectedClass' => false,
-                'accepts'       => '',
-                'view'          => new ApiView(),
+                'accepts' => '',
+                'view' => new ApiView(),
             ],
         ];
     }
@@ -765,7 +765,7 @@ final class RequestTest extends TestCase
 
         $server = [
             'QUERY_STRING' => http_build_query($parameters),
-            'HTTP_ACCEPT'  => $accept,
+            'HTTP_ACCEPT' => $accept,
         ];
 
         $request = new Request($this->config, $server);
@@ -800,14 +800,14 @@ final class RequestTest extends TestCase
                     Request::CONTENT_TYPE_HTML,
                     Request::CONTENT_TYPE_JSON,
                 ],
-                'choices'  => [
+                'choices' => [
                     Request::CONTENT_TYPE_HTML,
                     Request::CONTENT_TYPE_JSON,
                 ],
             ],
             [ // #2
                 'expected' => ['a', 'b'],
-                'choices'  => ['a', 'b'],
+                'choices' => ['a', 'b'],
             ],
         ];
     }
@@ -840,7 +840,7 @@ final class RequestTest extends TestCase
     public function testGetSetRouteParams()
     {
         $request = new Request($this->config, []);
-        $params  = ['event_id' => 10];
+        $params = ['event_id' => 10];
         $request->setRouteParams($params);
         $this->assertEquals($params, $request->getRouteParams());
     }
@@ -852,7 +852,7 @@ final class RequestTest extends TestCase
     public function testGetSetAccessToken()
     {
         $request = new Request($this->config, []);
-        $token   = 'token';
+        $token = 'token';
         $request->setAccessToken($token);
         $this->assertEquals($token, $request->getAccessToken());
     }
@@ -863,7 +863,7 @@ final class RequestTest extends TestCase
      */
     public function testConstructorParsesRequestUri()
     {
-        $server  = ['REQUEST_URI' => '/v2/one/two?three=four'];
+        $server = ['REQUEST_URI' => '/v2/one/two?three=four'];
         $request = new Request($this->config, $server);
         $this->assertEquals('/v2/one/two', $request->getPathInfo());
     }
@@ -881,9 +881,9 @@ final class RequestTest extends TestCase
     public function clientIpProvider()
     {
         return [
-            'remote_addr'     => [['REMOTE_ADDR' => '192.168.1.1']],
+            'remote_addr' => [['REMOTE_ADDR' => '192.168.1.1']],
             'x-forwarded-for' => [['HTTP_X_FORWARDED_FOR' => '192.168.1.1']],
-            'http-forwarded'  => [['HTTP_FORWARDED' => 'for=192.168.1.1, for=198.51.100.17']],
+            'http-forwarded' => [['HTTP_FORWARDED' => 'for=192.168.1.1, for=198.51.100.17']],
         ];
     }
 

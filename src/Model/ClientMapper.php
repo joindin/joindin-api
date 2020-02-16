@@ -48,7 +48,7 @@ class ClientMapper extends ApiMapper
         $sql = 'SELECT * FROM oauth_consumers WHERE user_id = :user_id ';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
             ':user_id' => $user_id
         ]);
@@ -58,7 +58,7 @@ class ClientMapper extends ApiMapper
         }
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $total   = $this->getTotalCount($sql, [':user_id' => $user_id]);
+        $total = $this->getTotalCount($sql, [':user_id' => $user_id]);
         $results = $this->processResults($results);
 
         return new ClientModelCollection($results, $total);
@@ -77,9 +77,9 @@ class ClientMapper extends ApiMapper
         $sql = 'SELECT * FROM oauth_consumers WHERE user_id = :user_id and id = :client_id';
         $sql .= $this->buildLimit(1, 0);
 
-        $stmt     = $this->_db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute([
-            ':user_id'   => $userId,
+            ':user_id' => $userId,
             ':client_id' => $clientId,
         ]);
 
@@ -111,13 +111,13 @@ class ClientMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($clientSql);
         $stmt->execute([
-            ':consumer_key'          => base64_encode(openssl_random_pseudo_bytes(48)),
-            ':consumer_secret'       => base64_encode(openssl_random_pseudo_bytes(48)),
-            ':created_date'          => (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
-            ':user_id'               => $data['user_id'],
-            ':application'           => $data['name'],
-            ':description'           => $data['description'],
-            ':callback_url'          => $data['callback_url'],
+            ':consumer_key' => base64_encode(openssl_random_pseudo_bytes(48)),
+            ':consumer_secret' => base64_encode(openssl_random_pseudo_bytes(48)),
+            ':created_date' => (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
+            ':user_id' => $data['user_id'],
+            ':application' => $data['name'],
+            ':description' => $data['description'],
+            ':callback_url' => $data['callback_url'],
             ':enable_password_grant' => 1,
         ]);
 
@@ -148,10 +148,10 @@ class ClientMapper extends ApiMapper
         $stmt = $this->_db->prepare($clientSql);
 
         $result = $stmt->execute([
-            ':application'  => $data['name'],
-            ':description'  => $data['description'],
+            ':application' => $data['name'],
+            ':description' => $data['description'],
             ':callback_url' => $data['callback_url'],
-            ':client_id'    => $clientId,
+            ':client_id' => $clientId,
         ]);
 
         if (!$result) {

@@ -108,17 +108,17 @@ final class ContactControllerTest extends TestCase
             //Client cannot use the contactform
             [
                 'isClientPermittedPasswordGrant' => false,
-                'returnValueMap'                 => [],
-                'isCommentAcceptable'            => false,
-                'exceptedException'              => 'Exception',
-                'expectedExceptionMessage'       => 'This client cannot perform this action',
-                'emailShouldBeSent'              => false,
-                'spamShouldBeChecked'            => false
+                'returnValueMap' => [],
+                'isCommentAcceptable' => false,
+                'exceptedException' => 'Exception',
+                'expectedExceptionMessage' => 'This client cannot perform this action',
+                'emailShouldBeSent' => false,
+                'spamShouldBeChecked' => false
             ],
             //Not all required fields are set
             [
                 'isClientPermittedPasswordGrant' => true,
-                'returnValueMap'                 => [
+                'returnValueMap' => [
                     ['client_id', '', 'client_id'],
                     ['client_secret', '', 'client_secret'],
                     ['name', '', ''],
@@ -126,14 +126,14 @@ final class ContactControllerTest extends TestCase
                     ['subject', '', ''],
                     ['comment', '', '']
                 ],
-                'isCommentAcceptable'            => false,
-                'exceptedException'              => Exception::class,
-                'expectedExceptionMessage'       => "The fields 'name', 'email', 'subject', 'comment' are required",
+                'isCommentAcceptable' => false,
+                'exceptedException' => Exception::class,
+                'expectedExceptionMessage' => "The fields 'name', 'email', 'subject', 'comment' are required",
             ],
             //Spamcheck fails
             [
                 'isClientPermittedPasswordGrant' => true,
-                'returnValueMap'                 => [
+                'returnValueMap' => [
                     ['client_id', '', 'client_id'],
                     ['client_secret', '', 'client_secret'],
                     ['name', '', 'name'],
@@ -142,15 +142,15 @@ final class ContactControllerTest extends TestCase
                     ['comment', '', 'comment']
                 ],
 
-                'isCommentAcceptable'      => false,
-                'exceptedException'        => Exception::class,
+                'isCommentAcceptable' => false,
+                'exceptedException' => Exception::class,
                 'expectedExceptionMessage' => 'Comment failed spam check',
-                'spamShouldBeChecked'            => true,
+                'spamShouldBeChecked' => true,
             ],
             //Email is sent without spamcheck
             [
                 'isClientPermittedPasswordGrant' => true,
-                'returnValueMap'                 => [
+                'returnValueMap' => [
                     ['client_id', '', 'client_id'],
                     ['client_secret', '', 'client_secret'],
                     ['name', '', 'name'],
@@ -158,16 +158,16 @@ final class ContactControllerTest extends TestCase
                     ['subject', '', 'subject'],
                     ['comment', '', 'comment']
                 ],
-                'isCommentAcceptable'            => true,
-                'exceptedException'              => null,
-                'expectedExceptionMessage'       => null,
-                'spamShouldBeChecked'            => true,
-                'emailShouldBeSent'              => true
+                'isCommentAcceptable' => true,
+                'exceptedException' => null,
+                'expectedExceptionMessage' => null,
+                'spamShouldBeChecked' => true,
+                'emailShouldBeSent' => true
             ],
             //All is good email should be sent
             [
                 'isClientPermittedPasswordGrant' => true,
-                'returnValueMap'                 => [
+                'returnValueMap' => [
                     ['client_id', '', 'client_id'],
                     ['client_secret', '', 'client_secret'],
                     ['name', '', 'name'],
@@ -175,11 +175,11 @@ final class ContactControllerTest extends TestCase
                     ['subject', '', 'subject'],
                     ['comment', '', 'comment']
                 ],
-                'isCommentAcceptable'            => true,
-                'exceptedException'              => null,
-                'expectedExceptionMessage'       => null,
-                'spamShouldBeChecked'            => true,
-                'emailShouldBeSent'              => true
+                'isCommentAcceptable' => true,
+                'exceptedException' => null,
+                'expectedExceptionMessage' => null,
+                'spamShouldBeChecked' => true,
+                'emailShouldBeSent' => true
             ]
         ];
     }

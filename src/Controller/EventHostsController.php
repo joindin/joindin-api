@@ -38,7 +38,7 @@ class EventHostsController extends BaseApiController
         $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $start          = $this->getStart($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = $this->getEventHostMapper($request, $db);
@@ -74,7 +74,7 @@ class EventHostsController extends BaseApiController
         $event_id = $this->getItemId($request);
 
         $eventMapper = $this->getEventMapper($request, $db);
-        $event       = $eventMapper->getEventById($event_id);
+        $event = $eventMapper->getEventById($event_id);
 
         if (false === $event) {
             throw new Exception('Event not found', Http::NOT_FOUND);
@@ -85,13 +85,13 @@ class EventHostsController extends BaseApiController
         if (!$isAdmin) {
             throw new Exception("You do not have permission to add hosts to this event", Http::FORBIDDEN);
         }
-        $username   = filter_var(
+        $username = filter_var(
             $request->getParameter('host_name'),
             FILTER_SANITIZE_STRING,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
         $userMapper = $this->getUserMapper($request, $db);
-        $user_id    = $userMapper->getUserIdFromUsername($username);
+        $user_id = $userMapper->getUserIdFromUsername($username);
 
         if (false === $user_id) {
             throw new Exception('No User found', Http::NOT_FOUND);
@@ -139,7 +139,7 @@ class EventHostsController extends BaseApiController
         $event_id = $this->getItemId($request);
 
         $eventMapper = $this->getEventMapper($request, $db);
-        $event       = $eventMapper->getEventById($event_id);
+        $event = $eventMapper->getEventById($event_id);
 
         if (false === $event) {
             throw new Exception('Event not found', Http::NOT_FOUND);
@@ -152,7 +152,7 @@ class EventHostsController extends BaseApiController
         }
 
         $userMapper = $this->getUserMapper($request, $db);
-        $user       = $userMapper->getUserById($user_id);
+        $user = $userMapper->getUserById($user_id);
 
         if (false === $user) {
             throw new Exception('No User found', Http::NOT_FOUND);

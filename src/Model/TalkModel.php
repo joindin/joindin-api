@@ -24,19 +24,19 @@ class TalkModel extends BaseModel
     public function getDefaultFields()
     {
         return [
-            'id'                      => 'ID',
-            'talk_title'              => 'talk_title',
+            'id' => 'ID',
+            'talk_title' => 'talk_title',
             'url_friendly_talk_title' => 'url_friendly_talk_title',
-            'talk_description'        => 'talk_desc',
-            'type'                    => 'talk_type',
-            'start_date'              => 'date_given',
-            'duration'                => 'duration',
-            'stub'                    => 'stub',
-            'average_rating'          => 'avg_rating',
-            'comments_enabled'        => 'comments_enabled',
-            'comment_count'           => 'comment_count',
-            'starred'                 => 'starred',
-            'starred_count'           => 'starred_count',
+            'talk_description' => 'talk_desc',
+            'type' => 'talk_type',
+            'start_date' => 'date_given',
+            'duration' => 'duration',
+            'stub' => 'stub',
+            'average_rating' => 'avg_rating',
+            'comments_enabled' => 'comments_enabled',
+            'comment_count' => 'comment_count',
+            'starred' => 'starred',
+            'starred_count' => 'starred_count',
         ];
     }
 
@@ -52,8 +52,8 @@ class TalkModel extends BaseModel
         $fields = $this->getDefaultFields();
 
         $fields['slides_link'] = 'slides_link';
-        $fields['talk_media']  = 'talk_media';
-        $fields['language']    = 'lang_name';
+        $fields['talk_media'] = 'talk_media';
+        $fields['language'] = 'lang_name';
         $fields['user_rating'] = 'user_rating';
 
         return $fields;
@@ -71,7 +71,7 @@ class TalkModel extends BaseModel
     {
         return [
             'speakers' => 'speakers',
-            'tracks'   => 'tracks',
+            'tracks' => 'tracks',
         ];
     }
 
@@ -88,19 +88,19 @@ class TalkModel extends BaseModel
         $item = parent::getOutputView($request, $verbose);
 
         // add Hypermedia
-        $base    = $request->base;
+        $base = $request->base;
         $version = $request->version;
 
-        $item['uri']                  = $base . '/' . $version . '/talks/' . $this->ID;
-        $item['verbose_uri']          = $base . '/' . $version . '/talks/' . $this->ID . '?verbose=yes';
-        $item['website_uri']          = $this->getWebsiteUrl($request->getConfigValue('website_url'));
-        $item['starred_uri']          = $base . '/' . $version . '/talks/' . $this->ID . '/starred';
-        $item['tracks_uri']           = $base . '/' . $version . '/talks/' . $this->ID . '/tracks';
-        $item['comments_uri']         = $base . '/' . $version . '/talks/' . $this->ID . '/comments';
+        $item['uri'] = $base . '/' . $version . '/talks/' . $this->ID;
+        $item['verbose_uri'] = $base . '/' . $version . '/talks/' . $this->ID . '?verbose=yes';
+        $item['website_uri'] = $this->getWebsiteUrl($request->getConfigValue('website_url'));
+        $item['starred_uri'] = $base . '/' . $version . '/talks/' . $this->ID . '/starred';
+        $item['tracks_uri'] = $base . '/' . $version . '/talks/' . $this->ID . '/tracks';
+        $item['comments_uri'] = $base . '/' . $version . '/talks/' . $this->ID . '/comments';
         $item['verbose_comments_uri'] = $base . '/' . $version . '/talks/' . $this->ID
                                         . '/comments?verbose=yes';
-        $item['event_uri']            = $base . '/' . $version . '/events/' . $this->event_id;
-        $item['speakers_uri']         = $base . '/' . $version . '/talks/' . $this->ID . '/speakers';
+        $item['event_uri'] = $base . '/' . $version . '/events/' . $this->event_id;
+        $item['speakers_uri'] = $base . '/' . $version . '/talks/' . $this->ID . '/speakers';
 
         return $item;
     }

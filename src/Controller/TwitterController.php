@@ -25,8 +25,8 @@ class TwitterController extends BaseApiController
     public function getRequestToken(Request $request, PDO $db)
     {
         // only trusted clients can change account details
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId = $request->getParameter('client_id');
+        $clientSecret = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
 
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
@@ -35,7 +35,7 @@ class TwitterController extends BaseApiController
 
         $stack = HandlerStack::create();
         $oauth = new Oauth1([
-            'consumer_key'    => $this->config['twitter']['consumer_key'],
+            'consumer_key' => $this->config['twitter']['consumer_key'],
             'consumer_secret' => $this->config['twitter']['consumer_secret'],
         ]);
         $stack->push($oauth);
@@ -57,7 +57,7 @@ class TwitterController extends BaseApiController
 
         $requestTokenMapper = new TwitterRequestTokenMapper($db);
         // $tokens is instance of TwitterRequestTokenModelCollection
-        $tokens      = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
+        $tokens = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
         $output_list = $tokens->getOutputView($request);
         $request->getView()->setHeader('Location', $output_list['twitter_request_tokens'][0]['uri']);
         $request->getView()->setResponseCode(Http::CREATED);
@@ -78,8 +78,8 @@ class TwitterController extends BaseApiController
      */
     public function logUserIn(Request $request, PDO $db)
     {
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId = $request->getParameter('client_id');
+        $clientSecret = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
 
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
@@ -98,9 +98,9 @@ class TwitterController extends BaseApiController
         // exchange request token for access token
         $stack = HandlerStack::create();
         $oauth = new Oauth1([
-            'consumer_key'    => $this->config['twitter']['consumer_key'],
+            'consumer_key' => $this->config['twitter']['consumer_key'],
             'consumer_secret' => $this->config['twitter']['consumer_secret'],
-            'token'           => $request_token,
+            'token' => $request_token,
         ]);
         $stack->push($oauth);
         $client = new Client([
@@ -127,10 +127,10 @@ class TwitterController extends BaseApiController
             // try to create the user.
             $stack1 = HandlerStack::create();
             $oauth1 = new Oauth1([
-                'consumer_key'    => $this->config['twitter']['consumer_key'],
+                'consumer_key' => $this->config['twitter']['consumer_key'],
                 'consumer_secret' => $this->config['twitter']['consumer_secret'],
-                'token'           => $data['oauth_token'],
-                'token_secret'    => $data['oauth_token_secret'],
+                'token' => $data['oauth_token'],
+                'token_secret' => $data['oauth_token_secret'],
             ]);
             $stack1->push($oauth1);
             $client1 = new Client([

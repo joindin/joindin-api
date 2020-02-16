@@ -15,9 +15,9 @@ final class EventHostMapperTest extends TestCase
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
             ->with([
-                ':host_id'  => 12,
+                ':host_id' => 12,
                 ':event_id' => 10,
-                ':type'     => 'event'
+                ':type' => 'event'
             ])
             ->willReturn(true);
         $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
@@ -39,9 +39,9 @@ final class EventHostMapperTest extends TestCase
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
             ->with([
-                ':host_id'  => 12,
+                ':host_id' => 12,
                 ':event_id' => 10,
-                ':type'     => 'event'
+                ':type' => 'event'
             ])
             ->willReturn(false);
         $pdo = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
@@ -105,10 +105,10 @@ final class EventHostMapperTest extends TestCase
             ->method('prepare')
             ->with('SELECT count(*) AS count FROM (select a.uid as user_id, u.full_name as host_name from user_admin a inner join user u on u.ID = a.uid where rid = :event_id and rtype="event" and (rcode!="pending" OR rcode is null) order by host_name  ) as counter')
             ->willReturn($stmt2);
-        $request                       = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->base                 = 'test';
-        $request->version              = '1';
-        $request->path_info            = '2';
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->base = 'test';
+        $request->version = '1';
+        $request->path_info = '2';
         $request->paginationParameters = ['resultsperpage' => 10, 'start' => 0];
 
         $mapper = new EventHostMapper($pdo, $request);
@@ -117,12 +117,12 @@ final class EventHostMapperTest extends TestCase
             'hosts' => [
                 [
                     'host_name' => 'Karl Napp',
-                    'host_uri'  => 'test/1/users/8',
+                    'host_uri' => 'test/1/users/8',
                 ]
             ],
-            'meta'  => [
-                'count'     => 1,
-                'total'     => null,
+            'meta' => [
+                'count' => 1,
+                'total' => null,
                 'this_page' => 'test2?resultsperpage=10&start=0'
             ]
         ], $mapper->getHostsByEventId(12, 10, 0));
@@ -133,9 +133,9 @@ final class EventHostMapperTest extends TestCase
         $stmt1 = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt1->method('execute')
             ->with([
-                ':user_id'  => 12,
+                ':user_id' => 12,
                 ':event_id' => 14,
-                ':type'     => 'event',
+                ':type' => 'event',
             ])
             ->willReturn(true);
 

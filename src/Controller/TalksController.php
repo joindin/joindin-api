@@ -46,7 +46,7 @@ class TalksController extends BaseTalkController
 
         $verbose = $this->getVerbosity($request);
 
-        $talk       = $this->getTalkById($request, $db, $talk_id, $verbose);
+        $talk = $this->getTalkById($request, $db, $talk_id, $verbose);
         $collection = new TalkModelCollection([$talk], 1);
 
         return $collection->getOutputView($request, $verbose);
@@ -59,7 +59,7 @@ class TalksController extends BaseTalkController
         $verbose = $this->getVerbosity($this->request);
 
         // pagination settings
-        $start          = $this->getStart($this->request);
+        $start = $this->getStart($this->request);
         $resultsperpage = $this->getResultsPerPage($this->request);
 
         /** @var TalkCommentMapper $comment_mapper */
@@ -74,7 +74,7 @@ class TalksController extends BaseTalkController
         $talk_id = $this->getItemId($request);
 
         /** @var TalkMapper $mapper */
-        $mapper  = $this->getMapper('talk');
+        $mapper = $this->getMapper('talk');
 
         return $mapper->getUserStarred($talk_id, $this->request->user_id);
     }
@@ -95,12 +95,12 @@ class TalksController extends BaseTalkController
 
         $verbose = $this->getVerbosity($this->request);
 
-        $start          = $this->getStart($this->request);
+        $start = $this->getStart($this->request);
         $resultsperpage = $this->getResultsPerPage($this->request);
 
         /** @var TalkMapper $mapper */
         $mapper = $this->getMapper('talk');
-        $talks  = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
+        $talks = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
 
         return $talks->getOutputView($this->request, $verbose);
     }
@@ -131,19 +131,19 @@ class TalksController extends BaseTalkController
                     $private = ($request->getParameter('private') ? 1 : 0);
 
                     // Get the API key reference to save against the comment
-                    $oauth_model   = $request->getOauthModel($db);
+                    $oauth_model = $request->getOauthModel($db);
                     $consumer_name = $oauth_model->getConsumerName($request->getAccessToken());
 
-                    $talk_mapper    = $this->getTalkMapper($db, $request);
+                    $talk_mapper = $this->getTalkMapper($db, $request);
                     /** @var TalkCommentMapper $comment_mapper */
                     $comment_mapper = $this->getMapper('talkcomment', $db, $request);
 
                     $data['user_id'] = $request->user_id;
                     $data['talk_id'] = $talk_id;
                     $data['comment'] = $comment;
-                    $data['rating']  = $rating;
+                    $data['rating'] = $rating;
                     $data['private'] = $private;
-                    $data['source']  = $consumer_name;
+                    $data['source'] = $consumer_name;
 
                     try {
                         $isValid = $this->spamCheckService->isCommentAcceptable(
@@ -173,8 +173,8 @@ class TalksController extends BaseTalkController
                     }
 
                     if ($new_id) {
-                        $comment    = $comment_mapper->getCommentById($new_id);
-                        $speakers   = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
+                        $comment = $comment_mapper->getCommentById($new_id);
+                        $speakers = $talk_mapper->getSpeakerEmailsByTalkId($talk_id);
                         $recipients = [];
 
                         foreach ($speakers as $person) {
@@ -221,7 +221,7 @@ class TalksController extends BaseTalkController
     {
         $this->checkLoggedIn($request);
 
-        $talk_id     = $this->getItemId($request);
+        $talk_id = $this->getItemId($request);
         $talk_mapper = $this->getTalkMapper($db, $request);
         $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
 
@@ -234,7 +234,7 @@ class TalksController extends BaseTalkController
     {
         $this->checkLoggedIn($request);
 
-        $talk_id     = $this->getItemId($request);
+        $talk_id = $this->getItemId($request);
         $talk_mapper = $this->getTalkMapper($db, $request);
 
         $talk = $talk_mapper->getTalkById($talk_id);
@@ -272,10 +272,10 @@ class TalksController extends BaseTalkController
         }
 
         $talk_mapper = new TalkMapper($db, $request);
-        $talk        = $this->getTalkById($request, $db);
-        $talk_id     = $talk->ID;
+        $talk = $this->getTalkById($request, $db);
+        $talk_id = $talk->ID;
 
-        $is_admin   = $talk_mapper->thisUserHasAdminOn($talk_id);
+        $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
         $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
 
         if (!($is_admin || $is_speaker)) {
@@ -283,7 +283,7 @@ class TalksController extends BaseTalkController
         }
 
         $track_uri = $request->getParameter("track_uri");
-        $pattern   = '@/' . $request->version . '/tracks/([\d]+)$@';
+        $pattern = '@/' . $request->version . '/tracks/([\d]+)$@';
 
         if (!preg_match($pattern, $track_uri, $matches)) {
             throw new Exception('Invalid track_uri', Http::BAD_REQUEST);
@@ -334,10 +334,10 @@ class TalksController extends BaseTalkController
         $track_id = $request->url_elements[5];
 
         $talk_mapper = new TalkMapper($db, $request);
-        $talk        = $this->getTalkById($request, $db);
-        $talk_id     = $talk->ID;
+        $talk = $this->getTalkById($request, $db);
+        $talk_id = $talk->ID;
 
-        $is_admin   = $talk_mapper->thisUserHasAdminOn($talk_id);
+        $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
         $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
 
         if (!($is_admin || $is_speaker)) {
@@ -392,7 +392,7 @@ class TalksController extends BaseTalkController
         }
 
         $event_mapper = new EventMapper($db, $request);
-        $talk_mapper  = new TalkMapper($db, $request);
+        $talk_mapper = new TalkMapper($db, $request);
 
         $is_admin = $event_mapper->thisUserHasAdminOn($event_id);
 
@@ -401,7 +401,7 @@ class TalksController extends BaseTalkController
         }
 
         // retrieve the talk data from the request
-        $talk             = $this->getTalkDataFromRequest($db, $request, $event_id);
+        $talk = $this->getTalkDataFromRequest($db, $request, $event_id);
         $talk['event_id'] = $event_id;
 
         // create the talk
@@ -422,7 +422,7 @@ class TalksController extends BaseTalkController
         $request->getView()->setResponseCode(Http::CREATED);
         $request->getView()->setHeader('Location', $uri);
 
-        $new_talk   = $this->getTalkById($request, $db, $new_id);
+        $new_talk = $this->getTalkById($request, $db, $new_id);
         $collection = new TalkModelCollection([$new_talk], 1);
 
         return $collection->getOutputView($request);
@@ -449,7 +449,7 @@ class TalksController extends BaseTalkController
 
         $talk = $this->getTalkById($request, $db);
 
-        $is_admin   = $talk_mapper->thisUserHasAdminOn($talk_id);
+        $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
         $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
 
         if (!($is_admin || $is_speaker)) {
@@ -484,7 +484,7 @@ class TalksController extends BaseTalkController
     {
         // get the event so we can get the timezone info & it
         $event_mapper = new EventMapper($db, $request);
-        $list         = $event_mapper->getEventById($event_id, true);
+        $list = $event_mapper->getEventById($event_id, true);
 
         if (count($list['events']) == 0) {
             throw new Exception('Event not found', Http::NOT_FOUND);
@@ -518,7 +518,7 @@ class TalksController extends BaseTalkController
         );
 
         $talk_type_mapper = new TalkTypeMapper($db, $request);
-        $talk_types       = $talk_type_mapper->getTalkTypesLookupList();
+        $talk_types = $talk_type_mapper->getTalkTypesLookupList();
 
         if (!array_key_exists($talk['type'], $talk_types)) {
             throw new Exception("The type '{$talk['type']}' is unknown", Http::BAD_REQUEST);
@@ -534,11 +534,11 @@ class TalksController extends BaseTalkController
         if (empty($start_date)) {
             throw new Exception("Please give the date and time of the talk", Http::BAD_REQUEST);
         }
-        $tz           = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
+        $tz = new DateTimeZone($event['tz_continent'] . '/' . $event['tz_place']);
         $talk['date'] = (new DateTime($start_date, $tz))->format('U');
 
         $event_start_date = (new DateTime($event['start_date']))->format('U');
-        $event_end_date   = (new DateTime($event['end_date']))->add(new DateInterval('P1D'))->format('U');
+        $event_end_date = (new DateTime($event['end_date']))->add(new DateInterval('P1D'))->format('U');
 
         if ($talk['date'] < $event_start_date || $talk['date'] >= $event_end_date) {
             throw new Exception("The talk must be held between the start and end date of the event", Http::BAD_REQUEST);
@@ -591,7 +591,7 @@ class TalksController extends BaseTalkController
     public function getSpeakersForTalk(Request $request, PDO $db)
     {
         $talk_id = $this->getItemId($request);
-        $talk    = $this->getTalkById($request, $db, $talk_id);
+        $talk = $this->getTalkById($request, $db, $talk_id);
 
         return $talk->speakers;
     }
@@ -600,17 +600,17 @@ class TalksController extends BaseTalkController
     {
         $this->checkLoggedIn($request);
 
-        $talk        = $this->getTalkById($request, $db);
-        $talk_id     = $talk->ID;
+        $talk = $this->getTalkById($request, $db);
+        $talk_id = $talk->ID;
         $talk_mapper = $this->getTalkMapper($db, $request);
 
-        $event_id     = $talk->event_id;
+        $event_id = $talk->event_id;
         $event_mapper = $this->getEventMapper($db, $request);
-        $event        = $event_mapper->getEventById($event_id);
+        $event = $event_mapper->getEventById($event_id);
 
-        $user_id     = $request->user_id;
+        $user_id = $request->user_id;
         $user_mapper = $this->getUserMapper($db, $request);
-        $user        = $user_mapper->getUserById($user_id)['users'][0];
+        $user = $user_mapper->getUserById($user_id)['users'][0];
 
         $data = $this->getLinkUserDataFromRequest($request);
 
@@ -639,7 +639,7 @@ class TalksController extends BaseTalkController
         $speaker_name = $user_mapper->getUserById($speaker_id)['users'][0]['full_name'];
 
         $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
-        $claim_exists              = $pending_talk_claim_mapper->claimExists($talk_id, $speaker_id, $claim['ID']);
+        $claim_exists = $pending_talk_claim_mapper->claimExists($talk_id, $speaker_id, $claim['ID']);
 
         if ($claim_exists === false) {
             //This is a new claim
@@ -647,7 +647,7 @@ class TalksController extends BaseTalkController
             if ($data['username'] === $user['username']) {
                 $pending_talk_claim_mapper->claimTalkAsSpeaker($talk_id, $user_id, $claim['ID']);
                 //We need to send an email to the host asking for confirmation
-                $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
+                $recipients = $event_mapper->getHostsEmailAddresses($event_id);
                 $emailService = new TalkClaimEmailService($this->config, $recipients, $event, $talk);
 
                 if (!defined('UNIT_TEST')) {
@@ -656,8 +656,8 @@ class TalksController extends BaseTalkController
             } elseif ($talk_mapper->thisUserHasAdminOn($talk_id)) {
                 $pending_talk_claim_mapper->assignTalkAsHost($talk_id, $speaker_id, $claim['ID'], $user_id);
                 //We need to send an email to the speaker asking for confirmation
-                $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
-                $username     = $data['username'];
+                $recipients = [$user_mapper->getEmailByUserId($speaker_id)];
+                $username = $data['username'];
                 $emailService = new TalkAssignEmailService($this->config, $recipients, $event, $talk, $username);
 
                 if (!defined('UNIT_TEST')) {
@@ -669,7 +669,7 @@ class TalksController extends BaseTalkController
         } elseif ($claim_exists === PendingTalkClaimMapper::SPEAKER_CLAIM) {
             //The host needs to approve
             if ($talk_mapper->thisUserHasAdminOn($talk_id)) {
-                $method     = $this->getRequestParameter($request, 'action', 'approve');
+                $method = $this->getRequestParameter($request, 'action', 'approve');
                 $recipients = [$user_mapper->getEmailByUserId($speaker_id)];
 
                 $success = $pending_talk_claim_mapper->approveClaimAsHost($talk_id, $speaker_id, $claim['ID'])
@@ -720,7 +720,7 @@ class TalksController extends BaseTalkController
     {
         return [
             'display_name' => trim($request->getParameter('display_name', '')),
-            'username'     => trim($request->getParameter('username', '')),
+            'username' => trim($request->getParameter('username', '')),
         ];
     }
 
@@ -741,11 +741,11 @@ class TalksController extends BaseTalkController
     public function removeApprovedSpeakerFromTalk(Request $request, PDO $db)
     {
         $this->checkLoggedIn($request);
-        $talk_id    = $this->getItemId($request);
+        $talk_id = $this->getItemId($request);
         $speaker_id = $request->url_elements[5];
 
         $talk_mapper = new TalkMapper($db, $request);
-        $talk        = $this->getTalkById($request, $db, $talk_id);
+        $talk = $this->getTalkById($request, $db, $talk_id);
 
         $speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $speaker_id);
 
@@ -753,7 +753,7 @@ class TalksController extends BaseTalkController
             throw new Exception("Provided user is not a speaker on this talk", Http::NOT_FOUND);
         }
 
-        $is_admin   = $talk_mapper->thisUserHasAdminOn($talk_id);
+        $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
         $is_speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
 
         if (!($is_admin || $is_speaker)) {
@@ -778,13 +778,13 @@ class TalksController extends BaseTalkController
     public function removeSpeakerForTalk(Request $request, PDO $db)
     {
         $this->checkLoggedIn($request);
-        $talk        = $this->getTalkById($request, $db);
+        $talk = $this->getTalkById($request, $db);
         $talk_mapper = $this->getTalkMapper($db, $request);
-        $talk_id     = $talk->ID;
+        $talk_id = $talk->ID;
 
-        $event_id     = $talk->event_id;
+        $event_id = $talk->event_id;
         $event_mapper = $this->getEventMapper($db, $request);
-        $event        = $event_mapper->getEventById($event_id);
+        $event = $event_mapper->getEventById($event_id);
 
         $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
 
@@ -795,7 +795,7 @@ class TalksController extends BaseTalkController
         $data = $this->getLinkUserDataFromRequest($request);
 
         $user_mapper = $this->getUserMapper($db, $request);
-        $speaker_id  = $user_mapper->getUserIdFromUsername($data['username']);
+        $speaker_id = $user_mapper->getUserIdFromUsername($data['username']);
 
         if (!$speaker_id) {
             throw new Exception("Specified user not found", Http::NOT_FOUND);
@@ -816,12 +816,12 @@ class TalksController extends BaseTalkController
         }
 
         $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
-        $claim_exists              = $pending_talk_claim_mapper->claimExists($talk_id, $speaker_id, $claim['ID']);
+        $claim_exists = $pending_talk_claim_mapper->claimExists($talk_id, $speaker_id, $claim['ID']);
 
         if ($claim_exists !== PendingTalkClaimMapper::SPEAKER_CLAIM) {
             throw new Exception("There was a problem with the claim", Http::INTERNAL_SERVER_ERROR);
         }
-        $method     = $this->getRequestParameter($request, 'action', 'approve');
+        $method = $this->getRequestParameter($request, 'action', 'approve');
         $recipients = [$user_mapper->getEmailByUserId($speaker_id)];
 
         $success = $pending_talk_claim_mapper->rejectClaimAsHost($talk_id, $speaker_id, $claim['ID']);

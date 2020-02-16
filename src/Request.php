@@ -161,9 +161,9 @@ class Request
             $header = new Header('X-Forwarded-For', $_SERVER['HTTP_X_FORWARDED_FOR'], ',');
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
-            $ipAddress    = count($elementArray) ? $elementArray[0][0] : null;
+            $ipAddress = count($elementArray) ? $elementArray[0][0] : null;
         }
-        $this->clientIP        = $ipAddress;
+        $this->clientIP = $ipAddress;
         $this->clientUserAgent = $userAgent;
     }
 
@@ -364,7 +364,7 @@ class Request
                 throw new InvalidArgumentException('Unknown Authorization Header Received', Http::BAD_REQUEST);
             }
             $oauth_model = $this->getOauthModel($db);
-            $user_id     = $oauth_model->verifyAccessToken($oauth_pieces[1]);
+            $user_id = $oauth_model->verifyAccessToken($oauth_pieces[1]);
             $this->setUserId($user_id);
             $this->setAccessToken($oauth_pieces[1]);
 
@@ -574,7 +574,7 @@ class Request
      */
     public function setPathInfo($pathInfo)
     {
-        $this->path_info    = $pathInfo;
+        $this->path_info = $pathInfo;
         $this->url_elements = explode('/', $pathInfo);
 
         return $this;
