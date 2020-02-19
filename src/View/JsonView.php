@@ -10,6 +10,7 @@ class JsonView extends ApiView
     public function render($content)
     {
         $this->setHeader('Content-Type', 'application/json; charset=utf8');
+        $this->setHeader('Access-Control-Allow-Origin', '*');
 
         return parent::render($content);
     }
