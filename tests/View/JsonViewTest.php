@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class JsonViewTest extends TestCase
 {
+    use \phpmock\phpunit\PHPMock;
+
     /**
      * DataProvider for testBuildOutput
      *
@@ -45,5 +47,23 @@ final class JsonViewTest extends TestCase
     {
         $view = new JsonView();
         $this->assertEquals($expected, $view->buildOutput($input));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testCorsHeaderIsSet()
+    {
+        $header = $this->getFunctionMock('Joindin\Api\View', "header");
+        $header->expects(self::exactly(2))->withConsecutive(
+            ['Content-Type: application/json; charset=utf8'],
+            ['Access-Control-Allow-Origin: *']
+        );
+
+        $view = new JsonView();
+
+        self::expectOutputString('"test"');
+
+        $view->render('test');
     }
 }
