@@ -217,6 +217,16 @@ If successful, a 204 Accepted status will be returned along with a Location head
 
 Note that the list of speakers must be complete. Any speakers attached to the talk that are not in the `speakers` array will be removed from the talk.
 
+## Finding a Talk
+
+To find a talk, you can send a GET reqauest to the `talks`-URL and append the URL-encoded talk-title (or a part of it) as value to the `title`-parameter. 
+
+Curl example:
+
+<pre class="embedcurl">curl {{ site.apiurl }}/v2.1/talks?title=joind.in</pre>
+
+This will return a list of all talks that have `joind.in` somewhere in the talk title. 
+
 ## Adding a Talk to a Track
 
 To add a track to a talk, the user needs to be authenticated and be either a site admin, a host of the event or an approved speaker of the talk. You should send a POST request to the URL in the `tracks_uri` field of the event, with the body containing the `track_uri` field. The `track_uri` must be attached to the same event as the talk.
