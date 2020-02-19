@@ -51,8 +51,10 @@ final class JsonViewTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
+     * @covers \Joindin\Api\View\JsonPView::render
      */
-    public function testCorsHeaderIsSet()
+    public function testCorsHeaderIsSet(): void
     {
         $header = $this->getFunctionMock('Joindin\Api\View', "header");
         $header->expects(self::exactly(2))->withConsecutive(
