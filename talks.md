@@ -219,7 +219,7 @@ Note that the list of speakers must be complete. Any speakers attached to the ta
 
 ## Finding a Talk
 
-To find a talk, you can send a GET reqauest to the `talks`-URL and append the URL-encoded talk-title (or a part of it) as value to the `title`-parameter. 
+To find a talk, you can send a GET request to the `talks`-URL and append the URL-encoded talk-title (or a part of it) as value to the `title`-parameter. 
 
 Curl example:
 
