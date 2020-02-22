@@ -150,7 +150,7 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
-          extension-csv: "intl, json, pdo, xdebug"
+          extensions: intl, json, pdo, xdebug
           coverage: "xdebug"
 
       - name: "Cache dependencies installed with composer"
