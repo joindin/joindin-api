@@ -354,7 +354,7 @@ class UsersController extends BaseApiController
             // does anyone else have this username?
             $existingUser = $userMapper->getUserByUsername($user['username']);
 
-            if ($existingUser['users']) {
+            if (is_array($existingUser) && array_key_exists('users', $existingUser)) {
                 // yes but is that our existing user being found?
                 $oldUser = $userMapper->getUserById($userId);
 
