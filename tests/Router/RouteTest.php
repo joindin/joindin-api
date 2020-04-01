@@ -197,7 +197,7 @@ final class RouteTest extends TestCase
 
         $request->expects($this->any())
             ->method('getUrlElement')
-            ->with($this->isType('integer'), $this->any())
+            ->with($this->isType('integer'), true)
             ->willReturn($urlElement);
 
         return $request;
