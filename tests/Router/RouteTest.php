@@ -169,11 +169,17 @@ final class RouteTest extends TestCase
             $this->assertInstanceOf($expectedException, $ex);
 
             if ($expectedExceptionCode !== false) {
-                $this->assertEquals($expectedExceptionCode, $ex->getCode());
-                
                 if ($expectedExceptionCode !== $ex->getCode()) {
-                    var_dump($action, $expectedException, $expectedExceptionCode, $ex);
+                    var_dump(
+                        $action, 
+                        $expectedException, 
+                        $expectedExceptionCode, 
+                        $ex->getCode(), 
+                        $ex->getMessage(),
+                        $ex->getTrace()
+                    );
                 }
+                $this->assertEquals($expectedExceptionCode, $ex->getCode());
             }
         }
     }
