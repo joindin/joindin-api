@@ -16,6 +16,7 @@ jobs:
       matrix:
         php-version:
           - 7.3
+          - 7.4
 
     steps:
       - name: "Checkout"
@@ -25,7 +26,7 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: intl, json, pdo
+          extensions: "gd, intl, json, mbstring, pdo"
 
       - name: "Cache dependencies installed with composer"
         uses: actions/cache@v1.0.0
@@ -53,6 +54,7 @@ jobs:
       matrix:
         php-version:
           - 7.3
+          - 7.4
 
     steps:
       - name: "Checkout"
@@ -62,7 +64,8 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: intl, json, pdo
+          pecl: true
+          extensions: "gd, intl, json, mbstring, pdo"
 
       - name: "Cache dependencies installed with composer"
         uses: actions/cache@v1
@@ -87,6 +90,7 @@ jobs:
       matrix:
         php-version:
           - 7.3
+          - 7.4
 
     steps:
       - name: "Checkout"
@@ -96,7 +100,7 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: intl, json, pdo, xdebug
+          extensions: "gd, intl, json, mbstring, pdo"
           coverage: "xdebug"
 
       - name: "Cache dependencies installed with composer"
