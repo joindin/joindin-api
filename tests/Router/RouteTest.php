@@ -161,15 +161,15 @@ final class RouteTest extends TestCase
         $route = new Route($controller, $action);
 
         try {
-            $this->assertEquals('val', $route->dispatch($request, $db, $container));
+            $route->dispatch($request, $db, $container);
         } catch (Exception $ex) {
-            var_dump($action, $expectedException, $expectedExceptionCode, $ex);
             if (!$expectedException) {
                 throw $ex;
             }
             $this->assertInstanceOf($expectedException, $ex);
 
             if ($expectedExceptionCode !== false) {
+                var_dump($action, $expectedException, $expectedExceptionCode, $ex);
                 $this->assertEquals($expectedExceptionCode, $ex->getCode());
             }
         }
