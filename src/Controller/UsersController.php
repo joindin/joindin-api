@@ -154,7 +154,7 @@ class UsersController extends BaseApiController
                 // does anyone else have this username?
                 $existingUser = $userMapper->getUserByUsername($user['username']);
 
-                if (is_array($existingUser) && array_key_exists('users', $existingUser)) {
+                if ($existingUser['users']) {
                     $errors[] = "That username is already in use. Choose another";
                 }
             }
@@ -181,7 +181,7 @@ class UsersController extends BaseApiController
                 // does anyone else have this email?
                 $existingUser = $userMapper->getUserByEmail($user['email']);
 
-                if (is_array($existingUser) && array_key_exists('users', $existingUser)) {
+                if ($existingUser['users']) {
                     $errors[] = "That email is already associated with another account";
                 }
             }
@@ -332,7 +332,7 @@ class UsersController extends BaseApiController
             // does anyone else have this email?
             $existingUser = $userMapper->getUserByEmail($user['email']);
 
-            if (is_array($existingUser) && array_key_exists('users', $existingUser)) {
+            if ($existingUser['users']) {
                 // yes but is that our existing user being found?
                 $oldUser = $userMapper->getUserById($userId);
 
@@ -354,7 +354,7 @@ class UsersController extends BaseApiController
             // does anyone else have this username?
             $existingUser = $userMapper->getUserByUsername($user['username']);
 
-            if (is_array($existingUser) && array_key_exists('users', $existingUser)) {
+            if ($existingUser['users']) {
                 // yes but is that our existing user being found?
                 $oldUser = $userMapper->getUserById($userId);
 

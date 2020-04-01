@@ -161,7 +161,7 @@ final class RouteTest extends TestCase
         $route = new Route($controller, $action);
 
         try {
-            $route->dispatch($request, $db, $container);
+            $this->assertEquals('val', $route->dispatch($request, $db, $container));
         } catch (Exception $ex) {
             if (!$expectedException) {
                 throw $ex;
@@ -187,7 +187,7 @@ final class RouteTest extends TestCase
 
         $request->expects($this->any())
             ->method('getUrlElement')
-            ->with($this->isType('integer'), $this->isType('string'))
+            ->with(1)
             ->willReturn($urlElement);
 
         return $request;

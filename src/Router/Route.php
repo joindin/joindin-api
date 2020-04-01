@@ -123,7 +123,7 @@ class Route
         $method    = $this->getAction();
 
         if (!$container->has($className)) {
-            throw new RuntimeException('Unknown controller ' . $request->getUrlElement(2), Http::BAD_REQUEST);
+            throw new RuntimeException('Unknown controller ' . $request->url_elements[2], Http::BAD_REQUEST);
         }
 
         if (!method_exists($controller = $container->get($className), $method)) {
