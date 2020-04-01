@@ -163,6 +163,7 @@ final class RouteTest extends TestCase
         try {
             $this->assertEquals('val', $route->dispatch($request, $db, $container));
         } catch (Exception $ex) {
+            var_dump($ex);
             if (!$expectedException) {
                 throw $ex;
             }
