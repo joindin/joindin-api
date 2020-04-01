@@ -171,10 +171,10 @@ final class RouteTest extends TestCase
             if ($expectedExceptionCode !== false) {
                 if ($expectedExceptionCode !== $ex->getCode()) {
                     var_dump(
-                        $action, 
-                        $expectedException, 
-                        $expectedExceptionCode, 
-                        $ex->getCode(), 
+                        $action,
+                        $expectedException,
+                        $expectedExceptionCode,
+                        $ex->getCode(),
                         $ex->getMessage(),
                         $ex->getTrace()
                     );
