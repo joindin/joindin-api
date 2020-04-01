@@ -188,7 +188,7 @@ final class RouteTest extends TestCase
 
         $request->expects($this->any())
             ->method('getUrlElement')
-            ->with(1)
+            ->with($this->any())
             ->willReturn($urlElement);
 
         return $request;
