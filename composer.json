@@ -11,7 +11,7 @@
   "homepage": "https://api.joind.in",
   "license": "BSD-3-Clause",
   "require": {
-    "php": "^7.2",
+    "php": "^7.3",
     "ext-curl": "*",
     "ext-filter": "*",
     "ext-gd": "*",
@@ -22,7 +22,6 @@
     "guzzlehttp/guzzle": "^6.3",
     "guzzlehttp/oauth-subscriber": "^0.3.0",
     "michelf/php-markdown": "^1.8",
-    "phpstan/phpstan-shim": "~0.11.19",
     "pimple/pimple": "^3.2",
     "psr/container": "^1.0.0",
     "swiftmailer/swiftmailer": "^6.0",
@@ -30,10 +29,13 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.16.0",
-    "jangregor/phpstan-prophecy": "~0.4.2",
+    "infection/infection": "^0.15.0",
+    "jangregor/phpstan-prophecy": "~0.6.1",
     "maglnet/composer-require-checker": "^2.0.0",
+    "php-mock/php-mock-phpunit": "^2.6",
     "phpstan/extension-installer": "^1.0.3",
-    "phpstan/phpstan-phpunit": "~0.11.2",
+    "phpstan/phpstan": "~0.12.9",
+    "phpstan/phpstan-phpunit": "~0.12.6",
     "phpunit/phpunit": "^8.3.4",
     "roave/security-advisories": "dev-master",
     "sensiolabs/security-checker": "^6.0"
@@ -41,7 +43,7 @@
   "config": {
     "optimize-autoloader": true,
     "platform": {
-      "php": "7.2.23"
+      "php": "7.3.11"
     },
     "preferred-install": "dist",
     "sort-packages": true
@@ -70,9 +72,14 @@
       "phpunit --coverage-clover=build/logs/clover.xml --coverage-text --prepend=build/xdebug-filter.php"
     ],
     "cs": "php-cs-fixer fix --config=.php_cs --diff --diff-format=udiff --verbose",
+    "infection": "infection --ignore-msi-with-no-mutations --min-covered-msi=71 --min-msi=19",
     "require-checker": "composer-require-checker --config-file=composer-require-checker.json",
     "security": "security-checker security:check composer.lock",
     "stan": "phpstan analyze --configuration=phpstan.neon",
+    "stan-baseline": [
+      "echo '' > phpstan-baseline.neon",
+      "phpstan analyze --configuration phpstan.neon --error-format baselineNeon > phpstan-baseline.neon  || true"
+    ],
     "test": "phpunit"
   },
   "support": {

@@ -37,6 +37,7 @@ final class TalksControllerTest extends TalkBase
             'website_url' => 'http://example.com',
         ];
     }
+
     /**
      * Ensures that if the setSpeakerForTalk method is called and no user_id is set,
      * an exception is thrown
@@ -90,9 +91,8 @@ final class TalksControllerTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-
         $this->talk_mapper = $this->getMockBuilder(TalkMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $this->talk_mapper
@@ -145,7 +145,6 @@ final class TalksControllerTest extends TalkBase
 
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
-
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -336,7 +335,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -449,7 +448,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -518,7 +517,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -585,7 +584,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -649,7 +648,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -663,7 +662,6 @@ final class TalksControllerTest extends TalkBase
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
-
 
     /**
      * Ensures that if the setSpeakerForTalk method is called by the host who assigned the talk
@@ -710,13 +708,12 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
             ->willReturn(PendingTalkClaimMapper::HOST_ASSIGN);
-
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
@@ -770,7 +767,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -781,8 +778,6 @@ final class TalksControllerTest extends TalkBase
             ->method('approveAssignmentAsSpeaker')
             ->willReturn(true);
 
-
-
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
@@ -790,7 +785,6 @@ final class TalksControllerTest extends TalkBase
 
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
     }
-
 
     /**
      * Ensures that if the setSpeakerForTalk method is called by a host
@@ -845,7 +839,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -856,7 +850,6 @@ final class TalksControllerTest extends TalkBase
             ->method('approveClaimAsHost')
             ->willReturn(true);
 
-
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
@@ -864,6 +857,7 @@ final class TalksControllerTest extends TalkBase
 
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
     }
+
     /**
      * @dataProvider getComments
      */
@@ -890,8 +884,8 @@ final class TalksControllerTest extends TalkBase
 
         $talks_comment_email =
             $this->getMockBuilder(TalkCommentEmailService::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+                ->disableOriginalConstructor()
+                ->getMock();
 
         $talks_comment_email->method('sendEmail');
 
@@ -1108,7 +1102,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setTalkMapper($this->talk_mapper);
 
         $user_mapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $user_mapper
@@ -1118,7 +1112,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setUserMapper($user_mapper);
 
         $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
         $pending_talk_claim_mapper
             ->expects($this->once())
@@ -1128,7 +1122,6 @@ final class TalksControllerTest extends TalkBase
             ->expects($this->once())
             ->method('rejectClaimAsHost')
             ->willReturn(true);
-
 
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
@@ -1229,7 +1222,7 @@ final class TalksControllerTest extends TalkBase
                 'total' => 0,
                 'this_page' => 'http://api.dev.joind.in/v2.1' .
                     '/talks/79/comments?resultsperpage=20',
-                ]
+            ]
         ];
 
         $talkComment = $this->createTalkCommentMapper($db, $request);
@@ -1316,7 +1309,6 @@ final class TalksControllerTest extends TalkBase
         $talkMapper = $this->createTalkMapper($db, $request, 0);
         $talkMapper->method('getTalksByTitleSearch')
             ->willReturn($collection);
-
 
         $talks_controller = new TalksController(new NullSpamCheckService());
 

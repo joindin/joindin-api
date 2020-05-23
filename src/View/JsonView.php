@@ -10,6 +10,7 @@ class JsonView extends ApiView
     public function render($content)
     {
         $this->setHeader('Content-Type', 'application/json; charset=utf8');
+        $this->setHeader('Access-Control-Allow-Origin', '*');
 
         return parent::render($content);
     }
@@ -41,6 +42,7 @@ class JsonView extends ApiView
             return $this->scalarNumericCheck('', $data);
         }
         $output = [];
+
         foreach ($data as $key => $value) {
             // recurse as needed
             if (is_array($value)) {
@@ -56,7 +58,7 @@ class JsonView extends ApiView
     protected function scalarNumericCheck($key, $value)
     {
         if (is_numeric($value) && ! in_array($key, $this->string_fields) && $value < PHP_INT_MAX) {
-            return (float)$value;
+            return (float) $value;
         }
 
         return $value;

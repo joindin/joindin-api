@@ -21,7 +21,6 @@ use Teapot\StatusCode\Http;
 
 final class UsersControllerTest extends TestCase
 {
-
     /**
      * Ensures that if the deleteUser method is called and no user_id is set,
      * an exception is thrown
@@ -60,11 +59,10 @@ final class UsersControllerTest extends TestCase
         $request->user_id = 2;
         $usersController = new UsersController();
 
-
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -97,7 +95,7 @@ final class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -116,7 +114,6 @@ final class UsersControllerTest extends TestCase
         $usersController->deleteUser($request, $db);
     }
 
-
     /**
      * Ensures that if the deleteUser method is called and user_id is an
      * admin, but the delete fails, then an exception is thrown
@@ -133,7 +130,7 @@ final class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -186,7 +183,7 @@ final class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -212,7 +209,7 @@ final class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -222,7 +219,7 @@ final class UsersControllerTest extends TestCase
             ->willReturn(true);
 
         $talkCommentMapper = $this->getMockBuilder(TalkCommentMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $talkCommentMapper
@@ -357,7 +354,6 @@ final class UsersControllerTest extends TestCase
         $usersController->setTrusted($request, $db);
     }
 
-
     /**
      * Ensures that if the setTrsuted method is called and user_id is a,
      * non-admin, an exception is thrown
@@ -376,7 +372,7 @@ final class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -387,8 +383,6 @@ final class UsersControllerTest extends TestCase
         $usersController->setUserMapper($userMapper);
         $usersController->setTrusted($request, $db);
     }
-
-
 
     /**
      * Ensures that if the setTrusted method is called by an admin,
@@ -412,7 +406,7 @@ final class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -446,7 +440,7 @@ final class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper
@@ -462,7 +456,6 @@ final class UsersControllerTest extends TestCase
         $usersController->setUserMapper($userMapper);
         $usersController->setTrusted($request, $db);
     }
-
 
     /**
      * Ensures that if the setTrusted method is called by an admin,
@@ -496,7 +489,7 @@ final class UsersControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $userMapper = $this->getMockBuilder(UserMapper::class)
-            ->setConstructorArgs([$db,$request])
+            ->setConstructorArgs([$db, $request])
             ->getMock();
 
         $userMapper

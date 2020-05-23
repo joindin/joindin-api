@@ -12,10 +12,7 @@
  * php -f patchdb.php -t c:\wamp\path\to\joindin-api\  -d joindindatabasename -u mysqluser -p mysqlpassword -i
  *
  */
-
 $options = getopt("t:d:u:p:i::");
-
-
 
 // No options? Let's help out...
 if (!$options || count($options) == 0) {
@@ -48,47 +45,49 @@ HELPTEXT;
     exit;
 }
 
-
-
 // Some sanity checks:
 if (!array_key_exists('u', $options) || $options['u'] == "") {
     echo "Please provide a mysql user name";
+
     exit;
 }
+
 if (!array_key_exists('p', $options)) {
     $options['p'] = "";
 }
+
 if (!array_key_exists('t', $options) || $options['t'] == "") {
     echo "Please provide the directory that contains joind.in db updates";
+
     exit;
 }
+
 if (!array_key_exists('d', $options)) {
     $options['d'] = 'joindin';
 }
 
 if (!is_dir($options['t'])) {
     echo "The patch directory doesn't appear to exist";
+
     exit;
 }
 
-
 $options['t'] .= DIRECTORY_SEPARATOR . 'db';
-
 
 ///////////////////////////////////////////////
 // Test connecting to mysql
 ///////////////////////////////////////////////
 $hasMysql = @exec('mysql --version');
+
 if (!$hasMysql) {
     echo "Could not find mysql executable, sorry.";
+
     exit;
 }
-
 
 $baseMysqlCmd = "mysql -u{$options['u']} "
     . ($options['p'] ? "-p{$options['p']} " : "")
     . "{$options['d']}";
-
 
 ///////////////////////////////////////////////
 // Try getting the max patch_level so far
@@ -100,6 +99,7 @@ exec(
 );
 
 $maxPatchNum = 0;
+
 if ($res && array_key_exists(1, $res) && $res[1] > 0) {
     $maxPatchNum = $res[1];
 } elseif (is_array($res) && count($res) === 0) {
@@ -108,9 +108,9 @@ if ($res && array_key_exists(1, $res) && $res[1] > 0) {
 
 if ($maxPatchNum === false && !array_key_exists('i', $options)) {
     echo "It doesn't look like you've initialised your db.  Exiting now.";
+
     exit;
 }
-
 
 //////////////////////////////////////////////
 // Initialise db
@@ -118,15 +118,14 @@ if ($maxPatchNum === false && !array_key_exists('i', $options)) {
 if (array_key_exists('i', $options)) {
     if (!file_exists($options['t'] . DIRECTORY_SEPARATOR . 'init_db.sql')) {
         echo "Couldn't find the init_db.sql file to initialise db";
+
         exit;
     }
     
-
     echo "Initialising DB";
     exec($baseMysqlCmd . " < " . $options['t'] . DIRECTORY_SEPARATOR . 'init_db.sql');
     echo " ... done\n";
 }
-
 
 /////////////////////////////////////////////
 // Do some patching
@@ -136,16 +135,17 @@ if (array_key_exists('i', $options)) {
 // and get all the {123} numbers, so we can run them all
 // in order.
 $matchedNums = [];
+
 if ($dh = opendir($options['t'])) {
     while (($file = readdir($dh)) !== false) {
         preg_match("/patch([\d]+)\.sql/", $file, $matches);
+
         if ($matches && array_key_exists(1, $matches) && $matches[1] > $maxPatchNum) {
-            $matchedNums[] = (int)$matches[1];
+            $matchedNums[] = (int) $matches[1];
         }
     }
     closedir($dh);
 }
-
 
 // Now we've got them, run the patches
 sort($matchedNums);

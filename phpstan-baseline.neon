@@ -1,0 +1,2827 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#2 \\$str of function explode expects string, string\\|null given\\.$#"
+			count: 1
+			path: inc/nginx-helper.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function strlen expects string, string\\|null given\\.$#"
+			count: 1
+			path: inc/nginx-helper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\ApplicationsController\\:\\:getApplication\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Cannot call method getOutputView\\(\\) on Joindin\\\\Api\\\\Model\\\\ClientModelCollection\\|false\\.$#"
+			count: 4
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\ApplicationsController\\:\\:listApplications\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\ApplicationsController\\:\\:createApplication\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$clientId of method Joindin\\\\Api\\\\Model\\\\ClientMapper\\:\\:getClientByIdAndUser\\(\\) expects string, int given\\.$#"
+			count: 2
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\ApplicationsController\\:\\:editApplication\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\ApplicationsController\\:\\:deleteApplication\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Cannot call method getClients\\(\\) on Joindin\\\\Api\\\\Model\\\\ClientModelCollection\\|false\\.$#"
+			count: 1
+			path: src/Controller/ApplicationsController.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Controller\\\\BaseApiController\\:\\:\\$config has no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseApiController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseApiController\\:\\:getItemId\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseApiController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseApiController\\:\\:getVerbosity\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseApiController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseApiController\\:\\:getStart\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseApiController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseApiController\\:\\:getResultsPerPage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseApiController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseApiController\\:\\:getSort\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseApiController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseApiController\\:\\:getRequestParameter\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseApiController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseApiController\\:\\:getRequestParameter\\(\\) has parameter \\$default with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseApiController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseApiController\\:\\:getRequestParameter\\(\\) has parameter \\$parameter with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseApiController.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:\\$classMappings has no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:\\$classMaps has no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:checkLoggedIn\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:setTalkMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:getTalkMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:setEventMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:getEventMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:setUserMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:getUserMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:setDbAndRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:setMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:setMapper\\(\\) has parameter \\$object with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:setMapper\\(\\) has parameter \\$type with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/BaseTalkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\ContactController\\:\\:handle\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/ContactController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: src/Controller/ContactController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\DefaultController\\:\\:handle\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/DefaultController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EmailsController\\:\\:verifications\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Parameter \\#3 \\$token of class Joindin\\\\Api\\\\Service\\\\UserRegistrationEmailService constructor expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 3
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EmailsController\\:\\:usernameReminder\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Cannot access offset 'users' on array\\|false\\.$#"
+			count: 6
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EmailsController\\:\\:passwordReset\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$user_id of method Joindin\\\\Api\\\\Model\\\\UserMapper\\:\\:getEmailByUserId\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$user_id of method Joindin\\\\Api\\\\Model\\\\UserMapper\\:\\:generatePasswordResetTokenForUserId\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EmailsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventCommentsController\\:\\:getComments\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventCommentsController\\:\\:getReported\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventCommentsController\\:\\:createComment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Cannot access offset 'users' on array\\|false\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Joindin\\\\Api\\\\Request\\:\\:getParameter\\(\\) expects string, false given\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$token of method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:getConsumerName\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventCommentsController\\:\\:reportComment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Parameter \\#3 \\$comment of class Joindin\\\\Api\\\\Service\\\\EventCommentReportedEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Parameter \\#4 \\$event of class Joindin\\\\Api\\\\Service\\\\EventCommentReportedEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventCommentsController\\:\\:moderateReportedComment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventCommentsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventHostsController\\:\\:setEventHostMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventHostsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventHostsController\\:\\:getEventMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventHostsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventHostsController\\:\\:setEventMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventHostsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventHostsController\\:\\:getUserMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventHostsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventHostsController\\:\\:setUserMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventHostsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventImagesController\\:\\:listImages\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventImagesController\\:\\:createImage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Cannot access offset 'meta' on array\\|false\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$image of function imagecreatefromstring expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$im of function imagealphablending expects resource, resource\\|false given\\.$#"
+			count: 2
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$im of function imagesavealpha expects resource, resource\\|false given\\.$#"
+			count: 2
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$dst_im of function imagecopyresampled expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#2 \\$src_im of function imagecopyresampled expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$im of function imagejpeg expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$im of function imagegif expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Parameter \\#1 \\$im of function imagepng expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventImagesController\\:\\:deleteImage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventImagesController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventsController\\:\\:getAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Cannot call method getOutputView\\(\\) on Joindin\\\\Api\\\\Model\\\\TalkModelCollection\\|false\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Cannot access offset 'events' on array\\|false\\.$#"
+			count: 3
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventsController\\:\\:postAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function trim expects string, string\\|false given\\.$#"
+			count: 2
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Cannot access offset 'users' on array\\|false\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event_id of method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:addUserAsHost\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event_id of method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:setUserAttendance\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event_id of method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:setTags\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event_id of method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:getPendingEventById\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$recipients of class Joindin\\\\Api\\\\Service\\\\EventSubmissionEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#3 \\$event of class Joindin\\\\Api\\\\Service\\\\EventSubmissionEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventsController\\:\\:deleteAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventsController\\:\\:putAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Joindin\\\\Api\\\\Request\\:\\:getParameter\\(\\) expects string, false given\\.$#"
+			count: 6
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventsController\\:\\:pendingClaims\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#3 \\$reason of method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:reject\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventsController\\:\\:setEventMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventsController\\:\\:getEventMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventsController\\:\\:setPendingTalkClaimMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\EventsController\\:\\:getPendingTalkClaimMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/EventsController.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Controller\\\\FacebookController\\:\\:\\$oauthModel has no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/FacebookController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\LanguagesController\\:\\:getLanguage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/LanguagesController.php
+
+		-
+			message: "#^Cannot access offset 'languages' on array\\|false\\.$#"
+			count: 1
+			path: src/Controller/LanguagesController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\LanguagesController\\:\\:getAllLanguages\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/LanguagesController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkCommentsController\\:\\:getComments\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkCommentsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkCommentsController\\:\\:getReported\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkCommentsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkCommentsController\\:\\:reportComment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkCommentsController.php
+
+		-
+			message: "#^Parameter \\#3 \\$comment of class Joindin\\\\Api\\\\Service\\\\CommentReportedEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/TalkCommentsController.php
+
+		-
+			message: "#^Parameter \\#4 \\$event of class Joindin\\\\Api\\\\Service\\\\CommentReportedEmailService constructor expects array, array\\|false given\\.$#"
+			count: 1
+			path: src/Controller/TalkCommentsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkCommentsController\\:\\:moderateReportedComment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkCommentsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkCommentsController\\:\\:updateComment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkCommentsController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkLinkController\\:\\:getTalkLinks\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkLinkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkLinkController\\:\\:getTalkLink\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkLinkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkLinkController\\:\\:updateTalkLink\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkLinkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkLinkController\\:\\:removeTalkLink\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkLinkController.php
+
+		-
+			message: "#^Parameter \\#3 \\$link_id of method Joindin\\\\Api\\\\Controller\\\\TalkLinkController\\:\\:sucessfullyAltered\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: src/Controller/TalkLinkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkLinkController\\:\\:addTalkLink\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkLinkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkLinkController\\:\\:checkAdminOrSpeaker\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkLinkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkLinkController\\:\\:sucessfullyAltered\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkLinkController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkTypesController\\:\\:getAllTalkTypes\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkTypesController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalkTypesController\\:\\:getTalkType\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalkTypesController.php
+
+		-
+			message: "#^Cannot access offset 'talk_types' on array\\|false\\.$#"
+			count: 1
+			path: src/Controller/TalkTypesController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getTalkComments\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getTalkStarred\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getTalkByKeyWord\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$keyword of method Joindin\\\\Api\\\\Model\\\\TalkMapper\\:\\:getTalksByTitleSearch\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Cannot call method getOutputView\\(\\) on bool\\|Joindin\\\\Api\\\\Model\\\\TalkModelCollection\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:postAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$token of method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:getConsumerName\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$comment_id of method Joindin\\\\Api\\\\Model\\\\TalkCommentMapper\\:\\:getCommentById\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:removeStarFromTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 2
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:deleteTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:addTrackToTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Cannot access offset 0 on \\(array\\)\\|true\\.$#"
+			count: 4
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:removeTrackFromTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$talk_id of method Joindin\\\\Api\\\\Model\\\\TalkMapper\\:\\:addTalkLink\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#3 \\$talk_id of method Joindin\\\\Api\\\\Controller\\\\BaseTalkController\\:\\:getTalkById\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Cannot access offset 'events' on array\\|false\\.$#"
+			count: 2
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$key of function array_key_exists expects int\\|string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function trim expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getSpeakersForTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:setSpeakerForTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getLinkUserDataFromRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:setPendingTalkClaimMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getPendingTalkClaimMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:removeApprovedSpeakerFromTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getTalkCommentEmailService\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$comment with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$config with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$recipients with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$talk with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TalksController\\:\\:removeSpeakerForTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TalksController.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Controller\\\\TokenController\\:\\:\\$oauthModel has no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TokenController.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Controller\\\\TokenController\\:\\:\\$tokenMapper has no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TokenController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TokenController\\:\\:postAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TokenController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TokenController\\:\\:listTokensForUser\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TokenController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TokenController\\:\\:getToken\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TokenController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TokenController\\:\\:revokeToken\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TokenController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TokenController\\:\\:getTokenMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TokenController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TokenController\\:\\:setTokenMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TokenController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TracksController\\:\\:getAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TracksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TracksController\\:\\:editTrack\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TracksController.php
+
+		-
+			message: "#^Cannot access offset 0 on \\(array\\)\\|true\\.$#"
+			count: 4
+			path: src/Controller/TracksController.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Joindin\\\\Api\\\\Request\\:\\:getParameter\\(\\) expects string, null given\\.$#"
+			count: 1
+			path: src/Controller/TracksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TracksController\\:\\:deleteTrack\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TracksController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: src/Controller/TracksController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\TwitterController\\:\\:getRequestToken\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/TwitterController.php
+
+		-
+			message: "#^Cannot call method getOutputView\\(\\) on Joindin\\\\Api\\\\Model\\\\TwitterRequestTokenModelCollection\\|false\\.$#"
+			count: 1
+			path: src/Controller/TwitterController.php
+
+		-
+			message: "#^Parameter \\#2 \\$assoc of function json_decode expects bool, int given\\.$#"
+			count: 1
+			path: src/Controller/TwitterController.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:\\$userMapper has no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:\\$userRegistrationEmailService has no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:getAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Cannot call method getOutputView\\(\\) on Joindin\\\\Api\\\\Model\\\\TalkModelCollection\\|false\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Cannot access offset 'users' on array\\|false\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#1 \\$username of method Joindin\\\\Api\\\\Model\\\\UserMapper\\:\\:getUserByUsername\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#1 \\$keyword of method Joindin\\\\Api\\\\Model\\\\UserMapper\\:\\:getUserByKeyword\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:postAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) expects string, int given\\.$#"
+			count: 6
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#1 \\$token of method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:isAccessTokenPermittedPasswordGrant\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Joindin\\\\Api\\\\Request\\:\\:getParameter\\(\\) expects string, false given\\.$#"
+			count: 3
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:passwordReset\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Cannot call method deleteCommentsForUser\\(\\) on Joindin\\\\Api\\\\Model\\\\TalkCommentMapper\\|null\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:deleteUser\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:setTrusted\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method Joindin\\\\Api\\\\Request\\:\\:getParameter\\(\\) expects string, null given\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:setUserMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:getUserMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:setUserRegistrationEmailService\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:getUserRegistrationEmailService\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:getUserRegistrationEmailService\\(\\) has parameter \\$config with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:getUserRegistrationEmailService\\(\\) has parameter \\$recipient with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Controller\\\\UsersController\\:\\:getUserRegistrationEmailService\\(\\) has parameter \\$token with no typehint specified\\.$#"
+			count: 1
+			path: src/Controller/UsersController.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Header\\:\\:\\$values has no typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Header\\:\\:\\$header has no typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Header\\:\\:\\$glue has no typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:getName\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:setName\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:setName\\(\\) has parameter \\$name with no typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:setGlue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:setGlue\\(\\) has parameter \\$glue with no typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:getGlue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Argument of an invalid type array\\<int, string\\>\\|false supplied for foreach, only iterables are supported\\.$#"
+			count: 2
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:hasValue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:hasValue\\(\\) has parameter \\$searchValue with no typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:removeValue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:removeValue\\(\\) has parameter \\$searchValue with no typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:toArray\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:count\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:getIterator\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:buildEntityArray\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Header\\:\\:parseParams\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Header.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\ApiMapper\\:\\:\\$_db has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\ApiMapper\\:\\:\\$_request has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\ApiMapper\\:\\:getDefaultFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\ApiMapper\\:\\:getVerboseFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\ApiMapper\\:\\:getPaginationLinks\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\ApiMapper\\:\\:getPaginationLinks\\(\\) has parameter \\$total with no typehint specified\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\ApiMapper\\:\\:inflect\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\ApiMapper\\:\\:inflect\\(\\) has parameter \\$string with no typehint specified\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Cannot call method transliterate\\(\\) on Transliterator\\|null\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|false given\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, string\\|null given\\.$#"
+			count: 1
+			path: src/Model/ApiMapper.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\BaseModel\\:\\:\\$data has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/BaseModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function substr expects string, int\\|string given\\.$#"
+			count: 1
+			path: src/Model/BaseModel.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\BaseModelCollection\\:\\:\\$list has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/BaseModelCollection.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\BaseModelCollection\\:\\:\\$total has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/BaseModelCollection.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function base64_encode expects string, string\\|false given\\.$#"
+			count: 2
+			path: src/Model/ClientMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\ClientMapper\\:\\:deleteClient\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/ClientMapper.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\ClientModelCollection\\:\\:\\$total has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/ClientModelCollection.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\EventCommentMapper\\:\\:getDefaultFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/EventCommentMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\EventCommentMapper\\:\\:getVerboseFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/EventCommentMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\EventCommentMapper\\:\\:getBasicSQL\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/EventCommentMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\EventCommentMapper\\:\\:getBasicSQL\\(\\) has parameter \\$include_hidden with no typehint specified\\.$#"
+			count: 1
+			path: src/Model/EventCommentMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\EventCommentMapper\\:\\:save\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/EventCommentMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\EventCommentMapper\\:\\:userReportedComment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/EventCommentMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\EventCommentMapper\\:\\:moderateReportedComment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/EventCommentMapper.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\EventCommentReportModelCollection\\:\\:\\$total has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/EventCommentReportModelCollection.php
+
+		-
+			message: "#^Parameter \\#2 \\$start of method Joindin\\\\Api\\\\Model\\\\ApiMapper\\:\\:buildLimit\\(\\) expects int, int\\|null given\\.$#"
+			count: 1
+			path: src/Model/EventMapper.php
+
+		-
+			message: "#^Parameter \\#2 \\$request of class Joindin\\\\Api\\\\Model\\\\UserMapper constructor expects Joindin\\\\Api\\\\Request\\|null, object given\\.$#"
+			count: 2
+			path: src/Model/EventMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\EventMapper\\:\\:verifyMandatoryFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/EventMapper.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:\\$_db has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:\\$request has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:setDb\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:setRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Parameter \\#2 \\$user_id of method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:createAccessToken\\(\\) expects int, int\\<1, max\\>\\|int\\<min, \\-1\\>\\|true given\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$userId of method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:getUserUri\\(\\) expects int, int\\<1, max\\>\\|int\\<min, \\-1\\>\\|true given\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fread expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fclose expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function sha1 expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:createUserFromTwitterUsername\\(\\) should return array but returns array\\|false\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:createUserFromTrustedEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:createUserFromTrustedEmail\\(\\) has parameter \\$email with no typehint specified\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:createUserFromTrustedEmail\\(\\) has parameter \\$fullName with no typehint specified\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\OAuthModel\\:\\:createUserFromTrustedEmail\\(\\) has parameter \\$userName with no typehint specified\\.$#"
+			count: 1
+			path: src/Model/OAuthModel.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\PendingTalkClaimModelCollection\\:\\:\\$total has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/PendingTalkClaimModelCollection.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\TalkCommentMapper\\:\\:userReportedComment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/TalkCommentMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\TalkCommentMapper\\:\\:moderateReportedComment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/TalkCommentMapper.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\TalkCommentReportModelCollection\\:\\:\\$total has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/TalkCommentReportModelCollection.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\TalkMapper\\:\\:editTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/TalkMapper.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function md5 expects string, int given\\.$#"
+			count: 1
+			path: src/Model/TalkMapper.php
+
+		-
+			message: "#^Parameter \\#2 \\$request of class Joindin\\\\Api\\\\Model\\\\UserMapper constructor expects Joindin\\\\Api\\\\Request\\|null, object given\\.$#"
+			count: 1
+			path: src/Model/TalkMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\TalkMapper\\:\\:removeTrackFromTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/TalkMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\TalkMapper\\:\\:removeApprovedSpeakerFromTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/TalkMapper.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\TalkModelCollection\\:\\:\\$total has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/TalkModelCollection.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Model\\\\TokenModelCollection\\:\\:\\$total has no typehint specified\\.$#"
+			count: 1
+			path: src/Model/TokenModelCollection.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\TrackMapper\\:\\:getBasicSQL\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/TrackMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Model\\\\TrackMapper\\:\\:deleteEventTrack\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Model/TrackMapper.php
+
+		-
+			message: "#^Cannot access offset 0 on array\\|false\\.$#"
+			count: 2
+			path: src/Model/UserMapper.php
+
+		-
+			message: "#^Parameter \\#1 \\$data of function bin2hex expects string, string\\|false given\\.$#"
+			count: 2
+			path: src/Model/UserMapper.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$url_elements has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$path_info has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$accept has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$host has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$parameters has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$user_id has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$access_token has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$version has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$clientIP has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$clientUserAgent has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$oauthModel has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Request\\:\\:\\$config has no typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Parameter \\#1 \\$pathInfo of method Joindin\\\\Api\\\\Request\\:\\:setPathInfo\\(\\) expects string, string\\|false\\|null given\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Request\\:\\:setClientInfo\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Request\\:\\:setFormatChoices\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Request\\:\\:setRouteParams\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Request\\:\\:setView\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Parameter \\#1 \\$userId of method Joindin\\\\Api\\\\Request\\:\\:setUserId\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Request\\:\\:getRawBody\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: src/Request.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Router\\\\ApiRouter\\:\\:\\$config has no typehint specified\\.$#"
+			count: 1
+			path: src/Router/ApiRouter.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Router\\\\ApiRouter\\:\\:\\$routers has no typehint specified\\.$#"
+			count: 1
+			path: src/Router/ApiRouter.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Router\\\\ApiRouter\\:\\:setRouters\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Router/ApiRouter.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Router\\\\BaseRouter\\:\\:\\$config has no typehint specified\\.$#"
+			count: 1
+			path: src/Router/BaseRouter.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Router\\\\Route\\:\\:setController\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Router/Route.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Router\\\\Route\\:\\:setAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Router/Route.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Router\\\\Route\\:\\:setParams\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Router/Route.php
+
+		-
+			message: "#^Parameter \\#1 \\$array_arg of function end is passed by reference, so it expects variables only\\.$#"
+			count: 1
+			path: src/Router/Route.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\BaseEmailService\\:\\:\\$mailer has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/BaseEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\BaseEmailService\\:\\:\\$message has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/BaseEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\BaseEmailService\\:\\:\\$recipients has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/BaseEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\BaseEmailService\\:\\:\\$templatePath has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/BaseEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\BaseEmailService\\:\\:dispatchEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/BaseEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\BaseEmailService\\:\\:setSubject\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/BaseEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\BaseEmailService\\:\\:setReplyTo\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/BaseEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\CommentReportedEmailService\\:\\:\\$event has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/CommentReportedEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\CommentReportedEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/CommentReportedEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\ContactEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/ContactEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\EventApprovedEmailService\\:\\:\\$event has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventApprovedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\EventApprovedEmailService\\:\\:\\$website_url has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventApprovedEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\EventApprovedEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventApprovedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\EventCommentReportedEmailService\\:\\:\\$comment has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventCommentReportedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\EventCommentReportedEmailService\\:\\:\\$event has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventCommentReportedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\EventCommentReportedEmailService\\:\\:\\$website_url has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventCommentReportedEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\EventCommentReportedEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventCommentReportedEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\EventCommentReportedEmailService\\:\\:linkToReportedCommentsForEvent\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventCommentReportedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\EventRejectedEmailService\\:\\:\\$event has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventRejectedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\EventRejectedEmailService\\:\\:\\$website_url has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventRejectedEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\EventRejectedEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventRejectedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\EventSubmissionEmailService\\:\\:\\$event has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventSubmissionEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\EventSubmissionEmailService\\:\\:\\$comment has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventSubmissionEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\EventSubmissionEmailService\\:\\:\\$website_url has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventSubmissionEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\EventSubmissionEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/EventSubmissionEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\SpamCheckService\\:\\:\\$akismetUrl has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/SpamCheckService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\SpamCheckService\\:\\:\\$blog has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/SpamCheckService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkAssignEmailService\\:\\:\\$event has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkAssignEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkAssignEmailService\\:\\:\\$talk has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkAssignEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkAssignEmailService\\:\\:\\$website_url has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkAssignEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\TalkAssignEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkAssignEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkClaimApprovedEmailService\\:\\:\\$event has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimApprovedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkClaimApprovedEmailService\\:\\:\\$talk has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimApprovedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkClaimApprovedEmailService\\:\\:\\$website_url has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimApprovedEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\TalkClaimApprovedEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimApprovedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkClaimEmailService\\:\\:\\$event has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkClaimEmailService\\:\\:\\$talk has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkClaimEmailService\\:\\:\\$website_url has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\TalkClaimEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkClaimRejectedEmailService\\:\\:\\$event has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimRejectedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkClaimRejectedEmailService\\:\\:\\$talk has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimRejectedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkClaimRejectedEmailService\\:\\:\\$website_url has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimRejectedEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\TalkClaimRejectedEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkClaimRejectedEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkCommentEmailService\\:\\:\\$talk has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkCommentEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkCommentEmailService\\:\\:\\$comment has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkCommentEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\TalkCommentEmailService\\:\\:\\$config has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkCommentEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\TalkCommentEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/TalkCommentEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\UserPasswordResetEmailService\\:\\:\\$user has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/UserPasswordResetEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\UserPasswordResetEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/UserPasswordResetEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\UserRegistrationEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/UserRegistrationEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\UserUsernameReminderEmailService\\:\\:\\$user has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/UserUsernameReminderEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Service\\\\UserUsernameReminderEmailService\\:\\:\\$website_url has no typehint specified\\.$#"
+			count: 1
+			path: src/Service/UserUsernameReminderEmailService.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Service\\\\UserUsernameReminderEmailService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/UserUsernameReminderEmailService.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\View\\\\ApiView\\:\\:\\$headers has no typehint specified\\.$#"
+			count: 1
+			path: src/View/ApiView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:__construct\\(\\) has parameter \\$noRender with no typehint specified\\.$#"
+			count: 1
+			path: src/View/ApiView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:__construct\\(\\) has parameter \\$responseCode with no typehint specified\\.$#"
+			count: 1
+			path: src/View/ApiView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setHeader\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/View/ApiView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setResponseCode\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/View/ApiView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:setNoRender\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/View/ApiView.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\View\\\\ApiView\\:\\:\\$responseCode \\(int\\) does not accept bool\\|int\\.$#"
+			count: 1
+			path: src/View/ApiView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:buildOutput\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/View/ApiView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\ApiView\\:\\:buildOutput\\(\\) has parameter \\$content with no typehint specified\\.$#"
+			count: 1
+			path: src/View/ApiView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\HtmlView\\:\\:printArray\\(\\) should return null but return statement is missing\\.$#"
+			count: 1
+			path: src/View/HtmlView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\HtmlView\\:\\:layoutStart\\(\\) should return null but return statement is missing\\.$#"
+			count: 1
+			path: src/View/HtmlView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\HtmlView\\:\\:layoutStop\\(\\) should return null but return statement is missing\\.$#"
+			count: 1
+			path: src/View/HtmlView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\JsonPView\\:\\:__construct\\(\\) has parameter \\$callback with no typehint specified\\.$#"
+			count: 1
+			path: src/View/JsonPView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\JsonView\\:\\:numericCheck\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/View/JsonView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\JsonView\\:\\:numericCheck\\(\\) has parameter \\$data with no typehint specified\\.$#"
+			count: 1
+			path: src/View/JsonView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\JsonView\\:\\:scalarNumericCheck\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/View/JsonView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\JsonView\\:\\:scalarNumericCheck\\(\\) has parameter \\$key with no typehint specified\\.$#"
+			count: 1
+			path: src/View/JsonView.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\View\\\\JsonView\\:\\:scalarNumericCheck\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/View/JsonView.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\ContainerFactoryTest\\:\\:\\$config has no typehint specified\\.$#"
+			count: 1
+			path: tests/ContainerFactoryTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\ContainerFactoryTest\\:\\:testContainerIsCreated\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ContainerFactoryTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\ContainerFactoryTest\\:\\:testServiceIsDefined\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ContainerFactoryTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\ContainerFactoryTest\\:\\:testServicesCanBeCreated\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ContainerFactoryTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$expected of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) expects class\\-string\\<object\\>, string given\\.$#"
+			count: 1
+			path: tests/ContainerFactoryTest.php
+
+		-
+			message: "#^Unable to resolve the template type ExpectedType in call to method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\)$#"
+			count: 1
+			path: tests/ContainerFactoryTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\ContainerFactoryTest\\:\\:testSpamCheckServiceIsNullCheckerWhenDisabled\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ContainerFactoryTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\ContactControllerTest\\:\\:testContactWorksAsExpected\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/ContactControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$exception of method PHPUnit\\\\Framework\\\\TestCase\\:\\:expectException\\(\\) expects class\\-string\\<Throwable\\>, string given\\.$#"
+			count: 1
+			path: tests/Controller/ContactControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\ContactControllerTest\\:\\:dataProvider\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/ContactControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatNotLoggedInUsersCanNotAddAHost\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatRemovingHostWithoutLoginFails\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatMissingEventThrowsException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatRemovingOneselfThrowsException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatInvalidEventThrowsException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatExceptionIsThrownWhenNonAdminUserTriesToAddHostToEvent\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatUserThatIsNotAdminOnEventWillThrowException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatExceptionIsThrownWhenUnknownUserShallBeAddedAsHostToEvent\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatSettingUnknownUserWillThrowException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatExceptionIsThrownWhenEventHostMapperHasProblems\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatViewGetsCorrectValuesWhenEverythingWorksAsExpected\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatFailureWhileRemovingUserAsHostWillThrowException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatRemovingUserAsHostSetsCorrectValues\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatGettingEventHostWapperMithoutSettingFirstWorksAsExpected\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatGettingUserMapperWithoutSettingFirstWorksAsExpected\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\EventHostsControllerTest\\:\\:testThatGettingEventMapperWithoutSettingFirstWorksAsExpected\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/EventHostsControllerTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkBase\\:\\:\\$talk_mapper has no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkBase.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkBase\\:\\:createTalkMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkBase.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkBase\\:\\:createTalkMapper\\(\\) has parameter \\$expectedCalls with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkBase.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkBase\\:\\:createVerboseTalkMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkBase.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkBase\\:\\:createUserMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkBase.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkBase\\:\\:createEventMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkBase.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkBase\\:\\:createTalkCommentMapper\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkBase.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkBase\\:\\:createOathModel\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkBase.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkBase\\:\\:createOathModel\\(\\) has parameter \\$consumerName with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkBase.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:\\$talks_controller has no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:\\$request has no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:\\$db has no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:testDeleteTalkLinkWithInvalidID\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:testDeleteTalkLink\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:testDeleteTalkLinkNoPermissions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:testGetTalkLink\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:testGetTalkLinkFails\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:testAddTalkLink\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:testAddTalkLinkWithInvalidData\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:testAddTalkLinkFails\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:testUpdateTalkLink\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:testUpdateTalkLinkFails\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:makeRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:makeRequest\\(\\) has parameter \\$method with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:makeRequest\\(\\) has parameter \\$url with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalkLinkControllerTest\\:\\:authenticateAsSpeaker\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalkLinkControllerTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerDeleteTest\\:\\:\\$talkMapper has no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerDeleteTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerDeleteTest\\:\\:testRemoveStarFromTalkFailsWhenNotLoggedIn\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerDeleteTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerDeleteTest\\:\\:testRemoveStarFromTalksWhenLoggedIn\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerDeleteTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerDeleteTest\\:\\:testDeleteTalkWhenNotLoggedIn\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerDeleteTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerDeleteTest\\:\\:testDeleteTalkWhichDoesntExist\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerDeleteTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerDeleteTest\\:\\:testDeleteTalkWthNoAdmin\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerDeleteTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerDeleteTest\\:\\:testDeleteTalkWithAdmin\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerDeleteTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:\\$config has no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testApproveAssignmentAsUserWhoClaimedThrowsException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testApproveAssignmentAsNonAdminUserThrowsException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testApproveClaimAsHostWhoAssignedThrowsException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testApproveAssignmentAsUserSucceeds\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testApproveClaimAsHostSucceeds\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testCommentOnTalk\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testCommentOnTalk\\(\\) has parameter \\$commenterId with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testCommentOnTalk\\(\\) has parameter \\$expectedEmailsSent with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testCommentOnTalk\\(\\) has parameter \\$speakerEmails with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Property class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:\\$talkCommentEmailService has no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:getTalkCommentEmailService\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$comment with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$config with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$recipients with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$talk with no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:getComments\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testNotLoggedInPostAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testNotSendingMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testNotSendingRating\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testRejectClaimAsHostSucceeds\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testDifferentTalkMedia\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testVerboseTalkOutput\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testGetComments\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testGetStarred\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testSearchByTitle\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:testGenericTalkList\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TalksControllerTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Controller\\\\TokenControllerTest\\:\\:\\$request has no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TokenControllerTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Controller\\\\TokenControllerTest\\:\\:\\$pdo has no typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TokenControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TokenControllerTest\\:\\:testThatDeletingATokenWithoutLoginThrowsException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TokenControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TokenControllerTest\\:\\:testThatRetrievingTokensWithoutLoginThrowsException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/TokenControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\UsersControllerTest\\:\\:testThatUserDataIsNotDoubleEscapedOnUserCreation\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/UsersControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\UsersControllerTest\\:\\:testThatUserDataIsNotDoubleEscapedOnUserEdit\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Controller/UsersControllerTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:testParseParamsWithEmbededSeparator\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:testParseParamsWithTwoGlues\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:testBuildEntityArray\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:testBuildEntityArrayWithValueOnly\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:getNameReturnsTheHeaderName\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:getGlueReturnsGlueValue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:getIteratorWorks\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:toStringWorks\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:removeValueWorks\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:hasValueReturnsTrueIfValueFound\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:hasValueReturnsFalseIfValueNotFound\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:setNameCanBeUsedAfterHeadersAreCreated\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\HeaderTest\\:\\:coverageForParseParams\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/HeaderTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:\\$pdo has no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:\\$request has no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatApiMapperHasNoDefaultFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatDefaultMapperReturnsNothing\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatDefaultMapperConvertsDateTimeFieldsCorrectly\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatDefaultMapperConvertsDateTimeFieldsCorrectly\\(\\) has parameter \\$expected with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatDefaultMapperConvertsDateTimeFieldsCorrectly\\(\\) has parameter \\$values with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:defaultMapperConvertsDateTimeFieldsCorrectlyProvider\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatDefaultMappingReturnsOnlyDefaultFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testBuildingTheLimitClause\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$resultsperpage of method Joindin\\\\Api\\\\Test\\\\Model\\\\TestApiMapper\\:\\:buildLimit\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$start of method Joindin\\\\Api\\\\Test\\\\Model\\\\TestApiMapper\\:\\:buildLimit\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatRetrievingTotalCountFromQueryWorks\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatRetrievingTotalCountFromQueryWorks\\(\\) has parameter \\$countquery with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatRetrievingTotalCountFromQueryWorks\\(\\) has parameter \\$data with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatRetrievingTotalCountFromQueryWorks\\(\\) has parameter \\$exception with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatRetrievingTotalCountFromQueryWorks\\(\\) has parameter \\$query with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatRetrievingTotalCountFromQueryWorks\\(\\) has parameter \\$returns with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:retrievingTotalCountFromQueryWorksProvider\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatInflectionWorks\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatInflectionWorks\\(\\) has parameter \\$inflected with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:testThatInflectionWorks\\(\\) has parameter \\$string with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\ApiMapperTest\\:\\:inflectionWorksProvider\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/ApiMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\EventHostMapperTest\\:\\:testThatAddingHostToEventCallsExpectedInsert\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/EventHostMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\EventHostMapperTest\\:\\:testThatFailingExecuteResultsInFalseBeingReturned\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/EventHostMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\EventHostMapperTest\\:\\:testThatGettingHostByEventIdReturnsSomethingSensibleWhenStatementReturnsFalse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/EventHostMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\EventHostMapperTest\\:\\:testThatGettingHostByEventIdReturnsSomethingSensibleWhenStatementReturnsSingleValue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/EventHostMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\EventHostMapperTest\\:\\:testThatRemovingAHostFromAnEventCallsTheExpectedMethods\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/EventHostMapperTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Model\\\\OauthModelTest\\:\\:\\$pdo has no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/OauthModelTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Model\\\\OauthModelTest\\:\\:\\$request has no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/OauthModelTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Model\\\\OauthModelTest\\:\\:\\$oauth has no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/OauthModelTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\OauthModelTest\\:\\:testWrongPasswordReturnsFalse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/OauthModelTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\OauthModelTest\\:\\:testWrongUserThrowsException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/OauthModelTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\OauthModelTest\\:\\:testLoggingInWorks\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/OauthModelTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\OauthModelTest\\:\\:testCreateAccessToken\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/OauthModelTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\OauthModelTest\\:\\:testGenerateToken\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/OauthModelTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:testMediaTypesAreAddedCorrectly\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:getValidMediaRows\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:transformMediaRows\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:transformMediaRows\\(\\) has parameter \\$rows with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:testThatTalkLinksAreDeletedCorrectly\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:testThatRemovingTalkFromAllTracksWorksCorrectly\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:testThatSpeakersAreDeletedFromTalkCorrectly\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:testThatBrokenTalkLinksDeletionRollsBack\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:testThatBrokenTracksDeletionRollsBack\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:testThatBrokenSpeakerDeletionRollsBack\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:testThatBrokenTalkDeletionRollsBack\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TalkMapperTest\\:\\:testThatWorkingTalkDeletionCommits\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TalkMapperTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TestApiMapper\\:\\:getDefaultFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TestApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TestApiMapper\\:\\:getVerboseFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TestApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TestApiMapper\\:\\:getPaginationLinks\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TestApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TestApiMapper\\:\\:getPaginationLinks\\(\\) has parameter \\$total with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TestApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TestApiMapper\\:\\:inflect\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TestApiMapper.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Model\\\\TestApiMapper\\:\\:inflect\\(\\) has parameter \\$string with no typehint specified\\.$#"
+			count: 1
+			path: tests/Model/TestApiMapper.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:\\$config has no typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testGetView\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$expected of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) expects class\\-string\\<object\\>, string given\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Unable to resolve the template type ExpectedType in call to method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\)$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testGetSetFormatChoices\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testGetSetRouteParams\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testGetSetAccessToken\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testConstructorParsesRequestUri\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testGettingClientIp\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testGettingClientIp\\(\\) has parameter \\$header with no typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:clientIpProvider\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testGettingClientUserAgent\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testGettingClientUserAgent\\(\\) has parameter \\$header with no typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testGettingClientUserAgent\\(\\) has parameter \\$userAgent with no typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:gettingClientUserAgentProvider\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\RequestTest\\:\\:testGettingConfigValues\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/RequestTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\ApiRouterTest\\:\\:testGetSetRouters\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Router/ApiRouterTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\DefaultRouterTest\\:\\:testGetRoute\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Router/DefaultRouterTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\RouteTest\\:\\:testConstruct\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Router/RouteTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\RouteTest\\:\\:testGetSet\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Router/RouteTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\RouteTest\\:\\:testDispatch\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Router/RouteTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$db of method Joindin\\\\Api\\\\Router\\\\Route\\:\\:dispatch\\(\\) expects PDO, string given\\.$#"
+			count: 1
+			path: tests/Router/RouteTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$expected of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) expects class\\-string\\<object\\>, true given\\.$#"
+			count: 1
+			path: tests/Router/RouteTest.php
+
+		-
+			message: "#^Unable to resolve the template type ExpectedType in call to method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\)$#"
+			count: 1
+			path: tests/Router/RouteTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\RouterTest\\:\\:testConstruct\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Router/RouterTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\TestController3\\:\\:action\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Router/TestController3.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\TestController3\\:\\:action\\(\\) has parameter \\$db with no typehint specified\\.$#"
+			count: 1
+			path: tests/Router/TestController3.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\TestRouter3\\:\\:dispatch\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Router/TestRouter3.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\TestRouter3\\:\\:dispatch\\(\\) has parameter \\$db with no typehint specified\\.$#"
+			count: 1
+			path: tests/Router/TestRouter3.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\TestRouter3\\:\\:route\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Router/TestRouter3.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\TestRouter3\\:\\:route\\(\\) has parameter \\$db with no typehint specified\\.$#"
+			count: 1
+			path: tests/Router/TestRouter3.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Router\\\\VersionedRouterTest\\:\\:testGetRoute\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Router/VersionedRouterTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Service\\\\NullSpamCheckServiceTest\\:\\:testSpamCheckShouldReturnTrue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Service/NullSpamCheckServiceTest.php
+
+		-
+			message: "#^Property Joindin\\\\Api\\\\Test\\\\Service\\\\TalkCommentEmailServiceTest\\:\\:\\$config has no typehint specified\\.$#"
+			count: 1
+			path: tests/Service/TalkCommentEmailServiceTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Service\\\\TalkCommentEmailServiceTest\\:\\:testCreateService\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Service/TalkCommentEmailServiceTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Service\\\\TalkCommentEmailServiceTest\\:\\:testCreateServiceWithEmailRedirect\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Service/TalkCommentEmailServiceTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Service\\\\TalkCommentEmailServiceTest\\:\\:testTemplateReplacements\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Service/TalkCommentEmailServiceTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\Service\\\\TalkCommentEmailServiceTest\\:\\:testMarkdownTransform\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/Service/TalkCommentEmailServiceTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\View\\\\ApiViewTest\\:\\:testThatAReturnCodeSetViaHeaderIsReturnedWhenNoOtherReturnCodeIsSet\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/View/ApiViewTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\View\\\\ApiViewTest\\:\\:testThatAReturnCodeSetViaSetHeaderIsReturnedEvenThoughAHeaderCodeIsSet\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/View/ApiViewTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\View\\\\ApiViewTest\\:\\:testThatHeadersAreSet\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/View/ApiViewTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\View\\\\ApiViewTest\\:\\:testThatHeadersAreSetViaSetHeaders\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/View/ApiViewTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\View\\\\ApiViewTest\\:\\:testThatSettingHeadersDoesntOverwriteIntendedHeaders\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/View/ApiViewTest.php
+
+		-
+			message: "#^Method Joindin\\\\Api\\\\Test\\\\View\\\\JsonViewTest\\:\\:testBuildOutput\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/View/JsonViewTest.php
+

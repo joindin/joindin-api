@@ -20,6 +20,7 @@ class EmailsController extends BaseApiController
     {
         $user_mapper = new UserMapper($db, $request);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
+
         if (empty($email)) {
             throw new Exception("The email address must be supplied", Http::BAD_REQUEST);
         }
@@ -47,6 +48,7 @@ class EmailsController extends BaseApiController
     {
         $user_mapper = new UserMapper($db, $request);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
+
         if (empty($email)) {
             throw new Exception("The email address must be supplied", Http::BAD_REQUEST);
         }
@@ -72,6 +74,7 @@ class EmailsController extends BaseApiController
     {
         $user_mapper = new UserMapper($db, $request);
         $username    = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);
+
         if (empty($username)) {
             throw new Exception("A username must be supplied", Http::BAD_REQUEST);
         }
@@ -91,6 +94,7 @@ class EmailsController extends BaseApiController
 
         // we need a token to send so we know it is a valid reset
         $token = $user_mapper->generatePasswordResetTokenForUserId($user_id);
+
         if (!$token) {
             throw new Exception("Unable to generate a reset token", Http::BAD_REQUEST);
         }

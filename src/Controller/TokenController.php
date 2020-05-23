@@ -41,6 +41,7 @@ class TokenController extends BaseApiController
 
         $clientId     = $request->getParameter('client_id');
         $clientSecret = $request->getParameter('client_secret');
+
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
             throw new Exception("This client cannot authenticate using the password grant type", Http::FORBIDDEN);
         }

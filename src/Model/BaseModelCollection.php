@@ -34,8 +34,10 @@ abstract class BaseModelCollection
             $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
             $meta['next_page']    = $request->base . $request->path_info . '?' . http_build_query($next_params);
         }
+
         if (0 < $firstOnThisPage) {
             $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
+
             if ($prev_params['start'] < 0) {
                 $prev_params['start'] = 0;
             }

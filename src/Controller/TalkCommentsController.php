@@ -34,6 +34,7 @@ class TalkCommentsController extends BaseApiController
         $mapper = $this->getCommentMapper($request, $db);
 
         $list = $mapper->getCommentById($commentId, $verbose);
+
         if (false === $list) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
@@ -44,6 +45,7 @@ class TalkCommentsController extends BaseApiController
     public function getReported(Request $request, PDO $db)
     {
         $eventId = $this->getItemId($request);
+
         if (empty($eventId)) {
             throw new UnexpectedValueException("Event not found", Http::NOT_FOUND);
         }
@@ -75,6 +77,7 @@ class TalkCommentsController extends BaseApiController
 
         $commentId   = $this->getItemId($request);
         $commentInfo = $commentMapper->getCommentInfo($commentId);
+
         if (false === $commentInfo) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
@@ -126,17 +129,20 @@ class TalkCommentsController extends BaseApiController
 
         $commentId   = $this->getItemId($request);
         $commentInfo = $commentMapper->getCommentInfo($commentId);
+
         if (false === $commentInfo) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
         $eventMapper = new EventMapper($db, $request);
         $eventId     = $commentInfo['event_id'];
+
         if (false == $eventMapper->thisUserHasAdminOn($eventId)) {
             throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
 
         $decision = $request->getParameter('decision');
+
         if (!in_array($decision, ['approved', 'denied'])) {
             throw new Exception('Unexpected decision', Http::BAD_REQUEST);
         }
@@ -159,6 +165,7 @@ class TalkCommentsController extends BaseApiController
         }
 
         $newCommentBody = $request->getParameter('comment');
+
         if (empty($newCommentBody)) {
             throw new Exception('The field "comment" is required', Http::BAD_REQUEST);
         }
@@ -176,6 +183,7 @@ class TalkCommentsController extends BaseApiController
         }
 
         $maxCommentEditMinutes = 15;
+
         if (isset($this->config['limits']['max_comment_edit_minutes'])) {
             $maxCommentEditMinutes = $this->config['limits']['max_comment_edit_minutes'];
         }
@@ -188,6 +196,7 @@ class TalkCommentsController extends BaseApiController
         }
 
         $updateSuccess = $commentMapper->updateCommentBody($commentId, $newCommentBody);
+
         if (false === $updateSuccess) {
             throw new Exception('Comment update failed', Http::INTERNAL_SERVER_ERROR);
         }

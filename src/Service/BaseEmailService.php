@@ -58,7 +58,6 @@ abstract class BaseEmailService
             ->setUsername($config['email']['smtp']['username'])
             ->setPassword($config['email']['smtp']['password']);
 
-
         $this->mailer  = new Swift_Mailer($transport);
         $this->message = new Swift_Message();
 
@@ -89,6 +88,7 @@ abstract class BaseEmailService
                     . file_get_contents($this->templatePath . 'signature.md');
 
         $message = $template;
+
         foreach ($replacements as $field => $value) {
             $message = str_replace('[' . $field . ']', $value, $message);
         }

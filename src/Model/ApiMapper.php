@@ -28,6 +28,7 @@ class ApiMapper
     public function __construct(PDO $db, Request $request = null)
     {
         $this->_db = $db;
+
         if (isset($request)) {
             $this->_request    = $request;
             $this->website_url = $request->getConfigValue('website_url');
@@ -61,6 +62,7 @@ class ApiMapper
         // format results to only include named fields
         foreach ($results as $row) {
             $entry = [];
+
             foreach ($fields as $key => $value) {
                 // special handling for dates
                 if (substr($key, -5) == '_date' && ! empty($row[$value])) {
@@ -97,7 +99,7 @@ class ApiMapper
             return '';
         }
 
-        return ' LIMIT ' . (int)$start . ',' . (int)$resultsperpage;
+        return ' LIMIT ' . (int) $start . ',' . (int) $resultsperpage;
     }
 
     /**
@@ -111,6 +113,7 @@ class ApiMapper
     public function getTotalCount($sqlQuery, array $data = [])
     {
         $limitPos = strrpos($sqlQuery, 'LIMIT');
+
         if (false !== $limitPos) {
             $sqlQuery = substr($sqlQuery, 0, $limitPos);
         }
@@ -149,8 +152,10 @@ class ApiMapper
             $meta['next_page']    = $request->base . $request->path_info . '?' .
                                     http_build_query($next_params);
         }
+
         if (0 < $firstOnThisPage) {
             $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
+
             if ($prev_params['start'] < 0) {
                 $prev_params['start'] = 0;
             }
@@ -165,6 +170,7 @@ class ApiMapper
     {
         $ascii = Transliterator::create('Any-Latin; Latin-ASCII; Lower')->transliterate($string);
         $alpha = preg_replace("/[^0-9a-zA-Z- ]/", "", $ascii);
+
         return strtolower(str_replace(' ', '-', $alpha));
     }
 }

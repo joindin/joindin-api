@@ -14,7 +14,6 @@ use PDO;
  */
 class EventMapper extends ApiMapper
 {
-
     /**
      * Default mapping for column names to API field names
      *
@@ -95,6 +94,7 @@ class EventMapper extends ApiMapper
     public function getEventById($event_id, $verbose = false, $activeEventsOnly = true)
     {
         $results = $this->getEvents(1, 0, ["event_id" => $event_id, 'active' => $activeEventsOnly]);
+
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
@@ -117,6 +117,7 @@ class EventMapper extends ApiMapper
     public function getEventByTrackId($track_id, $verbose = false, $activeEventsOnly = true, $transform = true)
     {
         $results = $this->getEvents(1, 0, ["track_id" => $track_id, 'active' => $activeEventsOnly]);
+
         if (!$results) {
             return false;
         }
@@ -162,6 +163,7 @@ class EventMapper extends ApiMapper
                . ') and (events.event_start + (3*30*3600*24)) > ' . mktime(0, 0, 0)
                . ') THEN 1 ELSE 0 END as comments_enabled '
                . 'from events ';
+
         if (array_key_exists("tags", $params)) {
             $sql .= "left join tags_events on tags_events.event_id = events.ID 
                 left join tags on tags.ID = tags_events.tag_id ";
@@ -180,24 +182,30 @@ class EventMapper extends ApiMapper
         }
 
         $active = true;
+
         if (array_key_exists("active", $params)) {
             $active = $params['active'];
         }
+
         if (array_key_exists("filter", $params)) {
             switch ($params['filter']) {
                 case "all": // current and popular events
                     $order .= 'events.event_start';
+
                     break;
                 case "hot": // current and popular events
                     $order .= "score - ((comment_count + attendee_count + 1) / 5)";
+
                     break;
                 case "upcoming": // future events, soonest first
                     $where .= ' and (events.event_start >=' . (mktime(0, 0, 0) - (3 * 86400)) . ')';
                     $order .= 'events.event_start';
+
                     break;
                 case "past": // past events, most recent first
                     $where .= ' and (events.event_start <' . (mktime(0, 0, 0)) . ')';
                     $order .= 'events.event_start desc';
+
                     break;
                 case "cfp": // events with open CfPs, soonest closing first
                     $where .= sprintf(
@@ -208,14 +216,18 @@ class EventMapper extends ApiMapper
                         mktime(0, 0, 0) + (7 * 86400)
                     );
                     $order .= 'events.event_cfp_end';
+
                     break;
                 case "pending": // events to be approved
                     $order  .= 'events.event_start';
                     $active = false;
                     $where  .= ' and pending = 1';
+
                     break;
+
                 default:
                     $order .= 'events.event_start desc';
+
                     break;
             }
         } else {
@@ -244,6 +256,7 @@ class EventMapper extends ApiMapper
             $where .= ' and (';
 
             $i = 0;
+
             foreach ($params['tags'] as $tag) {
                 if ($i > 0) {
                     $where .= " OR ";
@@ -294,6 +307,7 @@ class EventMapper extends ApiMapper
         $sql      .= $this->buildLimit($resultsperpage, $start);
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
+
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
@@ -317,6 +331,7 @@ class EventMapper extends ApiMapper
     public function getEventList($resultsperpage, $start, array $params, $verbose = false)
     {
         $results = $this->getEvents($resultsperpage, $start, $params);
+
         if (is_array($results)) {
             return $this->transformResults($results, $verbose);
         }
@@ -367,7 +382,6 @@ class EventMapper extends ApiMapper
      *
      * @return array
      */
-
     public function getUserAttendance($event_id, $user_id)
     {
         return ['is_attending' => $this->isUserAttendingEvent($event_id, $user_id)];
@@ -381,7 +395,6 @@ class EventMapper extends ApiMapper
      *
      * @return bool
      */
-
     protected function isUserAttendingEvent($event_id, $user_id)
     {
         $sql  = "select * from user_attend where eid = :event_id and uid = :user_id";
@@ -494,6 +507,7 @@ class EventMapper extends ApiMapper
         }
 
         $retval = [];
+
         foreach ($hosts as $person) {
             $retval[] = [
                 'host_name' => $person['full_name'],
@@ -561,6 +575,7 @@ class EventMapper extends ApiMapper
         }
 
         $retval = [];
+
         foreach ($tags as $row) {
             $retval[] = $row['tag'];
         }
@@ -580,7 +595,7 @@ class EventMapper extends ApiMapper
      */
     public function getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose = false)
     {
-        $data = ["user_id" => (int)$user_id];
+        $data = ["user_id" => (int) $user_id];
 
         $sql = 'select events.*, '
                . '(select count(*) from user_attend where user_attend.eid = events.ID) as attendee_count, '
@@ -612,7 +627,7 @@ class EventMapper extends ApiMapper
      */
     public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false)
     {
-        $data = ["user_id" => (int)$user_id];
+        $data = ["user_id" => (int) $user_id];
         $sql  = 'select events.*, '
                 . '(select count(*) from user_attend where user_attend.eid = events.ID) as attendee_count, '
                 . 'abs(datediff(from_unixtime(events.event_start), from_unixtime(' .
@@ -655,6 +670,7 @@ class EventMapper extends ApiMapper
 
         // is user site admin?
         $user_mapper = new UserMapper($this->_db, $this->_request);
+
         if ($user_mapper->isSiteAdmin($this->_request->user_id)) {
             return true;
         }
@@ -722,7 +738,6 @@ class EventMapper extends ApiMapper
         return $comments['comment_count'];
     }
 
-
     /**
      * This event doesn't have an inflected name yet, make and store one. Try to
      * ensure uniqueness, by adding year, then year-month and then finally
@@ -781,7 +796,6 @@ class EventMapper extends ApiMapper
      */
     public function createEvent(array $event, $auto_approve = false)
     {
-
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields = [
             'name',
@@ -799,6 +813,7 @@ class EventMapper extends ApiMapper
 
         // create list of column to API field name for all valid fields
         $fields = $this->getVerboseFields();
+
         foreach ($fields as $api_name => $column_name) {
             if (isset($event[$api_name])) {
                 $pairs[] = "$column_name = :$api_name";
@@ -807,6 +822,7 @@ class EventMapper extends ApiMapper
 
         // the active opposite to pending to get it on the right web1 lists
         $pairs[] = 'private = 0';
+
         if (!$auto_approve) {
             $pairs[] = 'pending = 1';
             $pairs[] = 'active = 0';
@@ -819,6 +835,7 @@ class EventMapper extends ApiMapper
 
         $stmt   = $this->_db->prepare($sql);
         $result = $stmt->execute($event);
+
         if ($result) {
             return $this->_db->lastInsertId();
         }
@@ -863,6 +880,7 @@ class EventMapper extends ApiMapper
             if (in_array($column_name, ['pending', 'active'])) {
                 continue;
             }
+
             if (array_key_exists($api_name, $event)) {
                 $pairs[]          = "$column_name = :$api_name";
                 $items[$api_name] = $event[$api_name];
@@ -982,6 +1000,7 @@ class EventMapper extends ApiMapper
 
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(["event_id" => $event_id]);
+
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -1068,6 +1087,7 @@ class EventMapper extends ApiMapper
             // Check whether the tag already exists in the tag-list
             $result = $checkForTagStmt->execute(['tag' => $tag]);
             $tagId  = $checkForTagStmt->fetchColumn(0);
+
             if (!$tagId) {
                 // If not, add the event to the tag list
                 $addTagToDbStmt->execute(['tag' => $tag]);
@@ -1094,6 +1114,7 @@ class EventMapper extends ApiMapper
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(["event_id" => $event_id]);
         $result   = $stmt->fetch();
+
         if ($result === false) {
             // Event either doesn't exist or is not pending
             return false;
@@ -1120,6 +1141,7 @@ class EventMapper extends ApiMapper
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute(["event_id" => $event_id]);
         $result   = $stmt->fetch();
+
         if ($result === false) {
             return false;
         }
@@ -1153,6 +1175,7 @@ class EventMapper extends ApiMapper
 
         // add named keys so we can easily refer to these results
         $collection = [];
+
         if ($images && is_array($images)) {
             foreach ($images as $row) {
                 $collection[$row['type']] = $row;
@@ -1235,6 +1258,7 @@ class EventMapper extends ApiMapper
         }
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         if (!is_array($results)) {
             return false;
         }

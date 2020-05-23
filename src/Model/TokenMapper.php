@@ -100,7 +100,6 @@ class TokenMapper extends ApiMapper
         return new TokenModelCollection($results, $total);
     }
 
-
     /**
      * Get a single token by id and user
      *
@@ -133,7 +132,6 @@ class TokenMapper extends ApiMapper
 
         return new TokenModelCollection($results, 1);
     }
-
 
     /**
      * Get a single token by id and user

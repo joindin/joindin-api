@@ -1,14 +1,15 @@
+includes:
+    - phpstan-baseline.neon
+
 parameters:
+    checkMissingIterableValueType: false
     excludes_analyse:
         - public/
         - scripts/
 
-    ignoreErrors:
-        - '#Joindin\\Api\\Test\\Mock\\mockPDO::__construct\(\) does not call parent constructor from PDO\.#'
-
     inferPrivatePropertyTypeFromConstructor: true
 
-    level: 4
+    level: max
 
     paths:
         - inc

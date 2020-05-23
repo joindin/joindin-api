@@ -10,8 +10,9 @@ class ContactEmailService extends BaseEmailService
     public function __construct(array $config)
     {
         $recipients = $config['email']['contact'];
+
         if (!is_array($recipients)) {
-            $recipients = (array)$recipients;
+            $recipients = (array) $recipients;
         }
 
         // set up the common stuff

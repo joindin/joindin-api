@@ -17,7 +17,6 @@ use Teapot\StatusCode\Http;
  */
 final class RouteTest extends TestCase
 {
-
     /**
      * DataProvider for testConstruct
      *
@@ -144,8 +143,8 @@ final class RouteTest extends TestCase
     ) {
         $db        = 'database';
         $container = $this->getMockBuilder(ContainerInterface::class)
-                          ->disableOriginalConstructor()
-                          ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $container
             ->expects($this->atLeastOnce())
@@ -162,12 +161,13 @@ final class RouteTest extends TestCase
         $route = new Route($controller, $action);
 
         try {
-            $this->assertEquals('val', $route->dispatch($request, $db, $container));
+            $route->dispatch($request, $db, $container);
         } catch (Exception $ex) {
             if (!$expectedException) {
                 throw $ex;
             }
             $this->assertInstanceOf($expectedException, $ex);
+
             if ($expectedExceptionCode !== false) {
                 $this->assertEquals($expectedExceptionCode, $ex->getCode());
             }
@@ -186,9 +186,9 @@ final class RouteTest extends TestCase
         $request = $this->createMock(Request::class);
 
         $request->expects($this->any())
-                ->method('getUrlElement')
-                ->with(1)
-                ->willReturn($urlElement);
+            ->method('getUrlElement')
+            ->with($this->isType('integer'), $this->isType('string'))
+            ->willReturn($urlElement);
 
         return $request;
     }

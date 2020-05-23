@@ -52,6 +52,7 @@ class TokenModelCollection extends BaseModelCollection
         $retval = [];
         // handle the collection first
         $retval = ['tokens' => []];
+
         foreach ($this->list as $item) {
             $retval['tokens'][] = $item->getOutputView($request, $verbose);
         }

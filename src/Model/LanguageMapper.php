@@ -37,7 +37,8 @@ class LanguageMapper extends ApiMapper
      */
     public function getLanguageById($language_id, $verbose = false)
     {
-        $results = $this->getLanguages(1, 0, ['ID' => (int)$language_id]);
+        $results = $this->getLanguages(1, 0, ['ID' => (int) $language_id]);
+
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
@@ -55,6 +56,7 @@ class LanguageMapper extends ApiMapper
     public function getLanguageList($resultsperpage, $start = 0, $verbose = false)
     {
         $results = $this->getLanguages($resultsperpage, $start);
+
         if ($results) {
             return $this->transformResults($results, $verbose);
         }
@@ -118,6 +120,7 @@ class LanguageMapper extends ApiMapper
 
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($params);
+
         if ($response) {
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $params);
@@ -140,6 +143,7 @@ class LanguageMapper extends ApiMapper
         $sql = 'select * from lang where lang_name = :language';
 
         $stmt = $this->_db->prepare($sql);
+
         try {
             $stmt->execute([':language' => $language]);
         } catch (Exception $e) {

@@ -16,6 +16,7 @@ jobs:
       matrix:
         php-version:
           - 7.3
+          - 7.4
 
     steps:
       - name: "Checkout"
@@ -25,7 +26,7 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
-          extension-csv: "intl, json, pdo"
+          extensions: "gd, intl, json, mbstring, pdo"
 
       - name: "Cache dependencies installed with composer"
         uses: actions/cache@v1.0.0
@@ -52,7 +53,8 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 7.2
+          - 7.3
+          - 7.4
 
     steps:
       - name: "Checkout"
@@ -62,7 +64,8 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
-          extension-csv: "intl, json, pdo"
+          pecl: true
+          extensions: "gd, intl, json, mbstring, pdo"
 
       - name: "Cache dependencies installed with composer"
         uses: actions/cache@v1
@@ -86,8 +89,8 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 7.2
           - 7.3
+          - 7.4
 
     steps:
       - name: "Checkout"
@@ -97,7 +100,7 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: ${{ matrix.php-version }}
-          extension-csv: "intl, json, pdo, xdebug"
+          extensions: "gd, intl, json, mbstring, pdo"
           coverage: "xdebug"
 
       - name: "Cache dependencies installed with composer"
@@ -128,3 +131,44 @@ jobs:
 
       - name: "Send code coverage report to Codecov.io"
         run: bash codecov -t ${{ secrets.CODECOV_TOKEN }}
+
+  mutation-test:
+    name: "Mutation Tests"
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version:
+          - 7.3
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@master
+
+      - name: "Install PHP with extensions"
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: intl, json, pdo, xdebug
+          coverage: "xdebug"
+
+      - name: "Cache dependencies installed with composer"
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache
+          key: php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            php-${{ matrix.php-version }}-composer-locked-
+
+      - name: "Install dependencies with composer"
+        run: $(which composer) install
+
+      - name: "Create build directory"
+        run: mkdir -p build/infection
+
+      - name: "Copy configuration"
+        run: cp src/config.php.dist src/config.php
+
+      - name: "Run mutation tests with infection"
+        run: vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=71 --min-msi=19

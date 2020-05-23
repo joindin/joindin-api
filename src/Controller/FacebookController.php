@@ -3,7 +3,6 @@
 /**
  * Facebook-specific endpoints live here
  */
-
 namespace Joindin\Api\Controller;
 
 use Exception;
@@ -40,6 +39,7 @@ class FacebookController extends BaseApiController
         $clientId         = $request->getParameter('client_id');
         $clientSecret     = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
+
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
             throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
@@ -76,7 +76,7 @@ class FacebookController extends BaseApiController
             throw new Exception("Unexpected Facebook error", Http::INTERNAL_SERVER_ERROR);
         }
 
-        $data         = json_decode((string)$res->getBody(), true);
+        $data         = json_decode((string) $res->getBody(), true);
         $access_token = $data['access_token'];
 
         // retrieve email address from Facebook profile
@@ -91,7 +91,8 @@ class FacebookController extends BaseApiController
             throw new Exception("Could not sign in with Facebook", Http::FORBIDDEN);
         }
 
-        $data = json_decode((string)$res->getBody(), true, 512, JSON_BIGINT_AS_STRING);
+        $data = json_decode((string) $res->getBody(), true, 512, JSON_BIGINT_AS_STRING);
+
         if (!array_key_exists('email', $data)) {
             throw new Exception("Email address is unavailable", Http::FORBIDDEN);
         }

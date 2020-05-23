@@ -19,11 +19,11 @@ final class OauthModelTest extends TestCase
     public function setup(): void
     {
         $this->pdo              = $this->getMockBuilder(PDO::class)
-                                       ->disableOriginalConstructor()
-                                       ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->request          = $this->getMockBuilder(Request::class)
-                                       ->disableOriginalConstructor()
-                                       ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->request->base    = "";
         $this->request->version = "2.1";
 

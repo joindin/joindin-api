@@ -35,7 +35,6 @@ final class TalkLinkControllerTest extends TalkBase
             ->method("removeTalkLink")
             ->willReturn(false);
 
-
         $this->assertTrue(
             $this->talks_controller->removeTalkLink(
                 $this->request,
