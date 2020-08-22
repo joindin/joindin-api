@@ -5,6 +5,7 @@ namespace Joindin\Api\Model;
 use Exception;
 use Joindin\Api\Exception\RateLimitExceededException;
 use PDO;
+use function sprintf;
 
 class TalkCommentMapper extends ApiMapper
 {
@@ -284,12 +285,10 @@ class TalkCommentMapper extends ApiMapper
             return;
         }
 
-        $rate_limit_time = (int) (new \DateTimeImmutable())
-            ->sub(new \DateInterval(sprintf('PT%dM', $duration_minutes)))
-            ->format('U');
         $oldest_comment = (int) (new \DateTimeImmutable($row['created_at']))->format('U');
 
-        $wait = $oldest_comment - $rate_limit_time;
+        $wait = $oldest_comment - (int) $rate_limit_time->format('U');
+
         if ($wait > 0) {
             throw RateLimitExceededException::withLimitAndRefresh($max_comments, $wait);
         }
