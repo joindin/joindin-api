@@ -246,7 +246,7 @@ class TalkCommentMapper extends ApiMapper
      * @param int $user_id
      * @throws RateLimitExceededException
      */
-    public function checkRateLimit(int $user_id)
+    public function checkRateLimit(int $user_id): void
     {
         $max_comments = 30;
         $duration_minutes = 60;
@@ -284,10 +284,10 @@ class TalkCommentMapper extends ApiMapper
             return;
         }
 
-        $rate_limit_time = (new \DateTimeImmutable())
+        $rate_limit_time = (int) (new \DateTimeImmutable())
             ->sub(new \DateInterval(sprintf('PT%dM', $duration_minutes)))
             ->format('U');
-        $oldest_comment = (new \DateTimeImmutable($row['created_at']))->format('U');
+        $oldest_comment = (int) (new \DateTimeImmutable($row['created_at']))->format('U');
 
         $wait = $oldest_comment - $rate_limit_time;
         if ($wait > 0) {

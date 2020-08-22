@@ -14,6 +14,7 @@ use Joindin\Api\Service\NullSpamCheckService;
 use Joindin\Api\Service\SpamCheckServiceInterface;
 use Joindin\Api\Service\TalkCommentEmailService;
 use Joindin\Api\Test\Mock\mockPDO;
+use PHPUnit\Framework\MockObject\MockObject;
 use Teapot\StatusCode\Http;
 use Teapot\StatusCode\WebDAV;
 
@@ -884,6 +885,7 @@ final class TalksControllerTest extends TalkBase
             'rating' => '3',
         ];
 
+        /** @var TalkCommentEmailService&MockObject $talks_comment_email */
         $talks_comment_email =
             $this->getMockBuilder(TalkCommentEmailService::class)
                 ->disableOriginalConstructor()
@@ -892,6 +894,7 @@ final class TalksControllerTest extends TalkBase
         $talks_comment_email->method('sendEmail');
 
         $talks_controller = new class(new NullSpamCheckService(), $talks_comment_email) extends TalksController {
+            /** @var TalkCommentEmailService  */
             private $talkCommentEmailService;
 
             public function __construct(
@@ -904,6 +907,13 @@ final class TalksControllerTest extends TalkBase
                 $this->talkCommentEmailService = $talkCommentEmailService;
             }
 
+            /**
+             * @param array $config
+             * @param array $recipients
+             * @param string $talk
+             * @param string $comment
+             * @return TalkCommentEmailService
+             */
             public function getTalkCommentEmailService($config, $recipients, $talk, $comment)
             {
                 return $this->talkCommentEmailService;

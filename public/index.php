@@ -41,16 +41,15 @@ function handle_exception(Throwable $e)
             $request->getView()->setHeader('WWW-Authenticate', 'Bearer realm="api.joind.in');
         }
 
-    error_log(get_class($e) . ': ' . $e->getMessage() . " -- " . $e->getTraceAsString());
-
-    $message = $e->getMessage();
-    if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
-        $message = "Database error";
+        $message = $e->getMessage();
+        if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
+            $message = "Database error";
+        }
+        if ($e instanceof RateLimitExceededException) {
+            $request->getView()->setHeader('Retry-After', $e->getRateLimitRefresh());
+        }
+        $request->getView()->render([$message]);
     }
-    if ($e instanceof RateLimitExceededException) {
-        $request->getView()->setHeader('Retry-After', $e->getRateLimitRefresh());
-    }
-    $request->getView()->render([$message]);
 }
 
 set_exception_handler('handle_exception');
