@@ -188,7 +188,10 @@ class TalkCommentsController extends BaseApiController
             $maxCommentEditMinutes = $this->config['limits']['max_comment_edit_minutes'];
         }
 
-        if ($comment['date_made'] + ($maxCommentEditMinutes * 60) < time()) {
+        $interval = sprintf('PT%dM', $maxCommentEditMinutes);
+        $edit_after_time = (new \DateTimeImmutable())->sub(new \DateInterval($interval));
+
+        if ($comment['created_at'] < $edit_after_time) {
             throw new Exception(
                 'Cannot edit the comment after ' . $maxCommentEditMinutes . ' minutes',
                 Http::BAD_REQUEST

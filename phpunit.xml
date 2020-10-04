@@ -23,6 +23,12 @@
         <log type="junit" target="build/logs/junit.xml"/>
     </logging>
 
+    <groups>
+        <exclude>
+            <group>uses_pdo</group>
+        </exclude>
+    </groups>
+
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="false">
             <directory suffix=".php">src</directory>
