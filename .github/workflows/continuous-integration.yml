@@ -171,4 +171,4 @@ jobs:
         run: cp src/config.php.dist src/config.php
 
       - name: "Run mutation tests with infection"
-        run: vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=71 --min-msi=19 --filter=src/,inc/,public/,tests/
+        run: vendor/bin/infection --ignore-msi-with-no-mutations --min-covered-msi=69 --min-msi=19
