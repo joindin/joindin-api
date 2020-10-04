@@ -38,7 +38,7 @@ class DataGenerator
     public function generate()
     {
         ob_implicit_flush(true);
-        
+
         // Generate languages and categories (it's not really generated data)
         $this->_generateLanguages();
         $this->_generateCategories();
@@ -92,7 +92,7 @@ class DataGenerator
     {
         return $this->_cache[$tag];
     }
-    
+
     /**
      * Find/Fetch an object based on the needle inside the $tag namespace
      *
@@ -115,7 +115,7 @@ class DataGenerator
 
         return null;
     }
-    
+
     /**
      * Store an $object on index $id in the $tag namespace
      *
@@ -173,7 +173,7 @@ class DataGenerator
             if ($id % 100 == 0) {
                 fwrite(STDERR, "TALK: $id         (" . (memory_get_usage(true)/1024) . " Kb)        \r");
             }
-            
+
             $talk = new StdClass();
             $talk->id = $id;
 
@@ -336,7 +336,7 @@ class DataGenerator
     protected function _generateTalkComments($count)
     {
         echo "TRUNCATE talk_comments;\n";
-        echo "INSERT INTO talk_comments (talk_id, rating, comment, date_made, ID, private, active, user_id, comment_type, source) VALUES \n";
+        echo "INSERT INTO talk_comments (talk_id, rating, comment, created_at, ID, private, active, user_id, comment_type, source) VALUES \n";
 
         $first = true;
 
@@ -386,11 +386,11 @@ class DataGenerator
             }
 
             printf(
-                "(%d, %d, '%s', %d, %d, %d, %d, %d, NULL, '%s')",
+                "(%d, %d, '%s', '%s', %d, %d, %d, %d, NULL, '%s')",
                 $talk->id,
                 $rating,
                 $comment,
-                $date_made,
+                (new DateTimeImmutable('@' . $date_made))->format('Y-m-d H:i:s'),
                 $id,
                 $private,
                 1,
@@ -600,11 +600,11 @@ class DataGenerator
 
             $event = new StdClass();
             $event->id = $id;
-            
+
             // Add a dampening for this event. This is a 0-5 value (0 being the most used) that will give an overall
             // view of the event. When a event wasn't good, it should reflect on the comments as well
             // because they should be lower than usual.
-            
+
             $event->dampening = floor(log(rand(1, 256) / log(2)));
             // Store this event in the cache
             $this->_cacheStore('events', $id, $event);
@@ -725,7 +725,7 @@ class DataGenerator
 
             // Generate and store user
             $user = $this->_genUser();
-            
+
             // Ensure that we don't duplicate usernames as that column has a unique index on it
             if (isset($usernames[$user->username])) {
                 continue;
