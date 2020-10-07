@@ -24,10 +24,10 @@ class EventRejectedEmailServiceTest extends TestCase
         'website_url' => 'www.example.org'
     ];
 
-    /** @var string[] */
+    /** @var array */
     protected $recipients = ["test@joind.in"];
 
-    /** @var string[] */
+    /** @var array */
     protected $event = [
         'name' => 'name',
         'description' => 'description',

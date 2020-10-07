@@ -26,10 +26,10 @@ class EventCommentReportedEmailServiceTest extends TestCase
         'website_url' => 'www.example.org'
     ];
 
-    /** @var string[] */
+    /** @var array */
     protected $recipients = ["test@joind.in"];
 
-    /** @var \string[][][] */
+    /** @var array */
     protected $event = [
         'events' => [
             [
@@ -42,7 +42,7 @@ class EventCommentReportedEmailServiceTest extends TestCase
         ],
     ];
 
-    /** @var \array[][] */
+    /** @var array */
     protected $comment = [
         'comments' => [
             [
@@ -86,7 +86,7 @@ class EventCommentReportedEmailServiceTest extends TestCase
         $this->assertFalse($anExceptionWasThrown);
     }
 
-    public function sendEmailDataProvider()
+    public function sendEmailDataProvider(): array
     {
         return [
             'no username and display name' => [''],

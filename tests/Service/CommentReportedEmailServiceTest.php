@@ -26,10 +26,10 @@ class CommentReportedEmailServiceTest extends TestCase
         'website_url' => 'www.example.org'
     ];
 
-    /** @var string[] */
+    /** @var array */
     protected $recipients = ["test@joind.in"];
 
-    /** @var \array[][] */
+    /** @var array */
     protected $comment = [
         'comments' => [
             [
@@ -83,7 +83,7 @@ class CommentReportedEmailServiceTest extends TestCase
         $this->assertFalse($anExceptionWasThrown);
     }
 
-    public function sendEmailDataProvider()
+    public function sendEmailDataProvider(): array
     {
         return [
             'no username and display name' => [''],

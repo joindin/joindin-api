@@ -24,10 +24,10 @@ class EventSubmissionEmailServiceTest extends TestCase
         'website_url' => 'www.example.org'
     ];
 
-    /** @var string[] */
+    /** @var array */
     protected $recipients = ["test@joind.in"];
 
-    /** @var string[] */
+    /** @var array */
     protected $event = [
         'name' => 'name',
         'description' => 'description',
@@ -62,7 +62,7 @@ class EventSubmissionEmailServiceTest extends TestCase
         $this->assertFalse($anExceptionWasThrown);
     }
 
-    public function sendEmailDataProvider()
+    public function sendEmailDataProvider(): array
     {
         return [
             'withoutCount' => [null],
