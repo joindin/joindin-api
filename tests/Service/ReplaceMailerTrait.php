@@ -2,9 +2,11 @@
 
 namespace Joindin\Api\Test\Service;
 
+use Joindin\Api\Service\BaseEmailService;
+
 trait ReplaceMailerTrait
 {
-    public function replaceMailer($service)
+    public function replaceMailer(BaseEmailService $service): BaseEmailService
     {
         $reflectionObject = new \ReflectionObject($service);
 

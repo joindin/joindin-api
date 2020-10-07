@@ -33,7 +33,7 @@ class EventApprovedEmailServiceTest extends TestCase
         'start_date' => '2000-01-01',
     ];
 
-    public function testSendEmailDoesNotThrowExceptions()
+    public function testSendEmailDoesNotThrowExceptions(): void
     {
         $eventApprovedEmailService = new EventApprovedEmailService($this->config, $this->recipients, $this->event);
 

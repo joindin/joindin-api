@@ -37,7 +37,7 @@ class EventSubmissionEmailServiceTest extends TestCase
     /**
      * @dataProvider sendEmailDataProvider
      */
-    public function testSendEmailDoesNotThrowExceptions($count)
+    public function testSendEmailDoesNotThrowExceptions(?int $count): void
     {
         $eventApprovedEmailService = new EventSubmissionEmailService(
             $this->config,

@@ -26,7 +26,7 @@ class ContactEmailServiceTest extends TestCase
         'website_url' => 'www.example.org'
     ];
 
-    public function testSendEmailDoesNotThrowExceptions()
+    public function testSendEmailDoesNotThrowExceptions(): void
     {
         $contactEmailService = new ContactEmailService($this->config);
         $this->replaceMailer($contactEmailService);

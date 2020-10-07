@@ -52,7 +52,7 @@ class CommentReportedEmailServiceTest extends TestCase
     /**
      * @dataProvider sendEmailDataProvider
      */
-    public function testSendEmailDoesNotThrowExceptions($type)
+    public function testSendEmailDoesNotThrowExceptions(string $type): void
     {
         $comment = $this->comment;
         if ($type) {

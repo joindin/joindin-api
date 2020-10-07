@@ -34,7 +34,7 @@ class EventRejectedEmailServiceTest extends TestCase
         'rejection_reason' => 'rejected',
     ];
 
-    public function testSendEmailDoesNotThrowExceptions()
+    public function testSendEmailDoesNotThrowExceptions(): void
     {
         $eventApprovedEmailService = new EventRejectedEmailService($this->config, $this->recipients, $this->event);
 
