@@ -40,7 +40,7 @@ class CommentReportedEmailServiceTest extends TestCase
         ]
     ];
 
-    /** @var \string[][][] */
+    /** @var array */
     protected $event = [
         'events' => [
             [
