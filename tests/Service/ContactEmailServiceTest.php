@@ -11,6 +11,7 @@ class ContactEmailServiceTest extends TestCase
 {
     use ReplaceMailerTrait;
 
+    /** @var array */
     protected $config = [
         'email' => [
             'contact' => 'noreply@example.com',

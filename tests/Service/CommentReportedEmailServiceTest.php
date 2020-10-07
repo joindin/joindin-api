@@ -11,6 +11,7 @@ class CommentReportedEmailServiceTest extends TestCase
 {
     use ReplaceMailerTrait;
 
+    /** @var array */
     protected $config = [
         'email' => [
             'from' => 'test@joind.in',
@@ -25,8 +26,10 @@ class CommentReportedEmailServiceTest extends TestCase
         'website_url' => 'www.example.org'
     ];
 
+    /** @var string[] */
     protected $recipients = ["test@joind.in"];
 
+    /** @var \array[][] */
     protected $comment = [
         'comments' => [
             [
@@ -37,6 +40,7 @@ class CommentReportedEmailServiceTest extends TestCase
         ]
     ];
 
+    /** @var \string[][][] */
     protected $event = [
         'events' => [
             [

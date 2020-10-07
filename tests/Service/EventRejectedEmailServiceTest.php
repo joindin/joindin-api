@@ -9,6 +9,7 @@ class EventRejectedEmailServiceTest extends TestCase
 {
     use ReplaceMailerTrait;
 
+    /** @var array */
     protected $config = [
         'email' => [
             'from' => 'test@joind.in',
@@ -23,8 +24,10 @@ class EventRejectedEmailServiceTest extends TestCase
         'website_url' => 'www.example.org'
     ];
 
+    /** @var string[] */
     protected $recipients = ["test@joind.in"];
 
+    /** @var string[] */
     protected $event = [
         'name' => 'name',
         'description' => 'description',

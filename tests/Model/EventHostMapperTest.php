@@ -151,7 +151,7 @@ final class EventHostMapperTest extends TestCase
         $this->assertTrue($mapper->removeHostFromEvent(12, 14));
     }
 
-    public function testGetVerboseFields()
+    public function testGetVerboseFields(): void
     {
         $eventHostMapper = new EventHostMapper($this->createMock(\PDO::class));
 
