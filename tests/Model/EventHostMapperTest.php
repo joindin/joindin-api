@@ -150,4 +150,17 @@ final class EventHostMapperTest extends TestCase
         $mapper = new EventHostMapper($pdo, $request);
         $this->assertTrue($mapper->removeHostFromEvent(12, 14));
     }
+
+    public function testGetVerboseFields()
+    {
+        $eventHostMapper = new EventHostMapper($this->createMock(\PDO::class));
+
+        $this->assertEquals(
+            [
+                'host_name' => 'host_name',
+                'host_uri'  => 'host_uri',
+            ],
+            $eventHostMapper->getVerboseFields()
+        );
+    }
 }
