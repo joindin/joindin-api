@@ -3,6 +3,7 @@
 namespace Joindin\Api\Controller;
 
 use Exception;
+use http\Client;
 use Joindin\Api\Model\ClientMapper;
 use PDO;
 use Joindin\Api\Request;
@@ -10,6 +11,11 @@ use Teapot\StatusCode\Http;
 
 class ApplicationsController extends BaseApiController
 {
+    /**
+     * @var ClientMapper
+     */
+    private $clientMapper;
+
     public function getApplication(Request $request, PDO $db)
     {
         if (!isset($request->user_id)) {
@@ -49,7 +55,7 @@ class ApplicationsController extends BaseApiController
             throw new Exception("You must be logged in", Http::UNAUTHORIZED);
         }
 
-        $app    = [];
+        $app = [];
         $errors = [];
 
         $app['name'] = filter_var(
@@ -88,13 +94,13 @@ class ApplicationsController extends BaseApiController
         $app['user_id'] = $request->user_id;
 
         $clientMapper = $this->getClientMapper($db, $request);
-        $clientId     = $clientMapper->createClient($app);
+        $clientId = $clientMapper->createClient($app);
 
         $uri = $request->base . '/' . $request->version . '/applications/' . $clientId;
         $request->getView()->setResponseCode(Http::CREATED);
         $request->getView()->setHeader('Location', $uri);
 
-        $mapper    = $this->getClientMapper($db, $request);
+        $mapper = $this->getClientMapper($db, $request);
         $newClient = $mapper->getClientByIdAndUser($clientId, $request->user_id);
 
         return $newClient->getOutputView($request);
@@ -106,7 +112,7 @@ class ApplicationsController extends BaseApiController
             throw new Exception("You must be logged in", Http::UNAUTHORIZED);
         }
 
-        $app    = [];
+        $app = [];
         $errors = [];
 
         $app['name'] = filter_var(
@@ -141,7 +147,7 @@ class ApplicationsController extends BaseApiController
         $app['user_id'] = $request->user_id;
 
         $clientMapper = $this->getClientMapper($db, $request);
-        $clientId     = $clientMapper->updateClient($this->getItemId($request), $app);
+        $clientId = $clientMapper->updateClient($this->getItemId($request), $app);
 
         $uri = $request->base . '/' . $request->version . '/applications/' . $clientId;
         $request->getView()->setResponseCode(Http::CREATED);
@@ -183,14 +189,19 @@ class ApplicationsController extends BaseApiController
         );
     }
 
+    public function setClientMapper(ClientMapper $clientMapper)
+    {
+        $this->clientMapper = $clientMapper;
+    }
+
     /**
-     * @param PDO     $db
+     * @param PDO $db
      * @param Request $request
      *
      * @return ClientMapper
      */
     private function getClientMapper(PDO $db, Request $request)
     {
-        return new ClientMapper($db, $request);
+        return $this->clientMapper ?? new ClientMapper($db, $request);
     }
 }
