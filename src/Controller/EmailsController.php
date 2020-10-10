@@ -3,6 +3,7 @@
 namespace Joindin\Api\Controller;
 
 use Exception;
+use Joindin\Api\Factory\EmailServiceFactory;
 use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Service\UserPasswordResetEmailService;
 use Joindin\Api\Service\UserRegistrationEmailService;
@@ -16,9 +17,20 @@ use Teapot\StatusCode\Http;
  */
 class EmailsController extends BaseApiController
 {
+    /**
+     * @var EmailServiceFactory $emailServiceFactory
+     */
+    private $emailServiceFactory;
+
+    public function __construct(array $config = [], EmailServiceFactory $emailServiceFactory)
+    {
+        parent::__construct($config);
+        $this->emailServiceFactory = $emailServiceFactory ?? new EmailServiceFactory();
+    }
+
     public function verifications(Request $request, PDO $db)
     {
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = $this->emailServiceFactory->getUserMapper($request, $db);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
 
         if (empty($email)) {
@@ -36,7 +48,7 @@ class EmailsController extends BaseApiController
         $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
 
         $recipients   = [$email];
-        $emailService = new UserRegistrationEmailService($this->config, $recipients, $token);
+        $emailService = $this->emailServiceFactory->getUserRegistrationEmailService($this->config, $recipients, $token);
         $emailService->sendEmail();
 
         $view = $request->getView();
@@ -46,7 +58,7 @@ class EmailsController extends BaseApiController
 
     public function usernameReminder(Request $request, PDO $db)
     {
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = $this->emailServiceFactory->getUserMapper($request, $db);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
 
         if (empty($email)) {
@@ -62,7 +74,7 @@ class EmailsController extends BaseApiController
         $user = $list['users'][0];
 
         $recipients   = [$email];
-        $emailService = new UserUsernameReminderEmailService($this->config, $recipients, $user);
+        $emailService = $this->emailServiceFactory->getUserUsernameReminderEmailService($this->config, $recipients, $user);
         $emailService->sendEmail();
 
         $view = $request->getView();
@@ -72,7 +84,7 @@ class EmailsController extends BaseApiController
 
     public function passwordReset(Request $request, PDO $db)
     {
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = $this->emailServiceFactory->getUserMapper($request, $db);
         $username    = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);
 
         if (empty($username)) {
@@ -99,7 +111,7 @@ class EmailsController extends BaseApiController
             throw new Exception("Unable to generate a reset token", Http::BAD_REQUEST);
         }
 
-        $emailService = new UserPasswordResetEmailService($this->config, $recipients, $user, $token);
+        $emailService = $this->emailServiceFactory->getUserPasswordResetEmailService($this->config, $recipients, $user, $token);
         $emailService->sendEmail();
 
         $view = $request->getView();
