@@ -6,6 +6,7 @@ namespace Joindin\Api\Factory;
 
 use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Request;
+use Joindin\Api\Service\EventCommentReportedEmailService;
 use Joindin\Api\Service\UserPasswordResetEmailService;
 use Joindin\Api\Service\UserRegistrationEmailService;
 use Joindin\Api\Service\UserUsernameReminderEmailService;
@@ -18,6 +19,7 @@ class EmailServiceFactory
 
     private $userRegistrationEmailService;
     private $userPasswordResetEmailService;
+    private $eventCommentReportedEmailService;
 
     public function getUserMapper(Request $request, PDO $db)
     {
@@ -71,5 +73,13 @@ class EmailServiceFactory
         $this->userRegistrationEmailService = $userRegistrationEmailService;
     }
 
+    public function getEventCommentReportedEmailService($config, $recipients, $comment, $event) {
+        return $this->eventCommentReportedEmailService ?? new EventCommentReportedEmailService($config, $recipients, $comment, $event);
+    }
+
+    public function setEventCommentReportedEmailService($eventCommentReportedEmailService): void
+    {
+        $this->eventCommentReportedEmailService = $eventCommentReportedEmailService;
+    }
 
 }

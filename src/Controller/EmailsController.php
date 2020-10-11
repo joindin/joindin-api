@@ -22,7 +22,7 @@ class EmailsController extends BaseApiController
      */
     private $emailServiceFactory;
 
-    public function __construct(array $config = [], EmailServiceFactory $emailServiceFactory)
+    public function __construct(array $config = [], EmailServiceFactory $emailServiceFactory = null)
     {
         parent::__construct($config);
         $this->emailServiceFactory = $emailServiceFactory ?? new EmailServiceFactory();

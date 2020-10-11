@@ -11,11 +11,46 @@ use Joindin\Api\Model\ClientModelCollection;
 use Joindin\Api\Request;
 use Joindin\Api\View\ApiView;
 use PDO;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 
 class ApplicationControllerTest extends TestCase
 {
+    /**
+     * @var MockObject
+     */
+    private $request;
+    /**
+     * @var MockObject
+     */
+    private $db;
+    /**
+     * @var ApplicationsController
+     */
+    private $sut;
+    /**
+     * @var MockObject
+     */
+    private $clientMapper;
+    private $clientModelCollection;
+    /**
+     * @var MockObject
+     */
+    private $apiView;
+
+    protected function setUp(): void
+    {
+        $this->request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $this->db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+
+        $this->apiView = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
+        $this->clientModelCollection =  $this->getMockBuilder(ClientModelCollection::class)->disableOriginalConstructor()->getMock();
+        $this->clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
+        $this->sut = new ApplicationsController();
+        $this->sut->setClientMapper($this->clientMapper);
+    }
+
     /**
      * @dataProvider notLoggedInUserCallableProvider
      */
@@ -25,10 +60,7 @@ class ApplicationControllerTest extends TestCase
         $this->expectExceptionMessage('You must be logged in');
         $this->expectExceptionCode(Http::UNAUTHORIZED);
 
-        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
-
-        call_user_func($action, $request, $db);
+        call_user_func($action, $this->request, $this->db);
     }
 
     public function notLoggedInUserCallableProvider()
@@ -46,40 +78,24 @@ class ApplicationControllerTest extends TestCase
 
     public function testThatGetApplicationWorksAsExpected()
     {
-        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
-        $request->user_id = 2;
+        $this->request->user_id = 2;
 
-        $clientModelCollection = $this->getMockBuilder(ClientModelCollection::class)->disableOriginalConstructor()->getMock();
-        $clientModelCollection->expects(self::once())->method("getOutputView")->with($request, false)->willReturn([]);
+        $this->clientModelCollection->expects(self::once())->method("getOutputView")->with($this->request, false)->willReturn([]);
+        $this->clientMapper->expects(self::once())->method("getClientByIdAndUser")->willReturn($this->clientModelCollection);
 
-        $clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
-        $clientMapper->expects(self::once())->method("getClientByIdAndUser")->willReturn($clientModelCollection);
-
-        $controller = new ApplicationsController();
-        $controller->setClientMapper($clientMapper);
-
-        self::assertEquals([], $controller->getApplication($request, $db));
+        self::assertEquals([], $this->sut->getApplication($this->request, $this->db));
     }
 
     public function testThatListApplicationsWorksAsExpected()
     {
-        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
-        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->user_id = 2;
-        $request->paginationParameters = ['resultsperpage' => 1, 'start' => ""];
+        $this->request->user_id = 2;
+        $this->request->paginationParameters = ['resultsperpage' => 1, 'start' => ""];
 
-        $clientModelCollection = $this->getMockBuilder(ClientModelCollection::class)->disableOriginalConstructor()->getMock();
-        $clientModelCollection->expects(self::once())->method("getOutputView")->with($request, false)->willReturn([]);
+        $this->clientModelCollection->expects(self::once())->method("getOutputView")->with($this->request, false)->willReturn([]);
+        $this->clientMapper->expects(self::once())->method("getClientsForUser")->with(2, 1,
+            "")->willReturn($this->clientModelCollection);
 
-        $clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
-        $clientMapper->expects(self::once())->method("getClientsForUser")->with(2, 1,
-            "")->willReturn($clientModelCollection);
-
-        $controller = new ApplicationsController();
-        $controller->setClientMapper($clientMapper);
-
-        self::assertEquals([], $controller->listApplications($request, $db));
+        self::assertEquals([], $this->sut->listApplications($this->request, $this->db));
     }
 
     public function testThatDeleteApplicationThrowsExceptionWhenNoClients()
@@ -88,20 +104,11 @@ class ApplicationControllerTest extends TestCase
         $this->expectExceptionMessage('No application found');
         $this->expectExceptionCode(Http::NOT_FOUND);
 
-        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
-        $request->user_id = 2;
+        $this->request->user_id = 2;
+        $this->clientModelCollection->expects(self::once())->method("getClients")->willReturn(null);
+        $this->clientMapper->expects(self::once())->method("getClientByIdAndUser")->willReturn($this->clientModelCollection);
 
-        $clientModelCollection = $this->getMockBuilder(ClientModelCollection::class)->disableOriginalConstructor()->getMock();
-        $clientModelCollection->expects(self::once())->method("getClients")->willReturn(null);
-
-        $clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
-        $clientMapper->expects(self::once())->method("getClientByIdAndUser")->willReturn($clientModelCollection);
-
-        $controller = new ApplicationsController();
-        $controller->setClientMapper($clientMapper);
-
-        $controller->deleteApplication($request, $db);
+        $this->sut->deleteApplication($this->request, $this->db);
     }
 
     public function testThatDeleteApplicationThrowsExceptionWhenDeleteFails()
@@ -110,50 +117,37 @@ class ApplicationControllerTest extends TestCase
         $this->expectExceptionMessage('Embedded exception message');
         $this->expectExceptionCode(Http::INTERNAL_SERVER_ERROR);
 
-        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
-        $request->user_id = 2;
-        $request->url_elements[3] = 1;
+        $this->request->user_id = 2;
+        $this->request->url_elements[3] = 1;
 
-        $clientModelCollection = $this->getMockBuilder(ClientModelCollection::class)->disableOriginalConstructor()->getMock();
-        $clientModelCollection->expects(self::once())->method("getClients")->willReturn(true);
+        $this->clientModelCollection->expects(self::once())->method("getClients")->willReturn(true);
 
-        $clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
-        $clientMapper->expects(self::once())->method("getClientByIdAndUser")->willReturn($clientModelCollection);
-        $clientMapper->expects(self::once())->method("deleteClient")->with(1)->willThrowException(new Exception('Embedded exception message'));
+        $this->clientMapper->expects(self::once())->method("getClientByIdAndUser")->willReturn($this->clientModelCollection);
+        $this->clientMapper->expects(self::once())->method("deleteClient")->with(1)->willThrowException(new Exception('Embedded exception message'));
 
-        $controller = new ApplicationsController();
-        $controller->setClientMapper($clientMapper);
-
-        $controller->deleteApplication($request, $db);
+        $this->sut->deleteApplication($this->request, $this->db);
     }
 
     public function testThatDeleteApplicationWorksAsExpected()
     {
-        $apiView = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
-        $apiView->expects(self::once())->method("setNoRender")->with(true);
-        $apiView->expects(self::once())->method("setResponseCode")->with(Http::NO_CONTENT);
-        $apiView->expects(self::once())->method("setHeader")->with('Location', 'hi/10/applications');
+        $this->apiView->expects(self::once())->method("setNoRender")->with(true);
+        $this->apiView->expects(self::once())->method("setResponseCode")->with(Http::NO_CONTENT);
+        $this->apiView->expects(self::once())->method("setHeader")->with('Location', 'hi/10/applications');
 
-        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->expects(self::exactly(3))->method("getView")->willReturn($apiView);
-        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
-        $request->user_id = 2;
-        $request->url_elements[3] = 1;
-        $request->base = 'hi';
-        $request->version = '10';
+        $this->request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $this->request->expects(self::exactly(3))->method("getView")->willReturn($this->apiView);
+        $this->db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+        $this->request->user_id = 2;
+        $this->request->url_elements[3] = 1;
+        $this->request->base = 'hi';
+        $this->request->version = '10';
 
-        $clientModelCollection = $this->getMockBuilder(ClientModelCollection::class)->disableOriginalConstructor()->getMock();
-        $clientModelCollection->expects(self::once())->method("getClients")->willReturn(true);
+        $this->clientModelCollection->expects(self::once())->method("getClients")->willReturn(true);
 
-        $clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
-        $clientMapper->expects(self::once())->method("getClientByIdAndUser")->willReturn($clientModelCollection);
-        $clientMapper->expects(self::once())->method("deleteClient")->with(1);
+        $this->clientMapper->expects(self::once())->method("getClientByIdAndUser")->willReturn($this->clientModelCollection);
+        $this->clientMapper->expects(self::once())->method("deleteClient")->with(1);
 
-        $controller = new ApplicationsController();
-        $controller->setClientMapper($clientMapper);
-
-        $controller->deleteApplication($request, $db);
+        $this->sut->deleteApplication($this->request, $this->db);
     }
 
     public function testCreateApplicationWithErrorsThrowsException()
@@ -162,46 +156,30 @@ class ApplicationControllerTest extends TestCase
         $this->expectExceptionMessage("'name' is a required field. 'description' is a required field. 'callback_url' is a required field");
         $this->expectExceptionCode(Http::BAD_REQUEST);
 
-        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
-        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->user_id = 2;
-        $request->expects(self::any())->method("getParameter")->willReturn("");
+        $this->request->user_id = 2;
+        $this->request->expects(self::any())->method("getParameter")->willReturn("");
 
-        $clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
-
-        $controller = new ApplicationsController();
-        $controller->setClientMapper($clientMapper);
-
-        $controller->createApplication($request, $db);
+        $this->sut->createApplication($this->request, $this->db);
     }
 
     public function testCreateApplicationWorksAsExpected()
     {
-        $apiView = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
-        $apiView->expects(self::once())->method("setResponseCode")->with(Http::CREATED);
-        $apiView->expects(self::once())->method("setHeader")->with('Location', 'hi/10/applications/5');
+        $this->apiView->expects(self::once())->method("setResponseCode")->with(Http::CREATED);
+        $this->apiView->expects(self::once())->method("setHeader")->with('Location', 'hi/10/applications/5');
 
-        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
-        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->expects(self::exactly(2))->method("getView")->willReturn($apiView);
-        $request->user_id = 2;
-        $request->base = "hi";
-        $request->version = "10";
+        $this->request->expects(self::exactly(2))->method("getView")->willReturn($this->apiView);
+        $this->request->user_id = 2;
+        $this->request->base = "hi";
+        $this->request->version = "10";
+        $this->request->expects(self::any())->method("getParameter")->willReturn("name", "description", "callback_url");
 
-        $request->expects(self::any())->method("getParameter")->willReturn("name", "description", "callback_url");
+        $this->clientModelCollection->expects(self::once())->method("getOutputView")->with($this->request)->willReturn("hello there");
 
-        $clientModelCollection = $this->getMockBuilder(ClientModelCollection::class)->disableOriginalConstructor()->getMock();
-        $clientModelCollection->expects(self::once())->method("getOutputView")->with($request)->willReturn("hello there");
+        $this->clientMapper->expects(self::once())->method("createClient")->willReturn(5);
+        $this->clientMapper->expects(self::once())->method("getClientByIdAndUser")->with(5,
+            2)->willReturn($this->clientModelCollection);
 
-        $clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
-        $clientMapper->expects(self::once())->method("createClient")->willReturn(5);
-        $clientMapper->expects(self::once())->method("getClientByIdAndUser")->with(5,
-            2)->willReturn($clientModelCollection);
-
-        $controller = new ApplicationsController();
-        $controller->setClientMapper($clientMapper);
-
-        $this->assertEquals("hello there", $controller->createApplication($request, $db));
+        $this->assertEquals("hello there", $this->sut->createApplication($this->request, $this->db));
     }
 
     public function testEditApplicationWithErrorsThrowsException()
@@ -210,17 +188,10 @@ class ApplicationControllerTest extends TestCase
         $this->expectExceptionMessage("'name' is a required field. 'description' is a required field");
         $this->expectExceptionCode(Http::BAD_REQUEST);
 
-        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
-        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->user_id = 2;
-        $request->expects(self::any())->method("getParameter")->willReturn("");
+        $this->request->user_id = 2;
+        $this->request->expects(self::any())->method("getParameter")->willReturn("");
 
-        $clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
-
-        $controller = new ApplicationsController();
-        $controller->setClientMapper($clientMapper);
-
-        $controller->editApplication($request, $db);
+        $this->sut->editApplication($this->request, $this->db);
     }
 
     public function testEditApplicationWorksAsExpected()
@@ -232,32 +203,24 @@ class ApplicationControllerTest extends TestCase
             "user_id" => 2,
         ];
 
-        $apiView = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
-        $apiView->expects(self::once())->method("setResponseCode")->with(Http::CREATED);
-        $apiView->expects(self::once())->method("setHeader")->with('Location', 'hi/10/applications/1');
+        $this->apiView->expects(self::once())->method("setResponseCode")->with(Http::CREATED);
+        $this->apiView->expects(self::once())->method("setHeader")->with('Location', 'hi/10/applications/1');
 
-        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
-        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->expects(self::exactly(2))->method("getView")->willReturn($apiView);
-        $request->user_id = $expectedApp["user_id"];
-        $request->base = "hi";
-        $request->version = "10";
-        $request->url_elements[3] = 1;
+        $this->request->expects(self::exactly(2))->method("getView")->willReturn($this->apiView);
+        $this->request->user_id = $expectedApp["user_id"];
+        $this->request->base = "hi";
+        $this->request->version = "10";
+        $this->request->url_elements[3] = 1;
 
-        $request->expects(self::any())->method("getParameter")->willReturn($expectedApp["name"],
+        $this->request->expects(self::any())->method("getParameter")->willReturn($expectedApp["name"],
             $expectedApp["description"], $expectedApp["callback_url"]);
 
-        $clientModelCollection = $this->getMockBuilder(ClientModelCollection::class)->disableOriginalConstructor()->getMock();
-        $clientModelCollection->expects(self::once())->method("getOutputView")->with($request)->willReturn("hello there");
+        $this->clientModelCollection->expects(self::once())->method("getOutputView")->with($this->request)->willReturn("hello there");
 
-        $clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
-        $clientMapper->expects(self::once())->method("updateClient")->with(1, $expectedApp)->willReturn(1);
-        $clientMapper->expects(self::once())->method("getClientByIdAndUser")->with(1,
-            $expectedApp["user_id"])->willReturn($clientModelCollection);
+        $this->clientMapper->expects(self::once())->method("updateClient")->with(1, $expectedApp)->willReturn(1);
+        $this->clientMapper->expects(self::once())->method("getClientByIdAndUser")->with(1,
+            $expectedApp["user_id"])->willReturn($this->clientModelCollection);
 
-        $controller = new ApplicationsController();
-        $controller->setClientMapper($clientMapper);
-
-        $this->assertEquals("hello there", $controller->editApplication($request, $db));
+        $this->assertEquals("hello there", $this->sut->editApplication($this->request, $this->db));
     }
 }

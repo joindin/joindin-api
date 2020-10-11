@@ -61,7 +61,7 @@ class EmailsControllerTest extends TestCase
      */
     private $view;
 
-    public function create()
+    protected function setUp() :void
     {
         $this->request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $this->db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
@@ -82,8 +82,6 @@ class EmailsControllerTest extends TestCase
         $this->expectExceptionMessage('The email address must be supplied');
         $this->expectExceptionCode(Http::BAD_REQUEST);
 
-        $this->create();
-
         $this->request->expects(self::once())->method("getParameter")->with("email")->willReturn("");
 
         call_user_func([$this->sut, $methodUnderTest], $this->request, $this->db);
@@ -103,7 +101,6 @@ class EmailsControllerTest extends TestCase
         $this->expectExceptionMessage("Can't find that email address");
         $this->expectExceptionCode(Http::BAD_REQUEST);
 
-        $this->create();
         $this->request->expects(self::once())->method("getParameter")->with("email")->willReturn("test@example.com");
         $this->userMapper->expects(self::once())->method("getUserIdFromEmail")->with("test@example.com")->willReturn(false);
 
@@ -116,7 +113,6 @@ class EmailsControllerTest extends TestCase
         $this->expectExceptionMessage("Can't find that email address");
         $this->expectExceptionCode(Http::BAD_REQUEST);
 
-        $this->create();
         $this->request->expects(self::once())->method("getParameter")->with("email")->willReturn("test@example.com");
         $this->userMapper->expects(self::once())->method("getUserByEmail")->with("test@example.com")->willReturn(["users" => []]);
 
@@ -128,7 +124,7 @@ class EmailsControllerTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('A username must be supplied');
         $this->expectExceptionCode(Http::BAD_REQUEST);
-        $this->create();
+
         $this->request->expects(self::once())->method("getParameter")->with("username")->willReturn("");
         $this->sut->passwordReset($this->request, $this->db);
     }
@@ -138,7 +134,7 @@ class EmailsControllerTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("Can't find that user");
         $this->expectExceptionCode(Http::BAD_REQUEST);
-        $this->create();
+
         $this->request->expects(self::once())->method("getParameter")->with("username")->willReturn("test");
         $this->userMapper->expects(self::once())->method("getUserByUsername")->with("test")->willReturn(["users" => []]);
         $this->sut->passwordReset($this->request, $this->db);
@@ -149,7 +145,7 @@ class EmailsControllerTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("Unable to generate a reset token");
         $this->expectExceptionCode(Http::BAD_REQUEST);
-        $this->create();
+
         $this->request->expects(self::once())->method("getParameter")->with("username")->willReturn("test");
         $this->userMapper->expects(self::once())->method("getUserByUsername")->with("test")->willReturn(["users" => ["tester"]]);
         $this->userMapper->expects(self::once())->method("getUserIdFromUsername")->with("test")->willReturn(5);
@@ -192,7 +188,6 @@ class EmailsControllerTest extends TestCase
 
     public function expandedCreate(): void
     {
-        $this->create();
         $this->userUsernameReminderEmailService = $this->getMockBuilder(UserUsernameReminderEmailService::class)->disableOriginalConstructor()->getMock();
         $this->userPasswordResetEmailService = $this->getMockBuilder(UserPasswordResetEmailService::class)->disableOriginalConstructor()->getMock();
         $this->userRegistrationEmailService = $this->getMockBuilder(UserRegistrationEmailService::class)->disableOriginalConstructor()->getMock();

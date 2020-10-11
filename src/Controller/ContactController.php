@@ -36,11 +36,6 @@ class ContactController extends BaseApiController
         parent::__construct($config);
     }
 
-    public function handle(Request $request, PDO $db)
-    {
-        // really need to not require this to be declared
-    }
-
     /**
      * Send an email to feedback email address
      *

@@ -4,6 +4,8 @@
 namespace Joindin\Api\Controller;
 
 use Exception;
+use Joindin\Api\Factory\EmailServiceFactory;
+use Joindin\Api\Factory\MapperFactory;
 use Joindin\Api\Model\EventCommentMapper;
 use Joindin\Api\Model\EventMapper;
 use Joindin\Api\Model\UserMapper;
@@ -19,11 +21,19 @@ class EventCommentsController extends BaseApiController
 {
     private $spamCheckService;
 
-    public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [])
+    private $mapperFactory;
+    /**
+     * @var EventCommentReportedEmailService
+     */
+    private $eventCommentReportedEmailService;
+
+    public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [], MapperFactory $mapperFactory = null, EventCommentReportedEmailService $eventCommentReportedEmailService = null)
     {
         parent::__construct($config);
 
         $this->spamCheckService = $spamCheckService;
+        $this->mapperFactory = $mapperFactory ?? new MapperFactory();
+        $this->eventCommentReportedEmailService = $eventCommentReportedEmailService;
     }
 
     public function getComments(Request $request, PDO $db)
@@ -37,7 +47,7 @@ class EventCommentsController extends BaseApiController
         $start          = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
-        $mapper = new EventCommentMapper($db, $request);
+        $mapper = $this->mapperFactory->getMapper(EventCommentMapper::class, $db, $request);
 
         if ($comment_id) {
             $list = $mapper->getCommentById($comment_id, $verbose);
@@ -63,8 +73,8 @@ class EventCommentsController extends BaseApiController
         // verbosity
         $verbose = $this->getVerbosity($request);
 
-        $event_mapper   = new EventMapper($db, $request);
-        $comment_mapper = new EventCommentMapper($db, $request);
+        $event_mapper   = $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
+        $comment_mapper = $this->mapperFactory->getMapper(EventCommentMapper::class, $db, $request);
 
         if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception("You must log in to do that", Http::UNAUTHORIZED);
@@ -95,7 +105,7 @@ class EventCommentsController extends BaseApiController
         if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to comment');
         }
-        $user_mapper = new UserMapper($db, $request);
+        $user_mapper = $this->mapperFactory->getMapper(UserMapper::class, $db, $request);
         $users       = $user_mapper->getUserById($request->user_id);
         $thisUser    = $users['users'][0];
 
@@ -135,8 +145,8 @@ class EventCommentsController extends BaseApiController
             throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
         }
 
-        $event_mapper   = new EventMapper($db, $request);
-        $comment_mapper = new EventCommentMapper($db, $request);
+        $event_mapper   = $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
+        $comment_mapper = $this->mapperFactory->getMapper(EventCommentMapper::class, $db, $request);
 
         // should rating be allowed?
         if (
@@ -169,14 +179,14 @@ class EventCommentsController extends BaseApiController
         $view->setResponseCode(Http::CREATED);
     }
 
-    public function reportComment(Request $request, PDO $db)
+    public function reportComment(Request $request, PDO $db, EmailServiceFactory $emailServiceFactory = null)
     {
         // must be logged in to report a comment
         if (!isset($request->user_id) || empty($request->user_id)) {
             throw new Exception('You must log in to report a comment', Http::UNAUTHORIZED);
         }
 
-        $comment_mapper = new EventCommentMapper($db, $request);
+        $comment_mapper = $this->mapperFactory->getMapper(EventCommentMapper::class, $db, $request);
 
         $commentId   = $this->getItemId($request);
         $commentInfo = $comment_mapper->getCommentInfo($commentId);
@@ -191,11 +201,12 @@ class EventCommentsController extends BaseApiController
 
         // notify event admins
         $comment      = $comment_mapper->getCommentById($commentId, true, true);
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
         $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
         $event        = $event_mapper->getEventById($eventId, true, true);
 
-        $emailService = new EventCommentReportedEmailService($this->config, $recipients, $comment, $event);
+
+        $emailService = ($emailServiceFactory ?? new EmailServiceFactory())->getEventCommentReportedEmailService($this->config, $recipients, $comment, $event);
         $emailService->sendEmail();
 
         // send them to the comments collection
@@ -227,7 +238,7 @@ class EventCommentsController extends BaseApiController
             throw new Exception('You must log in to moderate a comment', Http::UNAUTHORIZED);
         }
 
-        $comment_mapper = new EventCommentMapper($db, $request);
+        $comment_mapper = $this->mapperFactory->getMapper(EventCommentMapper::class, $db, $request);
 
         $commentId   = $this->getItemId($request);
         $commentInfo = $comment_mapper->getCommentInfo($commentId);
@@ -236,7 +247,7 @@ class EventCommentsController extends BaseApiController
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
         $event_id     = $commentInfo['event_id'];
 
         if (false == $event_mapper->thisUserHasAdminOn($event_id)) {

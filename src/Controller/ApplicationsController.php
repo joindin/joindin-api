@@ -45,7 +45,6 @@ class ApplicationsController extends BaseApiController
             $this->getResultsPerPage($request),
             $this->getStart($request)
         );
-
         return $clients->getOutputView($request, $this->getVerbosity($request));
     }
 
