@@ -2156,36 +2156,6 @@ parameters:
 			path: tests/Controller/TalksControllerTest.php
 
 		-
-			message: "#^Property class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:\\$talkCommentEmailService has no typehint specified\\.$#"
-			count: 1
-			path: tests/Controller/TalksControllerTest.php
-
-		-
-			message: "#^Method class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:getTalkCommentEmailService\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/Controller/TalksControllerTest.php
-
-		-
-			message: "#^Method class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$comment with no typehint specified\\.$#"
-			count: 1
-			path: tests/Controller/TalksControllerTest.php
-
-		-
-			message: "#^Method class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$config with no typehint specified\\.$#"
-			count: 1
-			path: tests/Controller/TalksControllerTest.php
-
-		-
-			message: "#^Method class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$recipients with no typehint specified\\.$#"
-			count: 1
-			path: tests/Controller/TalksControllerTest.php
-
-		-
-			message: "#^Method class@anonymous/tests/Controller/TalksControllerTest\\.php\\:892\\:\\:getTalkCommentEmailService\\(\\) has parameter \\$talk with no typehint specified\\.$#"
-			count: 1
-			path: tests/Controller/TalksControllerTest.php
-
-		-
 			message: "#^Method Joindin\\\\Api\\\\Test\\\\Controller\\\\TalksControllerTest\\:\\:getComments\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: tests/Controller/TalksControllerTest.php

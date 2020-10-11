@@ -145,6 +145,8 @@ class TalksController extends BaseTalkController
                     $data['private'] = $private;
                     $data['source']  = $consumer_name;
 
+                    $comment_mapper->checkRateLimit($data['user_id']);
+
                     try {
                         $isValid = $this->spamCheckService->isCommentAcceptable(
                             $comment,

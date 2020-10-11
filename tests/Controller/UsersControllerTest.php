@@ -26,6 +26,8 @@ final class UsersControllerTest extends TestCase
      * an exception is thrown
      *
      * @return void
+     *
+     * @group uses_pdo
      */
     public function testDeleteUserWithoutBeingLoggedInThrowsException()
     {
@@ -340,6 +342,8 @@ final class UsersControllerTest extends TestCase
      * an exception is thrown
      *
      * @return void
+     *
+     * @group uses_pdo
      */
     public function testSetTrustedWithNoUserIdThrowsException()
     {

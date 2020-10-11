@@ -153,9 +153,10 @@ class UsersController extends BaseApiController
             } else {
                 // does anyone else have this username?
                 $existingUser = $userMapper->getUserByUsername($user['username']);
-
                 if (is_array($existingUser) && array_key_exists('users', $existingUser)) {
-                    $errors[] = "That username is already in use. Choose another";
+                    if (count($existingUser['users']) > 0) {
+                        $errors[] = "That username is already in use. Choose another";
+                    }
                 }
             }
 
@@ -182,7 +183,9 @@ class UsersController extends BaseApiController
                 $existingUser = $userMapper->getUserByEmail($user['email']);
 
                 if (is_array($existingUser) && array_key_exists('users', $existingUser)) {
-                    $errors[] = "That email is already associated with another account";
+                    if (count($existingUser['users']) > 0) {
+                        $errors[] = "That email is already associated with another account";
+                    }
                 }
             }
 
