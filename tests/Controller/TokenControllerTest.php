@@ -21,6 +21,9 @@ final class TokenControllerTest extends TestCase
         $this->pdo     = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
     }
 
+    /**
+     * @group uses_pdo
+     */
     public function testThatDeletingATokenWithoutLoginThrowsException()
     {
         $this->expectException(Exception::class);
@@ -32,6 +35,9 @@ final class TokenControllerTest extends TestCase
         $usersController->revokeToken($this->request, $this->pdo);
     }
 
+    /**
+     * @group uses_pdo
+     */
     public function testThatRetrievingTokensWithoutLoginThrowsException()
     {
         $this->expectException(Exception::class);

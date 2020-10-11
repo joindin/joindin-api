@@ -14,6 +14,9 @@ final class TalksControllerDeleteTest extends TalkBase
 {
     private $talkMapper;
 
+    /**
+     * @group uses_pdo
+     */
     public function testRemoveStarFromTalkFailsWhenNotLoggedIn()
     {
         $this->expectException(Exception::class);
@@ -63,6 +66,9 @@ final class TalksControllerDeleteTest extends TalkBase
         $talks_controller->removeStarFromTalk($request, $db);
     }
 
+    /**
+     * @group uses_pdo
+     */
     public function testDeleteTalkWhenNotLoggedIn()
     {
         $this->expectException(Exception::class);

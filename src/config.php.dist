@@ -6,6 +6,11 @@ return [
     // the URL of web2 website is used in links within emails
     'website_url' => 'http://dev.joind.in',
 
+    // maximum number of talk comments one can add in a certain time
+    'talk_comments_rate_limit_limit' => 30,
+    // the time in which those comments can be added (in minutes)
+    'talk_comments_rate_limit_reset' => 60,
+
     'oauth'            => [
         'expirable_client_ids' => [
             // some clients, (e.g. web2) do not hold onto their token after the

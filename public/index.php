@@ -2,6 +2,7 @@
 
 // @codingStandardsIgnoreFile
 use Joindin\Api\ContainerFactory;
+use Joindin\Api\Exception\RateLimitExceededException;
 use Joindin\Api\Request;
 use Joindin\Api\Router\ApiRouter;
 use Joindin\Api\Router\DefaultRouter;
@@ -40,6 +41,13 @@ function handle_exception(Throwable $e)
             $request->getView()->setHeader('WWW-Authenticate', 'Bearer realm="api.joind.in');
         }
 
+        $message = $e->getMessage();
+        if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
+            $message = "Database error";
+        }
+        if ($e instanceof RateLimitExceededException) {
+            $request->getView()->setHeader('Retry-After', $e->getRateLimitRefresh());
+        }
         $request->getView()->render([$message]);
     }
 }

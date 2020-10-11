@@ -15,6 +15,9 @@ use Teapot\StatusCode\Http;
 
 final class EventHostsControllerTest extends TestCase
 {
+    /**
+     * @group uses_pdo
+     */
     public function testThatNotLoggedInUsersCanNotAddAHost()
     {
         $this->expectException(Exception::class);
