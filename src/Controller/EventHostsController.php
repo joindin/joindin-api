@@ -34,6 +34,10 @@ class EventHostsController extends BaseApiController
     {
         $event_id = $this->getItemId($request);
 
+        if (!$event_id) {
+            throw new Exception('Event not found', Http::NOT_FOUND);
+        }
+
         // verbosity
         $verbose = $this->getVerbosity($request);
 
@@ -42,10 +46,6 @@ class EventHostsController extends BaseApiController
         $resultsperpage = $this->getResultsPerPage($request);
 
         $mapper = $this->getEventHostMapper($request, $db);
-
-        if (!$event_id) {
-            throw new Exception('Event not found', Http::NOT_FOUND);
-        }
 
         $list = $mapper->getHostsByEventId($event_id, $verbose, $start, $resultsperpage);
 

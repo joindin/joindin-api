@@ -397,4 +397,54 @@ final class EventHostsControllerTest extends TestCase
         $this->assertInstanceOf(EventMapper::class, $automatedEventMapper);
         $this->assertSame($automatedEventMapper, $controller->getEventMapper($request, $db));
     }
+
+    public function testListHostsThrowsExceptionWhenEventNotFound() {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Event not found');
+        $this->expectExceptionCode(Http::NOT_FOUND);
+
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+
+        $controller = new EventHostsController();
+        $controller->listHosts($request, $db);
+    }
+
+    public function testListHostsThrowsExceptionWhenNoHosts() {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Event not found');
+        $this->expectExceptionCode(Http::NOT_FOUND);
+
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->url_elements[3] = 2;
+        $request->user_id = 5;
+        $request->paginationParameters['start'] = "hi";
+        $request->paginationParameters['resultsperpage'] = 5;
+
+        $eventHostMapper = $this->getMockBuilder(EventHostMapper::class)->disableOriginalConstructor()->getMock();
+        $eventHostMapper->expects(self::once())->method("getHostsByEventId")->with(2, false, "hi", 5)->willReturn(false);
+
+        $controller = new EventHostsController();
+        $controller->setEventHostMapper($eventHostMapper);
+
+        $controller->listHosts($request, $db);
+    }
+
+    public function testListHostsWorksAsExpected() {
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->url_elements[3] = 2;
+        $request->user_id = 5;
+        $request->paginationParameters['start'] = "hi";
+        $request->paginationParameters['resultsperpage'] = 5;
+
+        $eventHostMapper = $this->getMockBuilder(EventHostMapper::class)->disableOriginalConstructor()->getMock();
+        $eventHostMapper->expects(self::once())->method("getHostsByEventId")->with(2, false, "hi", 5)->willReturn([]);
+
+        $controller = new EventHostsController();
+        $controller->setEventHostMapper($eventHostMapper);
+
+        self::assertEquals([], $controller->listHosts($request, $db));
+    }
 }
