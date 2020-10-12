@@ -689,4 +689,8 @@ class Request
 
         return $this->config[$key];
     }
+
+    public function moveUploadedFile($from, $to) {
+        return move_uploaded_file($from, $to);
+    }
 }

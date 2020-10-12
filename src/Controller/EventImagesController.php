@@ -2,7 +2,9 @@
 
 namespace Joindin\Api\Controller;
 
+use _HumbugBoxf43f7c5c5350\Nette\Iterators\Mapper;
 use Exception;
+use Joindin\Api\Factory\MapperFactory;
 use Joindin\Api\Model\EventMapper;
 use PDO;
 use Joindin\Api\Request;
@@ -10,11 +12,17 @@ use Teapot\StatusCode\Http;
 
 class EventImagesController extends BaseApiController
 {
+    public function __construct(array $config = [], MapperFactory $mapperFactory = null)
+    {
+        parent::__construct($config);
+        $this->mapperFactory = $mapperFactory ?? new MapperFactory();
+    }
+
     public function listImages(Request $request, PDO $db)
     {
         $event_id = $this->getItemId($request);
 
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
 
         return ['images' => $event_mapper->getImages($event_id)];
     }
@@ -27,7 +35,7 @@ class EventImagesController extends BaseApiController
 
         $event_id = $this->getItemId($request);
 
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
 
         // ensure event exists
         $existing_event = $event_mapper->getEventById($event_id, false, true);
@@ -78,7 +86,7 @@ class EventImagesController extends BaseApiController
         $extensions[IMAGETYPE_PNG]  = '.png';
         $saved_filename             = 'icon-' . $event_id . '-orig' . $extensions[$filetype];
         $event_image_path           = $request->getConfigValue('event_image_path');
-        $result                     = move_uploaded_file($uploaded_name, $event_image_path . $saved_filename);
+        $result                     = $request->moveUploadedFile($uploaded_name, $event_image_path . $saved_filename);
 
         if (false === $result) {
             throw new Exception("The file could not be saved");
@@ -126,7 +134,7 @@ class EventImagesController extends BaseApiController
         }
 
         $event_id     = $this->getItemId($request);
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
         $event_mapper->removeImages($event_id);
 
         $location = $request->base . '/' . $request->version . '/events/' . $event_id;

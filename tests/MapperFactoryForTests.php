@@ -15,7 +15,7 @@ use Test;
 class MapperFactoryForTests extends MapperFactory
 {
     public function getMapperMock(TestCase $case, $mapperClass) : MockObject {
-        if ($this->mappers[$mapperClass] == null) {
+        if (empty($this->mappers[$mapperClass])) {
             $this->setMapperMock($case, $mapperClass);
         }
         return $this->mappers[$mapperClass];
