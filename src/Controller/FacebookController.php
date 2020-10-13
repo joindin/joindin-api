@@ -7,6 +7,7 @@ namespace Joindin\Api\Controller;
 
 use Exception;
 use GuzzleHttp\Client;
+use Joindin\Api\Factory\ClientFactory;
 use PDO;
 use Joindin\Api\Request;
 use Teapot\StatusCode\Http;
@@ -14,6 +15,17 @@ use Teapot\StatusCode\Http;
 class FacebookController extends BaseApiController
 {
     private $oauthModel;
+    /**
+     * @var ClientFactory|null
+     */
+    private $clientFactory;
+
+    public function __construct(array $config = [], ClientFactory $clientFactory = null)
+    {
+        parent::__construct($config);
+
+        $this->clientFactory = $clientFactory ?? new ClientFactory();
+    }
 
     /**
      * Take the verification code from the client, send to Facebook to get an access token.
@@ -50,7 +62,7 @@ class FacebookController extends BaseApiController
         }
 
         // exchange code for access token
-        $client = new Client([
+        $client = $this->clientFactory->createClient([
             'headers' => ['Accept' => 'application/json']
         ]);
 
@@ -87,7 +99,7 @@ class FacebookController extends BaseApiController
             ]
         ]);
 
-        if (!$res->getStatusCode() == Http::OK) {
+        if ($res->getStatusCode() != Http::OK) {
             throw new Exception("Could not sign in with Facebook", Http::FORBIDDEN);
         }
 
