@@ -94,7 +94,7 @@ abstract class BaseModel
             $value = $this->$name;
 
             // override if it is a date
-            if (substr($output_name, -5) == '_date' && ! empty($value)) {
+            if (substr(strval($output_name), -5) == '_date' && ! empty($value)) {
                 if (is_numeric($value)) {
                     $value = '@' . $value;
                 }
