@@ -1091,11 +1091,6 @@ parameters:
 			path: src/Model/BaseModel.php
 
 		-
-			message: "#^Parameter \\#1 \\$str of function substr expects string, int\\|string given\\.$#"
-			count: 1
-			path: src/Model/BaseModel.php
-
-		-
 			message: "#^Property Joindin\\\\Api\\\\Model\\\\BaseModelCollection\\:\\:\\$list has no typehint specified\\.$#"
 			count: 1
 			path: src/Model/BaseModelCollection.php
