@@ -23,17 +23,17 @@ class EventCommentsController extends BaseApiController
 
     private $mapperFactory;
     /**
-     * @var EventCommentReportedEmailService
+     * @var EmailServiceFactory
      */
-    private $eventCommentReportedEmailService;
+    private $emailServiceFactory;
 
-    public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [], MapperFactory $mapperFactory = null, EventCommentReportedEmailService $eventCommentReportedEmailService = null)
+    public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [], MapperFactory $mapperFactory = null, EmailServiceFactory $emailServiceFactory = null)
     {
         parent::__construct($config);
 
         $this->spamCheckService = $spamCheckService;
         $this->mapperFactory = $mapperFactory ?? new MapperFactory();
-        $this->eventCommentReportedEmailService = $eventCommentReportedEmailService;
+        $this->emailServiceFactory = $emailServiceFactory ?? new EmailServiceFactory();
     }
 
     public function getComments(Request $request, PDO $db)
@@ -179,7 +179,7 @@ class EventCommentsController extends BaseApiController
         $view->setResponseCode(Http::CREATED);
     }
 
-    public function reportComment(Request $request, PDO $db, EmailServiceFactory $emailServiceFactory = null)
+    public function reportComment(Request $request, PDO $db)
     {
         // must be logged in to report a comment
         if (!isset($request->user_id) || empty($request->user_id)) {
@@ -206,7 +206,7 @@ class EventCommentsController extends BaseApiController
         $event        = $event_mapper->getEventById($eventId, true, true);
 
 
-        $emailService = ($emailServiceFactory ?? new EmailServiceFactory())->getEventCommentReportedEmailService($this->config, $recipients, $comment, $event);
+        $emailService = $this->emailServiceFactory->getEmailService(EventCommentReportedEmailService::class, $this->config, $recipients, $comment, $event);
         $emailService->sendEmail();
 
         // send them to the comments collection

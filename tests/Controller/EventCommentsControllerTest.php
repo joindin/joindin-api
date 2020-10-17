@@ -17,6 +17,7 @@ use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Request;
 use Joindin\Api\Service\EventCommentReportedEmailService;
 use Joindin\Api\Service\SpamCheckServiceInterface;
+use Joindin\Api\Test\EmailServiceFactoryForTests;
 use Joindin\Api\Test\MapperFactoryForTests;
 use Joindin\Api\View\ApiView;
 use PDO;
@@ -25,32 +26,17 @@ use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 use UnexpectedValueException;
 
+/**
+ * @property MockObject request
+ * @property MockObject apiView
+ * @property MockObject db
+ * @property MapperFactoryForTests mapperFactory
+ * @property EventCommentsController sut
+ * @property EmailServiceFactoryForTests emailServiceFactory
+ * @property MockObject spawnCheckServiceInterface
+ */
 class EventCommentsControllerTest extends TestCase
 {
-    /**
-     * @var MockObject
-     */
-    private $spawnCheckServiceInterface;
-    /**
-     * @var EventCommentsController
-     */
-    private $sut;
-    /**
-     * @var MockObject
-     */
-    private $apiView;
-    /**
-     * @var MockObject
-     */
-    private $request;
-    /**
-     * @var MockObject
-     */
-    private $db;
-    /**
-     * @var MapperFactory
-     */
-    private $mapperFactory;
     private $eventCommentReportModelCollection;
 
     public function setUp(): void
@@ -64,10 +50,11 @@ class EventCommentsControllerTest extends TestCase
 
         $this->mapperFactory = new MapperFactoryForTests();
         $this->mapperFactory->setMapperMocks($this, EventCommentMapper::class, EventMapper::class, UserMapper::class);
-
+        $this->emailServiceFactory = new EmailServiceFactoryForTests();
+        $this->emailServiceFactory->setEmailServiceMocks($this, EventCommentReportedEmailService::class);
 
         $this->spawnCheckServiceInterface = $this->getMockBuilder(SpamCheckServiceInterface::class)->getMock();
-        $this->sut = new EventCommentsController($this->spawnCheckServiceInterface, [], $this->mapperFactory);
+        $this->sut = new EventCommentsController($this->spawnCheckServiceInterface, [], $this->mapperFactory, $this->emailServiceFactory);
     }
 
     public function testGetCommentsThrowsIfNoCommentsFound()
@@ -384,15 +371,14 @@ class EventCommentsControllerTest extends TestCase
         $eventMapper = $this->mapperFactory->getMapperMock($this, EventMapper::class);
         $eventMapper->expects(self::once())->method("getHostsEmailAddresses")->with("eventId")->willReturn(["recipients"]);
         $eventMapper->expects(self::once())->method("getEventById")->with("eventId", true, true)->willReturn(["event"]);
-        $emailServiceFactory = $this->getMockBuilder(EmailServiceFactory::class)->disableOriginalConstructor()->getMock();
-        $eventCommentReporterEmailService = $this->getMockBuilder(EventCommentReportedEmailService::class)->disableOriginalConstructor()->getMock();
-        $emailServiceFactory->method("getEventCommentReportedEmailService")->willReturn($eventCommentReporterEmailService);
+
+        $eventCommentReporterEmailService = $this->emailServiceFactory->getEmailServiceMock($this, EventCommentReportedEmailService::class);
         $eventCommentReporterEmailService->expects(self::once())->method("sendEmail");
         $this->request->expects(self::once())->method("getView")->willReturn($this->apiView);
         $this->apiView->expects(self::once())->method("setHeader")->with("Location", "hi/10/events/eventId/comments");
         $this->apiView->expects(self::once())->method("setResponseCode")->with(Http::ACCEPTED);
 
-        $this->sut->reportComment($this->request, $this->db, $emailServiceFactory);
+        $this->sut->reportComment($this->request, $this->db);
     }
 
     public function testModerateReportedCommentThrowsExceptionWhenNotLoggedIn()

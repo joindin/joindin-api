@@ -1,9 +1,10 @@
 <?php
 
-// @codingStandardsIgnoreStart
 namespace Joindin\Api\Controller;
 
 use Exception;
+use Joindin\Api\Factory\EmailServiceFactory;
+use Joindin\Api\Factory\MapperFactory;
 use Joindin\Api\Model\EventMapper;
 use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Service\CommentReportedEmailService;
@@ -13,12 +14,22 @@ use Teapot\StatusCode\Http;
 use UnexpectedValueException;
 
 class TalkCommentsController extends BaseApiController
-// @codingStandardsIgnoreEnd
 {
+    private $mapperFactory;
     /**
-     * @var TalkCommentMapper
+     * @var EmailServiceFactory
      */
-    private $commentMapper;
+    private $emailServiceFactory;
+
+    public function __construct(
+        array $config = [],
+        MapperFactory $mapperFactory = null,
+        EmailServiceFactory $emailServiceFactory = null
+    ) {
+        parent::__construct($config);
+        $this->mapperFactory = $mapperFactory ?? new MapperFactory();
+        $this->emailServiceFactory = $emailServiceFactory ?? new EmailServiceFactory();
+    }
 
     public function getComments(Request $request, PDO $db)
     {
@@ -31,7 +42,7 @@ class TalkCommentsController extends BaseApiController
             return false;
         }
 
-        $mapper = $this->getCommentMapper($request, $db);
+        $mapper = $this->mapperFactory->getMapper(TalkCommentMapper::class, $db, $request);
 
         $list = $mapper->getCommentById($commentId, $verbose);
 
@@ -44,18 +55,18 @@ class TalkCommentsController extends BaseApiController
 
     public function getReported(Request $request, PDO $db)
     {
+        if (!isset($request->user_id) || empty($request->user_id)) {
+            throw new Exception("You must log in to do that", Http::UNAUTHORIZED);
+        }
+
         $eventId = $this->getItemId($request);
 
         if (empty($eventId)) {
             throw new UnexpectedValueException("Event not found", Http::NOT_FOUND);
         }
 
-        $eventMapper   = new EventMapper($db, $request);
-        $commentMapper = $this->getCommentMapper($request, $db);
-
-        if (!isset($request->user_id) || empty($request->user_id)) {
-            throw new Exception("You must log in to do that", Http::UNAUTHORIZED);
-        }
+        $eventMapper = $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
+        $commentMapper = $this->mapperFactory->getMapper(TalkCommentMapper::class, $db, $request);
 
         if (!$eventMapper->thisUserHasAdminOn($eventId)) {
             throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
@@ -73,27 +84,28 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('You must log in to report a comment', Http::UNAUTHORIZED);
         }
 
-        $commentMapper = $this->getCommentMapper($request, $db);
+        $commentMapper = $this->mapperFactory->getMapper(TalkCommentMapper::class, $db, $request);
 
-        $commentId   = $this->getItemId($request);
+        $commentId = $this->getItemId($request);
         $commentInfo = $commentMapper->getCommentInfo($commentId);
 
         if (false === $commentInfo) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
-        $talkId  = $commentInfo['talk_id'];
+        $talkId = $commentInfo['talk_id'];
         $eventId = $commentInfo['event_id'];
 
         $commentMapper->userReportedComment($commentId, $request->user_id);
 
         // notify event admins
-        $comment      = $commentMapper->getCommentById($commentId, true, true);
-        $eventMapper  = new EventMapper($db, $request);
-        $recipients   = $eventMapper->getHostsEmailAddresses($eventId);
-        $event        = $eventMapper->getEventById($eventId, true, true);
+        $comment = $commentMapper->getCommentById($commentId, true, true);
+        $eventMapper = $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
+        $recipients = $eventMapper->getHostsEmailAddresses($eventId);
+        $event = $eventMapper->getEventById($eventId, true, true);
 
-        $emailService = new CommentReportedEmailService($this->config, $recipients, $comment, $event);
+        $emailService = $this->emailServiceFactory->getEmailService(CommentReportedEmailService::class, $this->config,
+            $recipients, $comment, $event);
         $emailService->sendEmail();
 
         // send them to the comments collection
@@ -114,7 +126,7 @@ class TalkCommentsController extends BaseApiController
      * means that the comment is viewable again.
      *
      * @param Request $request the request
-     * @param PDO     $db      the database adapter
+     * @param PDO $db the database adapter
      *
      * @throws Exception
      */
@@ -125,17 +137,17 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('You must log in to moderate a comment', Http::UNAUTHORIZED);
         }
 
-        $commentMapper = $this->getCommentMapper($request, $db);
+        $commentMapper = $this->mapperFactory->getMapper(TalkCommentMapper::class, $db, $request);
 
-        $commentId   = $this->getItemId($request);
+        $commentId = $this->getItemId($request);
         $commentInfo = $commentMapper->getCommentInfo($commentId);
 
         if (false === $commentInfo) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
-        $eventMapper = new EventMapper($db, $request);
-        $eventId     = $commentInfo['event_id'];
+        $eventMapper = $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
+        $eventId = $commentInfo['event_id'];
 
         if (false == $eventMapper->thisUserHasAdminOn($eventId)) {
             throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
@@ -149,8 +161,8 @@ class TalkCommentsController extends BaseApiController
 
         $commentMapper->moderateReportedComment($decision, $commentId, $request->user_id);
 
-        $talkId  = $commentInfo['talk_id'];
-        $uri     = $request->base . '/' . $request->version . '/talks/' . $talkId . "/comments";
+        $talkId = $commentInfo['talk_id'];
+        $uri = $request->base . '/' . $request->version . '/talks/' . $talkId . "/comments";
 
         $view = $request->getView();
         $view->setHeader('Location', $uri);
@@ -170,9 +182,9 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('The field "comment" is required', Http::BAD_REQUEST);
         }
 
-        $commentId     = $this->getItemId($request);
-        $commentMapper = $this->getCommentMapper($request, $db);
-        $comment       = $commentMapper->getRawComment($commentId);
+        $commentId = $this->getItemId($request);
+        $commentMapper = $this->mapperFactory->getMapper(TalkCommentMapper::class, $db, $request);
+        $comment = $commentMapper->getRawComment($commentId);
 
         if (false === $comment) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
@@ -205,14 +217,5 @@ class TalkCommentsController extends BaseApiController
         }
 
         return $commentMapper->getCommentById($commentId);
-    }
-
-    private function getCommentMapper(Request $request, PDO $db): TalkCommentMapper
-    {
-        if ($this->commentMapper === null) {
-            $this->commentMapper = new TalkCommentMapper($db, $request);
-        }
-
-        return $this->commentMapper;
     }
 }

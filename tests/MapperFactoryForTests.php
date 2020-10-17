@@ -4,13 +4,8 @@
 namespace Joindin\Api\Test;
 
 use Joindin\Api\Factory\MapperFactory;
-use Joindin\Api\Model\ApiMapper;
-use Joindin\Api\Request;
-use PDO;
-use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Test;
 
 class MapperFactoryForTests extends MapperFactory
 {

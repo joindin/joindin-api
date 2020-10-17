@@ -3,83 +3,23 @@
 
 namespace Joindin\Api\Factory;
 
-
-use Joindin\Api\Model\UserMapper;
-use Joindin\Api\Request;
-use Joindin\Api\Service\EventCommentReportedEmailService;
-use Joindin\Api\Service\UserPasswordResetEmailService;
-use Joindin\Api\Service\UserRegistrationEmailService;
-use Joindin\Api\Service\UserUsernameReminderEmailService;
-use PDO;
+use Joindin\Api\Service\BaseEmailService;
 
 class EmailServiceFactory
 {
-    private $userMapper;
-    private $userUsernameReminderEmailService;
+    protected $emailServices;
 
-    private $userRegistrationEmailService;
-    private $userPasswordResetEmailService;
-    private $eventCommentReportedEmailService;
-
-    public function getUserMapper(Request $request, PDO $db)
+    public function getEmailService($emailServiceClass, array $config, array $recipients, ...$args): BaseEmailService
     {
-        if ($this->userMapper == null) {
-            $this->userMapper = new UserMapper($db, $request);
+        if (!isset($this->emailServices[$emailServiceClass])) {
+            $this->emailServices[$emailServiceClass] = count($args) > 0 ?
+                new $emailServiceClass($config, $recipients, ...$args) : new $emailServiceClass($config, $recipients);
         }
-        return $this->userMapper;
+        return $this->emailServices[$emailServiceClass];
     }
 
-    public function setUserMapper($userMapper): void
+    public function setEmailService(BaseEmailService $emailService)
     {
-        $this->userMapper = $userMapper;
+        $this->emailServices[get_class($emailService)] = $emailService;
     }
-
-    public function getUserUsernameReminderEmailService($config, $recipients, $user)
-    {
-        if ($this->userUsernameReminderEmailService == null) {
-            $this->userUsernameReminderEmailService = new UserUsernameReminderEmailService($config, $recipients, $user);
-        }
-        return $this->userUsernameReminderEmailService;
-    }
-
-    public function setUserUsernameReminderEmailService($userUsernameReminderEmailService): void
-    {
-        $this->userUsernameReminderEmailService = $userUsernameReminderEmailService;
-    }
-
-    public function getUserPasswordResetEmailService($config, $recipients, $user)
-    {
-        if ($this->userPasswordResetEmailService == null) {
-            $this->userPasswordResetEmailService = new UserPasswordResetEmailService($config, $recipients, $user);
-        }
-        return $this->userPasswordResetEmailService;
-    }
-
-    public function setUserPasswordResetEmailService($userPasswordResetEmailService): void
-    {
-        $this->userPasswordResetEmailService = $userPasswordResetEmailService;
-    }
-
-    public function getUserRegistrationEmailService($config, $recipients, $user)
-    {
-        if ($this->userRegistrationEmailService == null) {
-            $this->userRegistrationEmailService = new UserRegistrationEmailService($config, $recipients, $user);
-        }
-        return $this->userRegistrationEmailService;
-    }
-
-    public function setUserRegistrationEmailService($userRegistrationEmailService): void
-    {
-        $this->userRegistrationEmailService = $userRegistrationEmailService;
-    }
-
-    public function getEventCommentReportedEmailService($config, $recipients, $comment, $event) {
-        return $this->eventCommentReportedEmailService ?? new EventCommentReportedEmailService($config, $recipients, $comment, $event);
-    }
-
-    public function setEventCommentReportedEmailService($eventCommentReportedEmailService): void
-    {
-        $this->eventCommentReportedEmailService = $eventCommentReportedEmailService;
-    }
-
 }

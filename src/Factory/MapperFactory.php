@@ -6,7 +6,6 @@ namespace Joindin\Api\Factory;
 
 use Joindin\Api\Model\ApiMapper;
 use Joindin\Api\Request;
-use Joindin\Api\Router\ApiRouter;
 use PDO;
 
 class MapperFactory
