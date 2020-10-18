@@ -3,6 +3,7 @@
 namespace Joindin\Api\Controller;
 
 use Exception;
+use Joindin\Api\Factory\MapperFactory;
 use Joindin\Api\Model\ApiMapper;
 use Joindin\Api\Model\EventMapper;
 use Joindin\Api\Model\TalkCommentMapper;
@@ -41,6 +42,17 @@ class BaseTalkController extends BaseApiController
      * @var UserMapper
      */
     private $user_mapper;
+    /**
+     * @var MapperFactory|null
+     */
+    protected $mapperFactory;
+
+    public function __construct(array $config = [], MapperFactory $mapperFactory = null)
+    {
+        parent::__construct($config);
+
+        $this->mapperFactory = $mapperFactory ?? new MapperFactory();
+    }
 
     protected function checkLoggedIn(Request $request)
     {
@@ -64,16 +76,12 @@ class BaseTalkController extends BaseApiController
 
     public function setTalkMapper(TalkMapper $talk_mapper)
     {
-        $this->talk_mapper = $talk_mapper;
+        $this->mapperFactory->setMapper($talk_mapper);
     }
 
     public function getTalkMapper(PDO $db, Request $request)
     {
-        if (!isset($this->talk_mapper)) {
-            $this->talk_mapper = new TalkMapper($db, $request);
-        }
-
-        return $this->talk_mapper;
+        return $this->mapperFactory->getMapper(TalkMapper::class, $db, $request);
     }
 
     public function setEventMapper(EventMapper $event_mapper)
@@ -83,11 +91,7 @@ class BaseTalkController extends BaseApiController
 
     public function getEventMapper(PDO $db, Request $request)
     {
-        if (!isset($this->event_mapper)) {
-            $this->event_mapper = new EventMapper($db, $request);
-        }
-
-        return $this->event_mapper;
+        return $this->mapperFactory->getMapper(EventMapper::class, $db, $request);
     }
 
     public function setUserMapper(UserMapper $user_mapper)
@@ -97,11 +101,7 @@ class BaseTalkController extends BaseApiController
 
     public function getUserMapper(PDO $db, Request $request)
     {
-        if (!isset($this->user_mapper)) {
-            $this->user_mapper = new UserMapper($db, $request);
-        }
-
-        return $this->user_mapper;
+        return $this->mapperFactory->getMapper(UserMapper::class, $db, $request);
     }
 
     /**
@@ -160,14 +160,14 @@ class BaseTalkController extends BaseApiController
         }
 
         if (!isset($this->classMaps[$type])) {
-            $this->classMaps[$type] = new $this->classMappings[$type]($db, $request);
+            $this->classMaps[$type] = $this->mapperFactory->getMapper($type, $db, $request);
         }
 
         return $this->classMaps[$type];
     }
 
-    public function setMapper($type, $object)
+    public function setMapper($object)
     {
-        $this->classMaps[$type] = $object;
+        $this->mapperFactory->setMapper($object);
     }
 }

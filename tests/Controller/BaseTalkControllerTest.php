@@ -75,7 +75,7 @@ class BaseTalkControllerTest extends TestCase
 
     public function testGetMapperCreatesMapperIfNotSet()
     {
-        self::assertInstanceOf(TalkMapper::class, $this->sut->getMapper('talk', $this->db, $this->request));
+        self::assertInstanceOf(TalkMapper::class, $this->sut->getMapper(TalkMapper::class, $this->db, $this->request));
     }
 }
 

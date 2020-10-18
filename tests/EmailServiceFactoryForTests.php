@@ -4,6 +4,7 @@
 namespace Joindin\Api\Test;
 
 use Joindin\Api\Factory\EmailServiceFactory;
+use Joindin\Api\Service\BaseEmailService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -14,6 +15,11 @@ class EmailServiceFactoryForTests extends EmailServiceFactory
             $this->setEmailServiceMock($case, $emailService);
         }
         return $this->emailServices[$emailService];
+    }
+
+    public function setEmailServiceMockAs($mockClass, MockObject $emailService)
+    {
+        $this->emailServices[$mockClass] = $emailService;
     }
 
     public function setEmailServiceMock(TestCase $case, $emailService) {

@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Joindin\Api\Test\Controller;
 
+use Exception;
 use Joindin\Api\Controller\TalkTypesController;
+use Joindin\Api\Model\TalkTypeMapper;
 use Joindin\Api\Request;
+use Joindin\Api\Test\MapperFactoryForTests;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Teapot\StatusCode\Http;
 
 class TalkTypesControllerTest extends TestCase
 {
@@ -21,6 +25,10 @@ class TalkTypesControllerTest extends TestCase
 
     /** @var TalkTypesController */
     private $controller;
+    /**
+     * @var MapperFactoryForTests
+     */
+    private $mapperFactory;
 
     public function setUp(): void
     {
@@ -31,8 +39,8 @@ class TalkTypesControllerTest extends TestCase
         ];
 
         $this->db = $this->createMock(PDO::class);
-
-        $this->controller = new TalkTypesController();
+        $this->mapperFactory = new MapperFactoryForTests();
+        $this->controller = new TalkTypesController([], $this->mapperFactory);
     }
 
     public function testGetAllTalkTypesWithoutAnyTalkType(): void
@@ -125,5 +133,17 @@ class TalkTypesControllerTest extends TestCase
         $result = $this->controller->getTalkType($this->request, $this->db);
 
         $this->assertSame($expected, $result);
+    }
+
+    public function testGetTalkTypeThrowsExceptionIfTalkNotFound() {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Talk type not found');
+        $this->expectExceptionCode(Http::NOT_FOUND);
+        $this->request->url_elements[3] = 1;
+
+        $this->mapperFactory->getMapperMock($this, TalkTypeMapper::class)
+            ->expects(self::once())->method("getTalkTypeById")->with(1, false)->willReturn(['talk_types' => []]);
+
+        $this->controller->getTalkType($this->request, $this->db);
     }
 }

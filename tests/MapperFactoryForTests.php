@@ -16,6 +16,14 @@ class MapperFactoryForTests extends MapperFactory
         return $this->mappers[$mapperClass];
     }
 
+    public function createMapperMock(TestCase $case, $mapperClass) : MockObject {
+        return $case->getMockBuilder($mapperClass)->disableOriginalConstructor()->getMock();
+    }
+
+    public function setMapperMockAs($mapperClass, MockObject $mock) {
+        $this->mappers[$mapperClass] = $mock;
+    }
+
     public function setMapperMock(TestCase $case, $mapperClass) {
         $this->mappers[$mapperClass] = $case->getMockBuilder($mapperClass)->disableOriginalConstructor()->getMock();
     }

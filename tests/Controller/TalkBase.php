@@ -9,20 +9,26 @@ use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Model\TalkModel;
 use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Request;
+use Joindin\Api\Test\MapperFactoryForTests;
 use Joindin\Api\Test\Mock\mockPDO;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 abstract class TalkBase extends TestCase
 {
+    /**
+     * @var MockObject $talk_mapper
+     */
     protected $talk_mapper;
+    /**
+     * @var MapperFactoryForTests $mapperFactory
+     */
+    protected $mapperFactory;
 
     protected function setUp(): void
     {
-        $this->talk_mapper = $this
-            ->getMockBuilder(TalkMapper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
+        $this->mapperFactory = new MapperFactoryForTests();
+        $this->talk_mapper = $this->mapperFactory->getMapperMock($this, TalkMapper::class);
         parent::setUp();
     }
 

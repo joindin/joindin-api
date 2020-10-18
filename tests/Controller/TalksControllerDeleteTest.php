@@ -4,15 +4,20 @@ namespace Joindin\Api\Test\Controller;
 
 use Exception;
 use Joindin\Api\Controller\TalksController;
+use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Request;
 use Joindin\Api\Service\NullSpamCheckService;
+use Joindin\Api\Test\MapperFactoryForTests;
 use Joindin\Api\View\ApiView;
 use Joindin\Api\Test\Mock\mockPDO;
 use Teapot\StatusCode\Http;
 
 final class TalksControllerDeleteTest extends TalkBase
 {
-    private $talkMapper;
+    /**
+     * @var MapperFactoryForTests $mapperFactory
+     */
+    protected $mapperFactory;
 
     /**
      * @group uses_pdo
@@ -55,13 +60,13 @@ final class TalksControllerDeleteTest extends TalkBase
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
-        $this->talkMapper = $this->createTalkMapper($db, $request, 0);
-        $this->talkMapper->method('setUserNonStarred')
+        $this->talk_mapper = $this->createTalkMapper($db, $request, 0);
+        $this->talk_mapper->method('setUserNonStarred')
             ->willReturn(true);
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
-        $talks_controller->setTalkMapper($this->talkMapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $talks_controller->removeStarFromTalk($request, $db);
     }
@@ -112,9 +117,9 @@ final class TalksControllerDeleteTest extends TalkBase
             ->method('getTalkById')
             ->willReturn(false);
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $view = $this->getMockBuilder(ApiView::class)->getMock();
         $request->method('getView')->willReturn($view);
@@ -149,9 +154,9 @@ final class TalksControllerDeleteTest extends TalkBase
 
         $talk_mapper = $this->createTalkMapper($db, $request);
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
-        $talks_controller->setTalkMapper($talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $talk_mapper);
 
         $talks_controller->deleteTalk($request, $db);
     }
@@ -178,9 +183,9 @@ final class TalksControllerDeleteTest extends TalkBase
             ->method('thisUserHasAdminOn')
             ->willReturn(true);
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $view = $this->getMockBuilder(ApiView::class)->getMock();
         $request->method('getView')->willReturn($view);
