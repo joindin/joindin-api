@@ -1817,16 +1817,16 @@
         },
         {
             "name": "infection/infection",
-            "version": "0.18",
+            "version": "0.18.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/infection/infection.git",
-                "reference": "ddea14cf710fe3ce041f26ea0e7365e49263bdff"
+                "reference": "7eb647d02fd42bc9323058c0d7d4dc36c678bfca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/infection/infection/zipball/ddea14cf710fe3ce041f26ea0e7365e49263bdff",
-                "reference": "ddea14cf710fe3ce041f26ea0e7365e49263bdff",
+                "url": "https://api.github.com/repos/infection/infection/zipball/7eb647d02fd42bc9323058c0d7d4dc36c678bfca",
+                "reference": "7eb647d02fd42bc9323058c0d7d4dc36c678bfca",
                 "shasum": ""
             },
             "require": {
@@ -1922,7 +1922,7 @@
                 "testing",
                 "unit testing"
             ],
-            "time": "2020-10-17T10:55:12+00:00"
+            "time": "2020-10-21T12:43:44+00:00"
         },
         {
             "name": "jangregor/phpstan-prophecy",
