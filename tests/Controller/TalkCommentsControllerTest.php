@@ -246,7 +246,8 @@ class TalkCommentsControllerTest extends TestCase
         $this->sut->moderateReportedComment($this->request, $this->db);
     }
 
-    public function testUpdateCommentThrowsWhenCommentNotSet() {
+    public function testUpdateCommentThrowsWhenCommentNotSet()
+    {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('The field "comment" is required');
         $this->expectExceptionCode(Http::BAD_REQUEST);
@@ -257,7 +258,8 @@ class TalkCommentsControllerTest extends TestCase
         $this->sut->updateComment($this->request, $this->db);
     }
 
-    public function testUpdateCommentThrowsWhenCommentNotFound() {
+    public function testUpdateCommentThrowsWhenCommentNotFound()
+    {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Comment not found');
         $this->expectExceptionCode(Http::NOT_FOUND);
@@ -271,7 +273,8 @@ class TalkCommentsControllerTest extends TestCase
         $this->sut->updateComment($this->request, $this->db);
     }
 
-    public function testUpdateCommentThrowsWhenNotAuthor() {
+    public function testUpdateCommentThrowsWhenNotAuthor()
+    {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You are not the comment author');
         $this->expectExceptionCode(Http::FORBIDDEN);
@@ -284,7 +287,9 @@ class TalkCommentsControllerTest extends TestCase
 
         $this->sut->updateComment($this->request, $this->db);
     }
-    public function testUpdateCommentThrowsWhenTimeLimitPassed() {
+
+    public function testUpdateCommentThrowsWhenTimeLimitPassed()
+    {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Cannot edit the comment after 1 minutes');
         $this->expectExceptionCode(Http::BAD_REQUEST);
@@ -295,13 +300,18 @@ class TalkCommentsControllerTest extends TestCase
         $talkCommentMapper = $this->mapperFactory->getMapperMock($this, TalkCommentMapper::class);
         $createdAt = new DateTime();
         $createdAt->sub(new DateInterval("PT2M"));
-        $talkCommentMapper->expects(self::once())->method("getRawComment")->with(5)->willReturn(['user_id' => 3, 'created_at' => $createdAt]);
+        $talkCommentMapper->expects(self::once())->method("getRawComment")->with(5)->willReturn([
+            'user_id' => 3,
+            'created_at' => $createdAt
+        ]);
 
-        $this->sut = new TalkCommentsController(['limits'=>['max_comment_edit_minutes' => 1]], $this->mapperFactory, $this->emailServiceFactory);
+        $this->sut = new TalkCommentsController(['limits' => ['max_comment_edit_minutes' => 1]], $this->mapperFactory,
+            $this->emailServiceFactory);
         $this->sut->updateComment($this->request, $this->db);
     }
 
-    public function testUpdateCommentThrowsWhenCommentCantBeUpdated() {
+    public function testUpdateCommentThrowsWhenCommentCantBeUpdated()
+    {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Comment update failed');
         $this->expectExceptionCode(Http::INTERNAL_SERVER_ERROR);
@@ -311,22 +321,29 @@ class TalkCommentsControllerTest extends TestCase
         $this->request->expects(self::once())->method("getParameter")->with("comment")->willReturn("hi");
         $talkCommentMapper = $this->mapperFactory->getMapperMock($this, TalkCommentMapper::class);
         $createdAt = new DateTime();
-        $talkCommentMapper->expects(self::once())->method("getRawComment")->with(5)->willReturn(['user_id' => 3, 'created_at' => $createdAt]);
+        $talkCommentMapper->expects(self::once())->method("getRawComment")->with(5)->willReturn([
+            'user_id' => 3,
+            'created_at' => $createdAt
+        ]);
         $talkCommentMapper->expects(self::once())->method("updateCommentBody")->with(5, "hi")->willReturn(false);
 
         $this->sut->updateComment($this->request, $this->db);
     }
 
-    public function testUpdateCommentWorksAsExpected() {
+    public function testUpdateCommentWorksAsExpected()
+    {
         $this->request->user_id = 3;
         $this->request->url_elements[3] = 5;
         $this->request->expects(self::once())->method("getParameter")->with("comment")->willReturn("hi");
         $talkCommentMapper = $this->mapperFactory->getMapperMock($this, TalkCommentMapper::class);
         $createdAt = new DateTime();
-        $talkCommentMapper->expects(self::once())->method("getRawComment")->with(5)->willReturn(['user_id' => 3, 'created_at' => $createdAt]);
+        $talkCommentMapper->expects(self::once())->method("getRawComment")->with(5)->willReturn([
+            'user_id' => 3,
+            'created_at' => $createdAt
+        ]);
         $talkCommentMapper->expects(self::once())->method("updateCommentBody")->with(5, "hi")->willReturn(true);
         $talkCommentMapper->expects(self::once())->method("getCommentById")->with(5)->willReturn(6);
 
-        self::assertEquals(6,$this->sut->updateComment($this->request, $this->db));
+        self::assertEquals(6, $this->sut->updateComment($this->request, $this->db));
     }
 }

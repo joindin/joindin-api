@@ -54,8 +54,8 @@ final class TalksControllerDeleteTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
         ];
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -102,13 +102,13 @@ final class TalksControllerDeleteTest extends TalkBase
             'REQUEST_METHOD' => 'DELETE'
         ];
         $request = $this->getMockBuilder(Request::class)
-            ->setConstructorArgs([[], $httpRequest ])
+            ->setConstructorArgs([[], $httpRequest])
             ->getMock();
 
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
         ];
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -146,8 +146,8 @@ final class TalksControllerDeleteTest extends TalkBase
 
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
         ];
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -168,13 +168,13 @@ final class TalksControllerDeleteTest extends TalkBase
             'REQUEST_METHOD' => 'DELETE'
         ];
         $request = $this->getMockBuilder(Request::class)
-            ->setConstructorArgs([[], $httpRequest ])
+            ->setConstructorArgs([[], $httpRequest])
             ->getMock();
 
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
         ];
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();

@@ -27,7 +27,7 @@ final class EventHostsControllerTest extends TestCase
         $controller = new EventHostsController();
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $db      = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+        $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $controller->addHost($request, $db);
     }
@@ -60,9 +60,9 @@ final class EventHostsControllerTest extends TestCase
 
         $controller->setEventMapper($em);
 
-        $request               = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->url_elements = [3 => 'foo'];
-        $request->user_id      = 2;
+        $request->user_id = 2;
 
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
@@ -235,7 +235,8 @@ final class EventHostsControllerTest extends TestCase
         $controller->setUserMapper($um);
 
         $ehm = $this->getMockBuilder(EventHostMapper::class)->disableOriginalConstructor()->getMock();
-        $ehm->expects($this->once())->method('addHostToEvent')->with($this->equalTo(12), $this->equalTo(13))->willReturn(false);
+        $ehm->expects($this->once())->method('addHostToEvent')->with($this->equalTo(12),
+            $this->equalTo(13))->willReturn(false);
 
         $controller->setEventHostMapper($ehm);
 
@@ -265,7 +266,8 @@ final class EventHostsControllerTest extends TestCase
         $controller->setUserMapper($um);
 
         $ehm = $this->getMockBuilder(EventHostMapper::class)->disableOriginalConstructor()->getMock();
-        $ehm->expects($this->once())->method('addHostToEvent')->with($this->equalTo(12), $this->equalTo(13))->willReturn(true);
+        $ehm->expects($this->once())->method('addHostToEvent')->with($this->equalTo(12),
+            $this->equalTo(13))->willReturn(true);
 
         $controller->setEventHostMapper($ehm);
 
@@ -398,7 +400,8 @@ final class EventHostsControllerTest extends TestCase
         $this->assertSame($automatedEventMapper, $controller->getEventMapper($request, $db));
     }
 
-    public function testListHostsThrowsExceptionWhenEventNotFound() {
+    public function testListHostsThrowsExceptionWhenEventNotFound()
+    {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Event not found');
         $this->expectExceptionCode(Http::NOT_FOUND);
@@ -410,7 +413,8 @@ final class EventHostsControllerTest extends TestCase
         $controller->listHosts($request, $db);
     }
 
-    public function testListHostsThrowsExceptionWhenNoHosts() {
+    public function testListHostsThrowsExceptionWhenNoHosts()
+    {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Event not found');
         $this->expectExceptionCode(Http::NOT_FOUND);
@@ -423,7 +427,8 @@ final class EventHostsControllerTest extends TestCase
         $request->paginationParameters['resultsperpage'] = 5;
 
         $eventHostMapper = $this->getMockBuilder(EventHostMapper::class)->disableOriginalConstructor()->getMock();
-        $eventHostMapper->expects(self::once())->method("getHostsByEventId")->with(2, false, "hi", 5)->willReturn(false);
+        $eventHostMapper->expects(self::once())->method("getHostsByEventId")->with(2, false, "hi",
+            5)->willReturn(false);
 
         $controller = new EventHostsController();
         $controller->setEventHostMapper($eventHostMapper);
@@ -431,7 +436,8 @@ final class EventHostsControllerTest extends TestCase
         $controller->listHosts($request, $db);
     }
 
-    public function testListHostsWorksAsExpected() {
+    public function testListHostsWorksAsExpected()
+    {
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->url_elements[3] = 2;

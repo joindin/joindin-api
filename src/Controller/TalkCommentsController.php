@@ -104,8 +104,13 @@ class TalkCommentsController extends BaseApiController
         $recipients = $eventMapper->getHostsEmailAddresses($eventId);
         $event = $eventMapper->getEventById($eventId, true, true);
 
-        $emailService = $this->emailServiceFactory->getEmailService(CommentReportedEmailService::class, $this->config,
-            $recipients, $comment, $event);
+        $emailService = $this->emailServiceFactory->getEmailService(
+            CommentReportedEmailService::class,
+            $this->config,
+            $recipients,
+            $comment,
+            $event
+        );
         $emailService->sendEmail();
 
         // send them to the comments collection

@@ -8,7 +8,8 @@ use GuzzleHttp\Client;
 
 class ClientFactory
 {
-    public function createClient(array $config = []) {
+    public function createClient(array $config = [])
+    {
         return new Client($config);
     }
 }

@@ -145,9 +145,9 @@ final class TalkLinkControllerTest extends TalkBase
         );
 
         $this->request->parameters = $this->request->parameters + [
-            'display_name' => 'slides_link',
-            'url' => 'https://slides_url.com',
-        ];
+                'display_name' => 'slides_link',
+                'url' => 'https://slides_url.com',
+            ];
 
         $this->authenticateAsSpeaker();
 
@@ -193,9 +193,9 @@ final class TalkLinkControllerTest extends TalkBase
         );
 
         $this->request->parameters = $this->request->parameters + [
-            'display_name' => 'slides_link',
-            'url' => 'https://slides_url.com',
-        ];
+                'display_name' => 'slides_link',
+                'url' => 'https://slides_url.com',
+            ];
 
         $this->talk_mapper
             ->expects($this->once())
@@ -260,8 +260,8 @@ final class TalkLinkControllerTest extends TalkBase
 
         $this->request->user_id = 2;
         $this->request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  =>  'P Sherman'
+            'username' => 'janebloggs',
+            'display_name' => 'P Sherman'
         ];
 
         $this->mapperFactory = new MapperFactoryForTests();

@@ -45,7 +45,7 @@ class ApplicationControllerTest extends TestCase
         $this->db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $this->apiView = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
-        $this->clientModelCollection =  $this->getMockBuilder(ClientModelCollection::class)->disableOriginalConstructor()->getMock();
+        $this->clientModelCollection = $this->getMockBuilder(ClientModelCollection::class)->disableOriginalConstructor()->getMock();
         $this->clientMapper = $this->getMockBuilder(ClientMapper::class)->disableOriginalConstructor()->getMock();
         $this->sut = new ApplicationsController();
         $this->sut->setClientMapper($this->clientMapper);
@@ -80,7 +80,8 @@ class ApplicationControllerTest extends TestCase
     {
         $this->request->user_id = 2;
 
-        $this->clientModelCollection->expects(self::once())->method("getOutputView")->with($this->request, false)->willReturn([]);
+        $this->clientModelCollection->expects(self::once())->method("getOutputView")->with($this->request,
+            false)->willReturn([]);
         $this->clientMapper->expects(self::once())->method("getClientByIdAndUser")->willReturn($this->clientModelCollection);
 
         self::assertEquals([], $this->sut->getApplication($this->request, $this->db));
@@ -91,7 +92,8 @@ class ApplicationControllerTest extends TestCase
         $this->request->user_id = 2;
         $this->request->paginationParameters = ['resultsperpage' => 1, 'start' => ""];
 
-        $this->clientModelCollection->expects(self::once())->method("getOutputView")->with($this->request, false)->willReturn([]);
+        $this->clientModelCollection->expects(self::once())->method("getOutputView")->with($this->request,
+            false)->willReturn([]);
         $this->clientMapper->expects(self::once())->method("getClientsForUser")->with(2, 1,
             "")->willReturn($this->clientModelCollection);
 
