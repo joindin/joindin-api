@@ -6,6 +6,8 @@ use DateInterval;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use Joindin\Api\Factory\EmailServiceFactory;
+use Joindin\Api\Factory\MapperFactory;
 use Joindin\Api\Model\EventMapper;
 use Joindin\Api\Model\LanguageMapper;
 use Joindin\Api\Model\PendingTalkClaimMapper;
@@ -31,12 +33,17 @@ class TalksController extends BaseTalkController
      */
     private $pending_talk_claim_mapper;
     private $spamCheckService;
+    /**
+     * @var EmailServiceFactory
+     */
+    private $emailServiceFactory;
 
-    public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [])
+    public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [], MapperFactory $mapperFactory = null, EmailServiceFactory $emailServiceFactory = null)
     {
-        parent::__construct($config);
+        parent::__construct($config, $mapperFactory);
 
         $this->spamCheckService = $spamCheckService;
+        $this->emailServiceFactory = $emailServiceFactory ?? new EmailServiceFactory();
     }
 
     public function getAction(Request $request, PDO $db)
@@ -63,7 +70,7 @@ class TalksController extends BaseTalkController
         $resultsperpage = $this->getResultsPerPage($this->request);
 
         /** @var TalkCommentMapper $comment_mapper */
-        $comment_mapper = $this->getMapper('talkcomment');
+        $comment_mapper = $this->getMapper(TalkCommentMapper::class);
 
         return $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
     }
@@ -74,7 +81,7 @@ class TalksController extends BaseTalkController
         $talk_id = $this->getItemId($request);
 
         /** @var TalkMapper $mapper */
-        $mapper  = $this->getMapper('talk');
+        $mapper  = $this->getMapper(TalkMapper::class);
 
         return $mapper->getUserStarred($talk_id, $this->request->user_id);
     }
@@ -99,7 +106,7 @@ class TalksController extends BaseTalkController
         $resultsperpage = $this->getResultsPerPage($this->request);
 
         /** @var TalkMapper $mapper */
-        $mapper = $this->getMapper('talk');
+        $mapper = $this->getMapper(TalkMapper::class);
         $talks  = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
 
         return $talks->getOutputView($this->request, $verbose);
@@ -136,7 +143,7 @@ class TalksController extends BaseTalkController
 
                     $talk_mapper    = $this->getTalkMapper($db, $request);
                     /** @var TalkCommentMapper $comment_mapper */
-                    $comment_mapper = $this->getMapper('talkcomment', $db, $request);
+                    $comment_mapper = $this->getMapper(TalkCommentMapper::class, $db, $request);
 
                     $data['user_id'] = $request->user_id;
                     $data['talk_id'] = $talk_id;
@@ -202,7 +209,7 @@ class TalksController extends BaseTalkController
                 case 'starred':
                     // the body of this request is completely irrelevant
                     // The logged in user *is* attending the talk.  Use DELETE to unattend
-                    $talk_mapper = new TalkMapper($db, $request);
+                    $talk_mapper = $this->getMapper(TalkMapper::class, $db, $request);
                     $talk_mapper->setUserStarred($talk_id, $request->user_id);
 
                     $view = $request->getView();
@@ -273,7 +280,7 @@ class TalksController extends BaseTalkController
             throw new Exception($e->getMessage(), Http::BAD_REQUEST);
         }
 
-        $talk_mapper = new TalkMapper($db, $request);
+        $talk_mapper = $this->getMapper(TalkMapper::class, $db, $request);
         $talk        = $this->getTalkById($request, $db);
         $talk_id     = $talk->ID;
 
@@ -293,7 +300,7 @@ class TalksController extends BaseTalkController
         $track_id = $matches[1];
 
         // is this track on this event?
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = $this->getMapper(EventMapper::class, $db, $request);
         $track_events = $event_mapper->getEventByTrackId($track_id, true, false, false);
 
         if (!$track_events || ! $track_events[0]['ID']) {
@@ -335,7 +342,7 @@ class TalksController extends BaseTalkController
 
         $track_id = $request->url_elements[5];
 
-        $talk_mapper = new TalkMapper($db, $request);
+        $talk_mapper = $this->getMapper(TalkMapper::class, $db, $request);
         $talk        = $this->getTalkById($request, $db);
         $talk_id     = $talk->ID;
 
@@ -347,7 +354,7 @@ class TalksController extends BaseTalkController
         }
 
         // is this track on this event?
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = $this->getMapper(EventMapper::class, $db, $request);
         $track_events = $event_mapper->getEventByTrackId($track_id, true, false, false);
 
         if (!$track_events || ! $track_events[0]['ID']) {
@@ -393,8 +400,8 @@ class TalksController extends BaseTalkController
             );
         }
 
-        $event_mapper = new EventMapper($db, $request);
-        $talk_mapper  = new TalkMapper($db, $request);
+        $event_mapper = $this->getMapper(EventMapper::class, $db, $request);
+        $talk_mapper  = $this->getMapper(TalkMapper::class, $db, $request);
 
         $is_admin = $event_mapper->thisUserHasAdminOn($event_id);
 
@@ -447,7 +454,7 @@ class TalksController extends BaseTalkController
 
         $talk_id = $this->getItemId($request);
 
-        $talk_mapper = new TalkMapper($db, $request);
+        $talk_mapper = $this->getTalkMapper($db, $request);
 
         $talk = $this->getTalkById($request, $db);
 
@@ -485,7 +492,7 @@ class TalksController extends BaseTalkController
     protected function getTalkDataFromRequest(PDO $db, Request $request, $event_id)
     {
         // get the event so we can get the timezone info & it
-        $event_mapper = new EventMapper($db, $request);
+        $event_mapper = $this->getMapper(EventMapper::class, $db, $request);
         $list         = $event_mapper->getEventById($event_id, true);
 
         if (count($list['events']) == 0) {
@@ -519,7 +526,7 @@ class TalksController extends BaseTalkController
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
 
-        $talk_type_mapper = new TalkTypeMapper($db, $request);
+        $talk_type_mapper = $this->getMapper(TalkTypeMapper::class, $db, $request);
         $talk_types       = $talk_type_mapper->getTalkTypesLookupList();
 
         if (!array_key_exists($talk['type'], $talk_types)) {
@@ -557,7 +564,7 @@ class TalksController extends BaseTalkController
             $talk['language'] = 'English - UK';
         }
         // When the language doesn't exist, the talk will not be found
-        $language_mapper = new LanguageMapper($db, $request);
+        $language_mapper = $this->getMapper(LanguageMapper::class, $db, $request);
 
         if (!$language_mapper->isLanguageValid($talk['language'])) {
             throw new Exception("The language '{$talk['language']}' is unknown", Http::BAD_REQUEST);
@@ -650,7 +657,7 @@ class TalksController extends BaseTalkController
                 $pending_talk_claim_mapper->claimTalkAsSpeaker($talk_id, $user_id, $claim['ID']);
                 //We need to send an email to the host asking for confirmation
                 $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
-                $emailService = new TalkClaimEmailService($this->config, $recipients, $event, $talk);
+                $emailService = $this->emailServiceFactory->getEmailService(TalkClaimEmailService::class, $this->config, $recipients, $event, $talk);
 
                 if (!defined('UNIT_TEST')) {
                     $emailService->sendEmail();
@@ -660,7 +667,7 @@ class TalksController extends BaseTalkController
                 //We need to send an email to the speaker asking for confirmation
                 $recipients   = [$user_mapper->getEmailByUserId($speaker_id)];
                 $username     = $data['username'];
-                $emailService = new TalkAssignEmailService($this->config, $recipients, $event, $talk, $username);
+                $emailService = $this->emailServiceFactory->getEmailService(TalkAssignEmailService::class, $this->config, $recipients, $event, $talk, $username);
 
                 if (!defined('UNIT_TEST')) {
                     $emailService->sendEmail();
@@ -677,7 +684,7 @@ class TalksController extends BaseTalkController
                 $success = $pending_talk_claim_mapper->approveClaimAsHost($talk_id, $speaker_id, $claim['ID'])
                            && $talk_mapper->assignTalkToSpeaker($talk_id, $claim['ID'], $speaker_id, $speaker_name);
 
-                $emailService = new TalkClaimApprovedEmailService($this->config, $recipients, $event, $talk);
+                $emailService = $this->emailServiceFactory->getEmailService(TalkClaimApprovedEmailService::class, $this->config, $recipients, $event, $talk);
 
                 $event_mapper->setUserAttendance($event_id, $speaker_id);
 
@@ -728,16 +735,12 @@ class TalksController extends BaseTalkController
 
     public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper)
     {
-        $this->pending_talk_claim_mapper = $pending_talk_claim_mapper;
+        $this->setMapper($pending_talk_claim_mapper);
     }
 
     public function getPendingTalkClaimMapper(PDO $db, Request $request)
     {
-        if (!isset($this->pending_talk_claim_mapper)) {
-            $this->pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
-        }
-
-        return $this->pending_talk_claim_mapper;
+        return  $this->mapperFactory->getMapper(PendingTalkClaimMapper::class, $db, $request);
     }
 
     public function removeApprovedSpeakerFromTalk(Request $request, PDO $db)
@@ -746,7 +749,7 @@ class TalksController extends BaseTalkController
         $talk_id    = $this->getItemId($request);
         $speaker_id = $request->url_elements[5];
 
-        $talk_mapper = new TalkMapper($db, $request);
+        $talk_mapper = $this->getMapper(TalkMapper::class, $db, $request);
         $talk        = $this->getTalkById($request, $db, $talk_id);
 
         $speaker = $talk_mapper->isUserASpeakerOnTalk($talk_id, $speaker_id);
@@ -774,7 +777,7 @@ class TalksController extends BaseTalkController
 
     public function getTalkCommentEmailService($config, $recipients, $talk, $comment)
     {
-        return new TalkCommentEmailService($config, $recipients, $talk, $comment);
+        return $this->emailServiceFactory->getEmailService(TalkCommentEmailService::class, $config, $recipients, $talk, $comment);
     }
 
     public function removeSpeakerForTalk(Request $request, PDO $db)
@@ -832,11 +835,8 @@ class TalksController extends BaseTalkController
             throw new Exception("There was a problem assigning the talk", Http::INTERNAL_SERVER_ERROR);
         }
 
-        $emailService = new TalkClaimRejectedEmailService($this->config, $recipients, $event, $talk);
-
-        if (!defined('UNIT_TEST')) {
-            $emailService->sendEmail();
-        }
+        $emailService = $this->emailServiceFactory->getEmailService(TalkClaimRejectedEmailService::class, $this->config, $recipients, $event, $talk);
+        $emailService->sendEmail();
 
         $uri = $request->base . '/' . $request->version . '/talks/' . $talk_id;
 

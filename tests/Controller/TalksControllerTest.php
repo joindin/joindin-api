@@ -5,15 +5,26 @@ namespace Joindin\Api\Test\Controller;
 use Exception;
 use Joindin\Api\Controller\TalkLinkController;
 use Joindin\Api\Controller\TalksController;
+use Joindin\Api\Factory\EmailServiceFactory;
+use Joindin\Api\Factory\MapperFactory;
+use Joindin\Api\Model\EventMapper;
+use Joindin\Api\Model\OAuthModel;
 use Joindin\Api\Model\PendingTalkClaimMapper;
+use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Model\TalkMapper;
+use Joindin\Api\Model\TalkModel;
 use Joindin\Api\Model\TalkModelCollection;
 use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Request;
 use Joindin\Api\Service\NullSpamCheckService;
 use Joindin\Api\Service\SpamCheckServiceInterface;
+use Joindin\Api\Service\TalkClaimRejectedEmailService;
 use Joindin\Api\Service\TalkCommentEmailService;
+use Joindin\Api\Test\EmailServiceFactoryForTests;
+use Joindin\Api\Test\MapperFactoryForTests;
 use Joindin\Api\Test\Mock\mockPDO;
+use Joindin\Api\View\ApiView;
+use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use Teapot\StatusCode\Http;
 use Teapot\StatusCode\WebDAV;
@@ -21,15 +32,40 @@ use Teapot\StatusCode\WebDAV;
 final class TalksControllerTest extends TalkBase
 {
     private $config;
+    /**
+     * @var MockObject
+     */
+    private $request;
+    /**
+     * @var MockObject
+     */
+    private $db;
+    /**
+     * @var MapperFactoryForTests
+     */
+    protected $mapperFactory;
+    /**
+     * @var MockObject
+     */
+    private $spawnChecker;
+    /**
+     * @var TalksController
+     */
+    private $sut;
+    /**
+     * @var EmailServiceFactory
+     */
+    private $emailServiceFactory;
 
     public function setUp(): void
     {
+        parent::setUp();
         $this->config = [
             'email' => [
                 'from' => 'source@example.com',
-                'smtp'           => [
-                    'host'     => 'localhost',
-                    'port'     => 25,
+                'smtp' => [
+                    'host' => 'localhost',
+                    'port' => 25,
                     'username' => 'username',
                     'password' => 'ChangeMeSeymourChangeMe',
                     'security' => null
@@ -37,6 +73,13 @@ final class TalksControllerTest extends TalkBase
             ],
             'website_url' => 'http://example.com',
         ];
+        $this->request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $this->db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
+        $this->spawnChecker = $this->getMockBuilder(SpamCheckServiceInterface::class)->disableOriginalConstructor()->getMock();
+
+        $this->emailServiceFactory = new EmailServiceFactoryForTests();
+        $this->sut = new TalksController($this->spawnChecker, $this->config, $this->mapperFactory,
+            $this->emailServiceFactory);
     }
 
     /**
@@ -90,7 +133,7 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = 2;
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -103,11 +146,10 @@ final class TalksControllerTest extends TalkBase
             ->method('getTalkById')
             ->willReturn(false);
 
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
-
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
         $talks_controller->setSpeakerForTalk($request, $db);
     }
 
@@ -133,21 +175,21 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = 2;
         $request->parameters = [
-            'display_name'  => 'Jane Bloggs'
+            'display_name' => 'Jane Bloggs'
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -174,21 +216,21 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = 2;
         $request->parameters = [
-            'username'  => 'janebloggs'
+            'username' => 'janebloggs'
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -215,11 +257,11 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  =>  'P Sherman'
+            'username' => 'janebloggs',
+            'display_name' => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -228,13 +270,13 @@ final class TalksControllerTest extends TalkBase
             ->expects($this->once())
             ->method('getSpeakerFromTalk')
             ->willReturn(false);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -260,11 +302,11 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  => 'P Sherman'
+            'username' => 'janebloggs',
+            'display_name' => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -276,13 +318,13 @@ final class TalksControllerTest extends TalkBase
                 'speaker_id' => 1,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -308,11 +350,11 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman'
+            'username' => 'psherman',
+            'display_name' => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -328,27 +370,23 @@ final class TalksControllerTest extends TalkBase
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
             ->willReturn(false);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->willReturn(6);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db, $request])
-            ->getMock();
+        $pending_talk_claim_mapper = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
             ->willReturn(false);
 
-        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
-
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -374,11 +412,11 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman'
+            'username' => 'psherman',
+            'display_name' => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -390,17 +428,17 @@ final class TalksControllerTest extends TalkBase
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->willReturn(false);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -422,13 +460,14 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  => 'Jane Bloggs'
+            'username' => 'janebloggs',
+            'display_name' => 'Jane Bloggs'
         ];
 
         $talks_controller = new TalksController(
             new NullSpamCheckService(),
-            $this->config
+            $this->config,
+            $this->mapperFactory
         );
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -441,18 +480,16 @@ final class TalksControllerTest extends TalkBase
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->willReturn(2);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db, $request])
-            ->getMock();
+        $pending_talk_claim_mapper = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
@@ -462,10 +499,9 @@ final class TalksControllerTest extends TalkBase
             ->expects($this->once())
             ->method('claimTalkAsSpeaker')
             ->willReturn(true);
-        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
     }
@@ -487,13 +523,14 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman'
+            'username' => 'psherman',
+            'display_name' => 'P Sherman'
         ];
 
         $talks_controller = new TalksController(
             new NullSpamCheckService(),
-            $this->config
+            $this->config,
+            $this->mapperFactory
         );
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -510,18 +547,16 @@ final class TalksControllerTest extends TalkBase
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
             ->willReturn(true);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->willReturn(1);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db, $request])
-            ->getMock();
+        $pending_talk_claim_mapper = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
@@ -533,7 +568,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
     }
@@ -557,11 +592,11 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  => 'Jane Bloggs'
+            'username' => 'janebloggs',
+            'display_name' => 'Jane Bloggs'
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -573,7 +608,7 @@ final class TalksControllerTest extends TalkBase
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
@@ -584,20 +619,16 @@ final class TalksControllerTest extends TalkBase
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
             ->willReturn(false);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db, $request])
-            ->getMock();
+        $pending_talk_claim_mapper = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
             ->willReturn(PendingTalkClaimMapper::SPEAKER_CLAIM);
 
-        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
-
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -621,11 +652,11 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  => 'Jane Bloggs'
+            'username' => 'janebloggs',
+            'display_name' => 'Jane Bloggs'
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -637,7 +668,7 @@ final class TalksControllerTest extends TalkBase
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
@@ -648,20 +679,16 @@ final class TalksControllerTest extends TalkBase
             ->expects($this->once())
             ->method('thisUserHasAdminOn')
             ->willReturn(false);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db, $request])
-            ->getMock();
+        $pending_talk_claim_mapper = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
             ->willReturn(PendingTalkClaimMapper::SPEAKER_CLAIM);
 
-        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
-
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $talks_controller->setSpeakerForTalk($request, $db);
     }
@@ -685,11 +712,11 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman'
+            'username' => 'psherman',
+            'display_name' => 'P Sherman'
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -701,27 +728,23 @@ final class TalksControllerTest extends TalkBase
                 'speaker_id' => null,
                 'ID' => 1
             ]);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->willReturn(1);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db, $request])
-            ->getMock();
+        $pending_talk_claim_mapper = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
             ->willReturn(PendingTalkClaimMapper::HOST_ASSIGN);
 
-        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
-
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
         $talks_controller->setSpeakerForTalk($request, $db);
     }
 
@@ -740,11 +763,11 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'janebloggs',
-            'display_name'  => 'Jane Bloggs',
+            'username' => 'janebloggs',
+            'display_name' => 'Jane Bloggs',
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -760,18 +783,16 @@ final class TalksControllerTest extends TalkBase
             ->expects($this->once())
             ->method('assignTalkToSpeaker')
             ->willReturn(true);
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->willReturn(2);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db, $request])
-            ->getMock();
+        $pending_talk_claim_mapper = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
@@ -781,10 +802,8 @@ final class TalksControllerTest extends TalkBase
             ->method('approveAssignmentAsSpeaker')
             ->willReturn(true);
 
-        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
-
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
     }
@@ -804,13 +823,14 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
         ];
 
         $talks_controller = new TalksController(
             new NullSpamCheckService(),
-            $this->config
+            $this->config,
+            $this->mapperFactory
         );
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -832,18 +852,16 @@ final class TalksControllerTest extends TalkBase
             ->method('assignTalkToSpeaker')
             ->willReturn(true);
 
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->createUserMapper($db, $request);
         $user_mapper
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->willReturn(1);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db, $request])
-            ->getMock();
+        $pending_talk_claim_mapper = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
@@ -856,7 +874,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
 
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
     }
@@ -879,8 +897,8 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = $commenterId;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
             'comment' => 'Test Comment',
             'rating' => '3',
         ];
@@ -892,33 +910,10 @@ final class TalksControllerTest extends TalkBase
                 ->getMock();
 
         $talks_comment_email->method('sendEmail');
-
-        $talks_controller = new class(new NullSpamCheckService(), $talks_comment_email) extends TalksController {
-            /** @var TalkCommentEmailService  */
-            private $talkCommentEmailService;
-
-            public function __construct(
-                SpamCheckServiceInterface $spamCheckService,
-                TalkCommentEmailService $talkCommentEmailService,
-                array $config = []
-            ) {
-                parent::__construct($spamCheckService, $config);
-
-                $this->talkCommentEmailService = $talkCommentEmailService;
-            }
-
-            /**
-             * @param array $config
-             * @param array $recipients
-             * @param string $talk
-             * @param string $comment
-             * @return TalkCommentEmailService
-             */
-            public function getTalkCommentEmailService($config, $recipients, $talk, $comment)
-            {
-                return $this->talkCommentEmailService;
-            }
-        };
+        $emailServiceFactory = new EmailServiceFactoryForTests();
+        $emailServiceFactory->setEmailServiceMockAs(TalkCommentEmailService::class, $talks_comment_email);
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory,
+            $emailServiceFactory);
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
@@ -928,9 +923,7 @@ final class TalksControllerTest extends TalkBase
             ->method('getSpeakerEmailsByTalkId')
             ->willReturn($speakerEmails);
 
-        $talks_controller->setTalkMapper(
-            $this->talk_mapper
-        );
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $talk_comment = $this->createTalkCommentMapper($db, $request);
         $talk_comment
@@ -950,10 +943,7 @@ final class TalksControllerTest extends TalkBase
                 ['comments' => []]
             );
 
-        $talks_controller->setMapper(
-            'talkcomment',
-            $talk_comment
-        );
+        $this->mapperFactory->setMapperMockAs(TalkCommentMapper::class, $talk_comment);
 
         $request->setOauthModel(
             $this->createOathModel($db, $request, "test")
@@ -1027,17 +1017,17 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 1;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
             'rating' => '3',
         ];
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $talks_controller->postAction($request, $db);
     }
@@ -1057,17 +1047,17 @@ final class TalksControllerTest extends TalkBase
         );
         $request->user_id = 1;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
             'comment' => 'Test Comment',
         ];
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
 
         $this->talk_mapper = $this->createTalkMapper($db, $request);
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $talks_controller->postAction($request, $db);
     }
@@ -1088,13 +1078,15 @@ final class TalksControllerTest extends TalkBase
 
         $request->user_id = 2;
         $request->parameters = [
-            'username'      => 'psherman',
-            'display_name'  => 'P Sherman',
+            'username' => 'psherman',
+            'display_name' => 'P Sherman',
         ];
 
         $talks_controller = new TalksController(
             new NullSpamCheckService(),
-            $this->config
+            $this->config,
+            $this->mapperFactory,
+            $this->emailServiceFactory
         );
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -1114,7 +1106,7 @@ final class TalksControllerTest extends TalkBase
             ->method('thisUserHasAdminOn')
             ->willReturn(true);
 
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $user_mapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs([$db, $request])
@@ -1124,11 +1116,9 @@ final class TalksControllerTest extends TalkBase
             ->expects($this->once())
             ->method('getUserIdFromUsername')
             ->willReturn(1);
-        $talks_controller->setUserMapper($user_mapper);
+        $this->mapperFactory->setMapperMockAs(UserMapper::class, $user_mapper);
 
-        $pending_talk_claim_mapper = $this->getMockBuilder(PendingTalkClaimMapper::class)
-            ->setConstructorArgs([$db, $request])
-            ->getMock();
+        $pending_talk_claim_mapper = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
         $pending_talk_claim_mapper
             ->expects($this->once())
             ->method('claimExists')
@@ -1138,45 +1128,13 @@ final class TalksControllerTest extends TalkBase
             ->method('rejectClaimAsHost')
             ->willReturn(true);
 
-        $talks_controller->setPendingTalkClaimMapper($pending_talk_claim_mapper);
+        $emailService = $this->emailServiceFactory->getEmailServiceMock($this, TalkClaimRejectedEmailService::class);
+        $emailService->method("sendEmail");
 
         $event_mapper = $this->createEventMapper($db, $request);
-        $talks_controller->setEventMapper($event_mapper);
+        $this->mapperFactory->setMapperMockAs(EventMapper::class, $event_mapper);
 
         $this->assertTrue($talks_controller->removeSpeakerForTalk($request, $db));
-    }
-
-    public function testDifferentTalkMedia()
-    {
-        $request = new Request(
-            [],
-            [
-                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/3links',
-                'REQUEST_METHOD' => 'GET'
-            ]
-        );
-
-        $db = $this->getMockBuilder(mockPDO::class)->getMock();
-
-        $this->talk_mapper = $this->createTalkMapper($db, $request);
-
-        $expected = [
-            ['slides_link' => 'http://slideshare.net'],
-            ['code_link' => 'https://github.com/link/to/repo'],
-        ];
-
-        $this->talk_mapper
-            ->method('getTalkMediaLinks')
-            ->willReturn($expected);
-
-        $talks_controller = new TalkLinkController();
-        $talks_controller->setTalkMapper($this->talk_mapper);
-
-        $output = $talks_controller->getTalkLinks($request, $db);
-        $this->assertSame(
-            $expected,
-            $output['talk_links']
-        );
     }
 
     public function testVerboseTalkOutput()
@@ -1190,7 +1148,7 @@ final class TalksControllerTest extends TalkBase
         );
 
         $request->parameters = [
-            'verbose'      => 'yes',
+            'verbose' => 'yes',
         ];
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -1202,9 +1160,8 @@ final class TalksControllerTest extends TalkBase
             ['code_link' => 'https://github.com'],
         ];
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
-
-        $talks_controller->setTalkMapper($this->talk_mapper);
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $this->talk_mapper);
 
         $output = $talks_controller->getAction($request, $db);
 
@@ -1244,12 +1201,8 @@ final class TalksControllerTest extends TalkBase
         $talkComment->method('getCommentsByTalkId')
             ->willReturn($expected);
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
-
-        $talks_controller->setMapper(
-            'talkcomment',
-            $talkComment
-        );
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
+        $this->mapperFactory->setMapperMockAs(TalkCommentMapper::class, $talkComment);
 
         $output = $talks_controller->getTalkComments($request, $db);
         $this->assertSame($expected, $output);
@@ -1275,12 +1228,8 @@ final class TalksControllerTest extends TalkBase
         $talkMapper->method('getUserStarred')
             ->willReturn($expected);
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
-
-        $talks_controller->setMapper(
-            'talk',
-            $talkMapper
-        );
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $talkMapper);
 
         $output = $talks_controller->getTalkStarred($request, $db);
         $this->assertSame($expected, $output);
@@ -1297,7 +1246,7 @@ final class TalksControllerTest extends TalkBase
         );
 
         $request->parameters = [
-            'title'      => 'linux',
+            'title' => 'linux',
         ];
 
         $db = $this->getMockBuilder(mockPDO::class)->getMock();
@@ -1325,12 +1274,9 @@ final class TalksControllerTest extends TalkBase
         $talkMapper->method('getTalksByTitleSearch')
             ->willReturn($collection);
 
-        $talks_controller = new TalksController(new NullSpamCheckService());
+        $talks_controller = new TalksController(new NullSpamCheckService(), [], $this->mapperFactory);
 
-        $talks_controller->setMapper(
-            'talk',
-            $talkMapper
-        );
+        $this->mapperFactory->setMapperMockAs(TalkMapper::class, $talkMapper);
 
         $output = $talks_controller->getTalkByKeyWord($request, $db);
         $this->assertSame($expected, $output);
@@ -1355,5 +1301,290 @@ final class TalksControllerTest extends TalkBase
         $talks_controller = new TalksController(new NullSpamCheckService());
 
         $talks_controller->getTalkByKeyWord($request, $db);
+    }
+
+    public function testPostActionThrowsExceptionWhenCommentInvalid()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Comment failed spam check");
+        $this->expectExceptionCode(Http::BAD_REQUEST);
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5, 4 => 'comments'];
+        $this->request->expects(self::exactly(3))->method("getParameter")
+            ->withConsecutive(["comment"], ["rating"], ["private"])
+            ->willReturnOnConsecutiveCalls("comment", "rating", 1);
+        $oauthModel = $this->createMock(OAuthModel::class);
+        $this->request->expects(self::once())->method("getOauthModel")->with($this->db)->willReturn($oauthModel);
+        $this->request->expects(self::once())->method("getAccessToken")->willReturn("accessToken");
+        $oauthModel->expects(self::once())->method("getConsumerName")->with("accessToken")->willReturn("consumerName");
+        $commentMapper = $this->mapperFactory->getMapperMock($this, TalkCommentMapper::class);
+        $commentMapper->expects(self::once())->method("checkRateLimit");
+        $this->request->expects(self::once())->method("getClientIP")->willReturn(10);
+        $this->request->expects(self::once())->method("getClientUserAgent")->willReturn("test");
+        $this->spawnChecker->expects(self::once())->method("isCommentAcceptable")->with("comment", 10,
+            "test")->willReturn(false);
+
+        $this->sut->postAction($this->request, $this->db);
+    }
+
+    public function testPostActionThrowsExceptionWhenCommentNotNewId()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("The comment could not be stored");
+        $this->expectExceptionCode(Http::BAD_REQUEST);
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5, 4 => 'comments'];
+        $this->request->expects(self::exactly(3))->method("getParameter")
+            ->withConsecutive(["comment"], ["rating"], ["private"])
+            ->willReturnOnConsecutiveCalls("comment", "rating", 1);
+        $oauthModel = $this->createMock(OAuthModel::class);
+        $this->request->expects(self::once())->method("getOauthModel")->with($this->db)->willReturn($oauthModel);
+        $this->request->expects(self::once())->method("getAccessToken")->willReturn("accessToken");
+        $oauthModel->expects(self::once())->method("getConsumerName")->with("accessToken")->willReturn("consumerName");
+        $commentMapper = $this->mapperFactory->getMapperMock($this, TalkCommentMapper::class);
+        $commentMapper->expects(self::once())->method("checkRateLimit");
+        $this->request->expects(self::once())->method("getClientIP")->willReturn(10);
+        $this->request->expects(self::once())->method("getClientUserAgent")->willReturn("test");
+        $this->spawnChecker->expects(self::once())->method("isCommentAcceptable")->with("comment", 10,
+            "test")->willReturn(true);
+        $commentMapper->expects(self::once())->method("hasUserRatedThisTalk")->with(3, 5)->willReturn(false);
+        $this->talk_mapper->expects(self::once())->method("isUserASpeakerOnTalk")->with(5, 3)->willReturn(true);
+        $commentMapper->expects(self::once())->method("save")->willReturn(false);
+
+        $this->sut->postAction($this->request, $this->db);
+    }
+
+    public function testPostActionStarredWorksAsExpected()
+    {
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5, 4 => 'starred'];
+        $this->request->base = "hi";
+        $this->request->path_info = "path";
+
+        $this->talk_mapper->expects(self::once())->method("setUserStarred")->with(5, 3);
+        $view = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
+        $this->request->expects(self::once())->method("getView")->willReturn($view);
+        $view->expects(self::once())->method("setHeader")->with("Location", "hipath");
+        $view->expects(self::once())->method("setResponseCode")->with(Http::CREATED);
+
+        $this->sut->postAction($this->request, $this->db);
+    }
+
+    public function testPostActionThrowsExceptionWhenUnsupportedOperation()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Operation not supported, sorry");
+        $this->expectExceptionCode(Http::NOT_FOUND);
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5, 4 => 'notSupported'];
+
+        $this->sut->postAction($this->request, $this->db);
+    }
+
+    public function testPostActionThrowsExceptionWhenUnsupportedMethod()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("method not supported - sorry");
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5];
+
+        $this->sut->postAction($this->request, $this->db);
+    }
+
+    public function testRemoveSpeakerForTalkThrowsExceptionWhenNotAdmin()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("You do not have permission to reject the speaker claim on this talk");
+        $this->expectExceptionCode(Http::FORBIDDEN);
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5];
+
+        $talkModel = new TalkModel([]);
+        $talkModel->ID = 7;
+        $talkModel->event_id = 1;
+
+        $eventMapper = $this->mapperFactory->getMapperMock($this, EventMapper::class);
+        $eventMapper->expects(self::once())->method("getEventById")->with(1);
+        $this->talk_mapper->expects(self::once())->method("getTalkById")->with(5)->willReturn($talkModel);
+        $this->talk_mapper->expects(self::once())->method("thisUserHasAdminOn")->with(7)->willReturn(false);
+
+        $this->sut->removeSpeakerForTalk($this->request, $this->db);
+    }
+
+    public function testRemoveSpeakerForTalkThrowsExceptionWhenUserNotFound()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Specified user not found");
+        $this->expectExceptionCode(Http::NOT_FOUND);
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5];
+
+        $talkModel = new TalkModel([]);
+        $talkModel->ID = 7;
+        $talkModel->event_id = 1;
+
+        $eventMapper = $this->mapperFactory->getMapperMock($this, EventMapper::class);
+        $eventMapper->expects(self::once())->method("getEventById")->with(1);
+        $this->talk_mapper->expects(self::once())->method("getTalkById")->with(5)->willReturn($talkModel);
+        $this->talk_mapper->expects(self::once())->method("thisUserHasAdminOn")->with(7)->willReturn(true);
+        $this->request->expects(self::exactly(2))->method("getParameter")
+            ->withConsecutive(["display_name", ''], ['username', ''])->willReturnOnConsecutiveCalls("displayName",
+                'username');
+        $userMapper = $this->mapperFactory->getMapperMock($this, UserMapper::class);
+        $userMapper->expects(self::once())->method("getUserIdFromUsername")->with("username")->willReturn(false);
+
+        $this->sut->removeSpeakerForTalk($this->request, $this->db);
+    }
+
+    public function testRemoveSpeakerForTalkThrowsExceptionWhenNoSpeakerMatching()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("No speaker matching that name found");
+        $this->expectExceptionCode(WebDAV::UNPROCESSABLE_ENTITY);
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5];
+
+        $talkModel = new TalkModel([]);
+        $talkModel->ID = 7;
+        $talkModel->event_id = 1;
+
+        $eventMapper = $this->mapperFactory->getMapperMock($this, EventMapper::class);
+        $eventMapper->expects(self::once())->method("getEventById")->with(1);
+        $this->talk_mapper->expects(self::once())->method("getTalkById")->with(5)->willReturn($talkModel);
+        $this->talk_mapper->expects(self::once())->method("thisUserHasAdminOn")->with(7)->willReturn(true);
+        $this->request->expects(self::exactly(2))->method("getParameter")
+            ->withConsecutive(["display_name", ''], ['username', ''])->willReturnOnConsecutiveCalls("displayName",
+                'username');
+        $userMapper = $this->mapperFactory->getMapperMock($this, UserMapper::class);
+        $userMapper->expects(self::once())->method("getUserIdFromUsername")->with("username")->willReturn(true);
+        $this->talk_mapper->expects(self::once())->method("getSpeakerFromTalk")->with(7,
+            "displayName")->willReturn(false);
+
+        $this->sut->removeSpeakerForTalk($this->request, $this->db);
+    }
+
+    public function testRemoveSpeakerForTalkThrowsExceptionWhenTalkClaimed()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Talk already claimed");
+        $this->expectExceptionCode(WebDAV::UNPROCESSABLE_ENTITY);
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5];
+
+        $talkModel = new TalkModel([]);
+        $talkModel->ID = 7;
+        $talkModel->event_id = 1;
+
+        $eventMapper = $this->mapperFactory->getMapperMock($this, EventMapper::class);
+        $eventMapper->expects(self::once())->method("getEventById")->with(1);
+        $this->talk_mapper->expects(self::once())->method("getTalkById")->with(5)->willReturn($talkModel);
+        $this->talk_mapper->expects(self::once())->method("thisUserHasAdminOn")->with(7)->willReturn(true);
+        $this->request->expects(self::exactly(2))->method("getParameter")
+            ->withConsecutive(["display_name", ''], ['username', ''])->willReturnOnConsecutiveCalls("displayName",
+                'username');
+        $userMapper = $this->mapperFactory->getMapperMock($this, UserMapper::class);
+        $userMapper->expects(self::once())->method("getUserIdFromUsername")->with("username")->willReturn(true);
+        $this->talk_mapper->expects(self::once())->method("getSpeakerFromTalk")->with(7,
+            "displayName")->willReturn(['speaker_id' => 10]);
+
+        $this->sut->removeSpeakerForTalk($this->request, $this->db);
+    }
+
+    public function testRemoveSpeakerForTalkThrowsExceptionWhenNoDisplayName()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("You must provide a display name and a username");
+        $this->expectExceptionCode(Http::BAD_REQUEST);
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5];
+
+        $talkModel = new TalkModel([]);
+        $talkModel->ID = 7;
+        $talkModel->event_id = 1;
+
+        $eventMapper = $this->mapperFactory->getMapperMock($this, EventMapper::class);
+        $eventMapper->expects(self::once())->method("getEventById")->with(1);
+        $this->talk_mapper->expects(self::once())->method("getTalkById")->with(5)->willReturn($talkModel);
+        $this->talk_mapper->expects(self::once())->method("thisUserHasAdminOn")->with(7)->willReturn(true);
+        $this->request->expects(self::exactly(2))->method("getParameter")
+            ->withConsecutive(["display_name", ''], ['username', ''])->willReturnOnConsecutiveCalls("", 'username');
+        $userMapper = $this->mapperFactory->getMapperMock($this, UserMapper::class);
+        $userMapper->expects(self::once())->method("getUserIdFromUsername")->with("username")->willReturn(true);
+        $this->talk_mapper->expects(self::once())->method("getSpeakerFromTalk")->with(7,
+            "")->willReturn(['speaker_id' => 0]);
+
+        $this->sut->removeSpeakerForTalk($this->request, $this->db);
+    }
+
+    public function testRemoveSpeakerForTalkThrowsExceptionWhenClaimHasProblem()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("There was a problem with the claim");
+        $this->expectExceptionCode(Http::INTERNAL_SERVER_ERROR);
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5];
+
+        $talkModel = new TalkModel([]);
+        $talkModel->ID = 7;
+        $talkModel->event_id = 1;
+
+        $eventMapper = $this->mapperFactory->getMapperMock($this, EventMapper::class);
+        $eventMapper->expects(self::once())->method("getEventById")->with(1);
+        $this->talk_mapper->expects(self::once())->method("getTalkById")->with(5)->willReturn($talkModel);
+        $this->talk_mapper->expects(self::once())->method("thisUserHasAdminOn")->with(7)->willReturn(true);
+        $this->request->expects(self::exactly(2))->method("getParameter")
+            ->withConsecutive(["display_name", ''], ['username', ''])->willReturnOnConsecutiveCalls("displayName",
+                'username');
+        $userMapper = $this->mapperFactory->getMapperMock($this, UserMapper::class);
+        $userMapper->expects(self::once())->method("getUserIdFromUsername")->with("username")->willReturn(true);
+        $this->talk_mapper->expects(self::once())->method("getSpeakerFromTalk")->with(7,
+            "displayName")->willReturn(['speaker_id' => 0, "ID" => 10]);
+        $pendingTalk = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
+        $pendingTalk->expects(self::once())->method("claimExists")->with(7, 1,
+            10)->willReturn(PendingTalkClaimMapper::HOST_ASSIGN);
+
+        $this->sut->removeSpeakerForTalk($this->request, $this->db);
+    }
+
+    public function testRemoveSpeakerForTalkThrowsExceptionWhenProblemWithAssigning()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("There was a problem assigning the talk");
+        $this->expectExceptionCode(Http::INTERNAL_SERVER_ERROR);
+
+        $this->request->user_id = 3;
+        $this->request->url_elements = [3 => 5];
+
+        $talkModel = new TalkModel([]);
+        $talkModel->ID = 7;
+        $talkModel->event_id = 1;
+
+        $eventMapper = $this->mapperFactory->getMapperMock($this, EventMapper::class);
+        $eventMapper->expects(self::once())->method("getEventById")->with(1);
+        $this->talk_mapper->expects(self::once())->method("getTalkById")->with(5)->willReturn($talkModel);
+        $this->talk_mapper->expects(self::once())->method("thisUserHasAdminOn")->with(7)->willReturn(true);
+        $this->request->expects(self::exactly(2))->method("getParameter")
+            ->withConsecutive(["display_name", ''], ['username', ''])->willReturnOnConsecutiveCalls("displayName",
+                'username');
+        $userMapper = $this->mapperFactory->getMapperMock($this, UserMapper::class);
+        $userMapper->expects(self::once())->method("getUserIdFromUsername")->with("username")->willReturn(true);
+        $this->talk_mapper->expects(self::once())->method("getSpeakerFromTalk")->with(7,
+            "displayName")->willReturn(['speaker_id' => 0, "ID" => 10]);
+        $pendingTalk = $this->mapperFactory->getMapperMock($this, PendingTalkClaimMapper::class);
+        $pendingTalk->expects(self::once())->method("claimExists")->with(7, 1,
+            10)->willReturn(PendingTalkClaimMapper::SPEAKER_CLAIM);
+        $pendingTalk->expects(self::once())->method("rejectClaimAsHost")->with(7, 1, 10)->willReturn(false);
+
+        $this->sut->removeSpeakerForTalk($this->request, $this->db);
     }
 }
