@@ -641,7 +641,7 @@ parameters:
 			path: src/Controller/TalksController.php
 
 		-
-			message: "#^Cannot access offset 0 on \\(array\\)\\|true\\.$#"
+			message: "#^Cannot access offset 0 on \\(array\\&nonEmpty\\)\\|true\\.$#"
 			count: 4
 			path: src/Controller/TalksController.php
 
@@ -786,7 +786,7 @@ parameters:
 			path: src/Controller/TracksController.php
 
 		-
-			message: "#^Cannot access offset 0 on \\(array\\)\\|true\\.$#"
+			message: "#^Cannot access offset 0 on \\(array\\&nonEmpty\\)\\|true\\.$#"
 			count: 4
 			path: src/Controller/TracksController.php
 
@@ -1087,11 +1087,6 @@ parameters:
 
 		-
 			message: "#^Property Joindin\\\\Api\\\\Model\\\\BaseModel\\:\\:\\$data has no typehint specified\\.$#"
-			count: 1
-			path: src/Model/BaseModel.php
-
-		-
-			message: "#^Parameter \\#1 \\$str of function substr expects string, int\\|string given\\.$#"
 			count: 1
 			path: src/Model/BaseModel.php
 

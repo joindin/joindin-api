@@ -235,7 +235,7 @@ final class EventHostsControllerTest extends TestCase
         $controller->setUserMapper($um);
 
         $ehm = $this->getMockBuilder(EventHostMapper::class)->disableOriginalConstructor()->getMock();
-        $ehm->expects($this->once())->method('addHostToEvent')->with($this->equalTo(12, 13))->willReturn(false);
+        $ehm->expects($this->once())->method('addHostToEvent')->with($this->equalTo(12), $this->equalTo(13))->willReturn(false);
 
         $controller->setEventHostMapper($ehm);
 

@@ -8,7 +8,7 @@
  * In PHP < 5.4, this function is only defined in the apache module. In order to run the site via nginx,
  * we need to define this function and mimic its return value.
  */
-function apache_request_headers()
+function apache_request_headers(): array
 {
     $arh     = [];
     $rx_http = '/\AHTTP_/';
@@ -31,5 +31,5 @@ function apache_request_headers()
         }
     }
 
-    return ($arh);
+    return $arh;
 }
