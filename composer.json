@@ -34,7 +34,7 @@
     "maglnet/composer-require-checker": "^2.0.0",
     "php-mock/php-mock-phpunit": "^2.6",
     "phpstan/extension-installer": "^1.0.3",
-    "phpstan/phpstan": "~0.12.50",
+    "phpstan/phpstan": "~0.12.52",
     "phpstan/phpstan-phpunit": "~0.12.6",
     "phpunit/phpunit": "^9.4.2",
     "roave/security-advisories": "dev-master",
