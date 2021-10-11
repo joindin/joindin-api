@@ -188,9 +188,10 @@ class ApplicationsController extends BaseApiController
         );
     }
 
-    public function setClientMapper(ClientMapper $clientMapper)
+    public function setClientMapper(ClientMapper $clientMapper): self
     {
         $this->clientMapper = $clientMapper;
+        return $this;
     }
 
     /**
@@ -199,7 +200,7 @@ class ApplicationsController extends BaseApiController
      *
      * @return ClientMapper
      */
-    private function getClientMapper(PDO $db, Request $request)
+    private function getClientMapper(PDO $db, Request $request): ClientMapper
     {
         return $this->clientMapper ?? new ClientMapper($db, $request);
     }
