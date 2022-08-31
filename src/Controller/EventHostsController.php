@@ -10,6 +10,7 @@ use Joindin\Api\Model\UserMapper;
 use PDO;
 use Joindin\Api\Request;
 use Teapot\StatusCode\Http;
+use function sprintf;
 
 class EventHostsController extends BaseApiController
 // @codingStandardsIgnoreEnd
@@ -96,6 +97,9 @@ class EventHostsController extends BaseApiController
         if (false === $user_id) {
             throw new Exception('No User found', Http::NOT_FOUND);
         }
+        if ($eventMapper->isUserAHostOn($user_id, $event_id)) {
+            throw new Exception ('User is already a host');
+        }
 
         $mapper = $this->getEventHostMapper($request, $db);
 
@@ -106,14 +110,14 @@ class EventHostsController extends BaseApiController
         }
 
         $uri = sprintf(
-            '%1$s/%2$s/events/%3$s/hosts',
+            '%1$s/%2$s/events/%3$s',
             $request->base,
             $request->version,
             $event_id
         );
 
         $request->getView()->setHeader('Location', $uri);
-        $request->getView()->setResponseCode(Http::CREATED);
+        $request->getView()->setResponseCode(Http::NO_CONTENT);
         $request->getView()->setNoRender(true);
     }
 
@@ -131,12 +135,11 @@ class EventHostsController extends BaseApiController
         }
 
         $user_id = $request->url_elements[5];
+        $event_id = $this->getItemId($request);
 
         if ($user_id === $request->user_id) {
             throw new Exception('You are not allowed to remove yourself from the host-list', Http::FORBIDDEN);
         }
-
-        $event_id = $this->getItemId($request);
 
         $eventMapper = $this->getEventMapper($request, $db);
         $event       = $eventMapper->getEventById($event_id);

@@ -165,7 +165,7 @@ class EventMapper extends ApiMapper
                . 'from events ';
 
         if (array_key_exists("tags", $params)) {
-            $sql .= "left join tags_events on tags_events.event_id = events.ID 
+            $sql .= "left join tags_events on tags_events.event_id = events.ID
                 left join tags on tags.ID = tags_events.tag_id ";
         }
 
@@ -445,6 +445,7 @@ class EventMapper extends ApiMapper
                 $list[$key]['tracks_uri']    = $base . '/' . $version . '/events/' . $row['ID'] . '/tracks';
                 $list[$key]['attending_uri'] = $base . '/' . $version . '/events/' . $row['ID'] . '/attending';
                 $list[$key]['images_uri']    = $base . '/' . $version . '/events/' . $row['ID'] . '/images';
+                $list[$key]['hosts_uri']     = $base . '/' . $version . '/events/' . $row['ID'] . '/hosts';
                 $list[$key]['pending']       = $row['pending'];
 
                 if ($row['pending'] == 1 && $thisUserCanApproveEvents) {
