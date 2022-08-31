@@ -46,7 +46,11 @@
       "php": "7.3.11"
     },
     "preferred-install": "dist",
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "infection/extension-installer": true,
+      "phpstan/extension-installer": true
+    }
   },
   "autoload": {
     "psr-4": {
