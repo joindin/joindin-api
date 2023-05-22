@@ -15,7 +15,7 @@ use Teapot\StatusCode\Http;
 use UnexpectedValueException;
 
 class EventCommentsController extends BaseApiController
-// @codingStandardsIgnoreEnd
+    // @codingStandardsIgnoreEnd
 {
     private $spamCheckService;
 
