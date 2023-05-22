@@ -38,9 +38,6 @@ jobs:
       - name: "Install dependencies with composer"
         run: $(which composer) install
 
-      - name: "Run dependency analysis with security-checker"
-        run: vendor/bin/security-checker security:check composer.lock
-
       - name: "Run dependency analysis with composer-require-checker"
         run: vendor/bin/composer-require-checker --config-file=composer-require-checker.json
 
