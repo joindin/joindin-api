@@ -13,7 +13,7 @@ use Teapot\StatusCode\Http;
 use UnexpectedValueException;
 
 class TalkCommentsController extends BaseApiController
-// @codingStandardsIgnoreEnd
+    // @codingStandardsIgnoreEnd
 {
     /**
      * @var TalkCommentMapper
