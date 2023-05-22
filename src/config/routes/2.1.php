@@ -470,6 +470,22 @@ return [
         ],
     ],
     [
+        'path'       => '/talk_comments(/[^/]+)*/reported?$',
+        'controller' => TalkCommentsController::class,
+        'action'     => 'reportComment',
+        'verbs'      => [
+            Request::HTTP_POST,
+        ],
+    ],
+    [
+        'path'       => '/talk_comments(/[^/]+)*/reported?$',
+        'controller' => TalkCommentsController::class,
+        'action'     => 'moderateReportedComment',
+        'verbs'      => [
+            Request::HTTP_PUT,
+        ],
+    ],
+    [
         'path'       => '/emails/verifications',
         'controller' => EmailsController::class,
         'action'     => 'verifications',
