@@ -3,7 +3,7 @@
     // In case you run into memory limit issues, here's your fix, you WILL need it :)
     ini_set('memory_limit', '1024M');
 
-// ================================================================================================
+    // ================================================================================================
     // These are global defines. It's not pretty, but it allows easy modifications of the generator. They should
     // be added to the generator data.
 
@@ -91,7 +91,7 @@
     // 25% has a twitter account
     define("USER_HAS_TWITTER", 25);
 
-// ====================== NOTHING TO EDIT BELOW THIS POINT, MOVE ALONG ======================
+    // ====================== NOTHING TO EDIT BELOW THIS POINT, MOVE ALONG ======================
 
     require_once "generator_data.interface.php";
 
