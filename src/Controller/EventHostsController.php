@@ -13,7 +13,7 @@ use Teapot\StatusCode\Http;
 use function sprintf;
 
 class EventHostsController extends BaseApiController
-// @codingStandardsIgnoreEnd
+    // @codingStandardsIgnoreEnd
 {
     /** @var EventHostMapper */
     protected $eventHostMapper = null;
