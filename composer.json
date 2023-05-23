@@ -35,7 +35,7 @@
     "php-mock/php-mock-phpunit": "^2.7",
     "phpstan/extension-installer": "^1.0.3",
     "phpstan/phpstan": "~0.12.50",
-    "phpstan/phpstan-phpunit": "~0.12.6",
+    "phpstan/phpstan-phpunit": "~0.12.22",
     "phpunit/phpunit": "^9.4.2",
     "roave/security-advisories": "dev-master"
   },
