@@ -110,14 +110,14 @@ class EventHostsController extends BaseApiController
         }
 
         $uri = sprintf(
-            '%1$s/%2$s/events/%3$s',
+            '%1$s/%2$s/events/%3$s/hosts',
             $request->base,
             $request->version,
             $event_id
         );
 
         $request->getView()->setHeader('Location', $uri);
-        $request->getView()->setResponseCode(Http::NO_CONTENT);
+        $request->getView()->setResponseCode(Http::CREATED);
         $request->getView()->setNoRender(true);
     }
 
