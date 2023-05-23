@@ -117,6 +117,9 @@ jobs:
       - name: "Dump Xdebug filter with phpunit"
         run: vendor/bin/phpunit --dump-xdebug-filter=build/xdebug-filter.php
 
+      - name: "Fix unknown constant with xdebug3"
+        run: sed -i 's/XDEBUG_PATH_WHITELIST/XDEBUG_PATH_INCLUDE/g'  build/xdebug-filter.php
+
       - name: "Run tests with phpunit"
         run: vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --coverage-text --prepend=build/xdebug-filter.php
 
