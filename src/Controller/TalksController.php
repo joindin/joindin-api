@@ -227,7 +227,7 @@ class TalksController extends BaseTalkController
         $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::RESET_CONTENT);
     }
 
@@ -249,7 +249,7 @@ class TalksController extends BaseTalkController
         }
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::NO_CONTENT);
     }
 

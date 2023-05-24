@@ -242,6 +242,8 @@ class UserMapper extends ApiMapper
 
     /**
      * @inheritdoc
+     *
+     * @return array{users: array, meta: array}
      */
     public function transformResults(array $results, $verbose): array
     {

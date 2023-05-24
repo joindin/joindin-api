@@ -38,7 +38,7 @@ class SpamCheckService implements SpamCheckServiceInterface
      *
      * @return bool true if the comment is okay, false if it got rated as spam
      */
-    public function isCommentAcceptable(string $comment, $userIp, $userAgent)
+    public function isCommentAcceptable(string $comment, string $userIp, string $userAgent)
     {
         if ('' === trim($comment)) {
             return false;

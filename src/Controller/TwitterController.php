@@ -29,7 +29,7 @@ class TwitterController extends BaseApiController
         $clientSecret     = $request->getParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
 
-        if (!$this->oauthModel->isClientPermittedPasswordGrant((string)$clientId, (string)$clientSecret)) {
+        if (!$this->oauthModel->isClientPermittedPasswordGrant((string) $clientId, (string) $clientSecret)) {
             throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
 
@@ -55,9 +55,9 @@ class TwitterController extends BaseApiController
 
         parse_str($res->getBody(), $data);
 
-        $requestTokenMapper = new TwitterRequestTokenMapper($db);
+        $requestTokenMapper = new TwitterRequestTokenMapper($db, $request);
         // $tokens is instance of TwitterRequestTokenModelCollection
-        $tokens      = $requestTokenMapper->create((string)$data['oauth_token'], (string)$data['oauth_token_secret']);
+        $tokens      = $requestTokenMapper->create((string) $data['oauth_token'], (string) $data['oauth_token_secret']);
         $output_list = $tokens->getOutputView($request);
         $request->getView()->setHeader('Location', $output_list['twitter_request_tokens'][0]['uri']);
         $request->getView()->setResponseCode(Http::CREATED);
@@ -158,7 +158,7 @@ class TwitterController extends BaseApiController
         }
 
         // clean up request token data
-        $requestTokenMapper = new TwitterRequestTokenMapper($db);
+        $requestTokenMapper = new TwitterRequestTokenMapper($db, $request);
         $requestTokenMapper->delete($request_token);
 
         return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];

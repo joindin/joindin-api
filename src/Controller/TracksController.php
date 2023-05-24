@@ -124,7 +124,7 @@ class TracksController extends BaseApiController
         $track_mapper->deleteEventTrack($track_id);
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::NO_CONTENT);
     }
 }

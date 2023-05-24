@@ -51,7 +51,11 @@ class ContactController extends BaseApiController
         $clientSecret = $request->getParameter('client_secret');
         $oauthModel   = $request->getOauthModel($db);
 
-        if (!$oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
+        if (
+            ! is_string($clientId)
+            || !is_string($clientSecret)
+            || !$oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)
+        ) {
             throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
 
@@ -70,20 +74,22 @@ class ContactController extends BaseApiController
 
         if (!empty($error)) {
             $message = 'The field';
-            $message .= count($error) == 1 ? ' ' : 's ';
+            $message .= count($error) === 1 ? ' ' : 's ';
             $message .= implode(', ', $error);
-            $message .= count($error) == 1 ? ' is ' : ' are ';
+            $message .= count($error) === 1 ? ' is ' : ' are ';
             $message .= 'required.';
 
             throw new Exception($message, Http::BAD_REQUEST);
         }
 
+        $clientIP = $request->getClientIP();
+        $userAgent = $request->getClientUserAgent();
+
         if (
-            !$this->spamCheckService->isCommentAcceptable(
-                $data['comment'],
-                $request->getClientIP(),
-                $request->getClientUserAgent()
-            )
+            ! is_string($data['comment'])
+            || ! is_string($clientIP)
+            || ! is_string($userAgent)
+            || !$this->spamCheckService->isCommentAcceptable($data['comment'], $clientIP, $userAgent)
         ) {
             throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
         }
@@ -93,6 +99,6 @@ class ContactController extends BaseApiController
         $view = $request->getView();
 
         $view->setResponseCode(Http::ACCEPTED);
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
     }
 }

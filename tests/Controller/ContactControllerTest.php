@@ -29,7 +29,7 @@ final class ContactControllerTest extends TestCase
      * @throws Exception
      */
     public function testContactWorksAsExpected(
-        bool$isClientPermittedPasswordGrant,
+        bool $isClientPermittedPasswordGrant,
         array $returnValueMap = [],
         $isCommentAcceptable = false,
         $expectedException = null,
@@ -40,7 +40,7 @@ final class ContactControllerTest extends TestCase
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
 
         $oauthModel = $this->getMockBuilder(OAuthModel::class)->disableOriginalConstructor()->getMock();
-        $oauthModel->expects($this->once())->method('isClientPermittedPasswordGrant')->willReturn($isClientPermittedPasswordGrant);
+        $oauthModel->expects($this->atMost(1))->method('isClientPermittedPasswordGrant')->willReturn($isClientPermittedPasswordGrant);
         $request->expects($this->once())->method('getOauthModel')->willReturn($oauthModel);
         $request
             ->expects($this->any())

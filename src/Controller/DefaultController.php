@@ -7,7 +7,10 @@ use Joindin\Api\Request;
 
 class DefaultController extends BaseApiController
 {
-    public function handle(Request $request, PDO $db)
+    /**
+     * @return array<string, string>
+     */
+    public function handle(Request $request, PDO $db): array
     {
         // just add the available methods, with links
         return [

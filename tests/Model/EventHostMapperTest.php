@@ -101,7 +101,10 @@ final class EventHostMapperTest extends TestCase
 
     public function testGetVerboseFields(): void
     {
-        $eventHostMapper = new EventHostMapper($this->createMock(\PDO::class));
+        $eventHostMapper = new EventHostMapper(
+            $this->createMock(\PDO::class),
+            $this->createMock(Request::class),
+        );
 
         $this->assertEquals(
             [

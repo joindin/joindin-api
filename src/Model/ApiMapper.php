@@ -8,26 +8,27 @@ use PDO;
 use Joindin\Api\Request;
 use Transliterator;
 
+/**
+ * @phpstan-type PaginationLinks array{}|array{count: int, total: int, this_page: string, prev_page?: string, next_page?: string}
+ */
 class ApiMapper
 {
     protected PDO $_db;
-    protected ?Request $_request;
+    protected Request $_request;
     protected ?string $website_url;
 
     /**
      * Object constructor, sets up the db and some objects need request too
      *
      * @param PDO     $db      The database connection handle
-     * @param ?Request $request The request object (optional not all objects need it)
+     * @param Request $request The request object (optional not all objects need it)
      */
-    public function __construct(PDO $db, Request $request = null)
+    public function __construct(PDO $db, Request $request)
     {
         $this->_db = $db;
 
-        if (isset($request)) {
-            $this->_request    = $request;
-            $this->website_url = $request->getConfigValue('website_url');
-        }
+        $this->_request    = $request;
+        $this->website_url = $request->getConfigValue('website_url');
     }
 
     public function getDefaultFields(): array
@@ -128,6 +129,9 @@ class ApiMapper
         return (int) $stmtCount->fetchColumn(0);
     }
 
+    /**
+     * @return PaginationLinks
+     */
     protected function getPaginationLinks(array $list, int $total = 0): array
     {
         if (!($request = $this->_request)) {
