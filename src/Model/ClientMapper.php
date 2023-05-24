@@ -123,7 +123,7 @@ class ClientMapper extends ApiMapper
 
         $clientId = $this->_db->lastInsertId();
 
-        if (0 == $clientId) {
+        if ($clientId === false || (int)$clientId === 0) {
             throw new Exception('There has been an error storing the application');
         }
 
