@@ -35,7 +35,7 @@ class ApiRouter extends BaseRouter
     /**
      * Sets the list of Router classes this ApiRouter uses
      *
-     * @param array $routers A list of Routers indexed by version
+     * @param array<int,string> $routers A list of Routers indexed by version
      */
     public function setRouters(array $routers): void
     {
