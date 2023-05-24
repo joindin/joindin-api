@@ -153,7 +153,7 @@ class EventCommentMapper extends ApiMapper
         return $result;
     }
 
-    protected function getBasicSQL($include_hidden = false)
+    protected function getBasicSQL(bool $include_hidden = false): string
     {
         $sql = 'select ec.*, user.username, user.email, user.full_name, e.event_tz_cont, e.event_tz_place '
                . 'from event_comments ec '
@@ -236,7 +236,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @return false|array{event_id: int} including event_id
      */
-    public function getCommentInfo($comment_id)
+    public function getCommentInfo($comment_id): false|array
     {
         $sql = "select ec.event_id
             from event_comments ec
