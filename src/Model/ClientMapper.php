@@ -111,8 +111,8 @@ class ClientMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($clientSql);
         $stmt->execute([
-            ':consumer_key'          => base64_encode(openssl_random_pseudo_bytes(48)),
-            ':consumer_secret'       => base64_encode(openssl_random_pseudo_bytes(48)),
+            ':consumer_key'          => base64_encode(random_bytes(48)),
+            ':consumer_secret'       => base64_encode(random_bytes(48)),
             ':created_date'          => (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
             ':user_id'               => $data['user_id'],
             ':application'           => $data['name'],
