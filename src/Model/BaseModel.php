@@ -12,11 +12,8 @@ use Joindin\Api\Request;
  */
 abstract class BaseModel
 {
-    protected $data;
-
-    public function __construct(array $data)
+    public function __construct(protected array $data)
     {
-        $this->data = $data;
     }
 
     /**
