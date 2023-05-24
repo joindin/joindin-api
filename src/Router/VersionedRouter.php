@@ -47,7 +47,7 @@ class VersionedRouter extends BaseRouter
     /**
      * {@inheritdoc}
      */
-    public function getRoute(Request $request)
+    public function getRoute(Request $request): Route
     {
         $badMethod = false;
 

@@ -4,6 +4,7 @@ namespace Joindin\Api\Model;
 
 use Exception;
 use PDO;
+use Teapot\StatusCode\Http;
 
 class TalkMapper extends ApiMapper
 {
@@ -11,13 +12,13 @@ class TalkMapper extends ApiMapper
      * Iterate through results from the database to ensure data consistency and
      * add sub-resource data
      *
-     * @param  array|false $results
+     * @param array|false $results
      *
      * @return array
      */
-    public function processResults($results)
+    public function processResults(array|false $results): array
     {
-        if (!is_array($results)) {
+        if ($results === false) {
             // $results isn't an array. This shouldn't happen as an exception
             // should have been raised by PDO. However if it does, return an
             // empty array.
@@ -25,8 +26,6 @@ class TalkMapper extends ApiMapper
         }
 
         if (count($results)) {
-            $base    = $this->_request->base;
-            $version = $this->_request->version;
 
             foreach ($results as $key => $row) {
                 // generate and store an inflected talk title if there isn't one
@@ -74,7 +73,7 @@ class TalkMapper extends ApiMapper
      *
      * @return false|TalkModelCollection
      */
-    public function getTalksByEventId($event_id, $resultsperpage, $start)
+    public function getTalksByEventId(int $event_id, int $resultsperpage, int $start): false|TalkModelCollection
     {
         $sql = $this->getBasicSQL();
         $sql .= ' and t.event_id = :event_id';
@@ -109,7 +108,7 @@ class TalkMapper extends ApiMapper
      *
      * @return TalkModel|false
      */
-    public function getTalkById($talk_id, $verbose = false)
+    public function getTalkById(int $talk_id, bool $verbose = false): TalkModel|false
     {
         $sql      = $this->getBasicSQL();
         $sql      .= ' and t.ID = :talk_id';
@@ -137,12 +136,12 @@ class TalkMapper extends ApiMapper
      * Search talks by title
      *
      * @param string $keyword
-     * @param int    $resultsperpage
-     * @param int    $start
+     * @param ?int    $resultsperpage
+     * @param ?int    $start
      *
      * @return TalkModelCollection|bool Result collection or false on failure
      */
-    public function getTalksByTitleSearch($keyword, $resultsperpage, $start)
+    public function getTalksByTitleSearch(string $keyword, ?int $resultsperpage, ?int $start): bool|TalkModelCollection
     {
         $sql = $this->getBasicSQL();
         $sql .= ' and LOWER(t.talk_title) like :title';
@@ -171,12 +170,12 @@ class TalkMapper extends ApiMapper
     /**
      * User attending a talk?
      *
-     * @param int $talk_id the talk to check
-     * @param int $user_id the user you're interested in
+     * @param ?int $talk_id the talk to check
+     * @param ?int $user_id the user you're interested in
      *
      * @return array Containing "has_starred" set to true or false
      */
-    public function getUserStarred($talk_id, $user_id)
+    public function getUserStarred(?int $talk_id, ?int $user_id): array
     {
         return ['has_starred' => $this->hasUserStarredTalk($talk_id, $user_id)];
     }
@@ -189,7 +188,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    public function setUserStarred($talk_id, $user_id)
+    public function setUserStarred(int $talk_id, int $user_id): bool
     {
         $sql  = 'insert into user_talk_star (uid,tid) values (:uid, :tid)';
         $stmt = $this->_db->prepare($sql);
@@ -206,7 +205,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    public function setUserNonStarred($talk_id, $user_id)
+    public function setUserNonStarred(int $talk_id, int $user_id): bool
     {
         $sql  = 'delete from user_talk_star where uid = :uid and tid = :tid';
         $stmt = $this->_db->prepare($sql);
@@ -220,7 +219,7 @@ class TalkMapper extends ApiMapper
     /**
      * @return string
      */
-    public function getBasicSQL()
+    public function getBasicSQL(): string
     {
         return 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
                . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID
@@ -249,7 +248,7 @@ class TalkMapper extends ApiMapper
      *
      * @return array
      */
-    protected function getSpeakers($talk_id)
+    protected function getSpeakers(int $talk_id): array
     {
         $base    = $this->_request->base;
         $version = $this->_request->version;
@@ -287,7 +286,7 @@ class TalkMapper extends ApiMapper
      *
      * @return array
      */
-    protected function getTracks($talk_id)
+    protected function getTracks(int $talk_id): array
     {
         $base       = $this->_request->base;
         $version    = $this->_request->version;
@@ -327,7 +326,7 @@ class TalkMapper extends ApiMapper
      *
      * @return false|TalkModelCollection
      */
-    public function getTalksBySpeaker($user_id, $resultsperpage, $start, bool $verbose = false)
+    public function getTalksBySpeaker(int $user_id, int $resultsperpage, int $start, bool $verbose = false): false|TalkModelCollection
     {
         // based on getBasicSQL() but needs the speaker table joins
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
@@ -389,7 +388,7 @@ class TalkMapper extends ApiMapper
      * @throws Exception
      * @return string
      */
-    public function createTalk(array $data)
+    public function createTalk(array $data): string
     {
         // TODO map from the field mappings in getVerboseFields()
         $sql = '
@@ -443,7 +442,7 @@ class TalkMapper extends ApiMapper
      *
      * @throws Exception
      */
-    public function editTalk(array $data, $talk_id)
+    public function editTalk(array $data, int $talk_id): void
     {
         $sql = "UPDATE talks SET %s, url_friendly_talk_title = null WHERE ID = :talk_id";
 
@@ -501,7 +500,7 @@ class TalkMapper extends ApiMapper
      *
      * @return boolean
      */
-    public function setType($talk_id, $type_id)
+    public function setType(int $talk_id, string $type_id): bool
     {
         $cat_sql  = 'select id from talk_cat where talk_id = :talk_id and cat_id = :type_id';
         $cat_stmt = $this->_db->prepare($cat_sql);
@@ -544,7 +543,7 @@ class TalkMapper extends ApiMapper
      *
      * @return void
      */
-    public function updateSpeakersOnTalk($talk_id, array $speakers)
+    public function updateSpeakersOnTalk(int $talk_id, array $speakers): void
     {
         // get the current speakers
         $sql  = 'select '
@@ -591,13 +590,17 @@ class TalkMapper extends ApiMapper
     /**
      * Is this user attending this talk?
      *
-     * @param int $talk_id the talk of interest
-     * @param int $user_id which user (often the current one)
+     * @param ?int $talk_id the talk of interest
+     * @param ?int $user_id which user (often the current one)
      *
      * @return bool
      */
-    protected function hasUserStarredTalk($talk_id, $user_id)
+    protected function hasUserStarredTalk(?int $talk_id, ?int $user_id): bool
     {
+        if ($talk_id === null || $user_id === null) {
+            return false;
+        }
+
         $sql  = "select * from user_talk_star where tid = :talk_id and uid = :user_id";
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["talk_id" => $talk_id, "user_id" => $user_id]);
@@ -614,7 +617,7 @@ class TalkMapper extends ApiMapper
      *
      * @return int|false
      */
-    protected function getUserRatingOnTalk($talk_id, $user_id)
+    protected function getUserRatingOnTalk(int $talk_id, int $user_id): false|int
     {
         $stmt = $this->_db->prepare('
             SELECT rating
@@ -644,7 +647,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    public function isUserASpeakerOnTalk($talk_id, $user_id)
+    public function isUserASpeakerOnTalk(int $talk_id, int $user_id): bool
     {
         $sql  = "select ID from talk_speaker where talk_id = :talk_id and speaker_id = :user_id";
         $stmt = $this->_db->prepare($sql);
@@ -664,7 +667,7 @@ class TalkMapper extends ApiMapper
      *
      * @return string|bool
      */
-    protected function generateStub($talk_id)
+    protected function generateStub(int $talk_id): bool|string
     {
         $i = 0;
 
@@ -692,15 +695,13 @@ class TalkMapper extends ApiMapper
      *
      * @return boolean whether we stored it or not
      */
-    protected function storeStub($stub, $talk_id)
+    protected function storeStub(string $stub, int $talk_id): bool
     {
         $sql = "update talks set stub = :stub
             where ID = :talk_id";
 
         $stmt   = $this->_db->prepare($sql);
-        $result = $stmt->execute(["stub" => $stub, "talk_id" => $talk_id]);
-
-        return $result;
+        return $stmt->execute(["stub" => $stub, "talk_id" => $talk_id]);
     }
 
     /**
@@ -713,7 +714,7 @@ class TalkMapper extends ApiMapper
      *
      * @return string|bool The value we stored
      */
-    protected function generateInflectedTitle($title, $talk_id)
+    protected function generateInflectedTitle(string $title, int $talk_id): bool|string
     {
         // Try to store without a suffix
         $inflected_title = $this->inflect($title);
@@ -748,7 +749,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    protected function storeInflectedTitle($inflected_title, $talk_id)
+    protected function storeInflectedTitle(string $inflected_title, int $talk_id): bool
     {
         $sql = "update talks set url_friendly_talk_title = :inflected_title
             where ID = :talk_id";
@@ -772,7 +773,7 @@ class TalkMapper extends ApiMapper
      *
      * @return array
      */
-    public function getSpeakerEmailsByTalkId($talk_id)
+    public function getSpeakerEmailsByTalkId(int $talk_id): array
     {
         $speaker_sql  = 'select user.email, user.ID from talk_speaker ts '
                         . 'left join user on user.ID = ts.speaker_id '
@@ -787,14 +788,14 @@ class TalkMapper extends ApiMapper
     /**
      * Does the currently-authenticated user have rights on a particular talk?
      *
-     * @param int $talk_id The identifier for the talk to check
+     * @param ?int $talk_id The identifier for the talk to check
      *
      * @return bool True if the user has privileges, false otherwise
      */
-    public function thisUserHasAdminOn($talk_id)
+    public function thisUserHasAdminOn(?int $talk_id): bool
     {
         // do we even have an authenticated user?
-        if (isset($this->_request->user_id)) {
+        if ($talk_id !== null && isset($this->_request->user_id)) {
             $user_mapper = new UserMapper($this->_db, $this->_request);
 
             // is user site admin?
@@ -835,7 +836,7 @@ class TalkMapper extends ApiMapper
      *
      * @return string
      */
-    public function addTalkToTrack($talk_id, $track_id)
+    public function addTalkToTrack(int $talk_id, int $track_id): string
     {
         $params = [
             'track_id' => $track_id,
@@ -866,7 +867,7 @@ class TalkMapper extends ApiMapper
      * @param  int $talk_id
      * @param  int $track_id
      */
-    public function removeTrackFromTalk($talk_id, $track_id)
+    public function removeTrackFromTalk(int $talk_id, int $track_id): void
     {
         $params = [
             'track_id' => $track_id,
@@ -885,7 +886,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    public function removeTalkFromAllTracks($talk_id)
+    public function removeTalkFromAllTracks(int $talk_id): bool
     {
         $sql = 'DELETE FROM talk_track WHERE talk_id = :talk_id';
 
@@ -906,7 +907,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    public function delete($talk_id)
+    public function delete(int $talk_id): bool
     {
         $this->_db->beginTransaction();
 
@@ -943,13 +944,17 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * @param int    $talk_id
+     * @param ?int   $talk_id
      * @param string $display_name
      *
-     * @return bool
+     * @return array|false
      */
-    public function getSpeakerFromTalk($talk_id, $display_name)
+    public function getSpeakerFromTalk(?int $talk_id, string $display_name): array|false
     {
+        if ($talk_id === null) {
+            return false;
+        }
+
         $speaker_sql  = 'select ts.* from talk_speaker ts '
                         . 'where ts.talk_id = :talk_id and ts.speaker_name = :display_name';
         $speaker_stmt = $this->_db->prepare($speaker_sql);
@@ -963,7 +968,7 @@ class TalkMapper extends ApiMapper
      * @param int $talk_id
      * @param int $speaker_id
      */
-    public function removeApprovedSpeakerFromTalk($talk_id, $speaker_id)
+    public function removeApprovedSpeakerFromTalk(int $talk_id, int $speaker_id): void
     {
         $sql  = 'update talk_speaker set speaker_id = null where talk_id = :talk_id and speaker_id = :speaker_id';
         $stmt = $this->_db->prepare($sql);
@@ -980,7 +985,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    public function removeAllSpeakersFromTalk($talk_id)
+    public function removeAllSpeakersFromTalk(int $talk_id): bool
     {
         $sql = 'DELETE FROM talk_speaker WHERE talk_id = :talk_id';
 
@@ -997,7 +1002,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    public function assignTalkToSpeaker($talk_id, $claim_id, $speaker_id, $speaker_name)
+    public function assignTalkToSpeaker(int $talk_id, int $claim_id, int $speaker_id, string $speaker_name): bool
     {
         $sql  = 'update talk_speaker
                 SET speaker_id = :speaker_id,
@@ -1016,13 +1021,17 @@ class TalkMapper extends ApiMapper
     }
 
     /**
-     * @param int      $talk_id
+     * @param ?int     $talk_id
      * @param int|null $link_id
      *
-     * @return array
+     * @return array[]
      */
-    public function getTalkMediaLinks($talk_id, $link_id = null)
+    public function getTalkMediaLinks(?int $talk_id, ?int $link_id = null): array
     {
+        if ($talk_id === null) {
+            return [];
+        }
+
         $sql = '
             select
               tl.id,
@@ -1057,7 +1066,7 @@ class TalkMapper extends ApiMapper
      *
      * @return array
      */
-    public function addTalkMediaTypes(array $talk)
+    public function addTalkMediaTypes(array $talk): array
     {
         $links = $this->getTalkMediaLinks($talk[0]['ID']);
 
@@ -1075,7 +1084,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    public function removeTalkLink($talk_id, $link_id)
+    public function removeTalkLink(int $talk_id, int $link_id): bool
     {
         $sql = "
             DELETE
@@ -1102,7 +1111,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    public function removeAllTalkLinks($talk_id)
+    public function removeAllTalkLinks(int $talk_id): bool
     {
         $sql = "DELETE FROM talk_links WHERE talk_id = :talk_id";
 
@@ -1119,7 +1128,7 @@ class TalkMapper extends ApiMapper
      *
      * @return bool
      */
-    public function updateTalkLink($talk_id, $link_id, $display_name, $url)
+    public function updateTalkLink(int $talk_id, int $link_id, string $display_name, string $url): bool
     {
         $sql = "
             UPDATE
@@ -1153,7 +1162,7 @@ class TalkMapper extends ApiMapper
      *
      * @return string
      */
-    public function addTalkLink($talk_id, $display_name, $url)
+    public function addTalkLink(int $talk_id, string $display_name, string $url): string
     {
         $sql = "
             INSERT INTO `talk_links` (`talk_id`, `talk_type`, `url`)
@@ -1168,13 +1177,18 @@ class TalkMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($sql);
 
-        $stmt->execute(
+        if (!($stmt->execute(
             [
                 'talk_id'      => $talk_id,
                 'display_name' => $display_name,
                 'url'          => $url,
             ]
-        );
+        ))) {
+            throw new Exception(
+                "The Link has not been inserted",
+                Http::BAD_REQUEST
+            );
+        }
 
         return $this->_db->lastInsertId();
     }
@@ -1187,7 +1201,7 @@ class TalkMapper extends ApiMapper
      *
      * @return array
      */
-    private function handleBackwardsCompatibleMedia(array $talk, array $link)
+    private function handleBackwardsCompatibleMedia(array $talk, array $link): array
     {
         if ($link['display_name'] == "slides_link") {
             $talk[0][$link['display_name']] = $link['url'];

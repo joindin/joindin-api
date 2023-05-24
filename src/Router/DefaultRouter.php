@@ -13,7 +13,7 @@ class DefaultRouter extends BaseRouter
     /**
      * {@inheritdoc}
      */
-    public function getRoute(Request $request)
+    public function getRoute(Request $request): Route
     {
         return new Route(DefaultController::class, 'handle');
     }

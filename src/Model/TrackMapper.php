@@ -7,10 +7,7 @@ use PDO;
 
 class TrackMapper extends ApiMapper
 {
-    /**
-     * @return array
-     */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'track_name'        => 'track_name',
@@ -19,10 +16,7 @@ class TrackMapper extends ApiMapper
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             'track_name'        => 'track_name',

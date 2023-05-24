@@ -6,14 +6,11 @@ use Joindin\Api\Request;
 
 abstract class BaseApiController
 {
-    protected $config;
-
-    public function __construct(array $config = [])
+    public function __construct(protected array $config = [])
     {
-        $this->config = $config;
     }
 
-    public function getItemId(Request $request)
+    public function getItemId(Request $request): false|int
     {
         // item ID
         if (
@@ -26,7 +23,7 @@ abstract class BaseApiController
         return false;
     }
 
-    public function getVerbosity(Request $request)
+    public function getVerbosity(Request $request): bool
     {
         if (!isset($request->parameters['verbose'])) {
             return false;
@@ -39,23 +36,17 @@ abstract class BaseApiController
         return true;
     }
 
-    public function getStart(Request $request)
+    public function getStart(Request $request): ?int
     {
         return $request->paginationParameters['start'];
     }
 
-    public function getResultsPerPage(Request $request)
+    public function getResultsPerPage(Request $request): int
     {
         return (int) $request->paginationParameters['resultsperpage'];
     }
 
-    public function getSort(Request $request)
-    {
-        // unfiltered, you probably want to switch case this
-        return $this->getRequestParameter($request, 'sort');
-    }
-
-    protected function getRequestParameter(Request $request, $parameter, $default = false)
+    protected function getRequestParameter(Request $request, string $parameter, mixed $default = false): mixed
     {
         if (isset($request->parameters[$parameter])) {
             return $request->parameters[$parameter];

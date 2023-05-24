@@ -17,7 +17,7 @@ final class TalkLinkControllerTest extends TalkBase
     /**
      * Test sending delete link where the link id is not found
      */
-    public function testDeleteTalkLinkWithInvalidID()
+    public function testDeleteTalkLinkWithInvalidID(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Talk Link ID not found');
@@ -46,7 +46,7 @@ final class TalkLinkControllerTest extends TalkBase
     /**
      * Test sending delete link
      */
-    public function testDeleteTalkLink()
+    public function testDeleteTalkLink(): void
     {
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
@@ -71,7 +71,7 @@ final class TalkLinkControllerTest extends TalkBase
     /**
      * Test sending delete link with no permissions
      */
-    public function testDeleteTalkLinkNoPermissions()
+    public function testDeleteTalkLinkNoPermissions(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You do not have permission to add links to this talk');
@@ -85,7 +85,7 @@ final class TalkLinkControllerTest extends TalkBase
         $this->talks_controller->removeTalkLink($this->request, $this->db);
     }
 
-    public function testGetTalkLink()
+    public function testGetTalkLink(): void
     {
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
@@ -109,7 +109,7 @@ final class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    public function testGetTalkLinkFails()
+    public function testGetTalkLinkFails(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('ID not found');
@@ -131,7 +131,7 @@ final class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    public function testAddTalkLink()
+    public function testAddTalkLink(): void
     {
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
@@ -148,7 +148,7 @@ final class TalkLinkControllerTest extends TalkBase
         $this->talk_mapper
             ->expects($this->once())
             ->method("addTalkLink")
-            ->willReturn(12);
+            ->willReturn('12');
 
         $this->talks_controller->addTalkLink(
             $this->request,
@@ -156,7 +156,7 @@ final class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    public function testAddTalkLinkWithInvalidData()
+    public function testAddTalkLinkWithInvalidData(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Missing required fields URL OR Display Name');
@@ -175,7 +175,7 @@ final class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    public function testAddTalkLinkFails()
+    public function testAddTalkLinkFails(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('The Link has not been inserted');
@@ -194,7 +194,7 @@ final class TalkLinkControllerTest extends TalkBase
         $this->talk_mapper
             ->expects($this->once())
             ->method("addTalkLink")
-            ->willReturn(false);
+            ->willThrowException(new Exception('The Link has not been inserted', 400));
 
         $this->authenticateAsSpeaker();
 
@@ -204,7 +204,7 @@ final class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    public function testUpdateTalkLink()
+    public function testUpdateTalkLink(): void
     {
         $this->makeRequest(
             'http://api.dev.joind.in/v2.1/talks/3/links/1234',
@@ -223,7 +223,7 @@ final class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    public function testUpdateTalkLinkFails()
+    public function testUpdateTalkLinkFails(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Update of Link ID Failed');
@@ -242,7 +242,7 @@ final class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    public function makeRequest($url, $method)
+    public function makeRequest($url, $method): void
     {
         $this->request = new Request(
             [],
@@ -265,7 +265,7 @@ final class TalkLinkControllerTest extends TalkBase
         $this->talks_controller->setTalkMapper($this->talk_mapper);
     }
 
-    public function authenticateAsSpeaker()
+    public function authenticateAsSpeaker(): void
     {
         $this->talk_mapper
             ->expects($this->once())

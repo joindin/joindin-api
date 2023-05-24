@@ -17,7 +17,7 @@ final class JsonViewTest extends TestCase
      *
      * @return array
      */
-    public function buildOutputProvider()
+    public function buildOutputProvider(): array
     {
         return [
             [ // #0
@@ -43,7 +43,7 @@ final class JsonViewTest extends TestCase
      * @param mixed  $input
      * @param string $expected
      */
-    public function testBuildOutput($input, $expected)
+    public function testBuildOutput(mixed $input, string $expected): void
     {
         $view = new JsonView();
         $this->assertEquals($expected, $view->buildOutput($input));

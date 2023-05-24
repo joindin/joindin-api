@@ -30,10 +30,7 @@ use Psr\Container\ContainerInterface;
 
 class ContainerFactory
 {
-    /**
-     * @var ContainerInterface
-     */
-    private static $container;
+    private static ?ContainerInterface $container;
 
     /**
      * Builds a Psr11 compatible container
@@ -43,9 +40,9 @@ class ContainerFactory
      *
      * @return ContainerInterface
      */
-    public static function build(array $config, $rebuild = false): ContainerInterface
+    public static function build(array $config, bool $rebuild = false): ContainerInterface
     {
-        if (!isset(static::$container) || $rebuild) {
+        if (!isset(self::$container) || $rebuild) {
             $container = new Container();
 
             $container[SpamCheckServiceInterface::class] = static function ($c) {
@@ -67,7 +64,7 @@ class ContainerFactory
                 return new ContactEmailService($config);
             };
 
-            $container[ContactController::class] = $container->factory(static function (Container $c) use ($config) {
+            $container[ContactController::class] = $container->factory(static function ($c) use ($config) {
                 return new ContactController(
                     $c[ContactEmailService::class],
                     $c[SpamCheckServiceInterface::class],
@@ -149,9 +146,9 @@ class ContainerFactory
                 return new UsersController($config);
             });
 
-            static::$container = new \Pimple\Psr11\Container($container);
+            self::$container = new \Pimple\Psr11\Container($container);
         }
 
-        return static::$container;
+        return self::$container;
     }
 }

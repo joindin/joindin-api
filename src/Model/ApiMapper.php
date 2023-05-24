@@ -10,19 +10,15 @@ use Transliterator;
 
 class ApiMapper
 {
-    protected $_db;
-    protected $_request;
-
-    /**
-     * @var string
-     */
-    protected $website_url;
+    protected PDO $_db;
+    protected ?Request $_request;
+    protected ?string $website_url;
 
     /**
      * Object constructor, sets up the db and some objects need request too
      *
      * @param PDO     $db      The database connection handle
-     * @param Request $request The request object (optional not all objects need it)
+     * @param ?Request $request The request object (optional not all objects need it)
      */
     public function __construct(PDO $db, Request $request = null)
     {
@@ -34,12 +30,12 @@ class ApiMapper
         }
     }
 
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [];
     }
 
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [];
     }
@@ -53,7 +49,7 @@ class ApiMapper
      * @return array A dataset now with each record having its links,
      *     and pagination if appropriate
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, bool $verbose): array
     {
         $fields = $verbose ? $this->getVerboseFields() : $this->getDefaultFields();
         $retval = [];
@@ -64,7 +60,7 @@ class ApiMapper
 
             foreach ($fields as $key => $value) {
                 // special handling for dates
-                if (substr($key, -5) == '_date' && ! empty($row[$value])) {
+                if (str_ends_with($key, '_date') && ! empty($row[$value])) {
                     if ($row['event_tz_place'] != '' && $row['event_tz_cont'] != '') {
                         $tz = new DateTimeZone($row['event_tz_cont'] . '/' . $row['event_tz_place']);
                     } else {
@@ -87,12 +83,12 @@ class ApiMapper
     }
 
     /**
-     * @param int $resultsperpage
-     * @param int $start
+     * @param ?int $resultsperpage
+     * @param ?int $start
      *
      * @return string
      */
-    protected function buildLimit($resultsperpage, $start)
+    protected function buildLimit(int|string|null $resultsperpage, int|string|null $start): string
     {
         if ($resultsperpage == 0) {
             // special case, no limits
@@ -110,7 +106,7 @@ class ApiMapper
      *
      * @return int
      */
-    public function getTotalCount($sqlQuery, array $data = [])
+    public function getTotalCount(string $sqlQuery, array $data = []): int
     {
         $limitPos = strrpos($sqlQuery, 'LIMIT');
 
@@ -129,12 +125,14 @@ class ApiMapper
             return 0;
         }
 
-        return $stmtCount->fetchColumn(0);
+        return (int) $stmtCount->fetchColumn(0);
     }
 
-    protected function getPaginationLinks(array $list, $total = 0)
+    protected function getPaginationLinks(array $list, int $total = 0): array
     {
-        $request = $this->_request;
+        if (!($request = $this->_request)) {
+            return [];
+        }
 
         $meta['count']     = count($list);
         $meta['total']     = $total;
@@ -166,10 +164,10 @@ class ApiMapper
         return $meta;
     }
 
-    protected function inflect($string)
+    protected function inflect(string $string): string
     {
-        $ascii = Transliterator::create('Any-Latin; Latin-ASCII; Lower')->transliterate($string);
-        $alpha = preg_replace("/[^0-9a-zA-Z- ]/", "", $ascii);
+        $ascii = Transliterator::create('Any-Latin; Latin-ASCII; Lower')?->transliterate($string) ?: $string;
+        $alpha = preg_replace("/[^0-9a-zA-Z- ]/", "", $ascii) ?: $ascii;
 
         return strtolower(str_replace(' ', '-', $alpha));
     }

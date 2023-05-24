@@ -101,7 +101,7 @@ class OAuthModel
      *
      * @return false|array access token and user Uri
      */
-    public function createAccessTokenFromPassword($clientId, $username, $password)
+    public function createAccessTokenFromPassword(string $clientId, string $username, string $password): array|false
     {
         // is the username/password combination correct?
         $userId = $this->getUserId($username, $password);
@@ -125,9 +125,9 @@ class OAuthModel
      * @param  string $password user's password
      *
      * @throws Exception
-     * @return int|bool            user's id on success or false
+     * @return int|false            user's id on success or false
      */
-    protected function getUserId($username, $password)
+    protected function getUserId(string $username, string $password): int|false
     {
         $sql  = 'SELECT ID, password, email, verified FROM user
             WHERE username=:username';
@@ -157,7 +157,7 @@ class OAuthModel
      *
      * @return string         user's uri.
      */
-    public function getUserUri($userId)
+    public function getUserUri(int $userId): string
     {
         return $this->getBase() . '/' . $this->getVersion() . '/users/' . $userId;
     }
@@ -166,11 +166,11 @@ class OAuthModel
      * Generate, store and return a new access token to the user
      *
      * @param string $consumer_key the identifier for the consumer
-     * @param int    $user_id      the user granting access
+     * @param int|string $user_id  the user granting access
      *
      * @return false|string access token
      */
-    public function createAccessToken($consumer_key, $user_id)
+    public function createAccessToken(string $consumer_key, int|string $user_id): false|string
     {
         $hash        = $this->generateToken();
         $accessToken = substr($hash, 0, 16);
@@ -206,7 +206,7 @@ class OAuthModel
      *
      * @return string
      */
-    public function generateToken()
+    public function generateToken(): string
     {
         $fp      = fopen('/dev/urandom', 'rb');
         $entropy = fread($fp, 32);
@@ -224,7 +224,7 @@ class OAuthModel
      *
      * @return void
      */
-    public function expireOldTokens(array $clientIds)
+    public function expireOldTokens(array $clientIds): void
     {
         foreach ($clientIds as $clientId) {
             $sql = "DELETE FROM oauth_access_tokens WHERE
@@ -243,13 +243,13 @@ class OAuthModel
     /**
      *  Get the name of the consumer that this user was authenticated with
      *
-     * @param string $token The valid access token
+     * @param ?string $token The valid access token
      *
      * @access public
      *
      * @return string An identifier for the OAuth consumer
      */
-    public function getConsumerName($token)
+    public function getConsumerName(?string $token): string
     {
         $sql  = 'select at.consumer_key, c.id, c.application '
                 . 'from oauth_access_tokens at '

@@ -105,7 +105,7 @@ class TalksController extends BaseTalkController
         return $talks->getOutputView($this->request, $verbose);
     }
 
-    public function postAction(Request $request, PDO $db)
+    public function postAction(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
         $talk_id = $this->getItemId($request);

@@ -56,31 +56,24 @@ class Request
     protected $config;
 
     /**
-     * @var ApiView|null This Request's View
+     * This Request's View
      */
-    protected $view = null;
+    protected ?ApiView $view = null;
 
     /**
-     * @var array The priority-ordered list of format choices
+     * The priority-ordered list of format choices
      */
-    protected $formatChoices = [self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML];
+    protected array $formatChoices = [self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML];
 
     /**
      * A list of parameters provided from a Route
-     *
-     * @var array
      */
-    protected $routeParams = [];
+    protected array $routeParams = [];
 
-    /**
-     * @var string
-     */
-    public $base;
+    public string $base = '';
 
-    /**
-     * @var array
-     */
-    public $paginationParameters = [];
+    /** @var int[] */
+    public array $paginationParameters = [];
 
     /**
      * @var string

@@ -22,7 +22,7 @@ final class RouteTest extends TestCase
      *
      * @return array
      */
-    public function constructProvider()
+    public function constructProvider(): array
     {
         return [
             ['controller', 'action', ['a' => 'b']]
@@ -37,7 +37,7 @@ final class RouteTest extends TestCase
      * @param string $action
      * @param array  $params
      */
-    public function testConstruct($controller, $action, array $params)
+    public function testConstruct($controller, $action, array $params): void
     {
         $route = new Route($controller, $action, $params);
         $this->assertEquals($controller, $route->getController());
@@ -50,7 +50,7 @@ final class RouteTest extends TestCase
      *
      * @return array
      */
-    public function getSetProvider()
+    public function getSetProvider(): array
     {
         return [
             ['TestController', 'testAction', ['event_id' => 1]]
@@ -70,7 +70,7 @@ final class RouteTest extends TestCase
      * @param string $action
      * @param array  $params
      */
-    public function testGetSet($controller, $action, array $params)
+    public function testGetSet($controller, $action, array $params): void
     {
         $route = new Route('a', 'b', ['c']);
 
@@ -89,7 +89,7 @@ final class RouteTest extends TestCase
      *
      * @return array
      */
-    public function dispatchProvider()
+    public function dispatchProvider(): array
     {
         return [
             [ // #0
@@ -127,7 +127,7 @@ final class RouteTest extends TestCase
      * @param string $controller
      * @param string $action
      * @param Request $request
-     * @param bool $expectedException
+     * @param class-string<object>|false $expectedException
      * @param bool $expectedExceptionCode
      * @param bool $controllerExists
      * @throws \ReflectionException
@@ -137,10 +137,10 @@ final class RouteTest extends TestCase
         $controller,
         $action,
         Request $request,
-        $expectedException = false,
+        string|false $expectedException = false,
         $expectedExceptionCode = false,
         $controllerExists = true
-    ) {
+    ): void {
         $db        = 'database';
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->disableOriginalConstructor()

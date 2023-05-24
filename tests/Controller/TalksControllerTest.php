@@ -47,7 +47,7 @@ final class TalksControllerTest extends TalkBase
      *
      * @group uses_pdo
      */
-    public function testClaimTalkWithNoUserIdThrowsException()
+    public function testClaimTalkWithNoUserIdThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to create data');
@@ -74,7 +74,7 @@ final class TalksControllerTest extends TalkBase
      *
      * @return void
      */
-    public function testClaimNonExistantTalkThrowsException()
+    public function testClaimNonExistantTalkThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Talk not found');
@@ -158,7 +158,7 @@ final class TalksControllerTest extends TalkBase
      *
      * @return void
      */
-    public function testClaimTalkWithoutDisplayNameThrowsException()
+    public function testClaimTalkWithoutDisplayNameThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must provide a display name and a username');
@@ -199,7 +199,7 @@ final class TalksControllerTest extends TalkBase
      *
      * @return void
      */
-    public function testClaimTalkWithInvalidSpeakerThrowsException()
+    public function testClaimTalkWithInvalidSpeakerThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('No speaker matching that name found');
@@ -245,7 +245,7 @@ final class TalksControllerTest extends TalkBase
      *
      * @return void
      */
-    public function testClaimTalkAlreadyClaimedThrowsException()
+    public function testClaimTalkAlreadyClaimedThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Talk already claimed');
@@ -293,7 +293,7 @@ final class TalksControllerTest extends TalkBase
      *
      * @return void
      */
-    public function testClaimTalkForSomeoneElseThrowsException()
+    public function testClaimTalkForSomeoneElseThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be the speaker or event admin to link a user to a talk');
@@ -359,7 +359,7 @@ final class TalksControllerTest extends TalkBase
      *
      * @return void
      */
-    public function testAssignTalkAsHostToNonExistentUserThrowsException()
+    public function testAssignTalkAsHostToNonExistentUserThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Specified user not found');
@@ -411,7 +411,7 @@ final class TalksControllerTest extends TalkBase
      *
      * @return void
      */
-    public function testClaimTalkAsUserIsSuccessful()
+    public function testClaimTalkAsUserIsSuccessful(): void
     {
         $request = new Request(
             [],
@@ -476,7 +476,7 @@ final class TalksControllerTest extends TalkBase
      *
      * @return void
      */
-    public function testAssignTalkAsHostIsSuccessful()
+    public function testAssignTalkAsHostIsSuccessful(): void
     {
         $request = new Request(
             [],
@@ -542,7 +542,7 @@ final class TalksControllerTest extends TalkBase
      * Ensures that if the setSpeakerForTalk method is called by the same user who made the claim
      * then an exception is thrown
      */
-    public function testApproveAssignmentAsUserWhoClaimedThrowsException()
+    public function testApproveAssignmentAsUserWhoClaimedThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You already have a pending claim for this talk. Please wait for an event admin to approve your claim.');
@@ -606,7 +606,7 @@ final class TalksControllerTest extends TalkBase
      * Ensures that if the setSpeakerForTalk method is called by a non-admin user
      * then an exception is thrown
      */
-    public function testApproveAssignmentAsNonAdminUserThrowsException()
+    public function testApproveAssignmentAsNonAdminUserThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be an event admin to approve this claim');
@@ -670,7 +670,7 @@ final class TalksControllerTest extends TalkBase
      * Ensures that if the setSpeakerForTalk method is called by the host who assigned the talk
      * then an exception is thrown
      */
-    public function testApproveClaimAsHostWhoAssignedThrowsException()
+    public function testApproveClaimAsHostWhoAssignedThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be the talk speaker to approve this assignment');
@@ -729,7 +729,7 @@ final class TalksControllerTest extends TalkBase
      * Ensures that if the setSpeakerForTalk method is called by a user who has had a talk
      * assigned to them then it succeeds
      */
-    public function testApproveAssignmentAsUserSucceeds()
+    public function testApproveAssignmentAsUserSucceeds(): void
     {
         $request = new Request(
             [],
@@ -793,7 +793,7 @@ final class TalksControllerTest extends TalkBase
      * Ensures that if the setSpeakerForTalk method is called by a host
      * in response to a claimed talk then it succeeds
      */
-    public function testApproveClaimAsHostSucceeds()
+    public function testApproveClaimAsHostSucceeds(): void
     {
         $request = new Request(
             [],
@@ -868,7 +868,7 @@ final class TalksControllerTest extends TalkBase
         $commenterId,
         $speakerEmails,
         $expectedEmailsSent
-    ) {
+    ): void {
         $request = new Request(
             [],
             [
@@ -959,10 +959,10 @@ final class TalksControllerTest extends TalkBase
             $this->createOathModel($db, $request, "test")
         );
 
-        $this->assertNull($talks_controller->postAction($request, $db));
+        $talks_controller->postAction($request, $db);
     }
 
-    public function getComments()
+    public function getComments(): array
     {
         return [
             'commentOnTalk' => [
@@ -992,7 +992,7 @@ final class TalksControllerTest extends TalkBase
     /**
      * @group uses_pdo
      */
-    public function testNotLoggedInPostAction()
+    public function testNotLoggedInPostAction(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to create data');
@@ -1012,7 +1012,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->postAction($request, $db);
     }
 
-    public function testNotSendingMessage()
+    public function testNotSendingMessage(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('The field "comment" is required');
@@ -1042,7 +1042,7 @@ final class TalksControllerTest extends TalkBase
         $talks_controller->postAction($request, $db);
     }
 
-    public function testNotSendingRating()
+    public function testNotSendingRating(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('The field "rating" is required');
@@ -1076,7 +1076,7 @@ final class TalksControllerTest extends TalkBase
      * Ensures that if the setSpeakerForTalk method is called by a host who rejects the speaker
      * in response to a claimed talk then it succeeds
      */
-    public function testRejectClaimAsHostSucceeds()
+    public function testRejectClaimAsHostSucceeds(): void
     {
         $request = new Request(
             [],
@@ -1146,12 +1146,12 @@ final class TalksControllerTest extends TalkBase
         $this->assertTrue($talks_controller->removeSpeakerForTalk($request, $db));
     }
 
-    public function testDifferentTalkMedia()
+    public function testDifferentTalkMedia(): void
     {
         $request = new Request(
             [],
             [
-                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/3links',
+                'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/3/links',
                 'REQUEST_METHOD' => 'GET'
             ]
         );
@@ -1179,7 +1179,7 @@ final class TalksControllerTest extends TalkBase
         );
     }
 
-    public function testVerboseTalkOutput()
+    public function testVerboseTalkOutput(): void
     {
         $request = new Request(
             [],
@@ -1218,7 +1218,7 @@ final class TalksControllerTest extends TalkBase
         );
     }
 
-    public function testGetComments()
+    public function testGetComments(): void
     {
         $request = new Request(
             [],
@@ -1255,7 +1255,7 @@ final class TalksControllerTest extends TalkBase
         $this->assertSame($expected, $output);
     }
 
-    public function testGetStarred()
+    public function testGetStarred(): void
     {
         $request = new Request(
             [],
@@ -1286,7 +1286,7 @@ final class TalksControllerTest extends TalkBase
         $this->assertSame($expected, $output);
     }
 
-    public function testSearchByTitle()
+    public function testSearchByTitle(): void
     {
         $request = new Request(
             [],
@@ -1336,7 +1336,7 @@ final class TalksControllerTest extends TalkBase
         $this->assertSame($expected, $output);
     }
 
-    public function testGenericTalkList()
+    public function testGenericTalkList(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Generic talks listing not supported');

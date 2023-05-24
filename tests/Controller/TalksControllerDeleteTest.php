@@ -17,7 +17,7 @@ final class TalksControllerDeleteTest extends TalkBase
     /**
      * @group uses_pdo
      */
-    public function testRemoveStarFromTalkFailsWhenNotLoggedIn()
+    public function testRemoveStarFromTalkFailsWhenNotLoggedIn(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
@@ -38,7 +38,7 @@ final class TalksControllerDeleteTest extends TalkBase
         $talks_controller->removeStarFromTalk($request, $db);
     }
 
-    public function testRemoveStarFromTalksWhenLoggedIn()
+    public function testRemoveStarFromTalksWhenLoggedIn(): void
     {
         $request = new Request(
             [],
@@ -69,7 +69,7 @@ final class TalksControllerDeleteTest extends TalkBase
     /**
      * @group uses_pdo
      */
-    public function testDeleteTalkWhenNotLoggedIn()
+    public function testDeleteTalkWhenNotLoggedIn(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
@@ -90,7 +90,7 @@ final class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalk($request, $db);
     }
 
-    public function testDeleteTalkWhichDoesntExist()
+    public function testDeleteTalkWhichDoesntExist(): void
     {
         $httpRequest = [
             'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
@@ -125,7 +125,7 @@ final class TalksControllerDeleteTest extends TalkBase
         $this->assertNull($talks_controller->deleteTalk($request, $db));
     }
 
-    public function testDeleteTalkWthNoAdmin()
+    public function testDeleteTalkWthNoAdmin(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You do not have permission to do that');
@@ -156,7 +156,7 @@ final class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalk($request, $db);
     }
 
-    public function testDeleteTalkWithAdmin()
+    public function testDeleteTalkWithAdmin(): void
     {
         $httpRequest = [
             'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',

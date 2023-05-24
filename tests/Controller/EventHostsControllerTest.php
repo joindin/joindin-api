@@ -18,7 +18,7 @@ final class EventHostsControllerTest extends TestCase
     /**
      * @group uses_pdo
      */
-    public function testThatNotLoggedInUsersCanNotAddAHost()
+    public function testThatNotLoggedInUsersCanNotAddAHost(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to create data');
@@ -32,7 +32,7 @@ final class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-    public function testThatRemovingHostWithoutLoginFails()
+    public function testThatRemovingHostWithoutLoginFails(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
@@ -47,7 +47,7 @@ final class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    public function testThatMissingEventThrowsException()
+    public function testThatMissingEventThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Event not found');
@@ -69,7 +69,7 @@ final class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-    public function testThatRemovingOneselfThrowsException()
+    public function testThatRemovingOneselfThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You are not allowed to remove yourself from the host-list');
@@ -85,7 +85,7 @@ final class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    public function testThatInvalidEventThrowsException()
+    public function testThatInvalidEventThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Event not found');
@@ -109,7 +109,7 @@ final class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    public function testThatExceptionIsThrownWhenNonAdminUserTriesToAddHostToEvent()
+    public function testThatExceptionIsThrownWhenNonAdminUserTriesToAddHostToEvent(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You do not have permission to add hosts to this event');
@@ -132,7 +132,7 @@ final class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-    public function testThatUserThatIsNotAdminOnEventWillThrowException()
+    public function testThatUserThatIsNotAdminOnEventWillThrowException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You do not have permission to remove hosts from this event');
@@ -157,7 +157,7 @@ final class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    public function testThatExceptionIsThrownWhenUnknownUserShallBeAddedAsHostToEvent()
+    public function testThatExceptionIsThrownWhenUnknownUserShallBeAddedAsHostToEvent(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('No User found');
@@ -186,7 +186,7 @@ final class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-    public function testThatSettingUnknownUserWillThrowException()
+    public function testThatSettingUnknownUserWillThrowException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('No User found');
@@ -215,7 +215,7 @@ final class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    public function testThatExceptionIsThrownWhenEventHostMapperHasProblems()
+    public function testThatExceptionIsThrownWhenEventHostMapperHasProblems(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Something went wrong');
@@ -249,7 +249,7 @@ final class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-    public function testThatViewGetsCorrectValuesWhenEverythingWorksAsExpected()
+    public function testThatViewGetsCorrectValuesWhenEverythingWorksAsExpected(): void
     {
         $controller = new EventHostsController();
 
@@ -289,7 +289,7 @@ final class EventHostsControllerTest extends TestCase
         $controller->addHost($request, $db);
     }
 
-    public function testThatFailureWhileRemovingUserAsHostWillThrowException()
+    public function testThatFailureWhileRemovingUserAsHostWillThrowException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Something went wrong');
@@ -322,7 +322,7 @@ final class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    public function testThatRemovingUserAsHostSetsCorrectValues()
+    public function testThatRemovingUserAsHostSetsCorrectValues(): void
     {
         $view = $this->getMockBuilder(ApiView::class)->getMock();
         $view->expects($this->once())->method('setHeader')->with('Location', 'base/version/events/4/hosts');
@@ -359,7 +359,7 @@ final class EventHostsControllerTest extends TestCase
         $constructor->removeHostFromEvent($request, $db);
     }
 
-    public function testThatGettingEventHostWapperMithoutSettingFirstWorksAsExpected()
+    public function testThatGettingEventHostWapperMithoutSettingFirstWorksAsExpected(): void
     {
         $controller = new EventHostsController();
 
@@ -372,7 +372,7 @@ final class EventHostsControllerTest extends TestCase
         $this->assertSame($automatedEventHostMapper, $controller->getEventHostMapper($request, $db));
     }
 
-    public function testThatGettingUserMapperWithoutSettingFirstWorksAsExpected()
+    public function testThatGettingUserMapperWithoutSettingFirstWorksAsExpected(): void
     {
         $controller = new EventHostsController();
 
@@ -385,7 +385,7 @@ final class EventHostsControllerTest extends TestCase
         $this->assertSame($automatedUserMapper, $controller->getUserMapper($request, $db));
     }
 
-    public function testThatGettingEventMapperWithoutSettingFirstWorksAsExpected()
+    public function testThatGettingEventMapperWithoutSettingFirstWorksAsExpected(): void
     {
         $controller = new EventHostsController();
 

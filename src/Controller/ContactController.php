@@ -14,28 +14,15 @@ use Teapot\StatusCode\Http;
  */
 class ContactController extends BaseApiController
 {
-    private $emailService;
-    private $spamCheckService;
-
-    /**
-     * ContactController constructor.
-     *
-     * @param ContactEmailService       $emailService
-     * @param SpamCheckServiceInterface $spamCheckService
-     * @param array                     $config
-     */
     public function __construct(
-        ContactEmailService $emailService,
-        SpamCheckServiceInterface $spamCheckService,
+        private ContactEmailService $emailService,
+        private SpamCheckServiceInterface $spamCheckService,
         array $config = []
     ) {
-        $this->emailService     = $emailService;
-        $this->spamCheckService = $spamCheckService;
-
         parent::__construct($config);
     }
 
-    public function handle(Request $request, PDO $db)
+    public function handle(Request $request, PDO $db): void
     {
         // really need to not require this to be declared
     }
@@ -57,7 +44,7 @@ class ContactController extends BaseApiController
      * @throws Exception
      * @return void
      */
-    public function contact(Request $request, PDO $db)
+    public function contact(Request $request, PDO $db): void
     {
         // only trusted clients can contact us to save on spam
         $clientId     = $request->getParameter('client_id');

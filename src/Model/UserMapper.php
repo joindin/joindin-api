@@ -18,7 +18,7 @@ class UserMapper extends ApiMapper
      *
      * @return array with keys as API fields and values as db columns
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             "username"         => "username",
@@ -35,7 +35,7 @@ class UserMapper extends ApiMapper
      *
      * @return array with keys as API fields and values as db columns
      */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             "username"         => "username",
@@ -243,7 +243,7 @@ class UserMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);

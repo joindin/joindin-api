@@ -234,7 +234,7 @@ final class UsersControllerTest extends TestCase
         $usersController->deleteTalkComments($request, $db);
     }
 
-    public function testThatUserDataIsNotDoubleEscapedOnUserCreation()
+    public function testThatUserDataIsNotDoubleEscapedOnUserCreation(): void
     {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->user_id = 1;
@@ -288,7 +288,7 @@ final class UsersControllerTest extends TestCase
         $controller->postAction($request, $db);
     }
 
-    public function testThatUserDataIsNotDoubleEscapedOnUserEdit()
+    public function testThatUserDataIsNotDoubleEscapedOnUserEdit(): void
     {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(1);
@@ -477,13 +477,11 @@ final class UsersControllerTest extends TestCase
 
         $view = $this->getMockBuilder(JsonView::class)->getMock();
         $view->expects($this->once())
-            ->method("setHeader")
-            ->willReturn(true);
+            ->method("setHeader");
 
         $view->expects($this->once())
             ->method("setResponseCode")
-            ->with(Http::NO_CONTENT)
-            ->willReturn(true);
+            ->with(Http::NO_CONTENT);
 
         $request->expects($this->once())
             ->method("getView")

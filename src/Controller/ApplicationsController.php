@@ -10,7 +10,7 @@ use Teapot\StatusCode\Http;
 
 class ApplicationsController extends BaseApiController
 {
-    public function getApplication(Request $request, PDO $db)
+    public function getApplication(Request $request, PDO $db): array
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in", Http::UNAUTHORIZED);
@@ -26,7 +26,7 @@ class ApplicationsController extends BaseApiController
         return $client->getOutputView($request, $this->getVerbosity($request));
     }
 
-    public function listApplications(Request $request, PDO $db)
+    public function listApplications(Request $request, PDO $db): array
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in", Http::UNAUTHORIZED);
@@ -43,7 +43,7 @@ class ApplicationsController extends BaseApiController
         return $clients->getOutputView($request, $this->getVerbosity($request));
     }
 
-    public function createApplication(Request $request, PDO $db)
+    public function createApplication(Request $request, PDO $db): array
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in", Http::UNAUTHORIZED);
@@ -100,7 +100,7 @@ class ApplicationsController extends BaseApiController
         return $newClient->getOutputView($request);
     }
 
-    public function editApplication(Request $request, PDO $db)
+    public function editApplication(Request $request, PDO $db): array
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in", Http::UNAUTHORIZED);
@@ -152,7 +152,7 @@ class ApplicationsController extends BaseApiController
         return $newClient->getOutputView($request);
     }
 
-    public function deleteApplication(Request $request, PDO $db)
+    public function deleteApplication(Request $request, PDO $db): void
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in", Http::UNAUTHORIZED);
@@ -189,7 +189,7 @@ class ApplicationsController extends BaseApiController
      *
      * @return ClientMapper
      */
-    private function getClientMapper(PDO $db, Request $request)
+    private function getClientMapper(PDO $db, Request $request): ClientMapper
     {
         return new ClientMapper($db, $request);
     }

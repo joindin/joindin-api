@@ -9,10 +9,7 @@ use function sprintf;
 
 class TalkCommentMapper extends ApiMapper
 {
-    /**
-     * @return array
-     */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'rating'            => 'rating',
@@ -24,10 +21,7 @@ class TalkCommentMapper extends ApiMapper
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             'rating'            => 'rating',
@@ -168,7 +162,7 @@ class TalkCommentMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, bool $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);

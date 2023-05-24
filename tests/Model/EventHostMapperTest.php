@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class EventHostMapperTest extends TestCase
 {
-    public function testThatAddingHostToEventCallsExpectedInsert()
+    public function testThatAddingHostToEventCallsExpectedInsert(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
@@ -34,7 +34,7 @@ final class EventHostMapperTest extends TestCase
         $this->assertEquals(14, $mapper->addHostToEvent(10, 12));
     }
 
-    public function testThatFailingExecuteResultsInFalseBeingReturned()
+    public function testThatFailingExecuteResultsInFalseBeingReturned(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
@@ -56,7 +56,7 @@ final class EventHostMapperTest extends TestCase
         $this->assertFalse($mapper->addHostToEvent(10, 12));
     }
 
-    public function testThatGettingHostByEventIdReturnsSomethingSensibleWhenStatementReturnsFalse()
+    public function testThatGettingHostByEventIdReturnsSomethingSensibleWhenStatementReturnsFalse(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
@@ -76,7 +76,7 @@ final class EventHostMapperTest extends TestCase
         $this->assertFalse($mapper->getHostsByEventId(12, 10, 0));
     }
 
-    public function testThatRemovingAHostFromAnEventCallsTheExpectedMethods()
+    public function testThatRemovingAHostFromAnEventCallsTheExpectedMethods(): void
     {
         $stmt1 = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt1->method('execute')

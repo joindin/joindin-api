@@ -7,7 +7,7 @@ use PDO;
 
 class EventCommentMapper extends ApiMapper
 {
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         // warning, users added in build array
         return [
@@ -17,7 +17,7 @@ class EventCommentMapper extends ApiMapper
         ];
     }
 
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             'rating'       => 'rating',
@@ -87,7 +87,7 @@ class EventCommentMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);
@@ -345,7 +345,7 @@ class EventCommentMapper extends ApiMapper
     {
         if (in_array($decision, ['approved', 'denied'])) {
             // record the decision
-            $sql  = 'update reported_event_comments set 
+            $sql  = 'update reported_event_comments set
                         decision = :decision,
                         deciding_user_id = :user_id,
                         deciding_date = NOW()

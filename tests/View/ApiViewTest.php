@@ -15,7 +15,7 @@ final class ApiViewTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testThatAReturnCodeSetViaHeaderIsReturnedWhenNoOtherReturnCodeIsSet()
+    public function testThatAReturnCodeSetViaHeaderIsReturnedWhenNoOtherReturnCodeIsSet(): void
     {
         $view = new ApiView();
 
@@ -33,7 +33,7 @@ final class ApiViewTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testThatAReturnCodeSetViaSetHeaderIsReturnedEvenThoughAHeaderCodeIsSet()
+    public function testThatAReturnCodeSetViaSetHeaderIsReturnedEvenThoughAHeaderCodeIsSet(): void
     {
         $view = new ApiView();
 
@@ -52,7 +52,7 @@ final class ApiViewTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testThatHeadersAreSet()
+    public function testThatHeadersAreSet(): void
     {
         $view = new ApiView();
 
@@ -78,7 +78,7 @@ final class ApiViewTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testThatHeadersAreSetViaSetHeaders()
+    public function testThatHeadersAreSetViaSetHeaders(): void
     {
         if (!function_exists('xdebug_get_headers')) {
             $this->markTestSkipped('Test will run when xdebug enabled');
@@ -100,7 +100,7 @@ final class ApiViewTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testThatSettingHeadersDoesntOverwriteIntendedHeaders()
+    public function testThatSettingHeadersDoesntOverwriteIntendedHeaders(): void
     {
         $view = new ApiView();
         $view->setResponseCode(Http::CREATED);

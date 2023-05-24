@@ -44,28 +44,17 @@ class ApiView
         return $content;
     }
 
-    /**
-     * @param string $header
-     *
-     * @param string $value
-     */
-    public function setHeader($header, $value)
+    public function setHeader(string $header, string $value): void
     {
         $this->headers[$header] = $value;
     }
 
-    /**
-     * @param int $code
-     */
-    public function setResponseCode($code)
+    public function setResponseCode(int $code): void
     {
         $this->responseCode = $code;
     }
 
-    /**
-     * @param bool $noRender
-     */
-    public function setNoRender($noRender)
+    public function setNoRender(bool $noRender): void
     {
         $this->noRender = $noRender;
     }
@@ -75,7 +64,7 @@ class ApiView
      *
      * @return bool
      */
-    public function render($content)
+    public function render(array|string $content): bool
     {
         ob_start();
         $body = '';
@@ -85,7 +74,7 @@ class ApiView
         }
 
         if (Http::OK == $this->responseCode) {
-            $this->responseCode = http_response_code();
+            $this->responseCode = (int) http_response_code();
         }
 
         foreach ($this->headers as $key => $value) {
@@ -99,7 +88,7 @@ class ApiView
         return true;
     }
 
-    public function buildOutput($content)
+    public function buildOutput(array|string $content): string|false|null
     {
         return null;
     }

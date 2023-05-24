@@ -10,6 +10,7 @@ use Joindin\Api\Model\TalkModel;
 use Joindin\Api\Model\UserMapper;
 use Joindin\Api\Request;
 use Joindin\Api\Test\Mock\mockPDO;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 abstract class TalkBase extends TestCase
@@ -37,6 +38,7 @@ abstract class TalkBase extends TestCase
             ->method('getTalkById')
             ->willReturn(
                 new TalkModel([
+                    'ID' => 1234,
                     'talk_title' => 'talk_title',
                     'url_friendly_talk_title' => 'url_friendly_talk_title',
                     'talk_description' => 'talk_desc',
@@ -137,14 +139,14 @@ abstract class TalkBase extends TestCase
         return $event_mapper;
     }
 
-    final protected function createTalkCommentMapper(mockPDO $db, Request $request)
+    final protected function createTalkCommentMapper(mockPDO $db, Request $request): TalkCommentMapper&MockObject
     {
         return $this->getMockBuilder(TalkCommentMapper::class)
             ->setConstructorArgs([$db, $request])
             ->getMock();
     }
 
-    final protected function createOathModel(mockPDO $db, Request $request, $consumerName = "")
+    final protected function createOathModel(mockPDO $db, Request $request, string $consumerName = ""): OAuthModel&MockObject
     {
         $oathModel = $this->getMockBuilder(OAuthModel::class)
             ->setConstructorArgs([$db, $request])
@@ -152,9 +154,7 @@ abstract class TalkBase extends TestCase
 
         $oathModel
             ->method('getConsumerName')
-            ->willReturn([
-                $consumerName
-            ]);
+            ->willReturn($consumerName);
 
         return $oathModel;
     }

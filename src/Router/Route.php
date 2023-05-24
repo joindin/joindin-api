@@ -112,12 +112,12 @@ class Route
      * Dispatches the Request to the specified Route
      *
      * @param Request            $request   The Request to process
-     * @param PDO                $db        The Database object
+     * @param PDO|string         $db        The Database object
      * @param ContainerInterface $container The application configuration
      *
      * @return mixed
      */
-    public function dispatch(Request $request, $db, ContainerInterface $container)
+    public function dispatch(Request $request, PDO|string $db, ContainerInterface $container)
     {
         $className = $this->getController();
         $method    = $this->getAction();

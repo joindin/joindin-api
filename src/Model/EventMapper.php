@@ -19,7 +19,7 @@ class EventMapper extends ApiMapper
      *
      * @return array with keys as API fields and values as db columns
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'name'                 => 'event_name',
@@ -50,7 +50,7 @@ class EventMapper extends ApiMapper
      *
      * @return array with keys as API fields and values as db columns
      */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             'name'                 => 'event_name',
@@ -407,7 +407,7 @@ class EventMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);
