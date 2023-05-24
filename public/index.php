@@ -42,9 +42,11 @@ function handle_exception(Throwable $e)
         }
 
         $message = $e->getMessage();
+
         if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
             $message = "Database error";
         }
+
         if ($e instanceof RateLimitExceededException) {
             $request->getView()->setHeader('Retry-After', $e->getRateLimitRefresh());
         }

@@ -12,6 +12,6 @@ final class AuthorizationException extends \RuntimeException
 
     public static function forNonAdministrator(): self
     {
-        return new static(sprintf(self::MESSAGE, 'admin'), Http::FORBIDDEN);
+        return new self(sprintf(self::MESSAGE, 'admin'), Http::FORBIDDEN);
     }
 }

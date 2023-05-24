@@ -2,7 +2,6 @@
 
 namespace Joindin\Api\Model;
 
-use DateTime;
 use DateTimeZone;
 use Exception;
 use PDO;

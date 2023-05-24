@@ -894,7 +894,7 @@ final class TalksControllerTest extends TalkBase
         $talks_comment_email->method('sendEmail');
 
         $talks_controller = new class(new NullSpamCheckService(), $talks_comment_email) extends TalksController {
-            /** @var TalkCommentEmailService  */
+            /** @var TalkCommentEmailService */
             private $talkCommentEmailService;
 
             public function __construct(

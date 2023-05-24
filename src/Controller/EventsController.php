@@ -561,6 +561,7 @@ class EventsController extends BaseApiController
             // optional fields - only check if we have no errors as we may need $tz
             // also only update supplied fields - but DO allow saving empty ones
             $href = $request->getParameter("href", false); // returns false if the value was not supplied
+
             if (false !== $href) {
                 // we got a value, filter and save it
                 $event['href'] = filter_var($href, FILTER_VALIDATE_URL);

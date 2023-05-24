@@ -97,6 +97,7 @@ class EventHostsController extends BaseApiController
         if (false === $user_id) {
             throw new Exception('No User found', Http::NOT_FOUND);
         }
+
         if ($eventMapper->isUserAHostOn($user_id, $event_id)) {
             throw new Exception('User is already a host');
         }

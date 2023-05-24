@@ -512,11 +512,13 @@ class TalkCommentMapper extends ApiMapper
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute([':comment_id' => $comment_id]);
         $utc = new \DateTimeZone('UTC');
+
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (isset($results[0])) {
                 $results[0]['created_at'] = new \DateTimeImmutable($results[0]['created_at'], $utc);
+
                 return $results[0];
             }
         }

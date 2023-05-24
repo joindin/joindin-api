@@ -4,7 +4,6 @@ namespace Joindin\Api\Controller;
 
 use Exception;
 use Joindin\Api\Service\ContactEmailService;
-use Joindin\Api\Service\SpamCheckService;
 use Joindin\Api\Service\SpamCheckServiceInterface;
 use PDO;
 use Joindin\Api\Request;

@@ -59,6 +59,7 @@ class CommentReportedEmailServiceTest extends TestCase
     public function testSendEmailDoesNotThrowExceptions(string $type): void
     {
         $comment = $this->comment;
+
         if ($type) {
             $comment['comments'][0][$type] = $type;
         }
