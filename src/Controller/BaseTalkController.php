@@ -109,8 +109,7 @@ class BaseTalkController extends BaseApiController
         PDO $db,
         int $talk_id = 0,
         bool $verbose = false
-    ): TalkModel
-    {
+    ): TalkModel {
         $mapper = $this->getTalkMapper($db, $request);
 
         if (0 === $talk_id) {
