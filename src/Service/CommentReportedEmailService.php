@@ -5,12 +5,12 @@ namespace Joindin\Api\Service;
 class CommentReportedEmailService extends BaseEmailService
 {
     /** @var array */
-    protected $comment;
+    protected array $comment;
 
-    protected $event;
+    protected array $event;
 
     /** @var string */
-    protected $website_url;
+    protected string $website_url;
 
     public function __construct(array $config, array $recipients, array $comment, array $event)
     {
@@ -23,7 +23,7 @@ class CommentReportedEmailService extends BaseEmailService
         $this->event       = $event['events'][0];
     }
 
-    public function sendEmail()
+    public function sendEmail(): void
     {
         $this->setSubject("Joind.in: A comment was reported");
 
@@ -62,7 +62,7 @@ class CommentReportedEmailService extends BaseEmailService
     /**
      * @return string
      */
-    private function linkToReportedCommentsForEvent()
+    private function linkToReportedCommentsForEvent(): string
     {
         /*
          * As far as I can tell, this Service is only used in one place, but just in case,
