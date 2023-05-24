@@ -20,19 +20,19 @@ abstract class BaseEmailService
     /**
      * The SwiftMailer object
      */
-    protected $mailer;
+    protected Swift_Mailer $mailer;
 
     /**
      * The SwiftMessage object
      */
-    protected $message;
+    protected Swift_Message $message;
 
-    protected $recipients;
+    protected array $recipients;
 
     /**
      * Template path, can be changed when testing
      */
-    public $templatePath = __DIR__ . '/../View/emails/';
+    public string $templatePath = __DIR__ . '/../View/emails/';
 
     /**
      * Make a message to be sent later
@@ -82,7 +82,7 @@ abstract class BaseEmailService
      *
      * @return string
      */
-    public function parseEmail($templateName, array $replacements)
+    public function parseEmail(string $templateName, array $replacements): string
     {
         $template = file_get_contents($this->templatePath . $templateName)
                     . file_get_contents($this->templatePath . 'signature.md');
@@ -103,7 +103,7 @@ abstract class BaseEmailService
      *
      * @return $this
      */
-    protected function setBody($body)
+    protected function setBody(string $body): static
     {
         $this->message->setBody($body);
 
@@ -119,7 +119,7 @@ abstract class BaseEmailService
      *
      * @return $this
      */
-    protected function setHtmlBody($body)
+    protected function setHtmlBody(string $body): static
     {
         $this->message->addPart($body, 'text/html');
 
@@ -129,7 +129,7 @@ abstract class BaseEmailService
     /**
      * Send the email that we created
      */
-    protected function dispatchEmail()
+    protected function dispatchEmail(): void
     {
         foreach ($this->recipients as $to) {
             $this->message->setTo($to);
@@ -142,7 +142,7 @@ abstract class BaseEmailService
      *
      * @param string $subject
      */
-    protected function setSubject($subject)
+    protected function setSubject(string $subject): void
     {
         $this->message->setSubject($subject);
     }
@@ -150,9 +150,9 @@ abstract class BaseEmailService
     /**
      * Set the reply to header
      *
-     * @param string $email
+     * @param array $email
      */
-    protected function setReplyTo($email)
+    protected function setReplyTo(array $email): void
     {
         $this->message->setReplyTo($email);
     }
@@ -162,7 +162,7 @@ abstract class BaseEmailService
      *
      * @return array
      */
-    public function getRecipients()
+    public function getRecipients(): array
     {
         return $this->recipients;
     }
@@ -172,9 +172,9 @@ abstract class BaseEmailService
      *
      * @param string $markdown
      *
-     * @return string mixed
+     * @return string
      */
-    public function markdownToHtml($markdown)
+    public function markdownToHtml(string $markdown): string
     {
         $messageHTML = Markdown::defaultTransform($markdown);
 
@@ -186,7 +186,7 @@ abstract class BaseEmailService
      *
      * @return string
      */
-    public function htmlToPlainText($html)
+    public function htmlToPlainText(string $html): string
     {
         return strip_tags($html);
     }
