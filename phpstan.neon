@@ -3,7 +3,7 @@ includes:
 
 parameters:
     checkMissingIterableValueType: false
-    excludes_analyse:
+    excludePaths:
         - public/
         - scripts/
 
