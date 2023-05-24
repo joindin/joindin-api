@@ -63,19 +63,17 @@ class TracksController extends BaseApiController
 
         // validate fields
         $errors              = [];
-        $track['track_name'] = filter_var(
+        $track['track_name'] = htmlspecialchars(
             $request->getParameter("track_name"),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($track['track_name'])) {
             $errors[] = "'track_name' is a required field";
         }
-        $track['track_description'] = filter_var(
+        $track['track_description'] = htmlspecialchars(
             $request->getParameter("track_description", null),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (!isset($track['track_description'])) {

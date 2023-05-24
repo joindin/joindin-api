@@ -128,19 +128,17 @@ class EventsController extends BaseApiController
                 }
 
                 if (isset($request->parameters['title'])) {
-                    $title           = filter_var(
+                    $title           = htmlspecialchars(
                         $request->parameters['title'],
-                        FILTER_SANITIZE_STRING,
-                        FILTER_FLAG_NO_ENCODE_QUOTES
+                        ENT_NOQUOTES
                     );
                     $params["title"] = $title;
                 }
 
                 if (isset($request->parameters['stub'])) {
-                    $stub           = filter_var(
+                    $stub           = htmlspecialchars(
                         $request->parameters['stub'],
-                        FILTER_SANITIZE_STRING,
-                        FILTER_FLAG_NO_ENCODE_QUOTES
+                        ENT_NOQUOTES
                     );
                     $params["stub"] = $stub;
                 }
@@ -151,14 +149,13 @@ class EventsController extends BaseApiController
 
                     if (is_array($request->parameters['tags'])) {
                         foreach ($request->parameters['tags'] as $t) {
-                            $tags[] = filter_var(trim($t), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                            $tags[] = htmlspecialchars(trim($t), ENT_NOQUOTES);
                         }
                     } else {
                         $tags = [
-                            filter_var(
+                            htmlspecialchars(
                                 trim($request->parameters['tags']),
-                                FILTER_SANITIZE_STRING,
-                                FILTER_FLAG_NO_ENCODE_QUOTES
+                                ENT_NOQUOTES
                             )
                         ];
                     }
@@ -223,30 +220,27 @@ class EventsController extends BaseApiController
             $event  = [];
             $errors = [];
 
-            $event['name'] = filter_var(
+            $event['name'] = htmlspecialchars(
                 $request->getParameter("name"),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
 
             if (empty($event['name'])) {
                 $errors[] = "'name' is a required field";
             }
 
-            $event['description'] = filter_var(
+            $event['description'] = htmlspecialchars(
                 $request->getParameter("description"),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
 
             if (empty($event['description'])) {
                 $errors[] = "'description' is a required field";
             }
 
-            $event['location'] = filter_var(
+            $event['location'] = htmlspecialchars(
                 $request->getParameter("location"),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
 
             if (empty($event['location'])) {
@@ -265,15 +259,13 @@ class EventsController extends BaseApiController
             } else {
                 // if the dates are okay, sort out timezones
 
-                $event['tz_continent'] = filter_var(
+                $event['tz_continent'] = htmlspecialchars(
                     $request->getParameter("tz_continent"),
-                    FILTER_SANITIZE_STRING,
-                    FILTER_FLAG_NO_ENCODE_QUOTES
+                    ENT_NOQUOTES
                 );
-                $event['tz_place']     = filter_var(
+                $event['tz_place']     = htmlspecialchars(
                     $request->getParameter("tz_place"),
-                    FILTER_SANITIZE_STRING,
-                    FILTER_FLAG_NO_ENCODE_QUOTES
+                    ENT_NOQUOTES
                 );
 
                 try {
@@ -339,7 +331,7 @@ class EventsController extends BaseApiController
                 if (is_array($incoming_tag_list)) {
                     $tags = array_map(
                         static function ($tag) {
-                            $tag = filter_var($tag, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                            $tag = htmlspecialchars($tag, ENT_NOQUOTES);
                             $tag = trim($tag);
                             $tag = strtolower($tag);
 
@@ -490,30 +482,27 @@ class EventsController extends BaseApiController
             $event  = ["event_id" => $event_id];
             $errors = [];
 
-            $event['name'] = filter_var(
+            $event['name'] = htmlspecialchars(
                 $request->getParameter("name"),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
 
             if (empty($event['name'])) {
                 $errors[] = "'name' is a required field";
             }
 
-            $event['description'] = filter_var(
+            $event['description'] = htmlspecialchars(
                 $request->getParameter("description"),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
 
             if (empty($event['description'])) {
                 $errors[] = "'description' is a required field";
             }
 
-            $event['location'] = filter_var(
+            $event['location'] = htmlspecialchars(
                 $request->getParameter("location"),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
 
             if (empty($event['location'])) {
@@ -529,15 +518,13 @@ class EventsController extends BaseApiController
                 $errors[] = "The event start date must be before its end date";
             } else {
                 // if the dates are okay, sort out timezones
-                $event['tz_continent'] = filter_var(
+                $event['tz_continent'] = htmlspecialchars(
                     $request->getParameter("tz_continent"),
-                    FILTER_SANITIZE_STRING,
-                    FILTER_FLAG_NO_ENCODE_QUOTES
+                    ENT_NOQUOTES
                 );
-                $event['tz_place']     = filter_var(
+                $event['tz_place']     = htmlspecialchars(
                     $request->getParameter("tz_place"),
-                    FILTER_SANITIZE_STRING,
-                    FILTER_FLAG_NO_ENCODE_QUOTES
+                    ENT_NOQUOTES
                 );
 
                 try {
@@ -607,7 +594,7 @@ class EventsController extends BaseApiController
             if (is_array($incoming_tag_list)) {
                 $tags = array_map(
                     static function ($tag) {
-                        $tag = filter_var($tag, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                        $tag = htmlspecialchars($tag, ENT_NOQUOTES);
                         $tag = trim($tag);
                         $tag = strtolower($tag);
 
@@ -695,19 +682,17 @@ class EventsController extends BaseApiController
 
         // validate fields
         $errors              = [];
-        $track['track_name'] = filter_var(
+        $track['track_name'] = htmlspecialchars(
             $request->getParameter("track_name"),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($track['track_name'])) {
             $errors[] = "'track_name' is a required field";
         }
-        $track['track_description'] = filter_var(
+        $track['track_description'] = htmlspecialchars(
             $request->getParameter("track_description"),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($track['track_description'])) {
@@ -789,7 +774,7 @@ class EventsController extends BaseApiController
 
         $event_id     = $this->getItemId($request);
         $event_mapper = new EventMapper($db, $request);
-        $reason = filter_var($request->getParameter('reason'), FILTER_SANITIZE_STRING);
+        $reason = htmlspecialchars($request->getParameter('reason'));
 
         if (!$event_mapper->thisUserCanApproveEvents()) {
             throw new Exception("You are not allowed to reject this event", Http::FORBIDDEN);

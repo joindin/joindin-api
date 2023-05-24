@@ -80,10 +80,9 @@ class UsersController extends BaseApiController
         }
 
         if (isset($request->parameters['username'])) {
-            $username = filter_var(
+            $username = htmlspecialchars(
                 $request->parameters['username'],
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
             $list     = $mapper->getUserByUsername($username, $verbose);
 
@@ -95,10 +94,9 @@ class UsersController extends BaseApiController
         }
 
         if (isset($request->parameters['keyword'])) {
-            $keyword = filter_var(
+            $keyword = htmlspecialchars(
                 $request->parameters['keyword'],
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
 
             return $mapper->getUserByKeyword($keyword, $resultsperpage, $start, $verbose);
@@ -114,7 +112,7 @@ class UsersController extends BaseApiController
             switch ($request->url_elements[3]) {
                 case 'verifications':
                     $userMapper = new UserMapper($db, $request);
-                    $token       = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
+                    $token       = htmlspecialchars($request->getParameter("token"));
 
                     if (empty($token)) {
                         throw new Exception("Verification token must be supplied", Http::BAD_REQUEST);
@@ -142,10 +140,9 @@ class UsersController extends BaseApiController
             $userMapper = $this->getUserMapper($db, $request);
 
             // Required Fields
-            $user['username'] = filter_var(
+            $user['username'] = htmlspecialchars(
                 trim($request->getParameter("username")),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
 
             if (empty($user['username'])) {
@@ -161,10 +158,9 @@ class UsersController extends BaseApiController
                 }
             }
 
-            $user['full_name'] = filter_var(
+            $user['full_name'] = htmlspecialchars(
                 trim($request->getParameter("full_name")),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
 
             if (empty($user['full_name'])) {
@@ -208,15 +204,13 @@ class UsersController extends BaseApiController
             }
 
             // Optional Fields
-            $user['twitter_username'] = filter_var(
+            $user['twitter_username'] = htmlspecialchars(
                 trim($request->getParameter("twitter_username")),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
-            $user['biography']        = filter_var(
+            $user['biography']        = htmlspecialchars(
                 trim($request->getParameter("biography")),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
 
             // How does it look?  With no errors, we can proceed
@@ -314,10 +308,9 @@ class UsersController extends BaseApiController
             }
         }
 
-        $user['full_name'] = filter_var(
+        $user['full_name'] = htmlspecialchars(
             trim($request->getParameter("full_name")),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($user['full_name'])) {
@@ -350,10 +343,9 @@ class UsersController extends BaseApiController
         $username = $request->getParameter("username", false);
 
         if (false !== $username) {
-            $user['username'] = filter_var(
+            $user['username'] = htmlspecialchars(
                 trim($username),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
             // does anyone else have this username?
             $existingUser = $userMapper->getUserByUsername($user['username']);
@@ -373,19 +365,17 @@ class UsersController extends BaseApiController
         $twitterUsername = $request->getParameter("twitter_username", false);
 
         if (false !== $twitterUsername) {
-            $user['twitter_username'] = filter_var(
+            $user['twitter_username'] = htmlspecialchars(
                 trim($twitterUsername),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
         }
         $biography = $request->getParameter("biography", false);
 
         if (false !== $biography) {
-            $user['biography'] = filter_var(
+            $user['biography'] = htmlspecialchars(
                 trim($biography),
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_NO_ENCODE_QUOTES
+                ENT_NOQUOTES
             );
         }
 
@@ -406,7 +396,7 @@ class UsersController extends BaseApiController
 
     public function passwordReset(Request $request, PDO $db)
     {
-        $token = filter_var($request->getParameter("token"), FILTER_SANITIZE_STRING);
+        $token = htmlspecialchars($request->getParameter("token"));
 
         if (empty($token)) {
             throw new Exception("Reset token must be supplied", Http::BAD_REQUEST);
