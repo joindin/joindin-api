@@ -11,7 +11,6 @@ class ApiView
         protected int $responseCode = Http::OK,
         protected bool $noRender = false
     ) {
-        //
     }
 
     /**
