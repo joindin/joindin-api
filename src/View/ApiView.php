@@ -6,19 +6,12 @@ use Teapot\StatusCode\Http;
 
 class ApiView
 {
-    protected $headers;
-
-    /** @var int */
-    protected $responseCode;
-
-    /** @var bool */
-    protected $noRender;
-
-    public function __construct(array $headers = [], $responseCode = Http::OK, $noRender = false)
-    {
-        $this->headers      = $headers;
-        $this->responseCode = $responseCode;
-        $this->noRender     = $noRender;
+    public function __construct(
+        protected array $headers = [],
+        protected int $responseCode = Http::OK,
+        protected bool $noRender = false
+    ) {
+        //
     }
 
     /**
