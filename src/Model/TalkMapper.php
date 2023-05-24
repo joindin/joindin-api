@@ -700,6 +700,7 @@ class TalkMapper extends ApiMapper
             where ID = :talk_id";
 
         $stmt   = $this->_db->prepare($sql);
+
         return $stmt->execute(["stub" => $stub, "talk_id" => $talk_id]);
     }
 
