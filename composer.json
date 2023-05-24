@@ -33,6 +33,7 @@
     "jangregor/phpstan-prophecy": "^1",
     "maglnet/composer-require-checker": "^4.6",
     "php-mock/php-mock-phpunit": "^2.7.1",
+    "phpspec/prophecy": "^1.17",
     "phpstan/extension-installer": "^1.3",
     "phpstan/phpstan": "^1.10.15",
     "phpstan/phpstan-phpunit": "1.3.12",
