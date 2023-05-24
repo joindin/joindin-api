@@ -168,7 +168,7 @@ class ClientMapper extends ApiMapper
      *
      * @throws Exception
      */
-    public function deleteClient($clientId)
+    public function deleteClient($clientId): void
     {
         $clientSql = 'DELETE FROM oauth_consumers WHERE id = :client_id';
 
