@@ -111,8 +111,8 @@ class ClientMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($clientSql);
         $stmt->execute([
-            ':consumer_key'          => base64_encode(openssl_random_pseudo_bytes(48)),
-            ':consumer_secret'       => base64_encode(openssl_random_pseudo_bytes(48)),
+            ':consumer_key'          => base64_encode(random_bytes(48)),
+            ':consumer_secret'       => base64_encode(random_bytes(48)),
             ':created_date'          => (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
             ':user_id'               => $data['user_id'],
             ':application'           => $data['name'],
@@ -123,7 +123,7 @@ class ClientMapper extends ApiMapper
 
         $clientId = $this->_db->lastInsertId();
 
-        if (0 == $clientId) {
+        if ($clientId === false || (int)$clientId === 0) {
             throw new Exception('There has been an error storing the application');
         }
 
@@ -168,7 +168,7 @@ class ClientMapper extends ApiMapper
      *
      * @throws Exception
      */
-    public function deleteClient($clientId)
+    public function deleteClient($clientId): void
     {
         $clientSql = 'DELETE FROM oauth_consumers WHERE id = :client_id';
 

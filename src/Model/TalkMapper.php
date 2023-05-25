@@ -26,7 +26,6 @@ class TalkMapper extends ApiMapper
         }
 
         if (count($results)) {
-
             foreach ($results as $key => $row) {
                 // generate and store an inflected talk title if there isn't one
                 if (empty($row['url_friendly_talk_title'])) {
@@ -701,6 +700,7 @@ class TalkMapper extends ApiMapper
             where ID = :talk_id";
 
         $stmt   = $this->_db->prepare($sql);
+
         return $stmt->execute(["stub" => $stub, "talk_id" => $talk_id]);
     }
 

@@ -39,7 +39,7 @@
     "phpstan/phpstan": "^1.10.15",
     "phpstan/phpstan-phpunit": "1.3.12",
     "phpunit/phpunit": "^9.6.8",
-    "roave/security-advisories": "dev-master"
+    "roave/security-advisories": "dev-latest"
   },
   "config": {
     "optimize-autoloader": true,

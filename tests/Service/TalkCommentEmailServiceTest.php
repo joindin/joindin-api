@@ -89,8 +89,8 @@ Questions? Comments?  Get in touch: [feedback@joind.in](mailto:feedback@joind.in
 
         $html = $service->markdownToHtml($markdown);
         $this->assertEquals(
-            $html,
-            "<p>A <em>sunny</em> day</p>\n"
+            "<p>A <em>sunny</em> day</p>\n",
+            $html
         );
     }
 }

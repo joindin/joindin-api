@@ -306,7 +306,7 @@ class Request
                 case self::FORMAT_JSON:
                 default:
                     // JSONP?
-                    $callback = filter_var($this->getParameter('callback'), FILTER_SANITIZE_STRING);
+                    $callback = htmlspecialchars($this->getParameter('callback'));
 
                     if ($callback) {
                         $this->view = new JsonPView($callback);

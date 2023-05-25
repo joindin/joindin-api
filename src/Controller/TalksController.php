@@ -87,10 +87,9 @@ class TalksController extends BaseTalkController
 
         $this->setDbAndRequest($db, $request);
 
-        $keyword = filter_var(
+        $keyword = htmlspecialchars(
             $request->parameters['title'],
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         $verbose = $this->getVerbosity($this->request);
@@ -493,30 +492,27 @@ class TalksController extends BaseTalkController
         }
         $event = $list['events'][0];
 
-        $talk['title'] = filter_var(
+        $talk['title'] = htmlspecialchars(
             $request->getParameter('talk_title'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($talk['title'])) {
             throw new Exception("The talk title field is required", Http::BAD_REQUEST);
         }
 
-        $talk['description'] = filter_var(
+        $talk['description'] = htmlspecialchars(
             $request->getParameter('talk_description'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($talk['description'])) {
             throw new Exception("The talk description field is required", Http::BAD_REQUEST);
         }
 
-        $talk['type'] = filter_var(
+        $talk['type'] = htmlspecialchars(
             $request->getParameter('type', 'Talk'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         $talk_type_mapper = new TalkTypeMapper($db, $request);
@@ -527,10 +523,9 @@ class TalksController extends BaseTalkController
         }
         $talk['type_id'] = $talk_types[$talk['type']];
 
-        $start_date = filter_var(
+        $start_date = htmlspecialchars(
             $request->getParameter('start_date'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($start_date)) {
@@ -546,10 +541,9 @@ class TalksController extends BaseTalkController
             throw new Exception("The talk must be held between the start and end date of the event", Http::BAD_REQUEST);
         }
 
-        $talk['language'] = filter_var(
+        $talk['language'] = htmlspecialchars(
             $request->getParameter('language'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($talk['language'])) {
@@ -579,7 +573,7 @@ class TalksController extends BaseTalkController
 
         $talk['speakers'] = array_map(
             static function ($speaker) {
-                $speaker = filter_var($speaker, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                $speaker = htmlspecialchars($speaker, ENT_NOQUOTES);
                 $speaker = trim($speaker);
 
                 return $speaker;

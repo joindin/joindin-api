@@ -49,7 +49,6 @@ class TokenModelCollection extends BaseModelCollection
      */
     public function getOutputView(Request $request, $verbose = false)
     {
-        $retval = [];
         // handle the collection first
         $retval = ['tokens' => []];
 

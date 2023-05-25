@@ -52,20 +52,18 @@ class ApplicationsController extends BaseApiController
         $app    = [];
         $errors = [];
 
-        $app['name'] = filter_var(
+        $app['name'] = htmlspecialchars(
             $request->getParameter("name"),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($app['name'])) {
             $errors[] = "'name' is a required field";
         }
 
-        $app['description'] = filter_var(
+        $app['description'] = htmlspecialchars(
             $request->getParameter("description"),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($app['description'])) {
@@ -109,20 +107,18 @@ class ApplicationsController extends BaseApiController
         $app    = [];
         $errors = [];
 
-        $app['name'] = filter_var(
+        $app['name'] = htmlspecialchars(
             $request->getParameter("name"),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($app['name'])) {
             $errors[] = "'name' is a required field";
         }
 
-        $app['description'] = filter_var(
+        $app['description'] = htmlspecialchars(
             $request->getParameter("description"),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         if (empty($app['description'])) {

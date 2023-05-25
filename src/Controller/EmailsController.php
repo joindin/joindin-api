@@ -73,7 +73,7 @@ class EmailsController extends BaseApiController
     public function passwordReset(Request $request, PDO $db)
     {
         $user_mapper = new UserMapper($db, $request);
-        $username    = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);
+        $username    = htmlspecialchars($request->getParameter("username"));
 
         if (empty($username)) {
             throw new Exception("A username must be supplied", Http::BAD_REQUEST);

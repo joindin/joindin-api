@@ -86,10 +86,9 @@ class EventHostsController extends BaseApiController
         if (!$isAdmin) {
             throw new Exception("You do not have permission to add hosts to this event", Http::FORBIDDEN);
         }
-        $username   = filter_var(
+        $username   = htmlspecialchars(
             $request->getParameter('host_name'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
         $userMapper = $this->getUserMapper($request, $db);
         $user_id    = $userMapper->getUserIdFromUsername($username);

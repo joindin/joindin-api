@@ -467,10 +467,11 @@ class UserMapper extends ApiMapper
      * @param int $user_id
      *
      * @return false|string token
+     * @throws Exception
      */
     public function generateEmailVerificationTokenForUserId($user_id)
     {
-        $token = bin2hex(openssl_random_pseudo_bytes(8));
+        $token = bin2hex(random_bytes(8));
 
         $sql = "insert into email_verification_tokens set "
                . "user_id = :user_id, token = :token";
@@ -740,10 +741,11 @@ class UserMapper extends ApiMapper
      * @param int $user_id
      *
      * @return false|string
+     * @throws Exception
      */
     public function generatePasswordResetTokenForUserId($user_id)
     {
-        $token = bin2hex(openssl_random_pseudo_bytes(8));
+        $token = bin2hex(random_bytes(8));
 
         $sql = "insert into password_reset_tokens set "
                . "user_id = :user_id, token = :token";

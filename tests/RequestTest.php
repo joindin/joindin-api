@@ -20,7 +20,7 @@ final class RequestTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->config = include __DIR__ . '/../src/config.php';
+        $this->config = require __DIR__ . '/../src/config.php';
     }
 
     /**
