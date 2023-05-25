@@ -187,7 +187,7 @@ class EventCommentsController extends BaseApiController
 
         if (
             false === $commentId
-            || false === $commentInfo = $comment_mapper->getCommentInfo($commentId)
+            || false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))
         ) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
