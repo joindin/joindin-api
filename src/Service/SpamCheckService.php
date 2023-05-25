@@ -11,11 +11,9 @@ use GuzzleHttp\Exception;
  */
 class SpamCheckService implements SpamCheckServiceInterface
 {
-    private $httpClient;
-
-    protected $akismetUrl;
-
-    protected $blog;
+    private ClientInterface $httpClient;
+    protected string $akismetUrl;
+    protected string $blog;
 
     /**
      * @param ClientInterface $httpClient

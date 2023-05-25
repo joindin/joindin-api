@@ -102,9 +102,9 @@ class HtmlView extends ApiView
     /**
      * Render start of HTML page
      *
-     * @return null
+     * @return void
      */
-    protected function layoutStart()
+    protected function layoutStart(): void
     {
         echo <<<EOT
 <!DOCTYPE html>
@@ -136,9 +136,9 @@ EOT;
     /**
      * Render end of HTML page
      *
-     * @return null
+     * @return void
      */
-    protected function layoutStop()
+    protected function layoutStop(): void
     {
         echo <<<EOT
 </body>

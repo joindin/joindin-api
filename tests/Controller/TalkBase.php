@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 abstract class TalkBase extends TestCase
 {
-    protected $talk_mapper;
+    protected TalkMapper&MockObject $talk_mapper;
 
     protected function setUp(): void
     {
@@ -27,7 +27,7 @@ abstract class TalkBase extends TestCase
         parent::setUp();
     }
 
-    final protected function createTalkMapper(mockPDO $db, Request $request, $expectedCalls = 1)
+    final protected function createTalkMapper(mockPDO $db, Request $request, int $expectedCalls = 1): TalkMapper&MockObject
     {
         $talk_mapper = $this->getMockBuilder(TalkMapper::class)
             ->setConstructorArgs([$db, $request])
@@ -58,7 +58,7 @@ abstract class TalkBase extends TestCase
         return $talk_mapper;
     }
 
-    final protected function createVerboseTalkMapper(mockPDO $db, Request $request)
+    final protected function createVerboseTalkMapper(mockPDO $db, Request $request): TalkMapper&MockObject
     {
         $talk_mapper = $this->getMockBuilder(TalkMapper::class)
             ->setConstructorArgs([$db, $request])
@@ -93,7 +93,7 @@ abstract class TalkBase extends TestCase
         return $talk_mapper;
     }
 
-    final protected function createUserMapper(mockPDO $db, Request $request)
+    final protected function createUserMapper(mockPDO $db, Request $request): UserMapper&MockObject
     {
         $user_mapper = $this->getMockBuilder(UserMapper::class)
             ->setConstructorArgs([$db, $request])
@@ -114,7 +114,7 @@ abstract class TalkBase extends TestCase
         return $user_mapper;
     }
 
-    final protected function createEventMapper(mockPDO $db, Request $request)
+    final protected function createEventMapper(mockPDO $db, Request $request): EventMapper&MockObject
     {
         $event_mapper = $this->getMockBuilder(EventMapper::class)
             ->setConstructorArgs([$db, $request])

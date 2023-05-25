@@ -4,6 +4,7 @@ namespace Joindin\Api\Test\Controller;
 
 use Exception;
 use Joindin\Api\Controller\TalksController;
+use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Request;
 use Joindin\Api\Service\NullSpamCheckService;
 use Joindin\Api\View\ApiView;
@@ -12,7 +13,7 @@ use Teapot\StatusCode\Http;
 
 final class TalksControllerDeleteTest extends TalkBase
 {
-    private $talkMapper;
+    private TalkMapper $talkMapper;
 
     /**
      * @group uses_pdo

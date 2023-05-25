@@ -4,8 +4,8 @@ namespace Joindin\Api\Service;
 
 class UserUsernameReminderEmailService extends BaseEmailService
 {
-    protected $user;
-    protected $website_url;
+    protected array $user;
+    protected string $website_url;
 
     /**
      * @param array $config
@@ -21,7 +21,7 @@ class UserUsernameReminderEmailService extends BaseEmailService
         $this->website_url = $config['website_url'];
     }
 
-    public function sendEmail()
+    public function sendEmail(): void
     {
         $this->setSubject('Your joind.in username');
 

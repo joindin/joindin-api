@@ -88,7 +88,7 @@ class UserMapper extends ApiMapper
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
 
-            if ($results) {
+            if (!empty($results)) {
                 return $this->transformResults($results, $verbose);
             }
         }
@@ -433,7 +433,7 @@ class UserMapper extends ApiMapper
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
 
-            if ($results) {
+            if (!empty($results)) {
                 return $this->transformResults($results, $verbose);
             }
         }
@@ -716,7 +716,7 @@ class UserMapper extends ApiMapper
      *
      * @return false|string $email The email address
      */
-    public function getEmailByUserId($user_id)
+    public function getEmailByUserId($user_id): false|string
     {
         $sql      = "select email from user where ID = :user_id";
         $stmt     = $this->_db->prepare($sql);

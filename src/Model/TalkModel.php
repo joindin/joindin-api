@@ -11,7 +11,9 @@ use Joindin\Api\Request;
  * @property int $event_id
  * @property array $speakers
  * @property string $stub
+ * @property string $talk_title
  */
+#[\AllowDynamicProperties]
 class TalkModel extends BaseModel
 {
     /**
@@ -21,7 +23,7 @@ class TalkModel extends BaseModel
      *
      * @return array
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'id'                      => 'ID',
@@ -79,11 +81,11 @@ class TalkModel extends BaseModel
      * Return this object with client-facing fields and hypermedia, ready for output
      *
      * @param Request $request
-     * @param bool    $verbose
+     * @param bool $verbose
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false)
     {
         $item = parent::getOutputView($request, $verbose);
 

@@ -29,7 +29,7 @@ final class UsersControllerTest extends TestCase
      *
      * @group uses_pdo
      */
-    public function testDeleteUserWithoutBeingLoggedInThrowsException()
+    public function testDeleteUserWithoutBeingLoggedInThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to delete data');
@@ -51,7 +51,7 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteUserWithNonAdminIdThrowsException()
+    public function testDeleteUserWithNonAdminIdThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You do not have permission to do that');
@@ -83,7 +83,7 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteUserWithAdminAccessThrowsExceptionOnFailedDelete()
+    public function testDeleteUserWithAdminAccessThrowsExceptionOnFailedDelete(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('There was a problem trying to delete the user');
@@ -122,7 +122,7 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteUserWithAdminAccessDeletesSuccessfully()
+    public function testDeleteUserWithAdminAccessDeletesSuccessfully(): void
     {
         $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
@@ -345,7 +345,7 @@ final class UsersControllerTest extends TestCase
      *
      * @group uses_pdo
      */
-    public function testSetTrustedWithNoUserIdThrowsException()
+    public function testSetTrustedWithNoUserIdThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to change a user account');
@@ -394,7 +394,7 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testSetTrustedWithoutStateThrowsException()
+    public function testSetTrustedWithoutStateThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must provide a trusted state');
@@ -428,7 +428,7 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testSetTrustedWithFailureThrowsException()
+    public function testSetTrustedWithFailureThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Unable to update status');
@@ -467,7 +467,7 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testSetTrustedWithSuccessCreatesView()
+    public function testSetTrustedWithSuccessCreatesView(): void
     {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(2);

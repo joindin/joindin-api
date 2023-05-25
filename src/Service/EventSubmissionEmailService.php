@@ -6,13 +6,10 @@ use DateTime;
 
 class EventSubmissionEmailService extends BaseEmailService
 {
-    protected $event;
-    protected $comment;
-    protected $website_url;
-    /**
-     * @var int|null
-     */
-    protected $count;
+    protected array $event;
+    protected array $comment;
+    protected string $website_url;
+    protected ?int $count;
 
     /**
      * @param array    $config
@@ -20,7 +17,7 @@ class EventSubmissionEmailService extends BaseEmailService
      * @param array    $event
      * @param int|null $count
      */
-    public function __construct(array $config, array $recipients, array $event, $count = null)
+    public function __construct(array $config, array $recipients, array $event, ?int $count = null)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
@@ -32,7 +29,7 @@ class EventSubmissionEmailService extends BaseEmailService
         $this->count = $count;
     }
 
-    public function sendEmail()
+    public function sendEmail(): void
     {
         $this->setSubject('New event submitted to joind.in');
 
