@@ -542,7 +542,7 @@ class UserMapper extends ApiMapper
      *
      * @return false|int $user_id The user's ID (or false, if we didn't find her)
      */
-    public function getUserIdFromEmail($email)
+    public function getUserIdFromEmail(string $email): false|int
     {
         $sql = "select ID from user "
                . "where email = :email and active = 1";
