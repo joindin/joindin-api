@@ -240,7 +240,7 @@ final class UsersControllerTest extends TestCase
         $request->user_id = 1;
         $request->base = 'base';
         $request->path_info = 'path_info';
-        $request->method('getParameter')
+        $request->method('getStringParameter')
             ->withConsecutive(
                 ['username'],
                 ['full_name'],
@@ -292,7 +292,7 @@ final class UsersControllerTest extends TestCase
     {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->method('getUserId')->willReturn(1);
-        $request->method('getParameter')->withConsecutive(
+        $request->method('getStringParameter')->withConsecutive(
             ['password'],
             ['full_name'],
             ['email'],

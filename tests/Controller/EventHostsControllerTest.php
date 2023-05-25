@@ -179,7 +179,7 @@ final class EventHostsControllerTest extends TestCase
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->url_elements = [3 => 'foo'];
         $request->user_id = 2;
-        $request->method('getParameter')->willReturn('myhostname');
+        $request->method('getStringParameter')->willReturn('myhostname');
 
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
@@ -242,7 +242,7 @@ final class EventHostsControllerTest extends TestCase
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
         $request->url_elements = [3 => 12];
         $request->user_id = 2;
-        $request->method('getParameter')->willReturn('myhostname');
+        $request->method('getStringParameter')->willReturn('myhostname');
 
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
@@ -283,7 +283,7 @@ final class EventHostsControllerTest extends TestCase
         $request->url_elements = [3 => 12];
         $request->user_id = 2;
         $request->base = 'foo';
-        $request->method('getParameter')->willReturn('myhostname');
+        $request->method('getStringParameter')->willReturn('myhostname');
         $request->method('getView')->willReturn($view);
 
         $controller->addHost($request, $db);

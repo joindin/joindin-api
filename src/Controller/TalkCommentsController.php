@@ -141,7 +141,7 @@ class TalkCommentsController extends BaseApiController
             throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
 
-        $decision = $request->getParameter('decision');
+        $decision = $request->getStringParameter('decision');
 
         if (!in_array($decision, ['approved', 'denied'])) {
             throw new Exception('Unexpected decision', Http::BAD_REQUEST);
@@ -164,7 +164,7 @@ class TalkCommentsController extends BaseApiController
             throw new Exception('You must log in to edit a comment', Http::UNAUTHORIZED);
         }
 
-        $newCommentBody = $request->getParameter('comment');
+        $newCommentBody = $request->getStringParameter('comment');
 
         if (empty($newCommentBody)) {
             throw new Exception('The field "comment" is required', Http::BAD_REQUEST);

@@ -36,8 +36,8 @@ class FacebookController extends BaseApiController
             throw new Exception("Cannot login via Facebook", Http::NOT_IMPLEMENTED);
         }
 
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId         = $request->getStringParameter('client_id');
+        $clientSecret     = $request->getStringParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
 
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {

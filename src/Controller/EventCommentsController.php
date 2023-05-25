@@ -113,9 +113,9 @@ class EventCommentsController extends BaseApiController
             throw new Exception('The field "rating" must be a number', Http::BAD_REQUEST);
         }
 
-        $commentText = $request->getParameter('comment');
+        $commentText = $request->getStringParameter('comment');
 
-        if (! is_string($commentText) || $commentText === '') {
+        if ($commentText === '') {
             throw new Exception('The field "comment" is required', Http::BAD_REQUEST);
         }
 
@@ -259,9 +259,9 @@ class EventCommentsController extends BaseApiController
             throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
 
-        $decision = $request->getParameter('decision');
+        $decision = $request->getStringParameter('decision');
 
-        if (!is_string($decision) || !in_array($decision, ['approved', 'denied'])) {
+        if (!in_array($decision, ['approved', 'denied'])) {
             throw new Exception('Unexpected decision', Http::BAD_REQUEST);
         }
 

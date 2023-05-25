@@ -53,7 +53,7 @@ class ApplicationsController extends BaseApiController
         $errors = [];
 
         $app['name'] = htmlspecialchars(
-            $request->getParameter("name"),
+            $request->getStringParameter("name"),
             ENT_NOQUOTES
         );
 
@@ -62,7 +62,7 @@ class ApplicationsController extends BaseApiController
         }
 
         $app['description'] = htmlspecialchars(
-            $request->getParameter("description"),
+            $request->getStringParameter("description"),
             ENT_NOQUOTES
         );
 
@@ -108,7 +108,7 @@ class ApplicationsController extends BaseApiController
         $errors = [];
 
         $app['name'] = htmlspecialchars(
-            $request->getParameter("name"),
+            $request->getStringParameter("name"),
             ENT_NOQUOTES
         );
 
@@ -117,7 +117,7 @@ class ApplicationsController extends BaseApiController
         }
 
         $app['description'] = htmlspecialchars(
-            $request->getParameter("description"),
+            $request->getStringParameter("description"),
             ENT_NOQUOTES
         );
 

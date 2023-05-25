@@ -45,10 +45,8 @@ class TalkLinkController extends BaseTalkController
         $this->checkAdminOrSpeaker($request, $talk_mapper, $talk_id);
 
         $link_id      = $request->url_elements[5];
-        /** @var string $display_name */
-        $display_name = $request->getParameter('display_name');
-        /** @var string $url */
-        $url          = $request->getParameter('url');
+        $display_name = $request->getStringParameter('display_name');
+        $url          = $request->getStringParameter('url');
 
         if (!$talk_mapper->updateTalkLink($talk_id, $link_id, $display_name, $url)) {
             throw new Exception(
@@ -90,8 +88,8 @@ class TalkLinkController extends BaseTalkController
         $this->checkAdminOrSpeaker($request, $talk_mapper, $talk_id);
 
         //Check the content is in the correct format
-        $display_name = $request->getParameter('display_name');
-        $url          = $request->getParameter('url');
+        $display_name = $request->getStringParameter('display_name');
+        $url          = $request->getStringParameter('url');
 
         if (!$display_name || ! $url) {
             throw new Exception(

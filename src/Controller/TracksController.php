@@ -64,7 +64,7 @@ class TracksController extends BaseApiController
         // validate fields
         $errors              = [];
         $track['track_name'] = htmlspecialchars(
-            $request->getParameter("track_name"),
+            $request->getStringParameter("track_name"),
             ENT_NOQUOTES
         );
 
@@ -72,7 +72,7 @@ class TracksController extends BaseApiController
             $errors[] = "'track_name' is a required field";
         }
         $track['track_description'] = htmlspecialchars(
-            $request->getParameter("track_description", null),
+            $request->getStringParameter("track_description", null),
             ENT_NOQUOTES
         );
 
