@@ -49,7 +49,7 @@ class TalkModel extends BaseModel
      *
      * @return array
      */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         $fields = $this->getDefaultFields();
 
@@ -69,7 +69,7 @@ class TalkModel extends BaseModel
      *
      * @return array
      */
-    public function getSubResources()
+    public function getSubResources(): array
     {
         return [
             'speakers' => 'speakers',
@@ -85,7 +85,7 @@ class TalkModel extends BaseModel
      *
      * @return array
      */
-    public function getOutputView(Request $request, bool $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false): array
     {
         $item = parent::getOutputView($request, $verbose);
 
@@ -114,7 +114,7 @@ class TalkModel extends BaseModel
      *
      * @return string The link to the talk on the web (e.g. http://web2.dev.joind.in/talk/ed89b)
      **/
-    public function getWebsiteUrl($website_url)
+    public function getWebsiteUrl($website_url): string
     {
         return $website_url . "/talk/" . $this->stub;
     }
