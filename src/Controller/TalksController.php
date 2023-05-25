@@ -115,7 +115,7 @@ class TalksController extends BaseTalkController
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case "comments":
-                    $comment = $request->getParameter('comment');
+                    $comment = $request->getStringParameter('comment');
 
                     if (empty($comment)) {
                         throw new Exception('The field "comment" is required', Http::BAD_REQUEST);
@@ -283,7 +283,7 @@ class TalksController extends BaseTalkController
             throw new Exception("You do not have permission to add this talk to a track", Http::BAD_REQUEST);
         }
 
-        $track_uri = $request->getParameter("track_uri");
+        $track_uri = $request->getStringParameter("track_uri");
         $pattern   = '@/' . $request->version . '/tracks/([\d]+)$@';
 
         if (!preg_match($pattern, $track_uri, $matches)) {
@@ -493,7 +493,7 @@ class TalksController extends BaseTalkController
         $event = $list['events'][0];
 
         $talk['title'] = htmlspecialchars(
-            $request->getParameter('talk_title'),
+            $request->getStringParameter('talk_title'),
             ENT_NOQUOTES
         );
 
@@ -502,7 +502,7 @@ class TalksController extends BaseTalkController
         }
 
         $talk['description'] = htmlspecialchars(
-            $request->getParameter('talk_description'),
+            $request->getStringParameter('talk_description'),
             ENT_NOQUOTES
         );
 
@@ -511,7 +511,7 @@ class TalksController extends BaseTalkController
         }
 
         $talk['type'] = htmlspecialchars(
-            $request->getParameter('type', 'Talk'),
+            $request->getStringParameter('type', 'Talk'),
             ENT_NOQUOTES
         );
 
@@ -524,7 +524,7 @@ class TalksController extends BaseTalkController
         $talk['type_id'] = $talk_types[$talk['type']];
 
         $start_date = htmlspecialchars(
-            $request->getParameter('start_date'),
+            $request->getStringParameter('start_date'),
             ENT_NOQUOTES
         );
 
@@ -542,7 +542,7 @@ class TalksController extends BaseTalkController
         }
 
         $talk['language'] = htmlspecialchars(
-            $request->getParameter('language'),
+            $request->getStringParameter('language'),
             ENT_NOQUOTES
         );
 
@@ -712,11 +712,14 @@ class TalksController extends BaseTalkController
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
-    private function getLinkUserDataFromRequest(Request $request)
+    /**
+     * @return array{display_name: string, username: string}
+     */
+    private function getLinkUserDataFromRequest(Request $request): array
     {
         return [
-            'display_name' => trim($request->getParameter('display_name', '')),
-            'username'     => trim($request->getParameter('username', '')),
+            'display_name' => trim($request->getStringParameter('display_name', '')),
+            'username'     => trim($request->getStringParameter('username', '')),
         ];
     }
 

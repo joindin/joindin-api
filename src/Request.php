@@ -223,6 +223,36 @@ class Request
     }
 
     /**
+     * Retrieves the value of a parameter from the request as a string,
+     * since it's the most common case.
+     *
+     * If the requested parameter is numeric, is casted to a string;
+     * if it's not a string, an exception is thrown, with a 400 Bad Request
+     * status code attached.
+     *
+     * If a default is provided and the parameter doesn't exist, the default
+     * value will be returned instead
+     */
+    public function getStringParameter(string $param, string $default = ''): string
+    {
+        $parameter = $this->getParameter($param, $default);
+
+        if ($parameter === null) {
+            return '';
+        }
+
+        if (is_numeric($parameter)) {
+            return (string) $parameter;
+        }
+
+        if (is_string($parameter)) {
+            return $parameter;
+        }
+
+        throw new \Exception(sprintf('Expected parameter %s is not a readable string', $param), Http::BAD_REQUEST);
+    }
+
+    /**
      * Retrieves a url element by numerical index. If it doesn't exist, and
      * a default is provided, the default value will be returned.
      *
@@ -309,7 +339,7 @@ class Request
                 case self::FORMAT_JSON:
                 default:
                     // JSONP?
-                    $callback = htmlspecialchars($this->getParameter('callback'));
+                    $callback = htmlspecialchars($this->getStringParameter('callback'));
 
                     if ($callback) {
                         $this->view = new JsonPView($callback);

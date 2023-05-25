@@ -112,7 +112,7 @@ class UsersController extends BaseApiController
             switch ($request->url_elements[3]) {
                 case 'verifications':
                     $userMapper = new UserMapper($db, $request);
-                    $token       = htmlspecialchars($request->getParameter("token"));
+                    $token       = htmlspecialchars($request->getStringParameter("token"));
 
                     if (empty($token)) {
                         throw new Exception("Verification token must be supplied", Http::BAD_REQUEST);
@@ -141,7 +141,7 @@ class UsersController extends BaseApiController
 
             // Required Fields
             $user['username'] = htmlspecialchars(
-                trim($request->getParameter("username")),
+                trim($request->getStringParameter("username")),
                 ENT_NOQUOTES
             );
 
@@ -159,7 +159,7 @@ class UsersController extends BaseApiController
             }
 
             $user['full_name'] = htmlspecialchars(
-                trim($request->getParameter("full_name")),
+                trim($request->getStringParameter("full_name")),
                 ENT_NOQUOTES
             );
 
@@ -168,7 +168,7 @@ class UsersController extends BaseApiController
             }
 
             $user['email'] = filter_var(
-                trim($request->getParameter("email")),
+                trim($request->getStringParameter("email")),
                 FILTER_VALIDATE_EMAIL,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             );
@@ -186,7 +186,7 @@ class UsersController extends BaseApiController
                 }
             }
 
-            $password = $request->getParameter("password");
+            $password = $request->getStringParameter("password");
 
             if (empty($password)) {
                 $errors[] = "'password' is a required field";
@@ -205,11 +205,11 @@ class UsersController extends BaseApiController
 
             // Optional Fields
             $user['twitter_username'] = htmlspecialchars(
-                trim($request->getParameter("twitter_username")),
+                trim($request->getStringParameter("twitter_username")),
                 ENT_NOQUOTES
             );
             $user['biography']        = htmlspecialchars(
-                trim($request->getParameter("biography")),
+                trim($request->getStringParameter("biography")),
                 ENT_NOQUOTES
             );
 
@@ -279,11 +279,11 @@ class UsersController extends BaseApiController
         $errors = [];
 
         // start with passwords
-        $password = $request->getParameter('password');
+        $password = $request->getStringParameter('password');
 
         if (!empty($password)) {
             // they must supply their old password to be allowed to set a new one
-            $oldPassword = $request->getParameter('old_password');
+            $oldPassword = $request->getStringParameter('old_password');
 
             if (empty($oldPassword)) {
                 throw new Exception(
@@ -309,7 +309,7 @@ class UsersController extends BaseApiController
         }
 
         $user['full_name'] = htmlspecialchars(
-            trim($request->getParameter("full_name")),
+            trim($request->getStringParameter("full_name")),
             ENT_NOQUOTES
         );
 
@@ -318,7 +318,7 @@ class UsersController extends BaseApiController
         }
 
         $user['email'] = filter_var(
-            trim($request->getParameter("email")),
+            trim($request->getStringParameter("email")),
             FILTER_VALIDATE_EMAIL,
             FILTER_FLAG_NO_ENCODE_QUOTES
         );
@@ -340,9 +340,9 @@ class UsersController extends BaseApiController
             }
         }
 
-        $username = $request->getParameter("username", false);
+        $username = $request->getStringParameter("username");
 
-        if (false !== $username) {
+        if ($username) {
             $user['username'] = htmlspecialchars(
                 trim($username),
                 ENT_NOQUOTES
@@ -362,17 +362,17 @@ class UsersController extends BaseApiController
         }
 
         // Optional Fields
-        $twitterUsername = $request->getParameter("twitter_username", false);
+        $twitterUsername = $request->getStringParameter("twitter_username");
 
-        if (false !== $twitterUsername) {
+        if ($twitterUsername) {
             $user['twitter_username'] = htmlspecialchars(
                 trim($twitterUsername),
                 ENT_NOQUOTES
             );
         }
-        $biography = $request->getParameter("biography", false);
+        $biography = $request->getStringParameter("biography");
 
-        if (false !== $biography) {
+        if ($biography) {
             $user['biography'] = htmlspecialchars(
                 trim($biography),
                 ENT_NOQUOTES
@@ -396,13 +396,13 @@ class UsersController extends BaseApiController
 
     public function passwordReset(Request $request, PDO $db): void
     {
-        $token = htmlspecialchars($request->getParameter("token"));
+        $token = htmlspecialchars($request->getStringParameter("token"));
 
         if (empty($token)) {
             throw new Exception("Reset token must be supplied", Http::BAD_REQUEST);
         }
 
-        $password = $request->getParameter("password");
+        $password = $request->getStringParameter("password");
 
         if (empty($password)) {
             throw new Exception("New password must be supplied", Http::BAD_REQUEST);

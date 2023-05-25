@@ -25,8 +25,8 @@ class TwitterController extends BaseApiController
     public function getRequestToken(Request $request, PDO $db): array
     {
         // only trusted clients can change account details
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId         = $request->getStringParameter('client_id');
+        $clientSecret     = $request->getStringParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
 
         if (!$this->oauthModel->isClientPermittedPasswordGrant((string) $clientId, (string) $clientSecret)) {
@@ -78,8 +78,8 @@ class TwitterController extends BaseApiController
      */
     public function logUserIn(Request $request, PDO $db)
     {
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId         = $request->getStringParameter('client_id');
+        $clientSecret     = $request->getStringParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
 
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {

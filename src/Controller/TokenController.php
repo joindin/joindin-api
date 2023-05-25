@@ -39,8 +39,8 @@ class TokenController extends BaseApiController
 
         // authenticate the user for web2
 
-        $clientId     = $request->getParameter('client_id');
-        $clientSecret = $request->getParameter('client_secret');
+        $clientId     = $request->getStringParameter('client_id');
+        $clientSecret = $request->getStringParameter('client_secret');
 
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
             throw new Exception("This client cannot authenticate using the password grant type", Http::FORBIDDEN);
@@ -52,8 +52,8 @@ class TokenController extends BaseApiController
         }
 
         // generate a temporary access token and then redirect back to the callback
-        $username = $request->getParameter('username');
-        $password = $request->getParameter('password');
+        $username = $request->getStringParameter('username');
+        $password = $request->getStringParameter('password');
         $result   = $this->oauthModel->createAccessTokenFromPassword(
             $clientId,
             $username,
