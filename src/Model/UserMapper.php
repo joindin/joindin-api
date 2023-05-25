@@ -88,9 +88,7 @@ class UserMapper extends ApiMapper
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
 
-            if (!empty($results)) {
-                return $this->transformResults($results, $verbose);
-            }
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -544,7 +542,7 @@ class UserMapper extends ApiMapper
      *
      * @return false|int $user_id The user's ID (or false, if we didn't find her)
      */
-    public function getUserIdFromEmail($email)
+    public function getUserIdFromEmail(string $email): false|int
     {
         $sql = "select ID from user "
                . "where email = :email and active = 1";
@@ -554,6 +552,9 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
+            /**
+             * @var array<string,int> $row
+             */
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (isset($row['ID'])) {
@@ -608,7 +609,7 @@ class UserMapper extends ApiMapper
     public function thisUserHasAdminOn($user_id)
     {
         // do we even have an authenticated user?
-        $loggedInUser = $this->_request->getUserId();
+        $loggedInUser = $this->_request?->getUserId();
 
         if ($loggedInUser) {
             // are we asking for access to the current user?
@@ -700,6 +701,9 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
+            /**
+             * @var array<string,int> $row
+             */
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (isset($row['ID'])) {

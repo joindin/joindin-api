@@ -320,12 +320,12 @@ class TalkMapper extends ApiMapper
     /**
      * @param int $user_id
      * @param int $resultsperpage
-     * @param int $start
+     * @param int|string|null $start
      * @param bool $verbose
      *
      * @return false|TalkModelCollection
      */
-    public function getTalksBySpeaker(int $user_id, int $resultsperpage, int $start, bool $verbose = false): false|TalkModelCollection
+    public function getTalksBySpeaker(int $user_id, int $resultsperpage, int|string|null $start, bool $verbose = false): false|TalkModelCollection
     {
         // based on getBasicSQL() but needs the speaker table joins
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
