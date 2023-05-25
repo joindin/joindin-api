@@ -20,22 +20,22 @@ final class ContactControllerTest extends TestCase
      *
      * @param bool  $isClientPermittedPasswordGrant
      * @param array $returnValueMap
-     * @param bool  $isCommentAcceptable
-     * @param null|class-string<\Throwable> $expectedException
-     * @param null|string $expectedExceptionMessage
-     * @param bool  $spamShouldBeChecked
-     * @param bool  $emailShouldBeSent
+     * @param bool $isCommentAcceptable
+     * @param class-string<\Throwable>|null $expectedException
+     * @param string|null $expectedExceptionMessage
+     * @param bool $spamShouldBeChecked
+     * @param bool $emailShouldBeSent
      *
      * @throws Exception
      */
     public function testContactWorksAsExpected(
         bool $isClientPermittedPasswordGrant,
         array $returnValueMap = [],
-        $isCommentAcceptable = false,
-        $expectedException = null,
-        $expectedExceptionMessage = null,
-        $spamShouldBeChecked = false,
-        $emailShouldBeSent = false
+        bool $isCommentAcceptable = false,
+        string $expectedException = null,
+        string $expectedExceptionMessage = null,
+        bool $spamShouldBeChecked = false,
+        bool $emailShouldBeSent = false
     ): void {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
 
@@ -105,8 +105,7 @@ final class ContactControllerTest extends TestCase
     public function dataProvider(): array
     {
         return [
-            //Client cannot use the contactform
-            [
+            'Client cannot use the contactform' => [
                 'isClientPermittedPasswordGrant' => false,
                 'returnValueMap'                 => [],
                 'isCommentAcceptable'            => false,
@@ -115,8 +114,7 @@ final class ContactControllerTest extends TestCase
                 'emailShouldBeSent'              => false,
                 'spamShouldBeChecked'            => false
             ],
-            //Not all required fields are set
-            [
+            'Not all required fields are set' => [
                 'isClientPermittedPasswordGrant' => true,
                 'returnValueMap'                 => [
                     ['client_id', '', 'client_id'],
@@ -130,8 +128,7 @@ final class ContactControllerTest extends TestCase
                 'exceptedException'              => Exception::class,
                 'expectedExceptionMessage'       => "The fields 'name', 'email', 'subject', 'comment' are required",
             ],
-            //Spamcheck fails
-            [
+            'Spamcheck fails' => [
                 'isClientPermittedPasswordGrant' => true,
                 'returnValueMap'                 => [
                     ['client_id', '', 'client_id'],
@@ -147,8 +144,7 @@ final class ContactControllerTest extends TestCase
                 'expectedExceptionMessage' => 'Comment failed spam check',
                 'spamShouldBeChecked'            => true,
             ],
-            //Email is sent without spamcheck
-            [
+            'Email is sent without spamcheck' => [
                 'isClientPermittedPasswordGrant' => true,
                 'returnValueMap'                 => [
                     ['client_id', '', 'client_id'],
@@ -164,8 +160,7 @@ final class ContactControllerTest extends TestCase
                 'spamShouldBeChecked'            => true,
                 'emailShouldBeSent'              => true
             ],
-            //All is good email should be sent
-            [
+            'All is good email should be sent' => [
                 'isClientPermittedPasswordGrant' => true,
                 'returnValueMap'                 => [
                     ['client_id', '', 'client_id'],
