@@ -49,8 +49,8 @@ class Request
     public $user_id;
     public $access_token;
     public $version;
-    protected $clientIP;
-    protected $clientUserAgent;
+    protected ?string $clientIP = null;
+    protected ?string $clientUserAgent = null;
 
     protected $oauthModel;
     protected $config;
@@ -132,8 +132,13 @@ class Request
      */
     public function setClientInfo()
     {
-        $ipAddress = $_SERVER['REMOTE_ADDR'] ?? null;
-        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        if (is_string($_SERVER['REMOTE_ADDR'] ?? false)) {
+            $this->clientIP = $_SERVER['REMOTE_ADDR'];
+        }
+
+        if (is_string($_SERVER['HTTP_USER_AGENT'] ?? false)) {
+            $this->clientUserAgent = $_SERVER['HTTP_USER_AGENT'];
+        }
 
         if (array_key_exists('HTTP_FORWARDED', $_SERVER)) {
             $header = new Header('Forwarded', $_SERVER['HTTP_FORWARDED'], ';');
@@ -143,21 +148,19 @@ class Request
             $elementArray = $header->buildEntityArray();
             $elementArray = array_change_key_case($elementArray);
 
-            if (isset($elementArray['for']) && count($elementArray['for'])) {
-                $ipAddress = $elementArray['for'][0];
+            if (is_string($elementArray['for'][0] ?? false)) {
+                $this->clientIP = $elementArray['for'][0];
             }
 
-            if (isset($elementArray['user-agent']) && count($elementArray['user-agent'])) {
-                $userAgent = $elementArray['user-agent'][0];
+            if (is_string($elementArray['user-agent'][0] ?? false)) {
+                $this->clientUserAgent = $elementArray['user-agent'][0];
             }
         } elseif (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
             $header = new Header('X-Forwarded-For', $_SERVER['HTTP_X_FORWARDED_FOR'], ',');
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
-            $ipAddress    = count($elementArray) ? $elementArray[0][0] : null;
+            $this->clientIP = is_string($elementArray[0][0]) ? $elementArray[0][0] : null;
         }
-        $this->clientIP        = $ipAddress;
-        $this->clientUserAgent = $userAgent;
     }
 
     /**
@@ -647,20 +650,16 @@ class Request
 
     /**
      * Retrieves the client's IP address
-     *
-     * @return mixed
      */
-    public function getClientIP()
+    public function getClientIP(): ?string
     {
         return $this->clientIP;
     }
 
     /**
      * Retrieves the client's user agent
-     *
-     * @return mixed
      */
-    public function getClientUserAgent()
+    public function getClientUserAgent(): ?string
     {
         return $this->clientUserAgent;
     }
