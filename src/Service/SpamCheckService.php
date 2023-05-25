@@ -30,16 +30,21 @@ class SpamCheckService implements SpamCheckServiceInterface
     /**
      * Check your comment against the spam check service
      *
-     * @see https://akismet.crom/development/api/#comment-check
+     * @see https://akismet.com/development/api/#comment-check
      *
      * @param string $comment
-     * @param string $userIp
-     * @param string $userAgent
+     * @param string|null $userIp
+     * @param string|null $userAgent
      *
      * @return bool true if the comment is okay, false if it got rated as spam
      */
-    public function isCommentAcceptable(string $comment, $userIp, $userAgent)
+    public function isCommentAcceptable(string $comment, ?string $userIp, ?string $userAgent): bool
     {
+        if (null === $userIp) {
+            // IP address is a required field: https://akismet.com/comment-check/
+            return false;
+        }
+
         if ('' === trim($comment)) {
             return false;
         }

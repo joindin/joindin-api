@@ -12,4 +12,4 @@ vendor/.git
 node_modules
 vendor
 diff.txt
-.php_cs.cache
+.php-cs-fixer.cache

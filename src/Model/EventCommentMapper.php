@@ -234,7 +234,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @param int $comment_id The comment in question
      *
-     * @return false|array including event_id
+     * @return false|array{event_id: int} including event_id
      */
     public function getCommentInfo($comment_id)
     {

@@ -39,11 +39,11 @@ class ClientMapper extends ApiMapper
      *
      * @param int $user_id        The user to fetch clients for
      * @param int $resultsperpage How many results to return on each page
-     * @param int $start          Which result to start with
+     * @param int|null $start          Which result to start with
      *
      * @return ClientModelCollection
      */
-    public function getClientsForUser($user_id, $resultsperpage, $start): ClientModelCollection
+    public function getClientsForUser(int $user_id, int $resultsperpage, ?int $start): ClientModelCollection
     {
         $sql = 'SELECT * FROM oauth_consumers WHERE user_id = :user_id ';
         $sql .= $this->buildLimit($resultsperpage, $start);
@@ -72,8 +72,12 @@ class ClientMapper extends ApiMapper
      *
      * @return ClientModelCollection
      */
-    public function getClientByIdAndUser(string $clientId, string $userId): ClientModelCollection
+    public function getClientByIdAndUser(string|int|false|null $clientId, string|int|false|null $userId): ClientModelCollection
     {
+        if (! $clientId || ! $userId) {
+            return new ClientModelCollection([], 0);
+        }
+
         $sql = 'SELECT * FROM oauth_consumers WHERE user_id = :user_id and id = :client_id';
         $sql .= $this->buildLimit(1, 0);
 
@@ -123,7 +127,7 @@ class ClientMapper extends ApiMapper
 
         $clientId = $this->_db->lastInsertId();
 
-        if ($clientId === false || (int)$clientId === 0) {
+        if ($clientId === false || (int) $clientId === 0) {
             throw new Exception('There has been an error storing the application');
         }
 
@@ -168,7 +172,7 @@ class ClientMapper extends ApiMapper
      *
      * @throws Exception
      */
-    public function deleteClient($clientId): void
+    public function deleteClient(int $clientId): void
     {
         $clientSql = 'DELETE FROM oauth_consumers WHERE id = :client_id';
 

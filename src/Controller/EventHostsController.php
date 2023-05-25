@@ -15,14 +15,9 @@ use function sprintf;
 class EventHostsController extends BaseApiController
     // @codingStandardsIgnoreEnd
 {
-    /** @var EventHostMapper */
-    protected $eventHostMapper = null;
-
-    /** @var EventMapper */
-    protected $eventMapper = null;
-
-    /** @var UserMapper */
-    protected $userMapper = null;
+    protected ?EventHostMapper $eventHostMapper = null;
+    protected ?EventMapper $eventMapper = null;
+    protected ?UserMapper $userMapper = null;
 
     /**
      * @param Request $request
@@ -31,7 +26,7 @@ class EventHostsController extends BaseApiController
      * @throws Exception
      * @return array
      */
-    public function listHosts(Request $request, PDO $db)
+    public function listHosts(Request $request, PDO $db): array
     {
         $event_id = $this->getItemId($request);
 
@@ -48,7 +43,7 @@ class EventHostsController extends BaseApiController
             throw new Exception('Event not found', Http::NOT_FOUND);
         }
 
-        $list = $mapper->getHostsByEventId($event_id, $verbose, $start, $resultsperpage);
+        $list = $mapper->getHostsByEventId($event_id, $resultsperpage, $start, $verbose);
 
         if (false === $list) {
             throw new Exception('Event not found', Http::NOT_FOUND);
@@ -187,7 +182,7 @@ class EventHostsController extends BaseApiController
      *
      * @return EventHostMapper
      */
-    public function getEventHostMapper(Request $request, PDO $db)
+    public function getEventHostMapper(Request $request, PDO $db): EventHostMapper
     {
         if ($this->eventHostMapper === null) {
             $this->eventHostMapper = new EventHostMapper($db, $request);

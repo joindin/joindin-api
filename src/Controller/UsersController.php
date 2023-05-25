@@ -122,7 +122,7 @@ class UsersController extends BaseApiController
 
                     if ($success) {
                         $view = $request->getView();
-                        $view->setHeader('Content-Length', 0);
+                        $view->setHeader('Content-Length', '0');
                         $view->setResponseCode(Http::NO_CONTENT);
 
                         return;
@@ -390,7 +390,7 @@ class UsersController extends BaseApiController
 
         // we're good!
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
@@ -424,7 +424,7 @@ class UsersController extends BaseApiController
         }
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
@@ -449,7 +449,7 @@ class UsersController extends BaseApiController
         $this->talkCommentMapper->deleteCommentsForUser($this->getItemId($request));
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
@@ -472,7 +472,7 @@ class UsersController extends BaseApiController
         }
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
@@ -506,7 +506,7 @@ class UsersController extends BaseApiController
             throw new Exception("Unable to update status", Http::INTERNAL_SERVER_ERROR);
         }
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::NO_CONTENT);
     }
 

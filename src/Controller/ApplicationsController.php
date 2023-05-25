@@ -19,7 +19,7 @@ class ApplicationsController extends BaseApiController
         $mapper = $this->getClientMapper($db, $request);
 
         $client = $mapper->getClientByIdAndUser(
-            $this->getItemId($request),
+            (string) $this->getItemId($request),
             $request->user_id
         );
 
@@ -137,7 +137,7 @@ class ApplicationsController extends BaseApiController
         $app['user_id'] = $request->user_id;
 
         $clientMapper = $this->getClientMapper($db, $request);
-        $clientId     = $clientMapper->updateClient($this->getItemId($request), $app);
+        $clientId     = $clientMapper->updateClient((string) $this->getItemId($request), $app);
 
         $uri = $request->base . '/' . $request->version . '/applications/' . $clientId;
         $request->getView()->setResponseCode(Http::CREATED);
@@ -156,8 +156,14 @@ class ApplicationsController extends BaseApiController
 
         $clientMapper = $this->getClientMapper($db, $request);
 
+        $clientId = $this->getItemId($request);
+
+        if (false === $clientId) {
+            throw new Exception('Invalid client ID', Http::NOT_FOUND);
+        }
+
         $client = $clientMapper->getClientByIdAndUser(
-            $this->getItemId($request),
+            $clientId,
             $request->user_id
         );
 
@@ -166,7 +172,7 @@ class ApplicationsController extends BaseApiController
         }
 
         try {
-            $clientMapper->deleteClient($this->getItemId($request));
+            $clientMapper->deleteClient($clientId);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), Http::INTERNAL_SERVER_ERROR, $e);
         }
