@@ -552,6 +552,9 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
+            /**
+             * @var array<string,int> $row
+             */
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (isset($row['ID'])) {
@@ -698,6 +701,9 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
+            /**
+             * @var array<string,int> $row
+             */
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (isset($row['ID'])) {
