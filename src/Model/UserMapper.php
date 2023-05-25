@@ -88,9 +88,7 @@ class UserMapper extends ApiMapper
             $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
 
-            if (!empty($results)) {
-                return $this->transformResults($results, $verbose);
-            }
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
