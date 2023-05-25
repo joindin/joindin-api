@@ -10,9 +10,9 @@ use Teapot\StatusCode\Http;
 
 final class TalkLinkControllerTest extends TalkBase
 {
-    private $talks_controller;
-    private $request;
-    private $db;
+    private TalkLinkController $talks_controller;
+    private Request $request;
+    private mockPDO $db;
 
     /**
      * Test sending delete link where the link id is not found
@@ -242,7 +242,7 @@ final class TalkLinkControllerTest extends TalkBase
         );
     }
 
-    public function makeRequest($url, $method): void
+    public function makeRequest(string $url, string $method): void
     {
         $this->request = new Request(
             [],

@@ -20,10 +20,11 @@ use Teapot\StatusCode\WebDAV;
 
 final class TalksControllerTest extends TalkBase
 {
-    private $config;
+    private array $config;
 
     public function setUp(): void
     {
+        parent::setUp();
         $this->config = [
             'email' => [
                 'from' => 'source@example.com',
@@ -865,9 +866,8 @@ final class TalksControllerTest extends TalkBase
      * @dataProvider getComments
      */
     public function testCommentOnTalk(
-        $commenterId,
-        $speakerEmails,
-        $expectedEmailsSent
+        int $commenterId,
+        array $speakerEmails
     ): void {
         $request = new Request(
             [],

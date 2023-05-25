@@ -6,8 +6,8 @@ use DateTime;
 
 class EventRejectedEmailService extends BaseEmailService
 {
-    protected $event;
-    protected $website_url;
+    protected array $event;
+    protected string $website_url;
 
     public function __construct(array $config, array $recipients, array $event)
     {
@@ -18,7 +18,7 @@ class EventRejectedEmailService extends BaseEmailService
         $this->website_url = $config['website_url'];
     }
 
-    public function sendEmail()
+    public function sendEmail(): void
     {
         $this->setSubject('Event Rejected');
 

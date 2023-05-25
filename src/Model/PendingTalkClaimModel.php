@@ -46,11 +46,11 @@ class PendingTalkClaimModel extends BaseModel
      * Return an array with client-facing fields and hypermedia, ready for output
      *
      * @param Request $request
-     * @param bool    $verbose
+     * @param bool $verbose
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false)
     {
         $item = parent::getOutputView($request, $verbose);
 

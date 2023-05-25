@@ -21,7 +21,7 @@ final class ContactControllerTest extends TestCase
      * @param bool  $isClientPermittedPasswordGrant
      * @param array $returnValueMap
      * @param bool  $isCommentAcceptable
-     * @param null|string $expectedException
+     * @param null|class-string<\Throwable> $expectedException
      * @param null|string $expectedExceptionMessage
      * @param bool  $spamShouldBeChecked
      * @param bool  $emailShouldBeSent
@@ -29,14 +29,14 @@ final class ContactControllerTest extends TestCase
      * @throws Exception
      */
     public function testContactWorksAsExpected(
-        $isClientPermittedPasswordGrant,
+        bool$isClientPermittedPasswordGrant,
         array $returnValueMap = [],
         $isCommentAcceptable = false,
         $expectedException = null,
         $expectedExceptionMessage = null,
         $spamShouldBeChecked = false,
         $emailShouldBeSent = false
-    ) {
+    ): void {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
 
         $oauthModel = $this->getMockBuilder(OAuthModel::class)->disableOriginalConstructor()->getMock();
@@ -102,7 +102,7 @@ final class ContactControllerTest extends TestCase
     /**
      * Dataprovider for tests
      */
-    public function dataProvider()
+    public function dataProvider(): array
     {
         return [
             //Client cannot use the contactform
