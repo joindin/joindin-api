@@ -58,7 +58,7 @@ class TrackMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);
@@ -112,9 +112,9 @@ class TrackMapper extends ApiMapper
      * @param int   $event_id
      *
      * @throws Exception
-     * @return string
+     * @return int
      */
-    public function createEventTrack(array $data, $event_id)
+    public function createEventTrack(array $data, int $event_id): int
     {
         // Sanity check: ensure all mandatory fields are present.;
         $contains_mandatory_fields = ! array_diff($mandatory_fields = ['track_name'], array_keys($data));
@@ -159,10 +159,10 @@ class TrackMapper extends ApiMapper
             ));
         }
 
-        return $this->_db->lastInsertId();
+        return (int)$this->_db->lastInsertId();
     }
 
-    public function getBasicSQL()
+    public function getBasicSQL(): string
     {
         $sql = 'select t.*, '
                . '(select COUNT(tk.ID) from talks tk '
@@ -232,7 +232,7 @@ class TrackMapper extends ApiMapper
      *
      * @param  int $track_id
      */
-    public function deleteEventTrack($track_id)
+    public function deleteEventTrack(int $track_id): void
     {
         // delete talk associations
         $sql  = "delete from event_track where ID = :track_id";

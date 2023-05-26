@@ -148,7 +148,7 @@ final class UsersControllerTest extends TestCase
             ->willReturn(true);
 
         $usersController->setUserMapper($userMapper);
-        $this->assertNull($usersController->deleteUser($request, $db));
+        $usersController->deleteUser($request, $db);
     }
 
     public function testDeleteTalkCommentsWithoutBeingLoggedInThrowsException(): void
@@ -463,7 +463,7 @@ final class UsersControllerTest extends TestCase
 
     /**
      * Ensures that if the setTrusted method is called by an admin,
-     * and the update succeeds, a view is created and null is returned
+     * and the update succeeds, a view is created
      *
      * @return void
      */
@@ -505,6 +505,6 @@ final class UsersControllerTest extends TestCase
             ->willReturn(true);
 
         $usersController->setUserMapper($userMapper);
-        $this->assertNull($usersController->setTrusted($request, $db));
+        $usersController->setTrusted($request, $db);
     }
 }

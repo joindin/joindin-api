@@ -12,7 +12,7 @@ class TalkCommentReportModelCollection extends BaseModelCollection
     /** @var array|TalkCommentReportModel[] */
     protected $list;
 
-    protected $total;
+    protected int $total;
 
     /**
      * Take arrays of data and create a collection of models; store metadata
