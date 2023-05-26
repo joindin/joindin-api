@@ -454,22 +454,6 @@ return [
         ],
     ],
     [
-        'path'       => '/talk_comments(/[^/]+)*/?$',
-        'controller' => TalkCommentsController::class,
-        'action'     => 'getComments',
-        'verbs'      => [
-            Request::HTTP_GET,
-        ],
-    ],
-    [
-        'path'       => '/talk_comments(/[^/]+)*/?$',
-        'controller' => TalkCommentsController::class,
-        'action'     => 'updateComment',
-        'verbs'      => [
-            Request::HTTP_PUT,
-        ],
-    ],
-    [
         'path'       => '/talk_comments(/[^/]+)*/reported?$',
         'controller' => TalkCommentsController::class,
         'action'     => 'reportComment',
@@ -481,6 +465,22 @@ return [
         'path'       => '/talk_comments(/[^/]+)*/reported?$',
         'controller' => TalkCommentsController::class,
         'action'     => 'moderateReportedComment',
+        'verbs'      => [
+            Request::HTTP_PUT,
+        ],
+    ],
+    [
+        'path'       => '/talk_comments(/[^/]+)*/?$',
+        'controller' => TalkCommentsController::class,
+        'action'     => 'getComments',
+        'verbs'      => [
+            Request::HTTP_GET,
+        ],
+    ],
+    [
+        'path'       => '/talk_comments(/[^/]+)*/?$',
+        'controller' => TalkCommentsController::class,
+        'action'     => 'updateComment',
         'verbs'      => [
             Request::HTTP_PUT,
         ],
