@@ -7,7 +7,7 @@ use Joindin\Api\Request;
 abstract class BaseModelCollection
 {
     protected $list = [];
-    protected $total;
+    protected int $total;
 
     /**
      * Adds count, total, and this_page links.  Also adds next_page and prev_page

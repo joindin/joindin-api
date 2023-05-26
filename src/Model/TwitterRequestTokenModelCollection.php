@@ -19,7 +19,7 @@ class TwitterRequestTokenModelCollection extends BaseModelCollection
      * @param array $data
      * @param int   $total
      */
-    public function __construct(array $data, $total = 0)
+    public function __construct(array $data, int $total = 0)
     {
         $this->total = $total;
 

@@ -66,7 +66,7 @@ class TalkCommentReportModel extends BaseModel
      *
      * @return array
      */
-    public function getOutputView(Request $request, bool $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false): array
     {
         $item = parent::getOutputView($request, $verbose);
 

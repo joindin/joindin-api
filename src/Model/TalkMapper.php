@@ -385,9 +385,9 @@ class TalkMapper extends ApiMapper
      * @param array $data
      *
      * @throws Exception
-     * @return string
+     * @return int
      */
-    public function createTalk(array $data): string
+    public function createTalk(array $data): int
     {
         // TODO map from the field mappings in getVerboseFields()
         $sql = '
@@ -407,7 +407,7 @@ class TalkMapper extends ApiMapper
             ':date'             => $data['date'],
             ':duration'         => $data['duration'],
         ]);
-        $talk_id  = $this->_db->lastInsertId();
+        $talk_id  = (int)$this->_db->lastInsertId();
 
         if (0 == $talk_id) {
             throw new Exception('There has been an error storing the talk');
