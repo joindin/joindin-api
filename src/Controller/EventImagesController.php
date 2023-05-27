@@ -10,29 +10,35 @@ use Teapot\StatusCode\Http;
 
 class EventImagesController extends BaseApiController
 {
-    public function listImages(Request $request, PDO $db)
+    /**
+     * @return array{images: array}
+     */
+    public function listImages(Request $request, PDO $db): array
     {
         $event_id = $this->getItemId($request);
 
         $event_mapper = new EventMapper($db, $request);
 
-        return ['images' => $event_mapper->getImages($event_id)];
+        return ['images' => $event_mapper->getImages((int) $event_id)];
     }
 
-    public function createImage(Request $request, PDO $db)
+    public function createImage(Request $request, PDO $db): void
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
         $event_id = $this->getItemId($request);
+        if (false === $event_id) {
+            throw new Exception("Invalid event ID", Http::BAD_REQUEST);
+        }
 
         $event_mapper = new EventMapper($db, $request);
 
         // ensure event exists
         $existing_event = $event_mapper->getEventById($event_id, false, true);
 
-        if ($existing_event['meta']['count'] == 0) {
+        if (false === $existing_event || $existing_event['meta']['count'] == 0) {
             throw new Exception('There is no event with ID ' . $event_id);
         }
 
@@ -51,7 +57,7 @@ class EventImagesController extends BaseApiController
         // check the file meets our expectations
         $uploaded_name = $_FILES['image']['tmp_name'];
 
-        list($width, $height, $filetype) = getimagesize($uploaded_name);
+        list($width, $height, $filetype) = (array) getimagesize($uploaded_name);
 
         // must be gif, jpg or png
         if (!in_array($filetype, [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG], true)) {
@@ -89,13 +95,19 @@ class EventImagesController extends BaseApiController
         $event_mapper->saveNewImage($event_id, $saved_filename, $width, $height, "orig");
 
         // small is 140px square
-        $orig_image = imagecreatefromstring(file_get_contents($event_image_path . $saved_filename));
+        $orig_image = imagecreatefromstring((string) file_get_contents($event_image_path . $saved_filename));
+        if (false === $orig_image) {
+            throw new Exception("Image could not be created");
+        }
         imagealphablending($orig_image, false);
         imagesavealpha($orig_image, true);
         $small_width  = 140;
         $small_height = 140;
 
         $small_image = imagecreatetruecolor($small_width, $small_height);
+        if (false === $small_image) {
+            throw new Exception("Small image could not be created");
+        }
         imagealphablending($small_image, false);
         imagesavealpha($small_image, true);
         imagecopyresampled($small_image, $orig_image, 0, 0, 0, 0, $small_width, $small_height, $width, $height);
@@ -119,13 +131,16 @@ class EventImagesController extends BaseApiController
         $view->setResponseCode(Http::CREATED);
     }
 
-    public function deleteImage(Request $request, PDO $db)
+    public function deleteImage(Request $request, PDO $db): void
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
         $event_id     = $this->getItemId($request);
+        if (false === $event_id) {
+            throw new Exception("Invalid event ID", Http::BAD_REQUEST);
+        }
         $event_mapper = new EventMapper($db, $request);
         $event_mapper->removeImages($event_id);
 
