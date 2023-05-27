@@ -272,7 +272,7 @@ final class EventHostsControllerTest extends TestCase
         $view = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
         $view->expects($this->once())->method('setHeader')->with(
             $this->equalTo('Location'),
-            $this->equalTo('foo//events/12/hosts')
+            $this->equalTo('foo/v2.1/events/12/hosts')
         );
         $view->expects($this->once())->method('setResponseCode')->with($this->equalTo(Http::CREATED));
         $view->expects($this->once())->method('setNoRender')->with($this->equalTo(true));
@@ -309,7 +309,7 @@ final class EventHostsControllerTest extends TestCase
         $eventMapper->method('thisUserHasAdminOn')->willReturn(true);
 
         $userMapper = $this->getMockBuilder(UserMapper::class)->disableOriginalConstructor()->getMock();
-        $userMapper->method('getUserById')->willReturn(true);
+        $userMapper->method('getUserById')->willReturn(['ID' => 123]);
 
         $eventHostMapper = $this->getMockBuilder(EventHostMapper::class)->disableOriginalConstructor()->getMock();
         $eventHostMapper->method('removeHostFromEvent')->willReturn(false);
@@ -346,7 +346,7 @@ final class EventHostsControllerTest extends TestCase
         $eventMapper->expects($this->once())->method('thisUserHasAdminOn')->willReturn(true);
 
         $userMapper = $this->getMockBuilder(UserMapper::class)->disableOriginalConstructor()->getMock();
-        $userMapper->expects($this->once())->method('getUserById')->willReturn(true);
+        $userMapper->expects($this->once())->method('getUserById')->willReturn(['ID' => 123]);
 
         $eventHostMapper = $this->getMockBuilder(EventHostMapper::class)->disableOriginalConstructor()->getMock();
         $eventHostMapper->expects($this->once())->method('removeHostFromEvent')->willReturn(true);

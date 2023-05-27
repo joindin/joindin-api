@@ -530,14 +530,14 @@ final class RequestTest extends TestCase
         $mockOauth->expects($this->once())
             ->method('verifyAccessToken')
             ->with('authPart')
-            ->willReturn('TheUserId');
+            ->willReturn(123);
 
         $request->setOauthModel($mockOauth);
 
         $request->identifyUser('oauth authPart');
 
-        $this->assertEquals('TheUserId', $request->user_id);
-        $this->assertEquals('TheUserId', $request->getUserId());
+        $this->assertEquals(123, $request->user_id);
+        $this->assertEquals(123, $request->getUserId());
     }
 
     /**
@@ -554,14 +554,14 @@ final class RequestTest extends TestCase
         $mockOauth->expects($this->once())
             ->method('verifyAccessToken')
             ->with('authPart')
-            ->willReturn('TheUserId');
+            ->willReturn(123);
 
         $request->setOauthModel($mockOauth);
 
         $request->identifyUser('Bearer authPart');
 
-        $this->assertEquals('TheUserId', $request->user_id);
-        $this->assertEquals('TheUserId', $request->getUserId());
+        $this->assertEquals(123, $request->user_id);
+        $this->assertEquals(123, $request->getUserId());
     }
 
     /**
@@ -584,7 +584,7 @@ final class RequestTest extends TestCase
     public function testSetUserIdAllowsForSettingOfUserId(): void
     {
         $request = new Request($this->config, []);
-        $user    = uniqid('', true);
+        $user    = random_int(0, PHP_INT_MAX);
 
         $request->setUserId($user);
         $this->assertEquals($user, $request->getUserId());
