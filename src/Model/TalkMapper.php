@@ -47,8 +47,8 @@ class TalkMapper extends ApiMapper
                     $results[$key]['starred'] = false;
                 }
 
-                // Did the logged in user rate this talk?
-                $results[$key]['user_rating'] = false;
+                // Did the logged-in user rate this talk?
+                $results[$key]['user_rating'] = [];
 
                 if (isset($this->_request->user_id)) {
                     $results[$key]['user_rating'] = $this->getUserRatingOnTalk($row['ID'], $this->_request->user_id);
@@ -629,13 +629,7 @@ class TalkMapper extends ApiMapper
             'user_id' => $user_id,
         ]);
 
-        $result = $stmt->fetch();
-
-        if (!$result) {
-            return false;
-        }
-
-        return $result['rating'];
+        return ((int) $stmt->fetchColumn()) ?: false;
     }
 
     /**
@@ -671,7 +665,7 @@ class TalkMapper extends ApiMapper
         $i = 0;
 
         while ($i < 5) {
-            $stub = substr(md5(mt_rand()), 3, 5);
+            $stub = substr(md5((string) mt_rand()), 3, 5);
 
             try {
                 return $this->storeStub($stub, $talk_id);
@@ -834,9 +828,9 @@ class TalkMapper extends ApiMapper
      * @param int $talk_id
      * @param int $track_id
      *
-     * @return string
+     * @return int
      */
-    public function addTalkToTrack(int $talk_id, int $track_id): string
+    public function addTalkToTrack(int $talk_id, int $track_id): int
     {
         $params = [
             'track_id' => $track_id,
@@ -858,7 +852,7 @@ class TalkMapper extends ApiMapper
             $talk_track_id = $this->_db->lastInsertId();
         }
 
-        return $talk_track_id;
+        return (int) $talk_track_id;
     }
 
     /**
@@ -1160,9 +1154,9 @@ class TalkMapper extends ApiMapper
      * @param string $display_name
      * @param string $url
      *
-     * @return string
+     * @return int
      */
-    public function addTalkLink(int $talk_id, string $display_name, string $url): string
+    public function addTalkLink(int $talk_id, string $display_name, string $url): int
     {
         $sql = "
             INSERT INTO `talk_links` (`talk_id`, `talk_type`, `url`)
@@ -1190,7 +1184,7 @@ class TalkMapper extends ApiMapper
             );
         }
 
-        return $this->_db->lastInsertId();
+        return (int) $this->_db->lastInsertId();
     }
 
     /**

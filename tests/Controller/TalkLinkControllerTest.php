@@ -148,7 +148,7 @@ final class TalkLinkControllerTest extends TalkBase
         $this->talk_mapper
             ->expects($this->once())
             ->method("addTalkLink")
-            ->willReturn('12');
+            ->willReturn(12);
 
         $this->talks_controller->addTalkLink(
             $this->request,

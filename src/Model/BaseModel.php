@@ -10,7 +10,6 @@ use Joindin\Api\Request;
  * @property string|null $event_tz_cont For an event or event-related item, the first half of a TZ identifier
  * @property string|null $event_tz_place For an event or event-related item, the second half of a TZ identifier
  */
-#[AllowDynamicProperties]
 abstract class BaseModel
 {
     public function __construct(protected array $data)
@@ -24,7 +23,7 @@ abstract class BaseModel
      *
      * @return mixed
      */
-    public function __get($field)
+    public function __get(string $field): mixed
     {
         if (isset($this->data[$field])) {
             return $this->data[$field];

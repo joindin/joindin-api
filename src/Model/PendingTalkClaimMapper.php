@@ -57,7 +57,7 @@ class PendingTalkClaimMapper extends ApiMapper
      *
      * @return bool
      */
-    public function claimTalkAsSpeaker($talk_id, $speaker_id, $claim_id)
+    public function claimTalkAsSpeaker(int $talk_id, int $speaker_id, int $claim_id): bool
     {
         $sql  = 'insert into pending_talk_claims
                     (talk_id,submitted_by,speaker_id,date_added,claim_id,user_approved_at)
@@ -86,7 +86,7 @@ class PendingTalkClaimMapper extends ApiMapper
      *
      * @return bool
      */
-    public function assignTalkAsHost($talk_id, $speaker_id, $claim_id, $user_id)
+    public function assignTalkAsHost(int $talk_id, int $speaker_id, int $claim_id, int $user_id): bool
     {
         $sql  = 'insert into pending_talk_claims
                     (talk_id,submitted_by,speaker_id,date_added,claim_id,host_approved_at)
@@ -112,7 +112,7 @@ class PendingTalkClaimMapper extends ApiMapper
      *
      * @return false|int
      */
-    public function claimExists($talk_id, $speaker_id, $claim_id)
+    public function claimExists(int $talk_id, int $speaker_id, int $claim_id): int|false
     {
         $sql      = 'select * from pending_talk_claims WHERE
                   talk_id = :talk_id AND claim_id = :claim_id AND speaker_id = :speaker_id
@@ -128,7 +128,7 @@ class PendingTalkClaimMapper extends ApiMapper
         );
 
         if ($response) {
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = (array) $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($stmt->rowCount() == 0) {
                 return false;
@@ -155,16 +155,15 @@ class PendingTalkClaimMapper extends ApiMapper
      *
      * @return bool
      */
-    public function approveAssignmentAsSpeaker($talk_id, $speaker_id, $claim_id)
+    public function approveAssignmentAsSpeaker(int $talk_id, int $speaker_id, int $claim_id): bool
     {
         $sql  = 'update pending_talk_claims SET user_approved_at = NOW() WHERE
                   talk_id = :talk_id AND claim_id = :claim_id
                   AND speaker_id = :speaker_id AND user_approved_at IS NULL
                   LIMIT 1
                ';
-        $stmt = $this->_db->prepare($sql);
 
-        return $stmt->execute(
+        return $this->_db->prepare($sql)->execute(
             [
                 'talk_id'    => $talk_id,
                 'speaker_id' => $speaker_id,
@@ -180,16 +179,15 @@ class PendingTalkClaimMapper extends ApiMapper
      *
      * @return bool
      */
-    public function approveClaimAsHost($talk_id, $speaker_id, $claim_id)
+    public function approveClaimAsHost(int $talk_id, int $speaker_id, int $claim_id): bool
     {
         $sql  = 'update pending_talk_claims SET host_approved_at = NOW() WHERE
                   talk_id = :talk_id AND claim_id = :claim_id
                   AND speaker_id = :speaker_id AND host_approved_at IS NULL
                   LIMIT 1
                ';
-        $stmt = $this->_db->prepare($sql);
 
-        return $stmt->execute(
+        return $this->_db->prepare($sql)->execute(
             [
                 'talk_id'    => $talk_id,
                 'speaker_id' => $speaker_id,
@@ -205,7 +203,7 @@ class PendingTalkClaimMapper extends ApiMapper
      *
      * @return bool
      */
-    public function rejectClaimAsHost($talk_id, $speaker_id, $claim_id)
+    public function rejectClaimAsHost(int $talk_id, int $speaker_id, int $claim_id): bool
     {
         $sql  = 'DELETE FROM pending_talk_claims
                   WHERE
@@ -213,9 +211,8 @@ class PendingTalkClaimMapper extends ApiMapper
                   AND speaker_id = :speaker_id AND host_approved_at IS NULL
                   LIMIT 1
                ';
-        $stmt = $this->_db->prepare($sql);
 
-        return $stmt->execute(
+        return $this->_db->prepare($sql)->execute(
             [
                 'talk_id'    => $talk_id,
                 'speaker_id' => $speaker_id,
@@ -229,7 +226,7 @@ class PendingTalkClaimMapper extends ApiMapper
      *
      * @return false|PendingTalkClaimModelCollection
      */
-    public function getPendingClaimsByEventId($event_id)
+    public function getPendingClaimsByEventId(int $event_id): PendingTalkClaimModelCollection|false
     {
         $base    = $this->_request->base;
         $version = $this->_request->version;

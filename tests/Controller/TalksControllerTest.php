@@ -941,9 +941,7 @@ final class TalksControllerTest extends TalkBase
 
         $talk_comment
             ->method('save')
-            ->willReturn(
-                true
-            );
+            ->willReturn(123);
         $talk_comment
             ->method('getCommentById')
             ->willReturn(

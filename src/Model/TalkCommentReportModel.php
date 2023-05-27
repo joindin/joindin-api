@@ -20,7 +20,7 @@ class TalkCommentReportModel extends BaseModel
      *
      * @return array
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'reporting_date'          => 'reporting_date',
@@ -38,7 +38,7 @@ class TalkCommentReportModel extends BaseModel
      *
      * @return array
      */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return $this->getDefaultFields();
     }
@@ -51,7 +51,7 @@ class TalkCommentReportModel extends BaseModel
      *
      * @return array
      */
-    public function getSubResources()
+    public function getSubResources(): array
     {
         return [
             'comment' => 'comment',
