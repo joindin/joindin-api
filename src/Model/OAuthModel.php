@@ -12,7 +12,7 @@ class OAuthModel
     // @codingStandardsIgnoreStart
     protected $_db;
     // @codingStandardsIgnoreEnd
-    protected $request;
+    protected Request $request;
 
     /**
      * Object constructor, sets up the db and some objects need request too
@@ -37,7 +37,7 @@ class OAuthModel
     /**
      * @param PDO $db
      */
-    public function setDb(PDO $db)
+    public function setDb(PDO $db): void
     {
         $this->_db = $db;
     }
@@ -45,7 +45,7 @@ class OAuthModel
     /**
      * @param Request $request
      */
-    public function setRequest(Request $request)
+    public function setRequest(Request $request): void
     {
         $this->request = $request;
     }
@@ -59,9 +59,9 @@ class OAuthModel
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getVersion()
+    public function getVersion(): string
     {
         return $this->request->version;
     }
@@ -209,7 +209,10 @@ class OAuthModel
     public function generateToken(): string
     {
         $fp      = fopen('/dev/urandom', 'rb');
-        $entropy = fread($fp, 32);
+        if (!$fp) {
+            throw new \RuntimeException('unable to source random bits');
+        }
+        $entropy = (string) fread($fp, 32);
         fclose($fp);
 
         $hash = sha1($entropy); // sha1 gives us a 40-byte hash
@@ -390,7 +393,7 @@ class OAuthModel
      * @param array  $values
      *
      * @throws Exception
-     * @return array
+     * @return array|false
      */
     public function createUserFromTwitterUsername($clientId, array $values)
     {
@@ -468,7 +471,7 @@ class OAuthModel
         return ['access_token' => $accessToken, 'user_uri' => $userUri];
     }
 
-    protected function createUserFromTrustedEmail($email, $fullName, $userName)
+    protected function createUserFromTrustedEmail(string $email, string $fullName, string $userName): array
     {
         $sql = "
             INSERT INTO user

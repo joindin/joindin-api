@@ -6,7 +6,7 @@ use Joindin\Api\Request;
 
 abstract class BaseModelCollection
 {
-    protected $list = [];
+    protected array $list = [];
     protected int $total;
 
     /**

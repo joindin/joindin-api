@@ -11,7 +11,7 @@ use Joindin\Api\Request;
 class TokenModelCollection extends BaseModelCollection
 {
     /** @var array|TokenModel[] */
-    protected $list;
+    protected array $list;
 
     protected int $total;
 
