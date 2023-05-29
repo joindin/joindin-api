@@ -24,16 +24,16 @@ use ArrayIterator;
  */
 class Header
 {
-    protected $values = [];
-    protected $header;
-    protected $glue;
+    protected array $values = [];
+    protected string $header;
+    protected string $glue;
 
     /**
      * @param string       $header Name of the header
      * @param array|string $values Values of the header as an array or a scalar
      * @param string       $glue   Glue used to combine multiple values into a string
      */
-    public function __construct($header, $values = [], $glue = ',')
+    public function __construct(string $header, array|string $values = [], string $glue = ',')
     {
         $this->header = trim($header);
         $this->glue   = $glue;
