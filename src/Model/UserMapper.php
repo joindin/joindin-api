@@ -584,7 +584,7 @@ class UserMapper extends ApiMapper
             }
 
             // is this a site admin?
-            if ($this->isSiteAdmin((int)$loggedInUser)) {
+            if ($this->isSiteAdmin($loggedInUser)) {
                 return true;
             }
         }
