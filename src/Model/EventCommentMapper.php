@@ -262,7 +262,7 @@ class EventCommentMapper extends ApiMapper
      * @param int $comment_id the comment that was reported
      * @param int $user_id    the user that reported it
      */
-    public function userReportedComment($comment_id, $user_id)
+    public function userReportedComment($comment_id, $user_id): void
     {
         $report_sql = "insert into reported_event_comments
             set event_comment_id = :event_comment_id,
@@ -344,7 +344,7 @@ class EventCommentMapper extends ApiMapper
      * @param int    $comment_id the comment that was reported
      * @param int    $user_id    the user that reported it
      */
-    public function moderateReportedComment($decision, $comment_id, $user_id)
+    public function moderateReportedComment($decision, $comment_id, $user_id): void
     {
         if (in_array($decision, ['approved', 'denied'])) {
             // record the decision

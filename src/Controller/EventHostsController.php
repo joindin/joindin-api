@@ -191,12 +191,12 @@ class EventHostsController extends BaseApiController
         return $this->eventHostMapper;
     }
 
-    public function setEventHostMapper(EventHostMapper $mapper)
+    public function setEventHostMapper(EventHostMapper $mapper): void
     {
         $this->eventHostMapper = $mapper;
     }
 
-    public function getEventMapper(Request $request, PDO $db)
+    public function getEventMapper(Request $request, PDO $db): EventMapper
     {
         if ($this->eventMapper === null) {
             $this->eventMapper = new EventMapper($db, $request);
@@ -205,12 +205,12 @@ class EventHostsController extends BaseApiController
         return $this->eventMapper;
     }
 
-    public function setEventMapper(EventMapper $eventMapper)
+    public function setEventMapper(EventMapper $eventMapper): void
     {
         $this->eventMapper = $eventMapper;
     }
 
-    public function getUserMapper(Request $request, PDO $db)
+    public function getUserMapper(Request $request, PDO $db): UserMapper
     {
         if ($this->userMapper === null) {
             $this->userMapper = new UserMapper($db, $request);
@@ -219,7 +219,7 @@ class EventHostsController extends BaseApiController
         return $this->userMapper;
     }
 
-    public function setUserMapper(UserMapper $userMapper)
+    public function setUserMapper(UserMapper $userMapper): void
     {
         $this->userMapper = $userMapper;
     }

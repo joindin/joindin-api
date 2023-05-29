@@ -39,7 +39,7 @@ class TalksController extends BaseTalkController
         $this->spamCheckService = $spamCheckService;
     }
 
-    public function getAction(Request $request, PDO $db)
+    public function getAction(Request $request, PDO $db): array
     {
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
@@ -52,7 +52,7 @@ class TalksController extends BaseTalkController
         return $collection->getOutputView($request, $verbose);
     }
 
-    public function getTalkComments(Request $request, PDO $db)
+    public function getTalkComments(Request $request, PDO $db): false|array
     {
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
@@ -68,7 +68,7 @@ class TalksController extends BaseTalkController
         return $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
     }
 
-    public function getTalkStarred(Request $request, PDO $db)
+    public function getTalkStarred(Request $request, PDO $db): array
     {
         $this->setDbAndRequest($db, $request);
         $talk_id = $this->getItemId($request);
@@ -79,7 +79,7 @@ class TalksController extends BaseTalkController
         return $mapper->getUserStarred($talk_id, $this->request->user_id);
     }
 
-    public function getTalkByKeyWord(Request $request, PDO $db)
+    public function getTalkByKeyWord(Request $request, PDO $db): array
     {
         if (!isset($request->parameters['title'])) {
             throw new Exception('Generic talks listing not supported', Http::METHOD_NOT_ALLOWED);
@@ -218,7 +218,7 @@ class TalksController extends BaseTalkController
         }
     }
 
-    public function removeStarFromTalk(Request $request, PDO $db)
+    public function removeStarFromTalk(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
 
@@ -231,7 +231,7 @@ class TalksController extends BaseTalkController
         $view->setResponseCode(Http::RESET_CONTENT);
     }
 
-    public function deleteTalk(Request $request, PDO $db)
+    public function deleteTalk(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
 
@@ -262,7 +262,7 @@ class TalksController extends BaseTalkController
      *
      * @throws Exception
      */
-    public function addTrackToTalk(Request $request, PDO $db)
+    public function addTrackToTalk(Request $request, PDO $db): void
     {
         try {
             $this->checkLoggedIn($request);
@@ -322,7 +322,7 @@ class TalksController extends BaseTalkController
      *
      * @throws Exception
      */
-    public function removeTrackFromTalk(Request $request, PDO $db)
+    public function removeTrackFromTalk(Request $request, PDO $db): void
     {
         try {
             $this->checkLoggedIn($request);
@@ -380,7 +380,7 @@ class TalksController extends BaseTalkController
      * @throws Exception
      * @return array
      */
-    public function createTalkAction(Request $request, PDO $db)
+    public function createTalkAction(Request $request, PDO $db): array
     {
         $this->checkLoggedIn($request);
         $event_id = $this->getItemId($request);
@@ -440,7 +440,7 @@ class TalksController extends BaseTalkController
      * @throws Exception
      * @return void
      */
-    public function editTalk(Request $request, PDO $db)
+    public function editTalk(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
 
@@ -481,7 +481,7 @@ class TalksController extends BaseTalkController
      * @throws Exception
      * @return array
      */
-    protected function getTalkDataFromRequest(PDO $db, Request $request, $event_id)
+    protected function getTalkDataFromRequest(PDO $db, Request $request, $event_id): array
     {
         // get the event so we can get the timezone info & it
         $event_mapper = new EventMapper($db, $request);
@@ -584,7 +584,7 @@ class TalksController extends BaseTalkController
         return $talk;
     }
 
-    public function getSpeakersForTalk(Request $request, PDO $db)
+    public function getSpeakersForTalk(Request $request, PDO $db): array
     {
         $talk_id = $this->getItemId($request);
         $talk    = $this->getTalkById($request, $db, $talk_id);
@@ -592,7 +592,7 @@ class TalksController extends BaseTalkController
         return $talk->speakers;
     }
 
-    public function setSpeakerForTalk(Request $request, PDO $db)
+    public function setSpeakerForTalk(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
 
@@ -723,12 +723,12 @@ class TalksController extends BaseTalkController
         ];
     }
 
-    public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper)
+    public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper): void
     {
         $this->pending_talk_claim_mapper = $pending_talk_claim_mapper;
     }
 
-    public function getPendingTalkClaimMapper(PDO $db, Request $request)
+    public function getPendingTalkClaimMapper(PDO $db, Request $request): PendingTalkClaimMapper
     {
         if (!isset($this->pending_talk_claim_mapper)) {
             $this->pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
@@ -737,7 +737,7 @@ class TalksController extends BaseTalkController
         return $this->pending_talk_claim_mapper;
     }
 
-    public function removeApprovedSpeakerFromTalk(Request $request, PDO $db)
+    public function removeApprovedSpeakerFromTalk(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
         $talk_id    = $this->getItemId($request);
@@ -769,12 +769,12 @@ class TalksController extends BaseTalkController
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
-    public function getTalkCommentEmailService($config, $recipients, $talk, $comment)
+    public function getTalkCommentEmailService($config, $recipients, $talk, $comment): TalkCommentEmailService
     {
         return new TalkCommentEmailService($config, $recipients, $talk, $comment);
     }
 
-    public function removeSpeakerForTalk(Request $request, PDO $db)
+    public function removeSpeakerForTalk(Request $request, PDO $db): true
     {
         $this->checkLoggedIn($request);
         $talk        = $this->getTalkById($request, $db);

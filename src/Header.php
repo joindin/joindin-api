@@ -50,26 +50,26 @@ class Header
         return implode($this->glue . ' ', $this->toArray());
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->header;
     }
 
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->header = $name;
 
         return $this;
     }
 
-    public function setGlue($glue)
+    public function setGlue(string $glue): static
     {
         $this->glue = $glue;
 
         return $this;
     }
 
-    public function getGlue()
+    public function getGlue(): string
     {
         return $this->glue;
     }
@@ -80,9 +80,9 @@ class Header
      * If any values of the header contains the glue string value (e.g. ","), then the value will be exploded into
      * multiple entries in the header.
      *
-     * @return self
+     * @return static
      */
-    public function normalize()
+    public function normalize(): static
     {
         $values = $this->toArray();
 
@@ -101,12 +101,12 @@ class Header
         return $this;
     }
 
-    public function hasValue($searchValue)
+    public function hasValue(string $searchValue): bool
     {
         return in_array($searchValue, $this->toArray(), false);
     }
 
-    public function removeValue($searchValue)
+    public function removeValue(mixed $searchValue): static
     {
         $this->values = array_values(
             array_filter(
@@ -120,22 +120,22 @@ class Header
         return $this;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->values;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->toArray());
     }
 
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->toArray());
     }
 
-    public function buildEntityArray()
+    public function buildEntityArray(): array
     {
         $assocArray = [];
 
@@ -161,7 +161,7 @@ class Header
         return $assocArray;
     }
 
-    public function parseParams()
+    public function parseParams(): array
     {
         $params   = $matches = [];
         $callback = [$this, 'trimHeader'];
@@ -193,7 +193,7 @@ class Header
      *
      * @return string
      */
-    protected function trimHeader($str)
+    protected function trimHeader(string $str): string
     {
         static $trimmed = "\"'  \n\t";
 

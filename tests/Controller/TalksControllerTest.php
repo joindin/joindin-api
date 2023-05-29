@@ -914,7 +914,7 @@ final class TalksControllerTest extends TalkBase
              * @param string $comment
              * @return TalkCommentEmailService
              */
-            public function getTalkCommentEmailService($config, $recipients, $talk, $comment)
+            public function getTalkCommentEmailService($config, $recipients, $talk, $comment): TalkCommentEmailService
             {
                 return $this->talkCommentEmailService;
             }

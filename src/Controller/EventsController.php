@@ -33,7 +33,7 @@ class EventsController extends BaseApiController
      */
     private $pending_talk_claim_mapper;
 
-    public function getAction(Request $request, PDO $db)
+    public function getAction(Request $request, PDO $db): array|false
     {
         $event_id = $this->getItemId($request);
 
@@ -189,7 +189,7 @@ class EventsController extends BaseApiController
         return $list;
     }
 
-    public function postAction(Request $request, PDO $db)
+    public function postAction(Request $request, PDO $db): void
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
@@ -423,7 +423,7 @@ class EventsController extends BaseApiController
         }
     }
 
-    public function deleteAction(Request $request, PDO $db)
+    public function deleteAction(Request $request, PDO $db): void
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to delete data", Http::UNAUTHORIZED);
@@ -452,7 +452,7 @@ class EventsController extends BaseApiController
         }
     }
 
-    public function putAction(Request $request, PDO $db)
+    public function putAction(Request $request, PDO $db): void
     {
         $tz = new DateTimeZone('UTC');
 
@@ -616,7 +616,7 @@ class EventsController extends BaseApiController
         }
     }
 
-    public function pendingClaims(Request $request, PDO $db)
+    public function pendingClaims(Request $request, PDO $db): array
     {
         // Check for login
         if (!isset($request->user_id)) {
@@ -651,7 +651,7 @@ class EventsController extends BaseApiController
      * @throws Exception
      * @return void
      */
-    public function createTrack(Request $request, PDO $db)
+    public function createTrack(Request $request, PDO $db): void
     {
         // Check for login
         if (!isset($request->user_id)) {
@@ -725,7 +725,7 @@ class EventsController extends BaseApiController
      * @throws Exception
      * @return void
      */
-    public function approveAction(Request $request, PDO $db)
+    public function approveAction(Request $request, PDO $db): void
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
@@ -766,7 +766,7 @@ class EventsController extends BaseApiController
      * @throws Exception
      * @return void
      */
-    public function rejectAction(Request $request, PDO $db)
+    public function rejectAction(Request $request, PDO $db): void
     {
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
@@ -799,12 +799,12 @@ class EventsController extends BaseApiController
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
-    public function setEventMapper(EventMapper $event_mapper)
+    public function setEventMapper(EventMapper $event_mapper): void
     {
         $this->event_mapper = $event_mapper;
     }
 
-    public function getEventMapper(PDO $db, Request $request)
+    public function getEventMapper(PDO $db, Request $request): EventMapper
     {
         if (!isset($this->event_mapper)) {
             $this->event_mapper = new EventMapper($db, $request);
@@ -813,12 +813,12 @@ class EventsController extends BaseApiController
         return $this->event_mapper;
     }
 
-    public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper)
+    public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper): void
     {
         $this->pending_talk_claim_mapper = $pending_talk_claim_mapper;
     }
 
-    public function getPendingTalkClaimMapper(PDO $db, Request $request)
+    public function getPendingTalkClaimMapper(PDO $db, Request $request): PendingTalkClaimMapper
     {
         if (!isset($this->pending_talk_claim_mapper)) {
             $this->pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
