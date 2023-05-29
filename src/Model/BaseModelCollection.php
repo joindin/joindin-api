@@ -17,7 +17,7 @@ abstract class BaseModelCollection
      *
      * @return array
      */
-    protected function addPaginationLinks(Request $request)
+    protected function addPaginationLinks(Request $request): array
     {
         $meta['count'] = count($this->list);
 
