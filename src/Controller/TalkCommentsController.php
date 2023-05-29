@@ -20,7 +20,7 @@ class TalkCommentsController extends BaseApiController
      */
     private $commentMapper;
 
-    public function getComments(Request $request, PDO $db)
+    public function getComments(Request $request, PDO $db): false|array
     {
         $commentId = $this->getItemId($request);
 
@@ -42,7 +42,7 @@ class TalkCommentsController extends BaseApiController
         return $list;
     }
 
-    public function getReported(Request $request, PDO $db)
+    public function getReported(Request $request, PDO $db): array
     {
         $eventId = $this->getItemId($request);
 
@@ -66,7 +66,7 @@ class TalkCommentsController extends BaseApiController
         return $list->getOutputView($request);
     }
 
-    public function reportComment(Request $request, PDO $db)
+    public function reportComment(Request $request, PDO $db): void
     {
         // must be logged in to report a comment
         if (!isset($request->user_id) || empty($request->user_id)) {
@@ -118,7 +118,7 @@ class TalkCommentsController extends BaseApiController
      *
      * @throws Exception
      */
-    public function moderateReportedComment(Request $request, PDO $db)
+    public function moderateReportedComment(Request $request, PDO $db): void
     {
         // must be logged in
         if (!isset($request->user_id) || empty($request->user_id)) {
@@ -157,7 +157,7 @@ class TalkCommentsController extends BaseApiController
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
-    public function updateComment(Request $request, PDO $db)
+    public function updateComment(Request $request, PDO $db): false|array
     {
         // must be logged in
         if (!isset($request->user_id) || empty($request->user_id)) {

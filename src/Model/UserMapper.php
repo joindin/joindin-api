@@ -378,7 +378,7 @@ class UserMapper extends ApiMapper
         // comma separate all pairs and add to SQL string
         $sql .= implode(', ', $pairs);
 
-        return $this->_db->prepare($sql)->execute($user) ? (int)$this->_db->lastInsertId() : false;
+        return $this->_db->prepare($sql)->execute($user) ? (int) $this->_db->lastInsertId() : false;
     }
 
     /**
@@ -584,7 +584,7 @@ class UserMapper extends ApiMapper
             }
 
             // is this a site admin?
-            if ($this->isSiteAdmin((int)$loggedInUser)) {
+            if ($this->isSiteAdmin($loggedInUser)) {
                 return true;
             }
         }

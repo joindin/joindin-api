@@ -407,7 +407,7 @@ class TalkMapper extends ApiMapper
             ':date'             => $data['date'],
             ':duration'         => $data['duration'],
         ]);
-        $talk_id  = (int)$this->_db->lastInsertId();
+        $talk_id  = (int) $this->_db->lastInsertId();
 
         if (0 == $talk_id) {
             throw new Exception('There has been an error storing the talk');

@@ -77,7 +77,7 @@ class FacebookController extends BaseApiController
             throw new Exception("Unexpected Facebook error", Http::INTERNAL_SERVER_ERROR);
         }
 
-        $data         = (array)json_decode((string) $res->getBody(), true);
+        $data         = (array) json_decode((string) $res->getBody(), true);
         $access_token = $data['access_token'];
 
         // retrieve email address from Facebook profile
@@ -92,7 +92,7 @@ class FacebookController extends BaseApiController
             throw new Exception("Could not sign in with Facebook", Http::FORBIDDEN);
         }
 
-        $data = (array)json_decode((string) $res->getBody(), true, 512, JSON_BIGINT_AS_STRING);
+        $data = (array) json_decode((string) $res->getBody(), true, 512, JSON_BIGINT_AS_STRING);
 
         if (!array_key_exists('email', $data)) {
             throw new Exception("Email address is unavailable", Http::FORBIDDEN);

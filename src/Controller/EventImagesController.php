@@ -29,6 +29,7 @@ class EventImagesController extends BaseApiController
         }
 
         $event_id = $this->getItemId($request);
+
         if (false === $event_id) {
             throw new Exception("Invalid event ID", Http::BAD_REQUEST);
         }
@@ -96,6 +97,7 @@ class EventImagesController extends BaseApiController
 
         // small is 140px square
         $orig_image = imagecreatefromstring((string) file_get_contents($event_image_path . $saved_filename));
+
         if (false === $orig_image) {
             throw new Exception("Image could not be created");
         }
@@ -105,6 +107,7 @@ class EventImagesController extends BaseApiController
         $small_height = 140;
 
         $small_image = imagecreatetruecolor($small_width, $small_height);
+
         if (false === $small_image) {
             throw new Exception("Small image could not be created");
         }
@@ -138,6 +141,7 @@ class EventImagesController extends BaseApiController
         }
 
         $event_id     = $this->getItemId($request);
+
         if (false === $event_id) {
             throw new Exception("Invalid event ID", Http::BAD_REQUEST);
         }

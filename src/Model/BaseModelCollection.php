@@ -17,7 +17,7 @@ abstract class BaseModelCollection
      *
      * @return array
      */
-    protected function addPaginationLinks(Request $request)
+    protected function addPaginationLinks(Request $request): array
     {
         $meta['count'] = count($this->list);
 
@@ -27,16 +27,16 @@ abstract class BaseModelCollection
 
         $next_params = $prev_params = $counter_params = $request->paginationParameters;
 
-        $firstOnNextPage = $counter_params['start'] + $counter_params['resultsperpage'];
-        $firstOnThisPage = $counter_params['start'];
+        $firstOnNextPage = (int) $counter_params['start'] + $counter_params['resultsperpage'];
+        $firstOnThisPage = (int) $counter_params['start'];
 
         if ($firstOnNextPage < $this->total) {
-            $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
+            $next_params['start'] += $next_params['resultsperpage'];
             $meta['next_page']    = $request->base . $request->path_info . '?' . http_build_query($next_params);
         }
 
         if (0 < $firstOnThisPage) {
-            $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
+            $prev_params['start'] -= $prev_params['resultsperpage'];
 
             if ($prev_params['start'] < 0) {
                 $prev_params['start'] = 0;

@@ -159,7 +159,7 @@ class TrackMapper extends ApiMapper
             ));
         }
 
-        return (int)$this->_db->lastInsertId();
+        return (int) $this->_db->lastInsertId();
     }
 
     public function getBasicSQL(): string

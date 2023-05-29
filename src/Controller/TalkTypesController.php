@@ -10,7 +10,7 @@ use Teapot\StatusCode\Http;
 
 class TalkTypesController extends BaseApiController
 {
-    public function getAllTalkTypes(Request $request, PDO $db)
+    public function getAllTalkTypes(Request $request, PDO $db): false|array
     {
         // verbosity - here for consistency as we don't have verbose talk type details to return at the moment
         $verbose = $this->getVerbosity($request);
@@ -24,7 +24,7 @@ class TalkTypesController extends BaseApiController
         return $mapper->getTalkTypeList($resultsperpage, $start, $verbose);
     }
 
-    public function getTalkType(Request $request, PDO $db)
+    public function getTalkType(Request $request, PDO $db): false|array
     {
         $talk_type_id = $this->getItemId($request);
         // verbosity - here for consistency as we don't have verbose talk type details to return at the moment
