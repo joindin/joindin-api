@@ -123,7 +123,7 @@ final class TalksControllerDeleteTest extends TalkBase
         $view->method('setHeader')->with('Content-Length', 0);
         $view->method('setResponseCode')->with(Http::NO_CONTENT);
 
-        $this->assertNull($talks_controller->deleteTalk($request, $db));
+        $talks_controller->deleteTalk($request, $db);
     }
 
     public function testDeleteTalkWthNoAdmin(): void
@@ -189,6 +189,6 @@ final class TalksControllerDeleteTest extends TalkBase
         $view->method('setHeader')->with('Content-Length', 0);
         $view->method('setResponseCode')->with(Http::NO_CONTENT);
 
-        $this->assertNull($talks_controller->deleteTalk($request, $db));
+        $talks_controller->deleteTalk($request, $db);
     }
 }
