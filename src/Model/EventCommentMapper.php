@@ -319,6 +319,9 @@ class EventCommentMapper extends ApiMapper
                         . " and ec.ID = :comment_id";
         $comment_stmt = $this->_db->prepare($comment_sql);
 
+        /**
+         * @var array<string,mixed>|false $row
+         */
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $total++;
             $comment_result = $comment_stmt->execute(['comment_id' => $row['event_comment_id']]);
