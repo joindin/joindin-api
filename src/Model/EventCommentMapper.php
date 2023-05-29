@@ -168,7 +168,7 @@ class EventCommentMapper extends ApiMapper
         return $sql;
     }
 
-    public function save(array $data)
+    public function save(array $data): false|string
     {
         // check for a duplicate first
         $dupe_sql = 'select ec.ID from event_comments ec '
@@ -245,6 +245,9 @@ class EventCommentMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["event_comment_id" => $comment_id]);
 
+        /**
+         * @var array<string,mixed>|false $row
+         */
         if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             return $row;
         }
