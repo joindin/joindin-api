@@ -134,9 +134,7 @@ class ApiMapper
      */
     protected function getPaginationLinks(array $list, int $total = 0): array
     {
-        if (!($request = $this->_request)) {
-            return [];
-        }
+        $request = $this->_request;
 
         $meta['count']     = count($list);
         $meta['total']     = $total;

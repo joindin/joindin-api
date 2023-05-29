@@ -11,7 +11,7 @@ use Joindin\Api\Request;
 class ClientModelCollection extends BaseModelCollection
 {
     /** @var array|ClientModel[] */
-    protected $list;
+    protected array $list;
 
     protected int $total;
 

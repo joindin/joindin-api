@@ -11,7 +11,7 @@ use Joindin\Api\Request;
 class TalkModelCollection extends BaseModelCollection
 {
     /** @var array|TalkModel[] */
-    protected $list;
+    protected array $list;
 
     protected int $total;
 

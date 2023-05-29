@@ -1275,7 +1275,7 @@ class EventMapper extends ApiMapper
      *
      * @throws Exception
      */
-    protected function verifyMandatoryFields(array $event, array $mandatoryFields)
+    protected function verifyMandatoryFields(array $event, array $mandatoryFields): void
     {
         if (false === empty(array_diff($mandatoryFields, array_keys($event)))) {
             throw new Exception("Missing mandatory fields");
