@@ -1255,9 +1255,6 @@ class EventMapper extends ApiMapper
         }
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if ($results === false) {
-            return false;
-        }
 
         $results['total'] = $this->getTotalCount($sql, $data);
 

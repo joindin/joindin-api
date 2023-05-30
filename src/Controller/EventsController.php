@@ -442,8 +442,6 @@ class EventsController extends BaseApiController
 
                     return;
 
-                    break;
-
                 default:
                     throw new Exception("Operation not supported, sorry", Http::NOT_FOUND);
             }
