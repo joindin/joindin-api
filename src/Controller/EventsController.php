@@ -23,15 +23,9 @@ use Teapot\StatusCode\Http;
 
 class EventsController extends BaseApiController
 {
-    /**
-     * @var EventMapper
-     */
-    private $event_mapper;
+    private EventMapper $event_mapper;
 
-    /**
-     * @var PendingTalkClaimMapper
-     */
-    private $pending_talk_claim_mapper;
+    private PendingTalkClaimMapper $pending_talk_claim_mapper;
 
     public function getAction(Request $request, PDO $db): array|false
     {
