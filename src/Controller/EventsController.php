@@ -176,7 +176,13 @@ class EventsController extends BaseApiController
                     }
                 }
 
-                $list = $mapper->getEventList($resultsperpage, $start, $params, $verbose);
+                $list = $mapper->getEventList(
+                    $resultsperpage,
+                    // intentionally pass through null to ensure we get the first upcoming event when applicable
+                    $request->paginationParameters['start'] ?? null,
+                    $params,
+                    $verbose
+                );
             }
         }
 
