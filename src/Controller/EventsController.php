@@ -417,6 +417,9 @@ class EventsController extends BaseApiController
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function deleteAction(Request $request, PDO $db): void
     {
         if (!isset($request->user_id)) {

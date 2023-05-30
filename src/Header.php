@@ -130,6 +130,9 @@ class Header
         return count($this->toArray());
     }
 
+    /**
+     * @return ArrayIterator<int, string>
+     */
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->toArray());
