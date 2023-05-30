@@ -118,7 +118,7 @@ final class EventHostsControllerTest extends TestCase
         $controller = new EventHostsController();
 
         $em = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $em->method('getEventById')->willReturn(true);
+        $em->method('getEventById')->willReturn(['event']);
         $em->method('thisUserHasAdminOn')->willReturn(false);
 
         $controller->setEventMapper($em);
@@ -148,7 +148,7 @@ final class EventHostsControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $eventMapper = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $eventMapper->method('getEventById')->willReturn(true);
+        $eventMapper->method('getEventById')->willReturn(['event']);
         $eventMapper->method('thisUserHasAdminOn')->willReturn(false);
 
         $constructor = new EventHostsController();
@@ -166,7 +166,7 @@ final class EventHostsControllerTest extends TestCase
         $controller = new EventHostsController();
 
         $em = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $em->method('getEventById')->willReturn(true);
+        $em->method('getEventById')->willReturn(['event']);
         $em->method('thisUserHasAdminOn')->willReturn(true);
 
         $controller->setEventMapper($em);
@@ -202,7 +202,7 @@ final class EventHostsControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $eventMapper = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $eventMapper->method('getEventById')->willReturn(true);
+        $eventMapper->method('getEventById')->willReturn(['event']);
         $eventMapper->method('thisUserHasAdminOn')->willReturn(true);
 
         $userMapper = $this->getMockBuilder(UserMapper::class)->disableOriginalConstructor()->getMock();
@@ -224,7 +224,7 @@ final class EventHostsControllerTest extends TestCase
         $controller = new EventHostsController();
 
         $em = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $em->method('getEventById')->willReturn(true);
+        $em->method('getEventById')->willReturn(['event']);
         $em->method('thisUserHasAdminOn')->willReturn(true);
 
         $controller->setEventMapper($em);
@@ -254,7 +254,7 @@ final class EventHostsControllerTest extends TestCase
         $controller = new EventHostsController();
 
         $em = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $em->method('getEventById')->willReturn(true);
+        $em->method('getEventById')->willReturn(['event']);
         $em->method('thisUserHasAdminOn')->willReturn(true);
 
         $controller->setEventMapper($em);
@@ -305,7 +305,7 @@ final class EventHostsControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $eventMapper = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $eventMapper->method('getEventById')->willReturn(true);
+        $eventMapper->method('getEventById')->willReturn(['event']);
         $eventMapper->method('thisUserHasAdminOn')->willReturn(true);
 
         $userMapper = $this->getMockBuilder(UserMapper::class)->disableOriginalConstructor()->getMock();
@@ -342,7 +342,7 @@ final class EventHostsControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $eventMapper = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $eventMapper->expects($this->once())->method('getEventById')->willReturn(true);
+        $eventMapper->expects($this->once())->method('getEventById')->willReturn(['event']);
         $eventMapper->expects($this->once())->method('thisUserHasAdminOn')->willReturn(true);
 
         $userMapper = $this->getMockBuilder(UserMapper::class)->disableOriginalConstructor()->getMock();
