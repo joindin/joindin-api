@@ -129,12 +129,12 @@ class EventMapper extends ApiMapper
      * Internal function called by other event-fetching code, with changeable SQL
      *
      * @param int      $resultsperpage how many records to return
-     * @param int|null $start          offset to start returning records from
+     * @param int      $start          offset to start returning records from
      * @param array    $params         filters and other parameters to limit/order the collection
      *
      * @return false|array the raw database results
      */
-    protected function getEvents(int $resultsperpage, ?int $start, array $params = []): array|false
+    protected function getEvents(int $resultsperpage, int $start, array $params = []): array|false
     {
         $data  = [];
         $order = " order by ";

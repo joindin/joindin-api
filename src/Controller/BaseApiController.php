@@ -38,9 +38,9 @@ abstract class BaseApiController
         return true;
     }
 
-    public function getStart(Request $request): ?int
+    public function getStart(Request $request): int
     {
-        return $request->paginationParameters['start'];
+        return $request->paginationParameters['start'] ?? 0;
     }
 
     public function getResultsPerPage(Request $request): int
