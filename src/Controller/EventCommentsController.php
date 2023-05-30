@@ -56,10 +56,6 @@ class EventCommentsController extends BaseApiController
     {
         $event_id = $this->getItemId($request);
 
-        if (empty($event_id)) {
-            throw new UnexpectedValueException("Event not found", Http::NOT_FOUND);
-        }
-
         // verbosity
         $verbose = $this->getVerbosity($request);
 
@@ -185,10 +181,7 @@ class EventCommentsController extends BaseApiController
 
         $commentId   = $this->getItemId($request);
 
-        if (
-            false === $commentId
-            || false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))
-        ) {
+        if (false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
@@ -245,10 +238,7 @@ class EventCommentsController extends BaseApiController
         $comment_mapper = new EventCommentMapper($db, $request);
         $commentId   = $this->getItemId($request);
 
-        if (
-            false === $commentId
-            || false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))
-        ) {
+        if (false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 

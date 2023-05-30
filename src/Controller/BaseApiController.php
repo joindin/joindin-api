@@ -2,7 +2,9 @@
 
 namespace Joindin\Api\Controller;
 
+use Exception;
 use Joindin\Api\Request;
+use Teapot\StatusCode\Http;
 
 abstract class BaseApiController
 {
@@ -10,7 +12,7 @@ abstract class BaseApiController
     {
     }
 
-    public function getItemId(Request $request): false|int
+    public function getItemId(Request $request): int
     {
         // item ID
         if (
@@ -20,7 +22,7 @@ abstract class BaseApiController
             return (int) $request->url_elements[3];
         }
 
-        return false;
+        throw new Exception('Item not found', Http::NOT_FOUND);
     }
 
     public function getVerbosity(Request $request): bool

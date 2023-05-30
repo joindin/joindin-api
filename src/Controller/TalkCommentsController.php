@@ -46,10 +46,6 @@ class TalkCommentsController extends BaseApiController
     {
         $eventId = $this->getItemId($request);
 
-        if (empty($eventId)) {
-            throw new UnexpectedValueException("Event not found", Http::NOT_FOUND);
-        }
-
         $eventMapper   = new EventMapper($db, $request);
         $commentMapper = $this->getCommentMapper($request, $db);
 

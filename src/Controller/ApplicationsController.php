@@ -158,10 +158,6 @@ class ApplicationsController extends BaseApiController
 
         $clientId = $this->getItemId($request);
 
-        if (false === $clientId) {
-            throw new Exception('Invalid client ID', Http::NOT_FOUND);
-        }
-
         $client = $clientMapper->getClientByIdAndUser(
             $clientId,
             $request->user_id

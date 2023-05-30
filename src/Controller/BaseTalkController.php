@@ -116,10 +116,6 @@ class BaseTalkController extends BaseApiController
             $talk_id = $this->getItemId($request);
         }
 
-        if (false === $talk_id) {
-            throw new Exception('Talk not found', Http::NOT_FOUND);
-        }
-
         $talk = $mapper->getTalkById($talk_id, $verbose);
 
         if (false === $talk) {

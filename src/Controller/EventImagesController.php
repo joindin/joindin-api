@@ -29,11 +29,6 @@ class EventImagesController extends BaseApiController
         }
 
         $event_id = $this->getItemId($request);
-
-        if (false === $event_id) {
-            throw new Exception("Invalid event ID", Http::BAD_REQUEST);
-        }
-
         $event_mapper = new EventMapper($db, $request);
 
         // ensure event exists
@@ -142,9 +137,6 @@ class EventImagesController extends BaseApiController
 
         $event_id     = $this->getItemId($request);
 
-        if (false === $event_id) {
-            throw new Exception("Invalid event ID", Http::BAD_REQUEST);
-        }
         $event_mapper = new EventMapper($db, $request);
         $event_mapper->removeImages($event_id);
 
