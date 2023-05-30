@@ -13,12 +13,7 @@ class ApiView
     ) {
     }
 
-    /**
-     * @param mixed $content
-     *
-     * @return mixed
-     */
-    protected function addCount($content)
+    protected function addCount(mixed $content): mixed
     {
         if (is_array($content)) {
             foreach ($content as $name => $item) {

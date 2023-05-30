@@ -40,11 +40,11 @@ class EventCommentReportModelCollection extends BaseModelCollection
      * and pagination
      *
      * @param Request $request
-     * @param bool    $verbose
+     * @param bool $verbose
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false): array
     {
         // handle the collection first
         $retval = ['reports' => []];

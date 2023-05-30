@@ -1045,6 +1045,7 @@ class EventMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["user_id" => $user_id]);
+
         return (int) $stmt->fetchColumn();
     }
 
@@ -1255,6 +1256,7 @@ class EventMapper extends ApiMapper
         }
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         if ($results === false) {
             return false;
         }
