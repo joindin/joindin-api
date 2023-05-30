@@ -468,7 +468,7 @@ final class TalksControllerTest extends TalkBase
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
 
-        $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
+        $talks_controller->setSpeakerForTalk($request, $db);
     }
 
     /**
@@ -536,7 +536,7 @@ final class TalksControllerTest extends TalkBase
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
 
-        $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
+        $talks_controller->setSpeakerForTalk($request, $db);
     }
 
     /**
@@ -787,7 +787,7 @@ final class TalksControllerTest extends TalkBase
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
 
-        $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
+        $talks_controller->setSpeakerForTalk($request, $db);
     }
 
     /**
@@ -859,7 +859,7 @@ final class TalksControllerTest extends TalkBase
         $event_mapper = $this->createEventMapper($db, $request);
         $talks_controller->setEventMapper($event_mapper);
 
-        $this->assertNull($talks_controller->setSpeakerForTalk($request, $db));
+        $talks_controller->setSpeakerForTalk($request, $db);
     }
 
     /**
