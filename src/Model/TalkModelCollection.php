@@ -47,7 +47,7 @@ class TalkModelCollection extends BaseModelCollection
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false)
     {
         // handle the collection first
         $retval = ['talks' => []];
