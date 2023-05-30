@@ -541,7 +541,7 @@ class UsersController extends BaseApiController
         $this->userRegistrationEmailService = $mailService;
     }
 
-    public function getUserRegistrationEmailService($config, $recipient, $token): UserRegistrationEmailService
+    public function getUserRegistrationEmailService(array $config, array $recipient, string $token): UserRegistrationEmailService
     {
         if (!$this->userRegistrationEmailService) {
             $this->userRegistrationEmailService = new UserRegistrationEmailService(

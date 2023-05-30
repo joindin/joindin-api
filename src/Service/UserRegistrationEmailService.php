@@ -15,7 +15,7 @@ class UserRegistrationEmailService extends BaseEmailService
      * @param array  $recipients
      * @param string $token
      */
-    public function __construct(array $config, array $recipients, $token)
+    public function __construct(array $config, array $recipients, string $token)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
