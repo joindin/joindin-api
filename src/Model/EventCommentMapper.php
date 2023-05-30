@@ -323,7 +323,7 @@ class EventCommentMapper extends ApiMapper
          *     deciding_user_id: int,
          *     decision: string,
          *     event_comment_id: int,
-         *     event_id: string
+         *     event_id: int
          * }|false $row
          */
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
