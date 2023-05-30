@@ -17,14 +17,11 @@ use Teapot\StatusCode\Http;
 
 class UsersController extends BaseApiController
 {
-    protected $userMapper;
+    protected UserMapper $userMapper;
 
-    private $userRegistrationEmailService;
+    private UserRegistrationEmailService $userRegistrationEmailService;
 
-    /**
-     * @var TalkCommentMapper|null
-     */
-    private $talkCommentMapper;
+    private TalkCommentMapper $talkCommentMapper;
 
     public function getAction(Request $request, PDO $db): array|bool
     {
