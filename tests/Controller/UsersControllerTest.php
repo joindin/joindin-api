@@ -292,6 +292,7 @@ final class UsersControllerTest extends TestCase
     public function testThatUserDataIsNotDoubleEscapedOnUserEdit(): void
     {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->method('getAccessToken')->willReturn('foo');
         $request->method('getUserId')->willReturn(1);
         $request->method('getStringParameter')->withConsecutive(
             ['password'],
