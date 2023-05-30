@@ -37,12 +37,12 @@ class TalkCommentMapper extends ApiMapper
     /**
      * @param int  $talk_id
      * @param int  $resultsperpage
-     * @param ?int $start
+     * @param int  $start
      * @param bool $verbose
      *
      * @return false|array
      */
-    public function getCommentsByTalkId(int $talk_id, int $resultsperpage, ?int $start, bool $verbose = false): array|false
+    public function getCommentsByTalkId(int $talk_id, int $resultsperpage, int $start, bool $verbose = false): array|false
     {
         $sql = $this->getBasicSQL();
         $sql .= 'and talk_id = :talk_id';

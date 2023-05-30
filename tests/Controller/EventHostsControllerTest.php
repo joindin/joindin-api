@@ -61,7 +61,7 @@ final class EventHostsControllerTest extends TestCase
         $controller->setEventMapper($em);
 
         $request               = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->url_elements = [3 => 'foo'];
+        $request->url_elements = [3 => 1];
         $request->user_id      = 2;
 
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
@@ -76,8 +76,8 @@ final class EventHostsControllerTest extends TestCase
         $this->expectExceptionCode(Http::FORBIDDEN);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->user_id = 1;
-        $request->url_elements = [5 => 1];
+        $request->user_id = 2;
+        $request->url_elements = [3 => 1, 5 => 2];
 
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
@@ -124,7 +124,7 @@ final class EventHostsControllerTest extends TestCase
         $controller->setEventMapper($em);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->url_elements = [3 => 'foo'];
+        $request->url_elements = [3 => 1];
         $request->user_id = 2;
 
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
@@ -177,7 +177,7 @@ final class EventHostsControllerTest extends TestCase
         $controller->setUserMapper($um);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
-        $request->url_elements = [3 => 'foo'];
+        $request->url_elements = [3 => 1];
         $request->user_id = 2;
         $request->method('getStringParameter')->willReturn('myhostname');
 

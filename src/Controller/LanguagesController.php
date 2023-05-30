@@ -12,7 +12,7 @@ class LanguagesController extends BaseApiController
 {
     public function getLanguage(Request $request, PDO $db): false|array
     {
-        $language_id = $this->getItemId($request);
+        $language_id = $this->getItemId($request, 'Language not found');
         // verbosity - here for consistency as we don't have verbose language details to return at the moment
         $verbose = $this->getVerbosity($request);
 

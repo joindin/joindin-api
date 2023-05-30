@@ -89,7 +89,7 @@ class Header
         for ($i = 0, $total = count($values); $i < $total; $i++) {
             if (strpos($values[$i], $this->glue) !== false) {
                 // Explode on glue when the glue is not inside of a comma
-                foreach (preg_split('/' . preg_quote($this->glue, '/') . '(?=([^"]*"[^"]*")*[^"]*$)/', $values[$i]) as $v) {
+                foreach (preg_split('/' . preg_quote($this->glue, '/') . '(?=([^"]*"[^"]*")*[^"]*$)/', $values[$i]) ?: [] as $v) {
                     $values[] = trim($v);
                 }
                 unset($values[$i]);
@@ -131,7 +131,7 @@ class Header
     }
 
     /**
-     * @return ArrayIterator<int, string>
+     * @return ArrayIterator<int, array>
      */
     public function getIterator(): ArrayIterator
     {
@@ -173,7 +173,7 @@ class Header
         foreach ($this->normalize()->toArray() as $val) {
             $part = [];
 
-            foreach (preg_split('/;(?=([^"]*"[^"]*")*[^"]*$)/', $val) as $kvp) {
+            foreach (preg_split('/;(?=([^"]*"[^"]*")*[^"]*$)/', $val) ?: [] as $kvp) {
                 if (!preg_match_all('/<[^>]+>|[^=]+/', $kvp, $matches)) {
                     continue;
                 }

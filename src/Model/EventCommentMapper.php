@@ -246,13 +246,11 @@ class EventCommentMapper extends ApiMapper
         $stmt->execute(["event_comment_id" => $comment_id]);
 
         /**
-         * @var array<string,mixed>|false $row
+         * @var array{event_id: int}|false $row
          */
-        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return $row;
-        }
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return false;
+        return $row ?: false;
     }
 
     /**
@@ -320,13 +318,20 @@ class EventCommentMapper extends ApiMapper
         $comment_stmt = $this->_db->prepare($comment_sql);
 
         /**
-         * @var array<string,mixed>|false $row
+         * @var array{
+         *     reporting_user_id: int,
+         *     deciding_user_id: int,
+         *     decision: string,
+         *     event_comment_id: int,
+         *     event_id: int
+         * }|false $row
          */
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        while ($row) {
             $total++;
             $comment_result = $comment_stmt->execute(['comment_id' => $row['event_comment_id']]);
 
-            if ($comment_result && $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($comment_result &&  /** @var array|false $comment */ $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
                 // work around the existing transform logic
                 $comment_array  = [$comment];
                 $comment_array  = parent::transformResults($comment_array, true);

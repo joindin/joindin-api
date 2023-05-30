@@ -19,7 +19,7 @@ class ApplicationsController extends BaseApiController
         $mapper = $this->getClientMapper($db, $request);
 
         $client = $mapper->getClientByIdAndUser(
-            (string) $this->getItemId($request),
+            (string) $this->getItemId($request, 'Invalid client ID'),
             $request->user_id
         );
 
@@ -137,7 +137,7 @@ class ApplicationsController extends BaseApiController
         $app['user_id'] = $request->user_id;
 
         $clientMapper = $this->getClientMapper($db, $request);
-        $clientId     = $clientMapper->updateClient((string) $this->getItemId($request), $app);
+        $clientId     = $clientMapper->updateClient((string) $this->getItemId($request, 'Invalid client ID'), $app);
 
         $uri = $request->base . '/' . $request->version . '/applications/' . $clientId;
         $request->getView()->setResponseCode(Http::CREATED);
@@ -156,11 +156,7 @@ class ApplicationsController extends BaseApiController
 
         $clientMapper = $this->getClientMapper($db, $request);
 
-        $clientId = $this->getItemId($request);
-
-        if (false === $clientId) {
-            throw new Exception('Invalid client ID', Http::NOT_FOUND);
-        }
+        $clientId = $this->getItemId($request, 'Invalid client ID');
 
         $client = $clientMapper->getClientByIdAndUser(
             $clientId,

@@ -103,6 +103,7 @@ final class TalksControllerDeleteTest extends TalkBase
             ->setConstructorArgs([[], $httpRequest ])
             ->getMock();
 
+        $request->url_elements = [3 => 1];
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',
@@ -171,6 +172,7 @@ final class TalksControllerDeleteTest extends TalkBase
             ->setConstructorArgs([[], $httpRequest ])
             ->getMock();
 
+        $request->url_elements = [3 => 1];
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',

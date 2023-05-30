@@ -84,19 +84,19 @@ class ApiMapper
     }
 
     /**
-     * @param ?int $resultsperpage
-     * @param ?int $start
+     * @param int $resultsperpage
+     * @param int $start
      *
      * @return string
      */
-    protected function buildLimit(int|string|null $resultsperpage, int|string|null $start): string
+    protected function buildLimit(int $resultsperpage, int $start): string
     {
         if ($resultsperpage == 0) {
             // special case, no limits
             return '';
         }
 
-        return ' LIMIT ' . (int) $start . ',' . (int) $resultsperpage;
+        return ' LIMIT ' . $start . ',' . $resultsperpage;
     }
 
     /**

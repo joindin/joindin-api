@@ -37,11 +37,11 @@ class ClientMapper extends ApiMapper
      *
      * @param int $user_id        The user to fetch clients for
      * @param int $resultsperpage How many results to return on each page
-     * @param int|null $start          Which result to start with
+     * @param int $start          Which result to start with
      *
      * @return ClientModelCollection
      */
-    public function getClientsForUser(int $user_id, int $resultsperpage, ?int $start): ClientModelCollection
+    public function getClientsForUser(int $user_id, int $resultsperpage, int $start): ClientModelCollection
     {
         $sql = 'SELECT * FROM oauth_consumers WHERE user_id = :user_id ';
         $sql .= $this->buildLimit($resultsperpage, $start);

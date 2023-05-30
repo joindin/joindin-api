@@ -292,6 +292,7 @@ final class UsersControllerTest extends TestCase
     public function testThatUserDataIsNotDoubleEscapedOnUserEdit(): void
     {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->url_elements = [3 => 1];
         $request->method('getAccessToken')->willReturn('foo');
         $request->method('getUserId')->willReturn(1);
         $request->method('getStringParameter')->withConsecutive(
@@ -330,7 +331,7 @@ final class UsersControllerTest extends TestCase
             'email' => 'mailstuff@example.com',
             'twitter_username' => 'twitter"\'stuff',
             'biography' => 'Bio"\'stuff',
-            'user_id' => false,
+            'user_id' => 1,
         ])->willReturn(true);
 
         $controller = new UsersController();
@@ -403,6 +404,7 @@ final class UsersControllerTest extends TestCase
         $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->url_elements = [3 => 2];
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("trusted")
@@ -437,6 +439,7 @@ final class UsersControllerTest extends TestCase
         $this->expectExceptionCode(Http::INTERNAL_SERVER_ERROR);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->url_elements = [3 => 2];
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("trusted")
@@ -472,6 +475,7 @@ final class UsersControllerTest extends TestCase
     public function testSetTrustedWithSuccessCreatesView(): void
     {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->url_elements = [3 => 2];
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("trusted")
