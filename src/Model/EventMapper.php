@@ -279,7 +279,7 @@ class EventMapper extends ApiMapper
         // If the "all" filter is selected and a start parameter isn't provided, then
         // we need to calculate it such that the results returned include the first
         // upcoming event. This allows client to go backwards and forwards from here.
-        if (array_key_exists("filter", $params) && $params['filter'] == 'all' && $start === null) {
+        if (array_key_exists("filter", $params) && $params['filter'] == 'all') {
             // How many events are there up to "now"?
             $this_sql = $sql . $where . ' and (events.event_start <' . (mktime(0, 0, 0)) . ')';
             $start    = $this->getTotalCount($this_sql, $data);
