@@ -93,6 +93,8 @@ final class TalksControllerDeleteTest extends TalkBase
 
     public function testDeleteTalkWhichDoesntExist(): void
     {
+        self::expectNotToPerformAssertions();
+
         $httpRequest = [
             'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
             'REQUEST_METHOD' => 'DELETE'
@@ -160,6 +162,8 @@ final class TalksControllerDeleteTest extends TalkBase
 
     public function testDeleteTalkWithAdmin(): void
     {
+        self::expectNotToPerformAssertions();
+
         $httpRequest = [
             'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
             'REQUEST_METHOD' => 'DELETE'

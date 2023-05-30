@@ -64,10 +64,8 @@ class ClientModelCollection extends BaseModelCollection
 
     /**
      * Return the list of talks (internal representation)
-     *
-     * @return array
      */
-    public function getClients()
+    public function getClients(): array
     {
         return $this->list;
     }

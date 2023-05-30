@@ -35,7 +35,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
+    public function getEventCommentsByEventId(int $event_id, int $resultsperpage, int $start, bool $verbose = false): false|array
     {
         $sql      = $this->getBasicSQL();
         $sql      .= 'and event_id = :event_id order by date_made desc ';
@@ -62,7 +62,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
+    public function getCommentById(int $comment_id, bool $verbose = false, bool $include_hidden = false): false|array
     {
         $sql      = $this->getBasicSQL($include_hidden);
         $sql      .= 'and ec.ID = :comment_id ';
@@ -114,12 +114,12 @@ class EventCommentMapper extends ApiMapper
      *
      * This is used so we can nest comments inside other not-list settings
      *
-     * @param array $row     The database row with the comment result
-     * @param bool  $verbose The verbosity level
+     * @param array $row    The database row with the comment result
+     * @param bool $verbose The verbosity level
      *
      * @return array The extra fields to add to the existing data for this record
      */
-    protected function formatOneComment($row, $verbose)
+    protected function formatOneComment(array $row, bool $verbose): array
     {
         $base    = $this->_request->base;
         $version = $this->_request->version;
@@ -211,7 +211,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @return bool
      */
-    public function hasUserRatedThisEvent($user_id, $event_id)
+    public function hasUserRatedThisEvent(int $user_id, int $event_id): bool
     {
         $sql = 'select ec.ID from event_comments ec '
                . 'where event_id = :event_id and user_id = :user_id and rating > 0';
@@ -284,12 +284,12 @@ class EventCommentMapper extends ApiMapper
      *
      * Includes verbose nested comment info
      *
-     * @param int  $event_id  The event whose comments should be returned
+     * @param int $event_id  The event whose comments should be returned
      * @param bool $moderated Whether to include comments that have been moderated
      *
      * @return EventCommentReportModelCollection
      */
-    public function getReportedCommentsByEventId($event_id, $moderated = false)
+    public function getReportedCommentsByEventId(int $event_id, bool $moderated = false): EventCommentReportModelCollection
     {
         $sql = "select rc.reporting_user_id, rc.deciding_user_id, rc.decision,
             rc.event_comment_id, ec.event_id,

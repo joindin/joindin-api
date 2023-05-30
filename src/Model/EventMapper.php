@@ -129,12 +129,12 @@ class EventMapper extends ApiMapper
      * Internal function called by other event-fetching code, with changeable SQL
      *
      * @param int      $resultsperpage how many records to return
-     * @param int      $start          offset to start returning records from
+     * @param ?int      $start         offset to start returning records from; null to ensure we get first upcoming event
      * @param array    $params         filters and other parameters to limit/order the collection
      *
      * @return false|array the raw database results
      */
-    protected function getEvents(int $resultsperpage, int $start, array $params = []): array|false
+    protected function getEvents(int $resultsperpage, ?int $start, array $params = []): array|false
     {
         $data  = [];
         $order = " order by ";
@@ -300,7 +300,7 @@ class EventMapper extends ApiMapper
         $sql .= $order;
 
         // limit clause
-        $sql      .= $this->buildLimit($resultsperpage, $start);
+        $sql      .= $this->buildLimit($resultsperpage, $start ?? 0);
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
 
@@ -318,13 +318,13 @@ class EventMapper extends ApiMapper
      * getEventList
      *
      * @param int   $resultsperpage how many records to return
-     * @param int   $start          offset to start returning records from
+     * @param ?int  $start          offset to start returning records from; null to ensure we get first upcoming event
      * @param array $params         filters and other parameters to limit/order the collection
      * @param bool  $verbose        used to determine how many fields are needed
      *
      * @return false|array the data, or false if something went wrong
      */
-    public function getEventList(int $resultsperpage, int $start, array $params, bool $verbose = false): array|false
+    public function getEventList(int $resultsperpage, ?int $start, array $params, bool $verbose = false): array|false
     {
         $results = $this->getEvents($resultsperpage, $start, $params);
 
@@ -1045,6 +1045,7 @@ class EventMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["user_id" => $user_id]);
+
         return (int) $stmt->fetchColumn();
     }
 

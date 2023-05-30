@@ -14,20 +14,18 @@ class ClientMapper extends ApiMapper
      * add sub-resource data
      *
      * @param  array $results
-     *
-     * @return array
      */
-    private function processResults($results)
+    private function processResults($results): array
     {
         if (!is_array($results)) {
             // $results isn't an array. This shouldn't happen as an exception
-            // should have been raised by PDO. However if it does, return an
+            // should have been raised by PDO. However, if it does, return an
             // empty array.
             return [];
         }
 
         if (!count($results)) {
-            // $results is an array but empty. So let's return an empty arra
+            // $results is an array but empty. So let's return an empty array
             return [];
         }
 

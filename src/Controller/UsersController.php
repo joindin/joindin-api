@@ -17,15 +17,15 @@ use Teapot\StatusCode\Http;
 
 class UsersController extends BaseApiController
 {
-    protected $userMapper;
+    protected ?UserMapper $userMapper;
 
-    private $userRegistrationEmailService;
+    private ?UserRegistrationEmailService $userRegistrationEmailService;
+
+    private TalkCommentMapper $talkCommentMapper;
 
     /**
-     * @var TalkCommentMapper|null
+     * @throws Exception
      */
-    private $talkCommentMapper;
-
     public function getAction(Request $request, PDO $db): array|bool
     {
         $userId = $this->getItemId($request, 'User not found');
@@ -541,7 +541,7 @@ class UsersController extends BaseApiController
         $this->userRegistrationEmailService = $mailService;
     }
 
-    public function getUserRegistrationEmailService($config, $recipient, $token): UserRegistrationEmailService
+    public function getUserRegistrationEmailService(array $config, array $recipient, string $token): UserRegistrationEmailService
     {
         if (!$this->userRegistrationEmailService) {
             $this->userRegistrationEmailService = new UserRegistrationEmailService(
