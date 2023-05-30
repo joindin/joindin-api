@@ -559,20 +559,20 @@ class EventsController extends BaseApiController
             }
 
             $event['cfp_start_date'] = null;
-            $cfp_start_date          = $request->getParameter("cfp_start_date", false);
+            $cfp_start_date          = $request->getParameter('cfp_start_date', false);
 
             if (false !== $cfp_start_date && strtotime($cfp_start_date)) {
                 $cfp_start_date          = new DateTime($cfp_start_date, $tz);
                 $event['cfp_start_date'] = $cfp_start_date->format('U');
             }
             $event['cfp_end_date'] = null;
-            $cfp_end_date          = $request->getParameter("cfp_end_date", false);
+            $cfp_end_date          = $request->getParameter('cfp_end_date', false);
 
             if (false !== $cfp_end_date && strtotime($cfp_end_date)) {
                 $cfp_end_date          = new DateTime($cfp_end_date, $tz);
                 $event['cfp_end_date'] = $cfp_end_date->format('U');
             }
-            $latitude = $request->getParameter("latitude", false);
+            $latitude = $request->getParameter('latitude', false);
 
             if (false !== $latitude) {
                 $latitude = filter_var($latitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -581,7 +581,7 @@ class EventsController extends BaseApiController
                     $event['latitude'] = $latitude;
                 }
             }
-            $longitude = $request->getParameter("longitude", false);
+            $longitude = $request->getParameter('longitude', false);
 
             if (false !== $longitude) {
                 $longitude          = filter_var($longitude, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
