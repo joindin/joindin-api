@@ -27,7 +27,7 @@ class EventHostMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getHostsByEventId(int $event_id, int $resultsperpage, ?int $start, $verbose = false)
+    public function getHostsByEventId(int $event_id, int $resultsperpage, int $start, $verbose = false)
     {
         $sql = $this->getHostSql();
         $sql .= ' order by host_name ';
