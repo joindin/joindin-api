@@ -28,7 +28,7 @@ class UsersController extends BaseApiController
 
     public function getAction(Request $request, PDO $db): array|bool
     {
-        $userId = $this->getItemId($request);
+        $userId = $this->getItemId($request, 'User not found');
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -259,7 +259,7 @@ class UsersController extends BaseApiController
             throw new Exception("You must be logged in to change a user account", Http::UNAUTHORIZED);
         }
 
-        $userId = $this->getItemId($request);
+        $userId = $this->getItemId($request, 'User not found');
 
         $userMapper = $this->getUserMapper($db, $request);
 
@@ -446,7 +446,7 @@ class UsersController extends BaseApiController
         }
 
         $this->initializeTalkCommentMapper($db, $request);
-        $this->talkCommentMapper->deleteCommentsForUser($this->getItemId($request));
+        $this->talkCommentMapper->deleteCommentsForUser($this->getItemId($request, 'User not found'));
 
         $view = $request->getView();
         $view->setHeader('Content-Length', '0');
@@ -467,7 +467,7 @@ class UsersController extends BaseApiController
             throw new Exception("You do not have permission to do that", Http::FORBIDDEN);
         }
 
-        if (!$userMapper->delete($this->getItemId($request))) {
+        if (!$userMapper->delete($this->getItemId($request, 'User not found'))) {
             throw new Exception("There was a problem trying to delete the user", Http::BAD_REQUEST);
         }
 
@@ -496,7 +496,7 @@ class UsersController extends BaseApiController
             throw new Exception("You must be an admin to change a user's trusted state", Http::FORBIDDEN);
         }
 
-        $userId = $this->getItemId($request);
+        $userId = $this->getItemId($request, 'User not found');
 
         if (!is_bool($trustedStatus = $request->getParameter("trusted", null))) {
             throw new Exception("You must provide a trusted state", Http::BAD_REQUEST);

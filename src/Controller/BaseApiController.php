@@ -12,7 +12,7 @@ abstract class BaseApiController
     {
     }
 
-    public function getItemId(Request $request): int
+    public function getItemId(Request $request, ?string $errorMessage = null): int
     {
         // item ID
         if (
@@ -22,7 +22,7 @@ abstract class BaseApiController
             return (int) $request->url_elements[3];
         }
 
-        throw new Exception('Item not found', Http::NOT_FOUND);
+        throw new Exception($errorMessage ?? 'Item not found', Http::NOT_FOUND);
     }
 
     public function getVerbosity(Request $request): bool

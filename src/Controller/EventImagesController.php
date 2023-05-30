@@ -15,11 +15,11 @@ class EventImagesController extends BaseApiController
      */
     public function listImages(Request $request, PDO $db): array
     {
-        $event_id = $this->getItemId($request);
+        $event_id = $this->getItemId($request, 'Event not found');
 
         $event_mapper = new EventMapper($db, $request);
 
-        return ['images' => $event_mapper->getImages((int) $event_id)];
+        return ['images' => $event_mapper->getImages($event_id)];
     }
 
     public function createImage(Request $request, PDO $db): void
@@ -28,7 +28,7 @@ class EventImagesController extends BaseApiController
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
-        $event_id = $this->getItemId($request);
+        $event_id = $this->getItemId($request, 'Event not found');
         $event_mapper = new EventMapper($db, $request);
 
         // ensure event exists
@@ -135,7 +135,7 @@ class EventImagesController extends BaseApiController
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
-        $event_id     = $this->getItemId($request);
+        $event_id     = $this->getItemId($request, 'Event not found');
 
         $event_mapper = new EventMapper($db, $request);
         $event_mapper->removeImages($event_id);

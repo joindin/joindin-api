@@ -101,7 +101,7 @@ class TokenController extends BaseApiController
         }
 
         $tokens = $mapper->getTokenByIdAndUser(
-            $this->getItemId($request),
+            $this->getItemId($request, 'Token not found'),
             $request->user_id
         );
 
@@ -121,7 +121,7 @@ class TokenController extends BaseApiController
         }
 
         $token = $tokenMapper->getRevokableTokenByIdAndUser(
-            $this->getItemId($request),
+            $this->getItemId($request, 'Token not found'),
             $request->user_id
         );
 
@@ -130,7 +130,7 @@ class TokenController extends BaseApiController
         }
 
         try {
-            $tokenMapper->deleteToken($this->getItemId($request));
+            $tokenMapper->deleteToken($this->getItemId($request, 'Token not found'));
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), Http::INTERNAL_SERVER_ERROR, $e);
         }

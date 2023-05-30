@@ -113,7 +113,7 @@ class BaseTalkController extends BaseApiController
         $mapper = $this->getTalkMapper($db, $request);
 
         if (0 === $talk_id) {
-            $talk_id = $this->getItemId($request);
+            $talk_id = $this->getItemId($request, 'Talk not found');
         }
 
         $talk = $mapper->getTalkById($talk_id, $verbose);
