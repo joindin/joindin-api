@@ -13,7 +13,7 @@ class TracksController extends BaseApiController
 {
     public function getAction(Request $request, PDO $db): array
     {
-        $track_id = $this->getItemId($request);
+        $track_id = $this->getItemId($request, 'Track not found');
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -40,7 +40,7 @@ class TracksController extends BaseApiController
             throw new Exception("You must be logged in to edit this track", Http::UNAUTHORIZED);
         }
 
-        $track_id = $this->getItemId($request);
+        $track_id = $this->getItemId($request, 'Track not found');
 
         $track_mapper = new TrackMapper($db, $request);
         $tracks       = $track_mapper->getTrackById($track_id, true);
@@ -100,7 +100,7 @@ class TracksController extends BaseApiController
             throw new Exception("You must be logged in to delete this track", Http::UNAUTHORIZED);
         }
 
-        $track_id = $this->getItemId($request);
+        $track_id = $this->getItemId($request, 'Track not found');
 
         $track_mapper = new TrackMapper($db, $request);
         $tracks       = $track_mapper->getTrackById($track_id, true);

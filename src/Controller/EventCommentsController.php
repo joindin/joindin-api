@@ -26,9 +26,9 @@ class EventCommentsController extends BaseApiController
         $this->spamCheckService = $spamCheckService;
     }
 
-    public function getComments(Request $request, PDO $db): false|array
+    public function getComments(Request $request, PDO $db): array
     {
-        $comment_id = $this->getItemId($request);
+        $comment_id = $this->getItemId($request, 'Comment not found');
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -39,26 +39,18 @@ class EventCommentsController extends BaseApiController
 
         $mapper = new EventCommentMapper($db, $request);
 
-        if ($comment_id) {
-            $list = $mapper->getCommentById($comment_id, $verbose);
+        $list = $mapper->getCommentById($comment_id, $verbose);
 
-            if (false === $list) {
-                throw new Exception('Comment not found', Http::NOT_FOUND);
-            }
-
-            return $list;
+        if (false === $list) {
+            throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
-        return false;
+        return $list;
     }
 
     public function getReported(Request $request, PDO $db): array
     {
-        $event_id = $this->getItemId($request);
-
-        if (empty($event_id)) {
-            throw new UnexpectedValueException("Event not found", Http::NOT_FOUND);
-        }
+        $event_id = $this->getItemId($request, 'Event not found');
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -82,7 +74,7 @@ class EventCommentsController extends BaseApiController
     public function createComment(Request $request, PDO $db): void
     {
         $comment             = [];
-        $comment['event_id'] = $this->getItemId($request);
+        $comment['event_id'] = $this->getItemId($request, 'Event not found');
 
         if (empty($comment['event_id'])) {
             throw new Exception(
@@ -183,12 +175,9 @@ class EventCommentsController extends BaseApiController
 
         $comment_mapper = new EventCommentMapper($db, $request);
 
-        $commentId   = $this->getItemId($request);
+        $commentId   = $this->getItemId($request, 'Comment not found');
 
-        if (
-            false === $commentId
-            || false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))
-        ) {
+        if (false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
@@ -243,12 +232,9 @@ class EventCommentsController extends BaseApiController
         }
 
         $comment_mapper = new EventCommentMapper($db, $request);
-        $commentId   = $this->getItemId($request);
+        $commentId   = $this->getItemId($request, 'Comment not found');
 
-        if (
-            false === $commentId
-            || false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))
-        ) {
+        if (false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 

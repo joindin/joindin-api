@@ -26,7 +26,7 @@ class TalkTypesController extends BaseApiController
 
     public function getTalkType(Request $request, PDO $db): false|array
     {
-        $talk_type_id = $this->getItemId($request);
+        $talk_type_id = $this->getItemId($request, 'Talk type not found');
         // verbosity - here for consistency as we don't have verbose talk type details to return at the moment
         $verbose = $this->getVerbosity($request);
 

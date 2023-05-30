@@ -28,7 +28,7 @@ class EventHostsController extends BaseApiController
      */
     public function listHosts(Request $request, PDO $db): array
     {
-        $event_id = $this->getItemId($request);
+        $event_id = $this->getItemId($request, 'Event not found');
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -67,7 +67,7 @@ class EventHostsController extends BaseApiController
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
-        $event_id = $this->getItemId($request);
+        $event_id = $this->getItemId($request, 'Event not found');
 
         $eventMapper = $this->getEventMapper($request, $db);
         $event       = $eventMapper->getEventById($event_id);
@@ -130,7 +130,7 @@ class EventHostsController extends BaseApiController
         }
 
         $user_id = $request->url_elements[5];
-        $event_id = $this->getItemId($request);
+        $event_id = $this->getItemId($request, 'Event not found');
 
         if ($user_id === $request->user_id) {
             throw new Exception('You are not allowed to remove yourself from the host-list', Http::FORBIDDEN);
