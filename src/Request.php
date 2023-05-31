@@ -202,12 +202,12 @@ class Request
      * is provided and the parameter doesn't exist, the default value
      * will be returned instead
      *
-     * @param string $param   Parameter to retrieve
-     * @param ?string $default Default to return if parameter doesn't exist
+     * @param string $param Parameter to retrieve
+     * @param string|bool|null $default Default to return if parameter doesn't exist
      *
      * @return mixed
      */
-    public function getParameter(string $param, ?string $default = ''): mixed
+    public function getParameter(string $param, string|bool|null $default = ''): mixed
     {
         if (!array_key_exists($param, $this->parameters)) {
             return $default;
