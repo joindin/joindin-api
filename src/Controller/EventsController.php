@@ -102,13 +102,13 @@ class EventsController extends BaseApiController
                 $params = [];
 
                 // collection type filter
-                $filters = ["hot", "upcoming", "past", "cfp", "pending", "all"];
+                $filters = ['hot', 'upcoming', 'past', 'cfp', 'pending', 'all'];
 
-                if (isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters)) {
+                if (isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters, true)) {
                     $params["filter"] = $request->parameters['filter'];
 
-                    // for pending events we need a logged in user with the correct permissions
-                    if ($params["filter"] == 'pending') {
+                    // for pending events we need a logged-in user with the correct permissions
+                    if ($params["filter"] === 'pending') {
                         if (!isset($request->user_id)) {
                             throw new Exception("You must be logged in to view pending events", Http::BAD_REQUEST);
                         }
