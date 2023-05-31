@@ -301,7 +301,7 @@ class TalksController extends BaseTalkController
         }
         $track_event_id = $track_events[0]['ID'];
 
-        if ($talk->event_id != $track_event_id) {
+        if ($talk->event_id !== $track_event_id) {
             throw new Exception("This talk cannot be added to this track", Http::BAD_REQUEST);
         }
 
