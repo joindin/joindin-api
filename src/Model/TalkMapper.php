@@ -70,9 +70,9 @@ class TalkMapper extends ApiMapper
      * @param int $resultsperpage How many results to return on each page
      * @param int $start          Which result to start with
      *
-     * @return false|TalkModelCollection
+     * @return TalkModelCollection
      */
-    public function getTalksByEventId(int $event_id, int $resultsperpage, int $start): false|TalkModelCollection
+    public function getTalksByEventId(int $event_id, int $resultsperpage, int $start): TalkModelCollection
     {
         $sql = $this->getBasicSQL();
         $sql .= ' and t.event_id = :event_id';
@@ -96,7 +96,7 @@ class TalkMapper extends ApiMapper
             return new TalkModelCollection($results, $total);
         }
 
-        return false;
+        throw new \RuntimeException('Could not retrieve talks for the specified event ID', Http::INTERNAL_SERVER_ERROR);
     }
 
     /**

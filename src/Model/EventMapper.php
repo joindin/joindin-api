@@ -5,6 +5,8 @@ namespace Joindin\Api\Model;
 use DateTime;
 use Exception;
 use PDO;
+use Teapot\StatusCode\Http;
+use const http\Client\Curl\Features\HTTP2;
 
 /**
  * EventModel
@@ -374,11 +376,11 @@ class EventMapper extends ApiMapper
      * User attending an event?
      *
      * @param int $event_id the event to check
-     * @param int $user_id  the user you're interested in
+     * @param ?int $user_id the user you're interested in
      *
      * @return array
      */
-    public function getUserAttendance(int $event_id, int $user_id): array
+    public function getUserAttendance(int $event_id, ?int $user_id): array
     {
         return ['is_attending' => $this->isUserAttendingEvent($event_id, $user_id)];
     }
@@ -387,12 +389,16 @@ class EventMapper extends ApiMapper
      * Is this user attending this event?
      *
      * @param int $event_id the Event of interest
-     * @param int $user_id  which user (often the current one)
+     * @param ?int $user_id which user (often the current one)
      *
      * @return bool
      */
-    protected function isUserAttendingEvent(int $event_id, int $user_id): bool
+    protected function isUserAttendingEvent(int $event_id, ?int $user_id): bool
     {
+        if (!$user_id) {
+            return false;
+        }
+
         $sql  = "select * from user_attend where eid = :event_id and uid = :user_id";
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["event_id" => $event_id, "user_id" => $user_id]);
@@ -792,9 +798,9 @@ class EventMapper extends ApiMapper
      * @param bool  $auto_approve if false an event is registered as 'pending' first and must be actively approved.
      *
      * @throws Exception
-     * @return integer|false
+     * @return integer
      */
-    public function createEvent(array $event, bool $auto_approve = false): int|false
+    public function createEvent(array $event, bool $auto_approve = false): int
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields = [
@@ -840,7 +846,7 @@ class EventMapper extends ApiMapper
             return (int) $this->_db->lastInsertId();
         }
 
-        return false;
+        throw new \RuntimeException('Could not create event', Http::INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -990,9 +996,9 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id The event you want
      *
-     * @return false|array The event details, or false if it wasn't found
+     * @return array The event details
      */
-    public function getPendingEventById(int $event_id): array|false
+    public function getPendingEventById(int $event_id): array
     {
         $sql = 'select events.* '
                . 'from events '
@@ -1007,7 +1013,7 @@ class EventMapper extends ApiMapper
             return parent::transformResults($results, true)[0];
         }
 
-        return false;
+        throw new \RuntimeException('Could not retrieve pending event', Http::INTERNAL_SERVER_ERROR);
     }
 
     /**

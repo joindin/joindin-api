@@ -130,14 +130,16 @@ class UserMapper extends ApiMapper
     }
 
     /**
-     * @return false|array
+     * @return array
      */
-    public function getSiteAdminEmails(): array|false
+    public function getSiteAdminEmails(): array
     {
         $sql  = 'select email from user where admin = 1';
         $stmt = $this->_db->prepare($sql);
 
-        return $stmt->execute() ? $stmt->fetchAll(PDO::FETCH_COLUMN) : false;
+        return $stmt->execute()
+            ? $stmt->fetchAll(PDO::FETCH_COLUMN)
+            : throw new \RuntimeException('Could not retrieve site admin emails', Http::INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -282,12 +284,16 @@ class UserMapper extends ApiMapper
     }
 
     /**
-     * @param int $user_id
+     * @param ?int $user_id
      *
      * @return bool
      */
-    public function isSiteAdmin(int $user_id): bool
+    public function isSiteAdmin(?int $user_id): bool
     {
+        if (!$user_id) {
+            return false;
+        }
+
         $results = $this->getUsers(1, 0, 'user.ID=' . $user_id, null);
 
         if (isset($results[0]) && $results[0]['admin'] == 1) {

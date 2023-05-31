@@ -366,6 +366,7 @@ class EventsController extends BaseApiController
 
             $user_mapper = new UserMapper($db, $request);
 
+            /** @var array $event_owner */ // we ensured there was a user at the beginning of this method
             $event_owner           = $user_mapper->getUserById($request->user_id);
             $event['contact_name'] = $event_owner['users'][0]['full_name'];
 
