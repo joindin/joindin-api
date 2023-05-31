@@ -94,7 +94,7 @@ class EventsController extends BaseApiController
             if ($event_id) {
                 $list = $mapper->getEventById($event_id, $verbose, $activeEventsOnly);
 
-                if (count($list['events']) == 0) {
+                if ($list === false || count($list['events']) === 0) {
                     throw new Exception('Event not found', Http::NOT_FOUND);
                 }
             } else {
