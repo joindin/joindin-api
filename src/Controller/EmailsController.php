@@ -35,10 +35,6 @@ class EmailsController extends BaseApiController
         // Generate a verification token and email it to the user
         $token = $user_mapper->generateEmailVerificationTokenForUserId($user_id);
 
-        if (false === $token) {
-            throw new Exception("Error while generating verification token", Http::INTERNAL_SERVER_ERROR);
-        }
-
         $recipients   = [$email];
         $emailService = new UserRegistrationEmailService($this->config, $recipients, $token);
         $emailService->sendEmail();

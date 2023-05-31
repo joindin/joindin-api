@@ -26,7 +26,7 @@ class UsersController extends BaseApiController
     /**
      * @throws Exception
      */
-    public function getAction(Request $request, PDO $db): array|bool
+    public function getAction(Request $request, PDO $db): array|false
     {
         $userId = $this->getItemId($request, 'User not found');
 
@@ -70,13 +70,8 @@ class UsersController extends BaseApiController
         $mapper = new UserMapper($db, $request);
 
         if ($userId) {
-            $list = $mapper->getUserById($userId, $verbose);
-
-            if (count($list['users']) == 0) {
-                throw new Exception('User not found', Http::NOT_FOUND);
-            }
-
-            return $list;
+            return $mapper->getUserById($userId, $verbose)
+                ?: throw new Exception('User not found', Http::NOT_FOUND);
         }
 
         if (isset($request->parameters['username'])) {
@@ -84,7 +79,7 @@ class UsersController extends BaseApiController
                 $request->parameters['username'],
                 ENT_NOQUOTES
             );
-            $list     = $mapper->getUserByUsername($username, $verbose);
+            $list = $mapper->getUserByUsername($username, $verbose);
 
             if ($list === false) {
                 throw new Exception('Username not found', Http::NOT_FOUND);
@@ -270,7 +265,7 @@ class UsersController extends BaseApiController
         $accessToken = $request->getAccessToken();
 
         // only trusted clients can change account details
-        if (!$oauthModel->isAccessTokenPermittedPasswordGrant($accessToken)) {
+        if (!$accessToken || !$oauthModel->isAccessTokenPermittedPasswordGrant($accessToken)) {
             throw new Exception("This client does not have permission to perform this operation", Http::FORBIDDEN);
         }
 
@@ -333,7 +328,7 @@ class UsersController extends BaseApiController
                 // yes but is that our existing user being found?
                 $oldUser = $userMapper->getUserById($userId);
 
-                if ($oldUser['users'][0]['uri'] != $existingUser['users'][0]['uri']) {
+                if ($oldUser && $oldUser['users'][0]['uri'] != $existingUser['users'][0]['uri']) {
                     // the email address exists and not on this user's account
                     $errors[] = "That email is already associated with another account";
                 }
@@ -354,7 +349,7 @@ class UsersController extends BaseApiController
                 // yes but is that our existing user being found?
                 $oldUser = $userMapper->getUserById($userId);
 
-                if ($oldUser['users'][0]['uri'] != $existingUser['users'][0]['uri']) {
+                if ($oldUser && $oldUser['users'][0]['uri'] != $existingUser['users'][0]['uri']) {
                     // the username exists and not on this user's account
                     $errors[] = "That username is already associated with another account";
                 }

@@ -323,9 +323,9 @@ class TalkMapper extends ApiMapper
      * @param int $start
      * @param bool $verbose
      *
-     * @return false|TalkModelCollection
+     * @return TalkModelCollection
      */
-    public function getTalksBySpeaker(int $user_id, int $resultsperpage, int $start, bool $verbose = false): false|TalkModelCollection
+    public function getTalksBySpeaker(int $user_id, int $resultsperpage, int $start, bool $verbose = false): TalkModelCollection
     {
         // based on getBasicSQL() but needs the speaker table joins
         $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
@@ -352,19 +352,19 @@ class TalkMapper extends ApiMapper
             ':user_id' => $user_id
         ]);
 
-        if ($response) {
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $total   = $this->getTotalCount($sql, [':user_id' => $user_id]);
-            $results = $this->processResults($results);
-
-            if ($verbose) {
-                $results = $this->addTalkMediaTypes($results);
-            }
-
-            return new TalkModelCollection($results, $total);
+        if (!$response) {
+            throw new \RuntimeException('Could not retrieve talks', Http::INTERNAL_SERVER_ERROR);
         }
 
-        return false;
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $total   = $this->getTotalCount($sql, [':user_id' => $user_id]);
+        $results = $this->processResults($results);
+
+        if ($verbose) {
+            $results = $this->addTalkMediaTypes($results);
+        }
+
+        return new TalkModelCollection($results, $total);
     }
 
     /**

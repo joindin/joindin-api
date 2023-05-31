@@ -21,18 +21,9 @@ final class TestApiMapper extends ApiMapper
         return [];
     }
 
-    /**
-     * @param int|string|null $resultsperpage
-     * @param int|string|null $start
-     *
-     * @return string
-     */
-    public function buildLimit(int|string|null $resultsperpage, int|string|null $start): string
+    public function buildLimit(int $resultsperpage, int $start): string
     {
-        return parent::buildLimit(
-            $resultsperpage,
-            $start
-        );
+        return parent::buildLimit($resultsperpage, $start);
     }
 
     public function getPaginationLinks(array $list, int $total = 0): array

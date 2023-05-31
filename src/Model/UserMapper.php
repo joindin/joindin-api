@@ -4,6 +4,7 @@ namespace Joindin\Api\Model;
 
 use Exception;
 use PDO;
+use Teapot\StatusCode\Http;
 
 /**
  * UserMapper
@@ -47,10 +48,8 @@ class UserMapper extends ApiMapper
     }
 
     /**
-     * @param int  $user_id
+     * @param int $user_id
      * @param bool $verbose
-     *
-     * @return false|array
      */
     public function getUserById(int $user_id, bool $verbose = false): array|false
     {
@@ -339,9 +338,9 @@ class UserMapper extends ApiMapper
      * @param array $user
      *
      * @throws Exception
-     * @return false|int user ID
+     * @return int user ID
      */
-    public function createUser(array $user): int|false
+    public function createUser(array $user): int
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields          = [
@@ -353,7 +352,7 @@ class UserMapper extends ApiMapper
         $contains_mandatory_fields = ! array_diff($mandatory_fields, array_keys($user));
 
         if (!$contains_mandatory_fields) {
-            throw new Exception("Missing mandatory fields");
+            throw new Exception("Missing mandatory fields", Http::BAD_REQUEST);
         }
 
         // encode the password
@@ -378,7 +377,11 @@ class UserMapper extends ApiMapper
         // comma separate all pairs and add to SQL string
         $sql .= implode(', ', $pairs);
 
-        return $this->_db->prepare($sql)->execute($user) ? (int) $this->_db->lastInsertId() : false;
+        if ($this->_db->prepare($sql)->execute($user)) {
+            return (int) $this->_db->lastInsertId();
+        }
+
+        throw new \RuntimeException('Could not create user', Http::INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -437,10 +440,10 @@ class UserMapper extends ApiMapper
      *
      * @param int $user_id
      *
-     * @return false|string token
+     * @return string token
      * @throws Exception
      */
-    public function generateEmailVerificationTokenForUserId(int $user_id): string|false
+    public function generateEmailVerificationTokenForUserId(int $user_id): string
     {
         $token = bin2hex(random_bytes(8));
 
@@ -453,7 +456,11 @@ class UserMapper extends ApiMapper
             "token"   => $token
         ];
 
-        return $stmt->execute($data) ? $token : false;
+        if (!$stmt->execute($data)) {
+            throw new Exception("Error while generating verification token", Http::INTERNAL_SERVER_ERROR);
+        }
+
+        return $token;
     }
 
     /**

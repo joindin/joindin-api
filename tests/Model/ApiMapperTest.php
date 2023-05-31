@@ -115,7 +115,6 @@ final class ApiMapperTest extends TestCase
 
         $this->assertEquals('', $mapper->buildLimit(0, 12));
         $this->assertEquals(' LIMIT 12,1', $mapper->buildLimit(1, 12));
-        $this->assertEquals(' LIMIT 12,1', $mapper->buildLimit("1", "12"));
     }
 
     /** @dataProvider retrievingTotalCountFromQueryWorksProvider */

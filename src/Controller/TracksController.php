@@ -71,13 +71,12 @@ class TracksController extends BaseApiController
         if (empty($track['track_name'])) {
             $errors[] = "'track_name' is a required field";
         }
-        $track['track_description'] = htmlspecialchars(
-            $request->getStringParameter("track_description", null),
-            ENT_NOQUOTES
-        );
 
-        if (!isset($track['track_description'])) {
-            unset($track['track_description']); // Track description not provided; don't edit
+        if ($request->getParameter("track_description", null) !== null) {
+            $track['track_description'] = htmlspecialchars(
+                $request->getStringParameter("track_description"),
+                ENT_NOQUOTES
+            );
         }
 
         if ($errors) {
