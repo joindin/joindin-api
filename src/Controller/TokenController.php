@@ -3,6 +3,7 @@
 namespace Joindin\Api\Controller;
 
 use Exception;
+use Joindin\Api\Model\OAuthModel;
 use Joindin\Api\Model\TokenMapper;
 use PDO;
 use Joindin\Api\Request;
@@ -10,11 +11,11 @@ use Teapot\StatusCode\Http;
 
 class TokenController extends BaseApiController
 {
-    protected $oauthModel;
+    protected OAuthModel $oauthModel;
 
-    protected $tokenMapper;
+    protected TokenMapper $tokenMapper;
 
-    public function postAction(Request $request, PDO $db)
+    public function postAction(Request $request, PDO $db): array
     {
         $this->oauthModel = $request->getOauthModel($db);
         // The "password" grant type posts here to exchange a username and
