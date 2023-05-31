@@ -327,6 +327,7 @@ class EventCommentMapper extends ApiMapper
          * }|false $row
          */
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
         while ($row) {
             $total++;
             $comment_result = $comment_stmt->execute(['comment_id' => $row['event_comment_id']]);

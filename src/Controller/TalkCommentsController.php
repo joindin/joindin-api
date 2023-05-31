@@ -10,7 +10,6 @@ use Joindin\Api\Service\CommentReportedEmailService;
 use PDO;
 use Joindin\Api\Request;
 use Teapot\StatusCode\Http;
-use UnexpectedValueException;
 
 class TalkCommentsController extends BaseApiController
     // @codingStandardsIgnoreEnd

@@ -33,7 +33,7 @@ class TalkTypesController extends BaseApiController
         $mapper = new TalkTypeMapper($db, $request);
         $list   = $mapper->getTalkTypeById($talk_type_id, $verbose);
 
-        if (count($list['talk_types']) == 0) {
+        if ($list === false || count($list['talk_types']) === 0) {
             throw new Exception('Talk type not found', Http::NOT_FOUND);
         }
 

@@ -11,6 +11,7 @@ use Joindin\Api\Model\LanguageMapper;
 use Joindin\Api\Model\PendingTalkClaimMapper;
 use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Model\TalkMapper;
+use Joindin\Api\Model\TalkModel;
 use Joindin\Api\Model\TalkModelCollection;
 use Joindin\Api\Model\TalkTypeMapper;
 use Joindin\Api\Service\SpamCheckServiceInterface;
@@ -29,8 +30,8 @@ class TalksController extends BaseTalkController
     /**
      * @var PendingTalkClaimMapper
      */
-    private $pending_talk_claim_mapper;
-    private $spamCheckService;
+    private ?PendingTalkClaimMapper $pending_talk_claim_mapper;
+    private SpamCheckServiceInterface $spamCheckService;
 
     public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [])
     {
@@ -289,7 +290,7 @@ class TalksController extends BaseTalkController
         if (!preg_match($pattern, $track_uri, $matches)) {
             throw new Exception('Invalid track_uri', Http::BAD_REQUEST);
         }
-        $track_id = $matches[1];
+        $track_id = (int) $matches[1];
 
         // is this track on this event?
         $event_mapper = new EventMapper($db, $request);
@@ -300,7 +301,7 @@ class TalksController extends BaseTalkController
         }
         $track_event_id = $track_events[0]['ID'];
 
-        if ($talk->event_id != $track_event_id) {
+        if ($talk->event_id !== $track_event_id) {
             throw new Exception("This talk cannot be added to this track", Http::BAD_REQUEST);
         }
 
@@ -769,7 +770,7 @@ class TalksController extends BaseTalkController
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
-    public function getTalkCommentEmailService($config, $recipients, $talk, $comment): TalkCommentEmailService
+    public function getTalkCommentEmailService(array $config, array $recipients, TalkModel $talk, array $comment): TalkCommentEmailService
     {
         return new TalkCommentEmailService($config, $recipients, $talk, $comment);
     }

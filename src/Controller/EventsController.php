@@ -89,12 +89,12 @@ class EventsController extends BaseApiController
             $mapper           = new EventMapper($db, $request);
             $user_mapper      = new UserMapper($db, $request);
             $isSiteAdmin      = $user_mapper->isSiteAdmin($request->user_id);
-            $activeEventsOnly = $isSiteAdmin ? false : true;
+            $activeEventsOnly = !$isSiteAdmin;
 
             if ($event_id) {
                 $list = $mapper->getEventById($event_id, $verbose, $activeEventsOnly);
 
-                if (count($list['events']) == 0) {
+                if ($list === false || count($list['events']) === 0) {
                     throw new Exception('Event not found', Http::NOT_FOUND);
                 }
             } else {
@@ -102,13 +102,13 @@ class EventsController extends BaseApiController
                 $params = [];
 
                 // collection type filter
-                $filters = ["hot", "upcoming", "past", "cfp", "pending", "all"];
+                $filters = ['hot', 'upcoming', 'past', 'cfp', 'pending', 'all'];
 
-                if (isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters)) {
+                if (isset($request->parameters['filter']) && in_array($request->parameters['filter'], $filters, true)) {
                     $params["filter"] = $request->parameters['filter'];
 
-                    // for pending events we need a logged in user with the correct permissions
-                    if ($params["filter"] == 'pending') {
+                    // for pending events we need a logged-in user with the correct permissions
+                    if ($params["filter"] === 'pending') {
                         if (!isset($request->user_id)) {
                             throw new Exception("You must be logged in to view pending events", Http::BAD_REQUEST);
                         }

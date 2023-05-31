@@ -19,14 +19,14 @@ class LanguagesController extends BaseApiController
         $mapper = new LanguageMapper($db, $request);
         $list   = $mapper->getLanguageById($language_id, $verbose);
 
-        if (count($list['languages']) == 0) {
+        if ($list === false || count($list['languages']) == 0) {
             throw new Exception('Language not found', Http::NOT_FOUND);
         }
 
         return $list;
     }
 
-    public function getAllLanguages(Request $request, PDO $db)
+    public function getAllLanguages(Request $request, PDO $db): false|array
     {
         // verbosity - here for consistency as we don't have verbose language details to return at the moment
         $verbose = $this->getVerbosity($request);

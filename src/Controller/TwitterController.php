@@ -145,10 +145,10 @@ class TwitterController extends BaseApiController
                 throw new Exception('Could not retrieve user-informations from Twitter', Http::FORBIDDEN, $e);
             }
 
-            if ($res->getStatusCode() == Http::OK) {
+            if ($res->getStatusCode() === Http::OK) {
                 $result = $this->oauthModel->createUserFromTwitterUsername(
                     $clientId,
-                    json_decode($res->getBody()->getContents(), JSON_OBJECT_AS_ARRAY)
+                    json_decode($res->getBody()->getContents(), null)
                 );
             }
         }
