@@ -18,8 +18,11 @@ class LanguagesController extends BaseApiController
 
         $mapper = new LanguageMapper($db, $request);
         $list   = $mapper->getLanguageById($language_id, $verbose);
+        if (!$list) {
+            $list = ['languages' => []];
+        }
 
-        if ($list === false || count($list['languages']) == 0) {
+        if ($list === false || count($list['languages']) === 0) {
             throw new Exception('Language not found', Http::NOT_FOUND);
         }
 

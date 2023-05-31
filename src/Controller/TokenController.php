@@ -13,7 +13,7 @@ class TokenController extends BaseApiController
 {
     protected OAuthModel $oauthModel;
 
-    protected ?TokenMapper $tokenMapper;
+    protected ?TokenMapper $tokenMapper = null;
 
     public function postAction(Request $request, PDO $db): array
     {
@@ -85,6 +85,10 @@ class TokenController extends BaseApiController
             $this->getResultsPerPage($request),
             $this->getStart($request)
         );
+
+        if (!$tokens) {
+            return [];
+        }
 
         return $tokens->getOutputView($request, $this->getVerbosity($request));
     }

@@ -27,7 +27,7 @@ class OAuthModel
     /**
      * @return PDO
      */
-    public function getDb(): \PDO
+    public function getDb(): PDO
     {
         return $this->_db;
     }
@@ -71,14 +71,13 @@ class OAuthModel
      *
      * @return int The ID of the user this belongs to
      */
-    public function verifyAccessToken(string $token): int
+    public function verifyAccessToken($token): int
     {
         $sql  = 'select id, user_id from oauth_access_tokens'
                 . ' where access_token=:access_token';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["access_token" => $token]);
-        /** @var array<string, string|int> $result */
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $result = (array)$stmt->fetch();
 
         // log that we used this token
         $update_sql  = 'update oauth_access_tokens '
@@ -88,7 +87,11 @@ class OAuthModel
         $update_stmt->execute(["id" => $result['id']]);
 
         // return the user ID this token belongs to
-        return (int) $result['user_id'];
+        $userId = $result['user_id'];
+        if (!is_numeric($userId)) {
+            throw new Exception('Invalid user id');
+        }
+        return (int)$userId;
     }
 
     /**
@@ -132,22 +135,30 @@ class OAuthModel
             WHERE username=:username';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["username" => $username]);
-        /** @var array<string, string|int> $result */
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$result) {
             return false;
         }
+        $result = (array)$result;
 
         if ($result['verified'] != 1) {
             throw new Exception("Not verified", Http::UNAUTHORIZED);
         }
 
-        if (!password_verify(md5($password), (string) $result['password'])) {
+        $hash = $result['password'];
+        if (!is_string($hash)) {
+            return false;
+        }
+        if (!password_verify(md5($password), $hash)) {
             return false;
         }
 
-        return (int) $result['ID'];
+        $id = $result['ID'];
+        if (is_numeric($id)) {
+            return (int)$id;
+        }
+        return false;
     }
 
     /**
@@ -191,17 +202,33 @@ class OAuthModel
             ]
         );
 
-        return $result ? $accessToken : false;
+        if ($result) {
+            return $accessToken;
+        }
+
+        return false;
     }
 
     /**
      * generateToken
      *
+     * taken mostly from
+     * http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html
+     *
      * @return string
      */
     public function generateToken(): string
     {
-        return bin2hex(random_bytes(20));
+        $fp      = fopen('/dev/urandom', 'rb');
+        if (!$fp) {
+            throw new \RuntimeException('unable to source random bits');
+        }
+        $entropy = (string) fread($fp, 32);
+        fclose($fp);
+
+        $hash = sha1($entropy); // sha1 gives us a 40-byte hash
+
+        return $hash;
     }
 
     /**
@@ -244,12 +271,15 @@ class OAuthModel
                 . 'where at.access_token=:access_token ';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["access_token" => $token]);
-        /** @var array<string, string|int> $result */
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $result = (array)$stmt->fetch();
 
         // what did we get? Might have been an oauth app, a special one (like web2)
         // or something else.
-        return $result['application'] ? (string) $result['application'] : "joind.in";
+        if ($result['application'] && is_string($result['application'])) {
+            return $result['application'];
+        }
+
+        return "joind.in";
     }
 
     /**
@@ -261,7 +291,7 @@ class OAuthModel
      *
      * @return bool Whether the consumer is permitted
      */
-    public function isClientPermittedPasswordGrant(string $key, string $secret): bool
+    public function isClientPermittedPasswordGrant($key, $secret)
     {
         $sql  = 'select c.enable_password_grant from '
                 . 'oauth_consumers c '
@@ -271,7 +301,11 @@ class OAuthModel
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["key" => $key, "secret" => $secret]);
 
-        return (bool) $stmt->fetch();
+        if ($stmt->fetch()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -282,7 +316,7 @@ class OAuthModel
      *
      * @return bool Whether the consumer is permitted
      */
-    public function isAccessTokenPermittedPasswordGrant(string $token): bool
+    public function isAccessTokenPermittedPasswordGrant($token)
     {
         $sql  = 'select c.enable_password_grant from '
                 . 'oauth_consumers c '
@@ -292,7 +326,11 @@ class OAuthModel
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["token" => $token]);
 
-        return (bool) $stmt->fetch();
+        if ($stmt->fetch()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -305,21 +343,30 @@ class OAuthModel
      *
      * @return boolean True if the password is correct, false otherwise
      */
-    public function reverifyUserPassword(int $userId, string $password): bool
+    public function reverifyUserPassword($userId, $password)
     {
         $sql  = 'SELECT ID, password FROM user
             WHERE ID = :user_id
             AND verified = 1';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["user_id" => $userId]);
-        /** @var array<string, string|int> $result */
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $result && password_verify(md5($password), (string) $result['password']);
+        if ($result) {
+            $reqPassword = ((array)$result)['password'];
+            if (!is_string($reqPassword)) {
+                return false;
+            }
+            if (password_verify(md5($password), $reqPassword)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
-     * Create an access token for someone identified by Twitter username
+     * Create an access token for someone identified by twitter username
      *
      * @param  string $clientId        aka consumer_key (of the joindin client)
      * @param  string $twitterUsername User's twitter nick
@@ -327,7 +374,7 @@ class OAuthModel
      *
      * @return false|array                   access token
      */
-    public function createAccessTokenFromTwitterUsername(string $clientId, string $twitterUsername): array|false
+    public function createAccessTokenFromTwitterUsername($clientId, $twitterUsername)
     {
         $sql = "select ID from user "
                . "where twitter_username = :twitter_username "
@@ -335,19 +382,23 @@ class OAuthModel
 
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["twitter_username" => $twitterUsername]);
-        /** @var array<string, string|int> $result */
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$result) {
             return false;
         }
+        $result = (array)$result;
 
         $userId = $result['ID'];
+        if (!is_numeric($userId)) {
+            throw new Exception('Invalid user id');
+        }
+        $userId = (int)$userId;
 
         $accessToken = $this->createAccessToken($clientId, $userId);
 
         // we also want to send back the logged in user's uri
-        $userUri = $this->getUserUri((int) $userId);
+        $userUri = $this->getUserUri($userId);
 
         return ['access_token' => $accessToken, 'user_uri' => $userUri];
     }
@@ -364,7 +415,7 @@ class OAuthModel
      * @throws Exception
      * @return array|false
      */
-    public function createUserFromTwitterUsername(string $clientId, array $values): array|false
+    public function createUserFromTwitterUsername($clientId, array $values)
     {
         $sql = "select ID from user "
                . "where twitter_username = :twitter_username";
@@ -411,7 +462,7 @@ class OAuthModel
      *
      * @return array|false              Array of access token and user uri on success or false or failure
      */
-    public function createAccessTokenFromTrustedEmail(string $clientId, string $email, string $fullName = '', string $userName = ''): array|false
+    public function createAccessTokenFromTrustedEmail($clientId, $email, $fullName = '', $userName = '')
     {
         $sql = "
             SELECT ID from user
@@ -420,8 +471,7 @@ class OAuthModel
 
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["email" => $email]);
-        /** @var array<string, string|int> $result */
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = (array)$stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$result && $fullName && $userName) {
             $result = $this->createUserFromTrustedEmail($email, $fullName, $userName);
@@ -432,6 +482,10 @@ class OAuthModel
         if (!$userId) {
             return false;
         }
+        if (!is_numeric($userId)) {
+            throw new Exception('Invalid user id');
+        }
+        $userId = (int)$userId;
 
         $accessToken = $this->createAccessToken($clientId, $userId);
 

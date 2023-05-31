@@ -115,7 +115,7 @@ class TalkLinkController extends BaseTalkController
     protected function checkAdminOrSpeaker(Request $request, TalkMapper $mapper, ?int $talk_id): void
     {
         $is_admin   = $talk_id !== null && $mapper->thisUserHasAdminOn($talk_id);
-        $is_speaker = $talk_id !== null && $request->user_id && $mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
+        $is_speaker = $talk_id !== null && $request->user_id && $mapper->isUserASpeakerOnTalk($talk_id, $request->user_id ?? -1);
 
         if (!($is_admin || $is_speaker)) {
             throw new Exception(
