@@ -290,7 +290,7 @@ class TalksController extends BaseTalkController
         if (!preg_match($pattern, $track_uri, $matches)) {
             throw new Exception('Invalid track_uri', Http::BAD_REQUEST);
         }
-        $track_id = $matches[1];
+        $track_id = (int) $matches[1];
 
         // is this track on this event?
         $event_mapper = new EventMapper($db, $request);
