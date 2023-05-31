@@ -13,7 +13,7 @@ class TokenController extends BaseApiController
 {
     protected OAuthModel $oauthModel;
 
-    protected TokenMapper $tokenMapper;
+    protected ?TokenMapper $tokenMapper;
 
     public function postAction(Request $request, PDO $db): array
     {
