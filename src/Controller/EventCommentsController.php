@@ -12,7 +12,6 @@ use Joindin\Api\Service\SpamCheckServiceInterface;
 use PDO;
 use Joindin\Api\Request;
 use Teapot\StatusCode\Http;
-use UnexpectedValueException;
 
 class EventCommentsController extends BaseApiController
     // @codingStandardsIgnoreEnd
