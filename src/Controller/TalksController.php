@@ -11,6 +11,7 @@ use Joindin\Api\Model\LanguageMapper;
 use Joindin\Api\Model\PendingTalkClaimMapper;
 use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Model\TalkMapper;
+use Joindin\Api\Model\TalkModel;
 use Joindin\Api\Model\TalkModelCollection;
 use Joindin\Api\Model\TalkTypeMapper;
 use Joindin\Api\Service\SpamCheckServiceInterface;
@@ -769,7 +770,7 @@ class TalksController extends BaseTalkController
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
-    public function getTalkCommentEmailService($config, $recipients, $talk, $comment): TalkCommentEmailService
+    public function getTalkCommentEmailService(array $config, array $recipients, TalkModel $talk, array $comment): TalkCommentEmailService
     {
         return new TalkCommentEmailService($config, $recipients, $talk, $comment);
     }
