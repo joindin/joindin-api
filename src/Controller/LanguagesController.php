@@ -26,7 +26,7 @@ class LanguagesController extends BaseApiController
         return $list;
     }
 
-    public function getAllLanguages(Request $request, PDO $db)
+    public function getAllLanguages(Request $request, PDO $db): false|array
     {
         // verbosity - here for consistency as we don't have verbose language details to return at the moment
         $verbose = $this->getVerbosity($request);
