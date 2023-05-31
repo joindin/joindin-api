@@ -34,8 +34,8 @@ class TokenController extends BaseApiController
             throw new Exception('The fields "username" and "password" are both required', Http::BAD_REQUEST);
         }
 
-        if ($grantType != 'password') {
-            throw new Exception("Grant type not recognised", Http::BAD_REQUEST);
+        if ($grantType !== 'password') {
+            throw new Exception('Grant type not recognised', Http::BAD_REQUEST);
         }
 
         // authenticate the user for web2
