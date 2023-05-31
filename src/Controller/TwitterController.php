@@ -148,7 +148,7 @@ class TwitterController extends BaseApiController
             if ($res->getStatusCode() === Http::OK) {
                 $result = $this->oauthModel->createUserFromTwitterUsername(
                     $clientId,
-                    json_decode($res->getBody()->getContents(), JSON_OBJECT_AS_ARRAY)
+                    json_decode($res->getBody()->getContents(), null)
                 );
             }
         }
