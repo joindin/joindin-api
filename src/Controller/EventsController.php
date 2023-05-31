@@ -89,7 +89,7 @@ class EventsController extends BaseApiController
             $mapper           = new EventMapper($db, $request);
             $user_mapper      = new UserMapper($db, $request);
             $isSiteAdmin      = $user_mapper->isSiteAdmin($request->user_id);
-            $activeEventsOnly = $isSiteAdmin ? false : true;
+            $activeEventsOnly = !$isSiteAdmin;
 
             if ($event_id) {
                 $list = $mapper->getEventById($event_id, $verbose, $activeEventsOnly);
