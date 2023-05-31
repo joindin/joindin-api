@@ -44,7 +44,7 @@ class TokenController extends BaseApiController
         $clientSecret = $request->getStringParameter('client_secret');
 
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
-            throw new Exception("This client cannot authenticate using the password grant type", Http::FORBIDDEN);
+            throw new Exception('This client cannot authenticate using the password grant type', Http::FORBIDDEN);
         }
 
         // expire any old tokens
@@ -62,7 +62,7 @@ class TokenController extends BaseApiController
         );
 
         if (!$result) {
-            throw new Exception("Signin failed", Http::FORBIDDEN);
+            throw new Exception('Signin failed', Http::FORBIDDEN);
         }
 
         return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];
@@ -71,13 +71,13 @@ class TokenController extends BaseApiController
     public function listTokensForUser(Request $request, PDO $db): array
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in", Http::UNAUTHORIZED);
+            throw new Exception('You must be logged in', Http::UNAUTHORIZED);
         }
 
         $mapper = $this->getTokenMapper($db, $request);
 
         if (!$mapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
-            throw new Exception("You can not access the token list with this client", Http::FORBIDDEN);
+            throw new Exception('You can not access the token list with this client', Http::FORBIDDEN);
         }
 
         $tokens = $mapper->getRevokableTokensForUser(
@@ -92,13 +92,13 @@ class TokenController extends BaseApiController
     public function getToken(Request $request, PDO $db): array
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in", Http::UNAUTHORIZED);
+            throw new Exception('You must be logged in', Http::UNAUTHORIZED);
         }
 
         $mapper = $this->getTokenMapper($db, $request);
 
         if (!$mapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
-            throw new Exception("You can not access the token list with this client", Http::FORBIDDEN);
+            throw new Exception('You can not access the token list with this client', Http::FORBIDDEN);
         }
 
         $tokens = $mapper->getTokenByIdAndUser(
@@ -112,13 +112,13 @@ class TokenController extends BaseApiController
     public function revokeToken(Request $request, PDO $db): void
     {
         if (!isset($request->user_id)) {
-            throw new Exception("You must be logged in", Http::UNAUTHORIZED);
+            throw new Exception('You must be logged in', Http::UNAUTHORIZED);
         }
 
         $tokenMapper = $this->getTokenMapper($db, $request);
 
         if (!$tokenMapper->tokenBelongsToTrustedApplication($request->getAccessToken())) {
-            throw new Exception("You can not access the token list with this client", Http::FORBIDDEN);
+            throw new Exception('You can not access the token list with this client', Http::FORBIDDEN);
         }
 
         $token = $tokenMapper->getRevokableTokenByIdAndUser(
