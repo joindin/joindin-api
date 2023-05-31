@@ -30,8 +30,8 @@ class TalksController extends BaseTalkController
     /**
      * @var PendingTalkClaimMapper
      */
-    private $pending_talk_claim_mapper;
-    private $spamCheckService;
+    private ?PendingTalkClaimMapper $pending_talk_claim_mapper;
+    private SpamCheckServiceInterface $spamCheckService;
 
     public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [])
     {
