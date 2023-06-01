@@ -563,14 +563,14 @@ class EventsController extends BaseApiController
             }
 
             $event['cfp_start_date'] = null;
-            $cfp_start_date          = $request->getParameter('cfp_start_date', false);
+            $cfp_start_date          = $request->getStringParameter('cfp_start_date', '');
 
             if (false !== $cfp_start_date && strtotime($cfp_start_date)) {
                 $cfp_start_date          = new DateTime($cfp_start_date, $tz);
                 $event['cfp_start_date'] = $cfp_start_date->format('U');
             }
             $event['cfp_end_date'] = null;
-            $cfp_end_date          = $request->getParameter('cfp_end_date', false);
+            $cfp_end_date          = $request->getStringParameter('cfp_end_date', '');
 
             if (false !== $cfp_end_date && strtotime($cfp_end_date)) {
                 $cfp_end_date          = new DateTime($cfp_end_date, $tz);
@@ -747,7 +747,13 @@ class EventsController extends BaseApiController
         }
 
         // Send a notification email as we have approved
-        $event        = $event_mapper->getEventById($event_id, true)['events'][0];
+        $event        = $event_mapper->getEventById($event_id, true);
+        if ($event === false) {
+            throw new Exception('Invalid event', Http::BAD_REQUEST);
+        }
+        if (is_array($event)) {
+            $event = $event['events'][0];
+        }
         $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
         $emailService = new EventApprovedEmailService($this->config, $recipients, $event);
         $emailService->sendEmail();
@@ -790,7 +796,13 @@ class EventsController extends BaseApiController
 
         // Only send an email if we provided a reason
         if (!empty($reason)) {
-            $event        = $event_mapper->getEventById($event_id, true, false)['events'][0];
+            $event        = $event_mapper->getEventById($event_id, true, false);
+            if ($event === false) {
+                throw new Exception("Invalid event", Http::BAD_REQUEST);
+            }
+            if (is_array($event)) {
+                $event = $event['events'][0];
+            }
             $recipients   = array_merge([$this->config['email']['from']], $event_mapper->getHostsEmailAddresses($event_id));
             $emailService = new EventRejectedEmailService($this->config, $recipients, $event);
             $emailService->sendEmail();
