@@ -31,6 +31,10 @@ class BaseTalkController extends BaseApiController
 
     private UserMapper $user_mapper;
 
+    /**
+     * @phpstan-assert !null $request->user_id
+     * @phpstan-assert !null $request->getUserId()
+     */
     protected function checkLoggedIn(Request $request): void
     {
         $failMessages = [
