@@ -90,9 +90,6 @@ class TalkCommentsController extends BaseApiController
         $eventMapper  = new EventMapper($db, $request);
         $recipients   = $eventMapper->getHostsEmailAddresses($eventId);
         $event        = $eventMapper->getEventById($eventId, true, true);
-        if (!$event) {
-            throw new Exception('Reported event not found');
-        }
 
         $emailService = new CommentReportedEmailService($this->config, $recipients, $comment, $event);
         $emailService->sendEmail();

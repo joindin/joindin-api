@@ -94,7 +94,7 @@ class EventsController extends BaseApiController
             if ($event_id) {
                 $list = $mapper->getEventById($event_id, $verbose, $activeEventsOnly);
 
-                if ($list === false || count($list['events']) === 0) {
+                if (count($list['events']) === 0) {
                     throw new Exception('Event not found', Http::NOT_FOUND);
                 }
             } else {
@@ -467,9 +467,10 @@ class EventsController extends BaseApiController
         if (!isset($request->url_elements[4])) {
             // Edit an Event
             $event_mapper   = new EventMapper($db, $request);
-            $existing_event = $event_mapper->getEventById($event_id, true);
 
-            if (!$existing_event) {
+            try {
+                $event_mapper->getEventById($event_id, true);
+            } catch (\Exception $e) {
                 throw new Exception(sprintf(
                     'There is no event with ID "%s"',
                     $event_id
@@ -674,7 +675,7 @@ class EventsController extends BaseApiController
         $event_mapper = new EventMapper($db, $request);
         $events       = $event_mapper->getEventById($event_id, true);
 
-        if (!$events || $events['meta']['count'] == 0) {
+        if ($events['meta']['count'] == 0) {
             throw new Exception("Associated event not found", Http::NOT_FOUND);
         }
 
@@ -747,13 +748,8 @@ class EventsController extends BaseApiController
         }
 
         // Send a notification email as we have approved
-        $event        = $event_mapper->getEventById($event_id, true);
-        if ($event === false) {
-            throw new Exception('Invalid event', Http::BAD_REQUEST);
-        }
-        if (is_array($event)) {
-            $event = $event['events'][0];
-        }
+        $event = $event_mapper->getEventById($event_id, true);
+        $event = $event['events'][0];
         $recipients   = $event_mapper->getHostsEmailAddresses($event_id);
         $emailService = new EventApprovedEmailService($this->config, $recipients, $event);
         $emailService->sendEmail();
@@ -796,13 +792,8 @@ class EventsController extends BaseApiController
 
         // Only send an email if we provided a reason
         if (!empty($reason)) {
-            $event        = $event_mapper->getEventById($event_id, true, false);
-            if ($event === false) {
-                throw new Exception("Invalid event", Http::BAD_REQUEST);
-            }
-            if (is_array($event)) {
-                $event = $event['events'][0];
-            }
+            $event = $event_mapper->getEventById($event_id, true, false);
+            $event = $event['events'][0];
             $recipients   = array_merge([$this->config['email']['from']], $event_mapper->getHostsEmailAddresses($event_id));
             $emailService = new EventRejectedEmailService($this->config, $recipients, $event);
             $emailService->sendEmail();

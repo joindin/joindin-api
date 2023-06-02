@@ -793,10 +793,6 @@ class TalksController extends BaseTalkController
         $event_mapper = $this->getEventMapper($db, $request);
         $event        = $event_mapper->getEventById($event_id);
 
-        if (!$event) {
-            throw new Exception('Invalid event id', Http::BAD_REQUEST);
-        }
-
         $is_admin = $talk_mapper->thisUserHasAdminOn($talk_id);
 
         if (!($is_admin)) {

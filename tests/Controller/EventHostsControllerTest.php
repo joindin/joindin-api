@@ -56,7 +56,7 @@ final class EventHostsControllerTest extends TestCase
         $controller = new EventHostsController();
 
         $em = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $em->method('getEventById')->willReturn(false);
+        $em->method('getEventById')->willThrowException(new \Exception('Event not found', Http::NOT_FOUND));
 
         $controller->setEventMapper($em);
 
@@ -101,7 +101,7 @@ final class EventHostsControllerTest extends TestCase
         $db = $this->getMockBuilder(PDO::class)->disableOriginalConstructor()->getMock();
 
         $eventMapper = $this->getMockBuilder(EventMapper::class)->disableOriginalConstructor()->getMock();
-        $eventMapper->method('getEventById')->willReturn(false);
+        $eventMapper->method('getEventById')->willThrowException(new Exception('Event not found', Http::NOT_FOUND));
 
         $constructor = new EventHostsController();
         $constructor->setEventMapper($eventMapper);
