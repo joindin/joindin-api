@@ -565,14 +565,14 @@ class EventsController extends BaseApiController
             $event['cfp_start_date'] = null;
             $cfp_start_date          = $request->getStringParameter('cfp_start_date', '');
 
-            if (false !== $cfp_start_date && strtotime($cfp_start_date)) {
+            if ('' !== $cfp_start_date && strtotime($cfp_start_date)) {
                 $cfp_start_date          = new DateTime($cfp_start_date, $tz);
                 $event['cfp_start_date'] = $cfp_start_date->format('U');
             }
             $event['cfp_end_date'] = null;
             $cfp_end_date          = $request->getStringParameter('cfp_end_date', '');
 
-            if (false !== $cfp_end_date && strtotime($cfp_end_date)) {
+            if ('' !== $cfp_end_date && strtotime($cfp_end_date)) {
                 $cfp_end_date          = new DateTime($cfp_end_date, $tz);
                 $event['cfp_end_date'] = $cfp_end_date->format('U');
             }
