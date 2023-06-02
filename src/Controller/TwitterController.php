@@ -64,12 +64,7 @@ class TwitterController extends BaseApiController
         }
 
         $tokens = $requestTokenMapper->create($oauth_token, $oauth_token_secret);
-
-        if (!$tokens) {
-            $output_list = [];
-        } else {
-            $output_list = $tokens->getOutputView($request);
-        }
+        $output_list = $tokens->getOutputView($request);
 
         $request->getView()->setHeader('Location', $output_list['twitter_request_tokens'][0]['uri']);
         $request->getView()->setResponseCode(Http::CREATED);
