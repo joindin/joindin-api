@@ -131,7 +131,7 @@ class TwitterController extends BaseApiController
         // more info from twitter
         $twitterUsername = $data['screen_name'];
         if (!is_string($twitterUsername)) {
-            throw new Exception('Invalid screen_name value');
+            throw new Exception('Invalid screen_name value', Http::BAD_REQUEST);
         }
 
         $result = $this->oauthModel->createAccessTokenFromTwitterUsername($clientId, $twitterUsername);
