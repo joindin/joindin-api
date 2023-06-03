@@ -191,26 +191,9 @@ class OAuthModel
         return $result ? $accessToken : false;
     }
 
-    /**
-     * generateToken
-     *
-     * taken mostly from
-     * http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html
-     *
-     * @return string
-     */
     public function generateToken(): string
     {
-        $fp      = fopen('/dev/urandom', 'rb');
-        if (!$fp) {
-            throw new \RuntimeException('unable to source random bits');
-        }
-        $entropy = (string) fread($fp, 32);
-        fclose($fp);
-
-        $hash = sha1($entropy); // sha1 gives us a 40-byte hash
-
-        return $hash;
+        return bin2hex(random_bytes(20));
     }
 
     /**
@@ -374,7 +357,7 @@ class OAuthModel
      * @param array  $values
      *
      * @return array|false
-     *@throws Exception
+     * @throws Exception
      */
     public function createUserFromTwitterUsername(string $clientId, array $values): false|array
     {
