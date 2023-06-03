@@ -98,7 +98,7 @@ class EventMapper extends ApiMapper
         $results = $this->getEvents(1, 0, ["event_id" => $event_id, 'active' => $activeEventsOnly]);
 
         if ($results === false) {
-            throw new Exception("Event not found", Http::NOT_FOUND);
+            throw new Exception(sprintf('There is no event with ID "%s"', $event_id), Http::NOT_FOUND);
         }
 
         return $this->transformResults($results, $verbose);

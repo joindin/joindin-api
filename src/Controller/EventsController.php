@@ -468,14 +468,7 @@ class EventsController extends BaseApiController
             // Edit an Event
             $event_mapper   = new EventMapper($db, $request);
 
-            try {
-                $event_mapper->getEventById($event_id, true);
-            } catch (\Exception $e) {
-                throw new Exception(sprintf(
-                    'There is no event with ID "%s"',
-                    $event_id
-                ));
-            }
+            $event_mapper->getEventById($event_id, true);
 
             if (!$event_mapper->thisUserHasAdminOn($event_id)) {
                 throw new Exception('You are not an host for this event', Http::FORBIDDEN);
