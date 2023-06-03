@@ -576,7 +576,7 @@ class TalksController extends BaseTalkController
         );
 
         $talk['speakers'] = array_map(
-            static fn($speaker) => is_string($speaker)
+            static fn ($speaker) => is_string($speaker)
                 ? trim(htmlspecialchars($speaker, ENT_NOQUOTES))
                 : throw new \RuntimeException('Speaker names must be strings', Http::BAD_REQUEST),
             (array) $request->getParameter('speakers')
