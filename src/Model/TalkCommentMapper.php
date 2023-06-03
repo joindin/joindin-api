@@ -5,6 +5,7 @@ namespace Joindin\Api\Model;
 use Exception;
 use Joindin\Api\Exception\RateLimitExceededException;
 use PDO;
+use Teapot\StatusCode\Http;
 use function sprintf;
 
 class TalkCommentMapper extends ApiMapper
@@ -135,9 +136,9 @@ class TalkCommentMapper extends ApiMapper
      * @param bool $verbose
      * @param bool $include_hidden
      *
-     * @return false|array
+     * @return array
      */
-    public function getCommentById(int $comment_id, bool $verbose = false, bool $include_hidden = false): array|false
+    public function getCommentById(int $comment_id, bool $verbose = false, bool $include_hidden = false): array
     {
         $sql      = $this->getBasicSQL($include_hidden);
         $sql      .= ' and tc.ID = :comment_id ';
@@ -156,7 +157,7 @@ class TalkCommentMapper extends ApiMapper
             }
         }
 
-        return false;
+        throw new Exception('Comment not found', Http::NOT_FOUND);
     }
 
     /**
@@ -357,9 +358,10 @@ class TalkCommentMapper extends ApiMapper
      *
      * @param int $comment_id The comment in question
      *
-     * @return false|array Some info
+     * @return array Some info
+     * @throws Exception
      */
-    public function getCommentInfo(int $comment_id): array|false
+    public function getCommentInfo(int $comment_id): array
     {
         $sql = "select t.event_id, tc.talk_id
             from talk_comments tc
@@ -369,7 +371,11 @@ class TalkCommentMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["talk_comment_id" => $comment_id]);
 
-        return ($row = $stmt->fetch(PDO::FETCH_ASSOC)) ? (array) $row : false;
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return (array) $row;
+        }
+
+        throw new Exception('Comment not found', Http::NOT_FOUND);
     }
 
     /**
