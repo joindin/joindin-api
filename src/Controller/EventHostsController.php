@@ -72,10 +72,6 @@ class EventHostsController extends BaseApiController
         $eventMapper = $this->getEventMapper($request, $db);
         $event       = $eventMapper->getEventById($event_id);
 
-        if (false === $event) {
-            throw new Exception('Event not found', Http::NOT_FOUND);
-        }
-
         $isAdmin = $eventMapper->thisUserHasAdminOn($event_id);
 
         if (!$isAdmin) {
@@ -137,11 +133,9 @@ class EventHostsController extends BaseApiController
         }
 
         $eventMapper = $this->getEventMapper($request, $db);
-        $event       = $eventMapper->getEventById($event_id);
 
-        if (false === $event) {
-            throw new Exception('Event not found', Http::NOT_FOUND);
-        }
+        // This will throw a 404 if not found - but the result is not used if it is found
+        $eventMapper->getEventById($event_id);
 
         $isAdmin = $eventMapper->thisUserHasAdminOn($event_id);
 

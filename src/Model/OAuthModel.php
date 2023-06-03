@@ -25,14 +25,6 @@ class OAuthModel
     }
 
     /**
-     * @return PDO
-     */
-    public function getDb(): \PDO
-    {
-        return $this->_db;
-    }
-
-    /**
      * @param PDO $db
      */
     public function setDb(PDO $db): void
@@ -88,7 +80,7 @@ class OAuthModel
         $update_stmt->execute(["id" => $result['id']]);
 
         // return the user ID this token belongs to
-        return (int) $result['user_id'];
+        return (int)$result['user_id'];
     }
 
     /**
@@ -132,22 +124,27 @@ class OAuthModel
             WHERE username=:username';
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["username" => $username]);
+
         /** @var array<string, string|int> $result */
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$result) {
-            return false;
-        }
 
         if ($result['verified'] != 1) {
             throw new Exception("Not verified", Http::UNAUTHORIZED);
         }
 
-        if (!password_verify(md5($password), (string) $result['password'])) {
+        $hash = $result['password'];
+        if (!is_string($hash)) {
+            return false;
+        }
+        if (!password_verify(md5($password), $hash)) {
             return false;
         }
 
-        return (int) $result['ID'];
+        $id = $result['ID'];
+        if (is_numeric($id)) {
+            return (int)$id;
+        }
+        return false;
     }
 
     /**
@@ -197,11 +194,23 @@ class OAuthModel
     /**
      * generateToken
      *
+     * taken mostly from
+     * http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html
+     *
      * @return string
      */
     public function generateToken(): string
     {
-        return bin2hex(random_bytes(20));
+        $fp      = fopen('/dev/urandom', 'rb');
+        if (!$fp) {
+            throw new \RuntimeException('unable to source random bits');
+        }
+        $entropy = (string) fread($fp, 32);
+        fclose($fp);
+
+        $hash = sha1($entropy); // sha1 gives us a 40-byte hash
+
+        return $hash;
     }
 
     /**
@@ -245,11 +254,15 @@ class OAuthModel
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["access_token" => $token]);
         /** @var array<string, string|int> $result */
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $result = (array)$stmt->fetch();
 
         // what did we get? Might have been an oauth app, a special one (like web2)
         // or something else.
-        return $result['application'] ? (string) $result['application'] : "joind.in";
+        if ($result['application'] && is_string($result['application'])) {
+            return $result['application'];
+        }
+
+        return "joind.in";
     }
 
     /**
@@ -292,7 +305,7 @@ class OAuthModel
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["token" => $token]);
 
-        return (bool) $stmt->fetch();
+        return (bool)$stmt->fetch();
     }
 
     /**
@@ -300,7 +313,7 @@ class OAuthModel
      *
      * Useful when confirming old password before changing to a new one
      *
-     * @param int    $userId   The ID of the user we're checking
+     * @param int $userId   The ID of the user we're checking
      * @param string $password Their supplied password
      *
      * @return boolean True if the password is correct, false otherwise
@@ -321,13 +334,13 @@ class OAuthModel
     /**
      * Create an access token for someone identified by Twitter username
      *
-     * @param  string $clientId        aka consumer_key (of the joindin client)
-     * @param  string $twitterUsername User's twitter nick
+     * @param string $clientId        aka consumer_key (of the joindin client)
+     * @param string $twitterUsername User's twitter nick
      *                                 (that we just got back from authenticating them)
      *
      * @return false|array                   access token
      */
-    public function createAccessTokenFromTwitterUsername(string $clientId, string $twitterUsername): array|false
+    public function createAccessTokenFromTwitterUsername(string $clientId, string $twitterUsername): false|array
     {
         $sql = "select ID from user "
                . "where twitter_username = :twitter_username "
@@ -338,16 +351,15 @@ class OAuthModel
         /** @var array<string, string|int> $result */
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$result) {
-            return false;
-        }
-
         $userId = $result['ID'];
+        if (!is_numeric($userId)) {
+            throw new Exception('Invalid user id');
+        }
 
         $accessToken = $this->createAccessToken($clientId, $userId);
 
         // we also want to send back the logged in user's uri
-        $userUri = $this->getUserUri((int) $userId);
+        $userUri = $this->getUserUri((int)$userId);
 
         return ['access_token' => $accessToken, 'user_uri' => $userUri];
     }
@@ -361,10 +373,10 @@ class OAuthModel
      * @param string $clientId
      * @param array  $values
      *
-     * @throws Exception
      * @return array|false
+     *@throws Exception
      */
-    public function createUserFromTwitterUsername(string $clientId, array $values): array|false
+    public function createUserFromTwitterUsername(string $clientId, array $values): false|array
     {
         $sql = "select ID from user "
                . "where twitter_username = :twitter_username";
@@ -404,14 +416,14 @@ class OAuthModel
      * Create an access token for someone identified by email address via a
      * third party authentication system such as Facebook
      *
-     * @param  string $clientId aka consumer_key (of the joindin client)
-     * @param  string $email    User's email address (that we just got back from authenticating them)
-     * @param  string $fullName User's full name from Facebook
-     * @param  string $userName Username to be created if not found
+     * @param string $clientId aka consumer_key (of the joindin client)
+     * @param string $email    User's email address (that we just got back from authenticating them)
+     * @param string $fullName User's full name from Facebook
+     * @param string $userName Username to be created if not found
      *
      * @return array|false              Array of access token and user uri on success or false or failure
      */
-    public function createAccessTokenFromTrustedEmail(string $clientId, string $email, string $fullName = '', string $userName = ''): array|false
+    public function createAccessTokenFromTrustedEmail(string $clientId, string $email, string $fullName = '', string $userName = ''): false|array
     {
         $sql = "
             SELECT ID from user
@@ -432,6 +444,10 @@ class OAuthModel
         if (!$userId) {
             return false;
         }
+        if (!is_numeric($userId)) {
+            throw new Exception('Invalid user id');
+        }
+        $userId = (int)$userId;
 
         $accessToken = $this->createAccessToken($clientId, $userId);
 

@@ -91,13 +91,17 @@ class EventMapper extends ApiMapper
      * @param bool $verbose  used to determine how many fields are needed
      * @param bool $activeEventsOnly
      *
-     * @return false|array the event detail
+     * @return array the event detail
      */
-    public function getEventById(int $event_id, bool $verbose = false, bool $activeEventsOnly = true): array|false
+    public function getEventById(int $event_id, bool $verbose = false, bool $activeEventsOnly = true): array
     {
         $results = $this->getEvents(1, 0, ["event_id" => $event_id, 'active' => $activeEventsOnly]);
 
-        return $results ? $this->transformResults($results, $verbose) : false;
+        if ($results === false) {
+            throw new Exception("Event not found", Http::NOT_FOUND);
+        }
+
+        return $this->transformResults($results, $verbose);
     }
 
     /**

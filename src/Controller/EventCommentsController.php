@@ -194,10 +194,6 @@ class EventCommentsController extends BaseApiController
         $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
         $event        = $event_mapper->getEventById($eventId, true, true);
 
-        if (! $event) {
-            throw new Exception('Event not found', Http::NOT_FOUND);
-        }
-
         $emailService = new EventCommentReportedEmailService($this->config, $recipients, $comment, $event);
         $emailService->sendEmail();
 

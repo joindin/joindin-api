@@ -101,6 +101,9 @@ class TalksController extends BaseTalkController
         /** @var TalkMapper $mapper */
         $mapper = $this->getMapper('talk');
         $talks  = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
+        if (!$talks) {
+            return [];
+        }
 
         return $talks->getOutputView($this->request, $verbose);
     }
@@ -138,7 +141,7 @@ class TalksController extends BaseTalkController
                     /** @var TalkCommentMapper $comment_mapper */
                     $comment_mapper = $this->getMapper('talkcomment', $db, $request);
 
-                    $data['user_id'] = $request->user_id;
+                    $data['user_id'] = $request->user_id ?? 0;
                     $data['talk_id'] = $talk_id;
                     $data['comment'] = $comment;
                     $data['rating']  = $rating;
@@ -770,8 +773,12 @@ class TalksController extends BaseTalkController
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
-    public function getTalkCommentEmailService(array $config, array $recipients, TalkModel $talk, array $comment): TalkCommentEmailService
-    {
+    public function getTalkCommentEmailService(
+        array $config,
+        array $recipients,
+        TalkModel $talk,
+        array $comment
+    ): TalkCommentEmailService {
         return new TalkCommentEmailService($config, $recipients, $talk, $comment);
     }
 
