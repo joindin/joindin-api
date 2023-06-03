@@ -138,9 +138,9 @@ class TalkMapper extends ApiMapper
      * @param int    $resultsperpage
      * @param int    $start
      *
-     * @return TalkModelCollection|bool Result collection or false on failure
+     * @return TalkModelCollection|false Result collection or false on failure
      */
-    public function getTalksByTitleSearch(string $keyword, int $resultsperpage, int $start): bool|TalkModelCollection
+    public function getTalksByTitleSearch(string $keyword, int $resultsperpage, int $start): TalkModelCollection|false
     {
         $sql = $this->getBasicSQL();
         $sql .= ' and LOWER(t.talk_title) like :title';

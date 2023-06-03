@@ -610,7 +610,13 @@ class TalksController extends BaseTalkController
 
         $user_id     = $request->user_id;
         $user_mapper = $this->getUserMapper($db, $request);
-        $user        = $user_mapper->getUserById($user_id)['users'][0];
+        $userResult   = $user_mapper->getUserById($user_id);
+
+        if (!$userResult) {
+            throw new \Exception('User not found', Http::INTERNAL_SERVER_ERROR);
+        }
+
+        $user = $userResult['users'][0];
 
         $data = $this->getLinkUserDataFromRequest($request);
 
@@ -636,7 +642,11 @@ class TalksController extends BaseTalkController
         if (!$speaker_id) {
             throw new Exception("Specified user not found", Http::NOT_FOUND);
         }
-        $speaker_name = $user_mapper->getUserById($speaker_id)['users'][0]['full_name'];
+        $speakerResult = $user_mapper->getUserById($speaker_id);
+        if (!$speakerResult) {
+            throw new \Exception('Speaker not found', Http::INTERNAL_SERVER_ERROR);
+        }
+        $speaker_name = $speakerResult['users'][0]['full_name'];
 
         $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
         $claim_exists              = $pending_talk_claim_mapper->claimExists($talk_id, $speaker_id, $claim['ID']);
