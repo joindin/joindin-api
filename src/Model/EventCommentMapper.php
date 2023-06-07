@@ -250,7 +250,7 @@ class EventCommentMapper extends ApiMapper
          */
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $row ?: false;
+        return $row;
     }
 
     /**
@@ -317,18 +317,7 @@ class EventCommentMapper extends ApiMapper
                         . " and ec.ID = :comment_id";
         $comment_stmt = $this->_db->prepare($comment_sql);
 
-        /**
-         * @var array{
-         *     reporting_user_id: int,
-         *     deciding_user_id: int,
-         *     decision: string,
-         *     event_comment_id: int,
-         *     event_id: int
-         * }|false $row
-         */
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        while ($row) {
+        while ( /** @var array|false */ $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $total++;
             $comment_result = $comment_stmt->execute(['comment_id' => $row['event_comment_id']]);
 
