@@ -10,8 +10,8 @@ use Joindin\Api\Request;
 class EventCommentReportModelCollection extends BaseModelCollection
 {
     /** @var array|EventCommentReportModel[] */
-    protected $list = [];
-    protected $total;
+    protected array $list = [];
+    protected int $total;
 
     /**
      * Take arrays of data and create a collection of models; store metadata
@@ -40,13 +40,12 @@ class EventCommentReportModelCollection extends BaseModelCollection
      * and pagination
      *
      * @param Request $request
-     * @param bool    $verbose
+     * @param bool $verbose
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false): array
     {
-        $retval = [];
         // handle the collection first
         $retval = ['reports' => []];
 

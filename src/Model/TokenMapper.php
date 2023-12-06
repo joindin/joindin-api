@@ -190,12 +190,16 @@ class TokenMapper extends ApiMapper
     /**
      * Check qwhether the given access token was issued by a trusted application
      *
-     * @param string $accessToken
+     * @param string|null $accessToken
      *
      * @return bool
      */
-    public function tokenBelongsToTrustedApplication($accessToken)
+    public function tokenBelongsToTrustedApplication(?string $accessToken)
     {
+        if ($accessToken === null) {
+            return false;
+        }
+
         $sql = 'SELECT b.enable_password_grant '
                . 'FROM oauth_access_tokens AS a '
                . 'LEFT JOIN oauth_consumers AS b on a.consumer_key=b.consumer_key '

@@ -24,7 +24,7 @@ class ContactEmailService extends BaseEmailService
     /**
      * @param array $data
      */
-    public function sendEmail(array $data)
+    public function sendEmail(array $data): void
     {
         $this->setSubject('Joind.in contact: ' . $data['subject']);
 

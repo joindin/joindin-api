@@ -9,9 +9,9 @@ $finder = PhpCsFixer\Finder::create()
         'build',
         'db',
     ])
-    ->name('.php_cs');
+    ->name('.php-cs-fixer');
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setFinder($finder)
     ->setRules([
         '@PSR2' => true,
@@ -30,7 +30,6 @@ return PhpCsFixer\Config::create()
                 'continue',
                 'declare',
                 'default',
-                'die',
                 'do',
                 'exit',
                 'for',
@@ -52,7 +51,8 @@ return PhpCsFixer\Config::create()
         'cast_spaces' => true,
         'class_attributes_separation' => [
             'elements' => [
-                'method',
+                'method' => 'one',
+                'trait_import' => 'one'
             ],
         ],
         'combine_consecutive_issets' => true,
@@ -62,10 +62,12 @@ return PhpCsFixer\Config::create()
             'spacing' => 'one',
         ],
         'declare_equal_normalize' => true,
-        'final_static_access' => true,
+        'self_static_accessor' => true,
         'fully_qualified_strict_types' => true,
         'function_typehint_space' => true,
-        'hash_to_slash_comment' => true,
+        'single_line_comment_style' => [
+            'comment_types' => ['hash']
+        ],
         'include' => true,
         'increment_style' => [
             'style' => 'post',
@@ -76,11 +78,9 @@ return PhpCsFixer\Config::create()
         'magic_constant_casing' => true,
         'magic_method_casing' => true,
         'method_argument_space' => [
-            'ensure_fully_multiline' => true,
             'keep_multiple_spaces_after_comma' => false,
         ],
         'method_chaining_indentation' => true,
-        'method_separation' => false,
         'multiline_whitespace_before_semicolons' => [
             'strategy' => 'no_multi_line',
         ],
@@ -105,7 +105,6 @@ return PhpCsFixer\Config::create()
                 'switch',
                 'throw',
                 'use',
-                'use_trait',
             ],
         ],
         'no_leading_import_slash' => true,
@@ -114,17 +113,14 @@ return PhpCsFixer\Config::create()
             'use' => 'echo',
         ],
         'no_multiline_whitespace_around_double_arrow' => true,
-        'no_multiline_whitespace_before_semicolons' => false,
         'no_php4_constructor' => false,
         'no_short_bool_cast' => true,
-        'no_short_echo_tag' => true,
+        'echo_tag_syntax' => ['format' => 'long'],
         'no_singleline_whitespace_before_semicolons' => true,
         'no_spaces_around_offset' => true,
         'no_superfluous_elseif' => true,
-        'no_trailing_comma_in_list_call' => true,
-        'no_trailing_comma_in_singleline_array' => true,
+        'no_trailing_comma_in_singleline' => true,
         'no_unneeded_curly_braces' => true,
-        'no_unneeded_final_method' => true,
         'no_unset_cast' => true,
         'no_unused_imports' => true,
         'no_useless_else' => true,

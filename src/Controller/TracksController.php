@@ -11,9 +11,9 @@ use Teapot\StatusCode\Http;
 
 class TracksController extends BaseApiController
 {
-    public function getAction(Request $request, PDO $db)
+    public function getAction(Request $request, PDO $db): array
     {
-        $track_id = $this->getItemId($request);
+        $track_id = $this->getItemId($request, 'Track not found');
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -33,14 +33,14 @@ class TracksController extends BaseApiController
         return $list;
     }
 
-    public function editTrack(Request $request, PDO $db)
+    public function editTrack(Request $request, PDO $db): void
     {
         // Check for login
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to edit this track", Http::UNAUTHORIZED);
         }
 
-        $track_id = $this->getItemId($request);
+        $track_id = $this->getItemId($request, 'Track not found');
 
         $track_mapper = new TrackMapper($db, $request);
         $tracks       = $track_mapper->getTrackById($track_id, true);
@@ -63,23 +63,20 @@ class TracksController extends BaseApiController
 
         // validate fields
         $errors              = [];
-        $track['track_name'] = filter_var(
-            $request->getParameter("track_name"),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+        $track['track_name'] = htmlspecialchars(
+            $request->getStringParameter("track_name"),
+            ENT_NOQUOTES
         );
 
         if (empty($track['track_name'])) {
             $errors[] = "'track_name' is a required field";
         }
-        $track['track_description'] = filter_var(
-            $request->getParameter("track_description", null),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
-        );
 
-        if (!isset($track['track_description'])) {
-            unset($track['track_description']); // Track description not provided; don't edit
+        if ($request->getParameter("track_description", null) !== null) {
+            $track['track_description'] = htmlspecialchars(
+                $request->getStringParameter("track_description"),
+                ENT_NOQUOTES
+            );
         }
 
         if ($errors) {
@@ -95,14 +92,14 @@ class TracksController extends BaseApiController
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
-    public function deleteTrack(Request $request, PDO $db)
+    public function deleteTrack(Request $request, PDO $db): void
     {
         // Check for login
         if (!isset($request->user_id)) {
             throw new Exception("You must be logged in to delete this track", Http::UNAUTHORIZED);
         }
 
-        $track_id = $this->getItemId($request);
+        $track_id = $this->getItemId($request, 'Track not found');
 
         $track_mapper = new TrackMapper($db, $request);
         $tracks       = $track_mapper->getTrackById($track_id, true);
@@ -126,7 +123,7 @@ class TracksController extends BaseApiController
         $track_mapper->deleteEventTrack($track_id);
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::NO_CONTENT);
     }
 }

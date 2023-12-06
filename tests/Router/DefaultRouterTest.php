@@ -19,7 +19,7 @@ final class DefaultRouterTest extends TestCase
      *
      * @return array
      */
-    public function getRouteProvider()
+    public function getRouteProvider(): array
     {
         return [
             [ // #0
@@ -35,7 +35,7 @@ final class DefaultRouterTest extends TestCase
      *
      * @param string $url
      */
-    public function testGetRoute($url)
+    public function testGetRoute(string $url): void
     {
         $request = new Request([], ['REQUEST_URI' => $url]);
         $router  = new DefaultRouter([]);

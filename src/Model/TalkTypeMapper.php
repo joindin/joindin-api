@@ -6,10 +6,7 @@ use PDO;
 
 class TalkTypeMapper extends ApiMapper
 {
-    /**
-     * @return array
-     */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'title'       => 'cat_title',
@@ -17,10 +14,7 @@ class TalkTypeMapper extends ApiMapper
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             'title'       => 'cat_title',
@@ -107,7 +101,7 @@ class TalkTypeMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);

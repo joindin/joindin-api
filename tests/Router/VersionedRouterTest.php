@@ -20,7 +20,7 @@ final class VersionedRouterTest extends TestCase
      *
      * @return array
      */
-    public function getRouteProvider()
+    public function getRouteProvider(): array
     {
         return [
             [ // #0
@@ -162,7 +162,7 @@ final class VersionedRouterTest extends TestCase
         $expectedAction,
         array $routeParams = [],
         $expectedExceptionCode = false
-    ) {
+    ): void {
         $request = new Request([], ['REQUEST_URI' => $url, 'REQUEST_METHOD' => $method]);
         $router  = new VersionedRouter($version, [], $rules);
 

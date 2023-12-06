@@ -11,7 +11,7 @@ final class TalkCommentDeletionException extends RuntimeException
 {
     public static function forUser(int $userId): self
     {
-        return new static(
+        return new self(
             sprintf('There was a problem deleting talk comments for user %d', $userId),
             Http::INTERNAL_SERVER_ERROR
         );

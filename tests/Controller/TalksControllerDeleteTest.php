@@ -4,6 +4,7 @@ namespace Joindin\Api\Test\Controller;
 
 use Exception;
 use Joindin\Api\Controller\TalksController;
+use Joindin\Api\Model\TalkMapper;
 use Joindin\Api\Request;
 use Joindin\Api\Service\NullSpamCheckService;
 use Joindin\Api\View\ApiView;
@@ -12,12 +13,12 @@ use Teapot\StatusCode\Http;
 
 final class TalksControllerDeleteTest extends TalkBase
 {
-    private $talkMapper;
+    private TalkMapper $talkMapper;
 
     /**
      * @group uses_pdo
      */
-    public function testRemoveStarFromTalkFailsWhenNotLoggedIn()
+    public function testRemoveStarFromTalkFailsWhenNotLoggedIn(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
@@ -38,7 +39,7 @@ final class TalksControllerDeleteTest extends TalkBase
         $talks_controller->removeStarFromTalk($request, $db);
     }
 
-    public function testRemoveStarFromTalksWhenLoggedIn()
+    public function testRemoveStarFromTalksWhenLoggedIn(): void
     {
         $request = new Request(
             [],
@@ -69,7 +70,7 @@ final class TalksControllerDeleteTest extends TalkBase
     /**
      * @group uses_pdo
      */
-    public function testDeleteTalkWhenNotLoggedIn()
+    public function testDeleteTalkWhenNotLoggedIn(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in to remove data');
@@ -90,8 +91,10 @@ final class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalk($request, $db);
     }
 
-    public function testDeleteTalkWhichDoesntExist()
+    public function testDeleteTalkWhichDoesntExist(): void
     {
+        self::expectNotToPerformAssertions();
+
         $httpRequest = [
             'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
             'REQUEST_METHOD' => 'DELETE'
@@ -100,6 +103,7 @@ final class TalksControllerDeleteTest extends TalkBase
             ->setConstructorArgs([[], $httpRequest ])
             ->getMock();
 
+        $request->url_elements = [3 => 1];
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',
@@ -122,10 +126,10 @@ final class TalksControllerDeleteTest extends TalkBase
         $view->method('setHeader')->with('Content-Length', 0);
         $view->method('setResponseCode')->with(Http::NO_CONTENT);
 
-        $this->assertNull($talks_controller->deleteTalk($request, $db));
+        $talks_controller->deleteTalk($request, $db);
     }
 
-    public function testDeleteTalkWthNoAdmin()
+    public function testDeleteTalkWthNoAdmin(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You do not have permission to do that');
@@ -156,8 +160,10 @@ final class TalksControllerDeleteTest extends TalkBase
         $talks_controller->deleteTalk($request, $db);
     }
 
-    public function testDeleteTalkWithAdmin()
+    public function testDeleteTalkWithAdmin(): void
     {
+        self::expectNotToPerformAssertions();
+
         $httpRequest = [
             'REQUEST_URI' => 'http://api.dev.joind.in/v2.1/talks/79',
             'REQUEST_METHOD' => 'DELETE'
@@ -166,6 +172,7 @@ final class TalksControllerDeleteTest extends TalkBase
             ->setConstructorArgs([[], $httpRequest ])
             ->getMock();
 
+        $request->url_elements = [3 => 1];
         $request->user_id = 2;
         $request->parameters = [
             'username'      => 'psherman',
@@ -188,6 +195,6 @@ final class TalksControllerDeleteTest extends TalkBase
         $view->method('setHeader')->with('Content-Length', 0);
         $view->method('setResponseCode')->with(Http::NO_CONTENT);
 
-        $this->assertNull($talks_controller->deleteTalk($request, $db));
+        $talks_controller->deleteTalk($request, $db);
     }
 }

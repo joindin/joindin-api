@@ -20,13 +20,13 @@ class TwitterController extends BaseApiController
     /**
      * @var OAuthModel
      */
-    private $oauthModel;
+    private OAuthModel $oauthModel;
 
-    public function getRequestToken(Request $request, PDO $db)
+    public function getRequestToken(Request $request, PDO $db): array
     {
         // only trusted clients can change account details
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId         = $request->getStringParameter('client_id');
+        $clientSecret     = $request->getStringParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
 
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
@@ -50,15 +50,22 @@ class TwitterController extends BaseApiController
         $res = $client->post('oauth/request_token');
 
         if ($res->getStatusCode() != Http::OK) {
-            throw new Exception("Twitter: no request token (" . $res->getStatusCode() . ": " . $res->getBody() . ")", Http::INTERNAL_SERVER_ERROR);
+            throw new Exception("Twitter: no request token (" . $res->getStatusCode() . ": " . $res->getBody() . ")", Http::SERVICE_UNAVAILABLE);
         }
 
         parse_str($res->getBody(), $data);
 
-        $requestTokenMapper = new TwitterRequestTokenMapper($db);
+        $requestTokenMapper = new TwitterRequestTokenMapper($db, $request);
         // $tokens is instance of TwitterRequestTokenModelCollection
-        $tokens      = $requestTokenMapper->create($data['oauth_token'], $data['oauth_token_secret']);
+        $oauth_token        = $data['oauth_token'];
+        $oauth_token_secret = $data['oauth_token_secret'];
+        if (!is_string($oauth_token) || !is_string($oauth_token_secret)) {
+            throw new Exception('Invalid type for oauth token or oauth secret');
+        }
+
+        $tokens = $requestTokenMapper->create($oauth_token, $oauth_token_secret);
         $output_list = $tokens->getOutputView($request);
+
         $request->getView()->setHeader('Location', $output_list['twitter_request_tokens'][0]['uri']);
         $request->getView()->setResponseCode(Http::CREATED);
 
@@ -78,8 +85,8 @@ class TwitterController extends BaseApiController
      */
     public function logUserIn(Request $request, PDO $db)
     {
-        $clientId         = $request->getParameter('client_id');
-        $clientSecret     = $request->getParameter('client_secret');
+        $clientId         = $request->getStringParameter('client_id');
+        $clientSecret     = $request->getStringParameter('client_secret');
         $this->oauthModel = $request->getOauthModel($db);
 
         if (!$this->oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
@@ -88,11 +95,14 @@ class TwitterController extends BaseApiController
 
         // check incoming values
         if (empty($request_token = $request->getParameter("token"))) {
-            throw new Exception("The request token must be supplied");
+            throw new Exception("The request token must be supplied", Http::BAD_REQUEST);
+        }
+        if (!is_string($request_token)) {
+            throw new Exception('Invalid request token', Http::BAD_REQUEST);
         }
 
         if (empty($verifier = $request->getParameter("verifier"))) {
-            throw new Exception("The verifier code must be supplied");
+            throw new Exception("The verifier code must be supplied", Http::BAD_REQUEST);
         }
 
         // exchange request token for access token
@@ -112,7 +122,7 @@ class TwitterController extends BaseApiController
         $res = $client->post('oauth/access_token', ['form_params' => ['oauth_verifier' => $verifier]]);
 
         if ($res->getStatusCode() != Http::OK) {
-            throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", Http::INTERNAL_SERVER_ERROR);
+            throw new Exception("Twitter: error (" . $res->getStatusCode() . ": " . $res->getBody() . ")", Http::SERVICE_UNAVAILABLE);
         }
 
         parse_str($res->getBody(), $data);
@@ -120,6 +130,9 @@ class TwitterController extends BaseApiController
         // we might want to store oauth_token and oauth_token_secret at some point if we want any
         // more info from twitter
         $twitterUsername = $data['screen_name'];
+        if (!is_string($twitterUsername)) {
+            throw new Exception('Invalid screen_name value', Http::BAD_REQUEST);
+        }
 
         $result = $this->oauthModel->createAccessTokenFromTwitterUsername($clientId, $twitterUsername);
 
@@ -142,13 +155,13 @@ class TwitterController extends BaseApiController
             try {
                 $res = $client1->get('1.1/account/verify_credentials.json?include_email=true');
             } catch (Exception $e) {
-                throw new Exception('Could not retrieve user-informations from Twitter', Http::FORBIDDEN, $e);
+                throw new Exception('Could not retrieve user information from Twitter', Http::FORBIDDEN, $e);
             }
 
-            if ($res->getStatusCode() == Http::OK) {
+            if ($res->getStatusCode() === Http::OK) {
                 $result = $this->oauthModel->createUserFromTwitterUsername(
                     $clientId,
-                    json_decode($res->getBody()->getContents(), JSON_OBJECT_AS_ARRAY)
+                    (array)json_decode($res->getBody()->getContents(), true)
                 );
             }
         }
@@ -158,7 +171,7 @@ class TwitterController extends BaseApiController
         }
 
         // clean up request token data
-        $requestTokenMapper = new TwitterRequestTokenMapper($db);
+        $requestTokenMapper = new TwitterRequestTokenMapper($db, $request);
         $requestTokenMapper->delete($request_token);
 
         return ['access_token' => $result['access_token'], 'user_uri' => $result['user_uri']];

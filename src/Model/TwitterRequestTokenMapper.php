@@ -3,6 +3,7 @@
 namespace Joindin\Api\Model;
 
 use PDO;
+use Teapot\StatusCode\Http;
 
 class TwitterRequestTokenMapper extends ApiMapper
 {
@@ -10,9 +11,9 @@ class TwitterRequestTokenMapper extends ApiMapper
      * @param string $token
      * @param string $secret
      *
-     * @return false|TwitterRequestTokenModelCollection
+     * @return TwitterRequestTokenModelCollection
      */
-    public function create($token, $secret)
+    public function create($token, $secret): TwitterRequestTokenModelCollection
     {
         $sql      = 'insert into twitter_request_tokens '
                     . 'set token=:token, secret=:secret';
@@ -22,19 +23,19 @@ class TwitterRequestTokenMapper extends ApiMapper
             ':secret' => $secret
         ]);
 
-        if ($response) {
-            $token_id = $this->_db->lastInsertId();
-
-            $select_sql  = "select ID, token, secret from twitter_request_tokens "
-                           . "where ID = :id";
-            $select_stmt = $this->_db->prepare($select_sql);
-            $select_stmt->execute([":id" => $token_id]);
-            $token_data = $select_stmt->fetch(PDO::FETCH_ASSOC);
-
-            return new TwitterRequestTokenModelCollection([$token_data]);
+        if (!$response) {
+            throw new \Exception('Unable to create token', Http::BAD_REQUEST);
         }
 
-        return false;
+        $token_id = $this->_db->lastInsertId();
+
+        $select_sql  = "select ID, token, secret from twitter_request_tokens "
+                       . "where ID = :id";
+        $select_stmt = $this->_db->prepare($select_sql);
+        $select_stmt->execute([":id" => $token_id]);
+        $token_data = $select_stmt->fetch(PDO::FETCH_ASSOC);
+
+        return new TwitterRequestTokenModelCollection([$token_data]);
     }
 
     /**

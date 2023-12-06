@@ -12,6 +12,6 @@ final class AuthenticationException extends \RuntimeException
 
     public static function forUnauthenticatedUser(string $message = null): self
     {
-        return new static($message ?? self::MESSAGE, Http::UNAUTHORIZED);
+        return new self($message ?? self::MESSAGE, Http::UNAUTHORIZED);
     }
 }

@@ -11,7 +11,9 @@ use Joindin\Api\Request;
  * @property int $event_id
  * @property array $speakers
  * @property string $stub
+ * @property string $talk_title
  */
+#[\AllowDynamicProperties]
 class TalkModel extends BaseModel
 {
     /**
@@ -21,7 +23,7 @@ class TalkModel extends BaseModel
      *
      * @return array
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'id'                      => 'ID',
@@ -47,7 +49,7 @@ class TalkModel extends BaseModel
      *
      * @return array
      */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         $fields = $this->getDefaultFields();
 
@@ -67,7 +69,7 @@ class TalkModel extends BaseModel
      *
      * @return array
      */
-    public function getSubResources()
+    public function getSubResources(): array
     {
         return [
             'speakers' => 'speakers',
@@ -79,11 +81,11 @@ class TalkModel extends BaseModel
      * Return this object with client-facing fields and hypermedia, ready for output
      *
      * @param Request $request
-     * @param bool    $verbose
+     * @param bool $verbose
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false): array
     {
         $item = parent::getOutputView($request, $verbose);
 
@@ -112,7 +114,7 @@ class TalkModel extends BaseModel
      *
      * @return string The link to the talk on the web (e.g. http://web2.dev.joind.in/talk/ed89b)
      **/
-    public function getWebsiteUrl($website_url)
+    public function getWebsiteUrl($website_url): string
     {
         return $website_url . "/talk/" . $this->stub;
     }

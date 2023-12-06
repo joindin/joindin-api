@@ -7,7 +7,7 @@ use PDO;
 
 class EventCommentMapper extends ApiMapper
 {
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         // warning, users added in build array
         return [
@@ -17,7 +17,7 @@ class EventCommentMapper extends ApiMapper
         ];
     }
 
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             'rating'       => 'rating',
@@ -35,7 +35,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getEventCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
+    public function getEventCommentsByEventId(int $event_id, int $resultsperpage, int $start, bool $verbose = false): false|array
     {
         $sql      = $this->getBasicSQL();
         $sql      .= 'and event_id = :event_id order by date_made desc ';
@@ -62,7 +62,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
+    public function getCommentById(int $comment_id, bool $verbose = false, bool $include_hidden = false): false|array
     {
         $sql      = $this->getBasicSQL($include_hidden);
         $sql      .= 'and ec.ID = :comment_id ';
@@ -87,7 +87,7 @@ class EventCommentMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);
@@ -114,12 +114,12 @@ class EventCommentMapper extends ApiMapper
      *
      * This is used so we can nest comments inside other not-list settings
      *
-     * @param array $row     The database row with the comment result
-     * @param bool  $verbose The verbosity level
+     * @param array $row    The database row with the comment result
+     * @param bool $verbose The verbosity level
      *
      * @return array The extra fields to add to the existing data for this record
      */
-    protected function formatOneComment($row, $verbose)
+    protected function formatOneComment(array $row, bool $verbose): array
     {
         $base    = $this->_request->base;
         $version = $this->_request->version;
@@ -153,7 +153,7 @@ class EventCommentMapper extends ApiMapper
         return $result;
     }
 
-    protected function getBasicSQL($include_hidden = false)
+    protected function getBasicSQL(bool $include_hidden = false): string
     {
         $sql = 'select ec.*, user.username, user.email, user.full_name, e.event_tz_cont, e.event_tz_place '
                . 'from event_comments ec '
@@ -168,7 +168,7 @@ class EventCommentMapper extends ApiMapper
         return $sql;
     }
 
-    public function save(array $data)
+    public function save(array $data): false|string
     {
         // check for a duplicate first
         $dupe_sql = 'select ec.ID from event_comments ec '
@@ -211,7 +211,7 @@ class EventCommentMapper extends ApiMapper
      *
      * @return bool
      */
-    public function hasUserRatedThisEvent($user_id, $event_id)
+    public function hasUserRatedThisEvent(int $user_id, int $event_id): bool
     {
         $sql = 'select ec.ID from event_comments ec '
                . 'where event_id = :event_id and user_id = :user_id and rating > 0';
@@ -234,9 +234,9 @@ class EventCommentMapper extends ApiMapper
      *
      * @param int $comment_id The comment in question
      *
-     * @return false|array including event_id
+     * @return false|array{event_id: int} including event_id
      */
-    public function getCommentInfo($comment_id)
+    public function getCommentInfo($comment_id): false|array
     {
         $sql = "select ec.event_id
             from event_comments ec
@@ -245,11 +245,12 @@ class EventCommentMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["event_comment_id" => $comment_id]);
 
-        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return $row;
-        }
+        /**
+         * @var array{event_id: int}|false $row
+         */
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return false;
+        return $row;
     }
 
     /**
@@ -259,7 +260,7 @@ class EventCommentMapper extends ApiMapper
      * @param int $comment_id the comment that was reported
      * @param int $user_id    the user that reported it
      */
-    public function userReportedComment($comment_id, $user_id)
+    public function userReportedComment($comment_id, $user_id): void
     {
         $report_sql = "insert into reported_event_comments
             set event_comment_id = :event_comment_id,
@@ -283,12 +284,12 @@ class EventCommentMapper extends ApiMapper
      *
      * Includes verbose nested comment info
      *
-     * @param int  $event_id  The event whose comments should be returned
+     * @param int $event_id  The event whose comments should be returned
      * @param bool $moderated Whether to include comments that have been moderated
      *
      * @return EventCommentReportModelCollection
      */
-    public function getReportedCommentsByEventId($event_id, $moderated = false)
+    public function getReportedCommentsByEventId(int $event_id, bool $moderated = false): EventCommentReportModelCollection
     {
         $sql = "select rc.reporting_user_id, rc.deciding_user_id, rc.decision,
             rc.event_comment_id, ec.event_id,
@@ -316,11 +317,11 @@ class EventCommentMapper extends ApiMapper
                         . " and ec.ID = :comment_id";
         $comment_stmt = $this->_db->prepare($comment_sql);
 
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        while ( /** @var array|false */ $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $total++;
             $comment_result = $comment_stmt->execute(['comment_id' => $row['event_comment_id']]);
 
-            if ($comment_result && $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($comment_result &&  /** @var array|false $comment */ $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
                 // work around the existing transform logic
                 $comment_array  = [$comment];
                 $comment_array  = parent::transformResults($comment_array, true);
@@ -341,11 +342,11 @@ class EventCommentMapper extends ApiMapper
      * @param int    $comment_id the comment that was reported
      * @param int    $user_id    the user that reported it
      */
-    public function moderateReportedComment($decision, $comment_id, $user_id)
+    public function moderateReportedComment($decision, $comment_id, $user_id): void
     {
         if (in_array($decision, ['approved', 'denied'])) {
             // record the decision
-            $sql  = 'update reported_event_comments set 
+            $sql  = 'update reported_event_comments set
                         decision = :decision,
                         deciding_user_id = :user_id,
                         deciding_date = NOW()

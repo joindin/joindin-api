@@ -16,7 +16,7 @@ use Teapot\StatusCode\Http;
  */
 class EmailsController extends BaseApiController
 {
-    public function verifications(Request $request, PDO $db)
+    public function verifications(Request $request, PDO $db): void
     {
         $user_mapper = new UserMapper($db, $request);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
@@ -40,11 +40,11 @@ class EmailsController extends BaseApiController
         $emailService->sendEmail();
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::ACCEPTED);
     }
 
-    public function usernameReminder(Request $request, PDO $db)
+    public function usernameReminder(Request $request, PDO $db): void
     {
         $user_mapper = new UserMapper($db, $request);
         $email       = filter_var($request->getParameter("email"), FILTER_VALIDATE_EMAIL);
@@ -55,7 +55,7 @@ class EmailsController extends BaseApiController
 
         $list = $user_mapper->getUserByEmail($email);
 
-        if (!is_array($list['users']) || !count($list['users'])) {
+        if (!is_array($list) || !count($list['users'])) {
             throw new Exception("Can't find that email address", Http::BAD_REQUEST);
         }
 
@@ -66,14 +66,14 @@ class EmailsController extends BaseApiController
         $emailService->sendEmail();
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::ACCEPTED);
     }
 
-    public function passwordReset(Request $request, PDO $db)
+    public function passwordReset(Request $request, PDO $db): void
     {
         $user_mapper = new UserMapper($db, $request);
-        $username    = filter_var($request->getParameter("username"), FILTER_SANITIZE_STRING);
+        $username    = htmlspecialchars($request->getStringParameter("username"));
 
         if (empty($username)) {
             throw new Exception("A username must be supplied", Http::BAD_REQUEST);
@@ -81,7 +81,7 @@ class EmailsController extends BaseApiController
 
         $list = $user_mapper->getUserByUsername($username);
 
-        if (!is_array($list['users']) || !count($list['users'])) {
+        if (!is_array($list) || !count($list['users'])) {
             throw new Exception("Can't find that user", Http::BAD_REQUEST);
         }
 
@@ -89,6 +89,10 @@ class EmailsController extends BaseApiController
 
         // neither user_id nor email are in the user resource returned by the mapper
         $user_id    = $user_mapper->getUserIdFromUsername($username);
+
+        if (!$user_id) {
+            throw new Exception("Unable retrieve user id", Http::BAD_REQUEST);
+        }
         $email      = $user_mapper->getEmailByUserId($user_id);
         $recipients = [$email];
 
@@ -103,7 +107,7 @@ class EmailsController extends BaseApiController
         $emailService->sendEmail();
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::ACCEPTED);
     }
 }

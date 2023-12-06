@@ -7,10 +7,7 @@ use PDO;
 
 class LanguageMapper extends ApiMapper
 {
-    /**
-     * @return array
-     */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'name' => 'lang_name',
@@ -18,10 +15,7 @@ class LanguageMapper extends ApiMapper
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             'name' => 'lang_name',
@@ -67,7 +61,7 @@ class LanguageMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);

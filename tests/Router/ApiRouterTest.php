@@ -17,7 +17,7 @@ final class ApiRouterTest extends TestCase
      *
      * @return array
      */
-    public function getSetRoutersProvider()
+    public function getSetRoutersProvider(): array
     {
         return [
             [
@@ -44,7 +44,7 @@ final class ApiRouterTest extends TestCase
      * @param array $routers  A list of Routers
      * @param array $expected The expected result of getRouters
      */
-    public function testGetSetRouters(array $routers, array $expected)
+    public function testGetSetRouters(array $routers, array $expected): void
     {
         $obj = new ApiRouter([], [], []);
         $obj->setRouters($routers);

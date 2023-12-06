@@ -6,13 +6,10 @@ use Joindin\Api\Model\TalkModel;
 
 class TalkAssignEmailService extends BaseEmailService
 {
-    protected $event;
-    protected $talk;
-    protected $website_url;
-    /**
-     * @var string
-     */
-    protected $username;
+    protected array $event;
+    protected TalkModel $talk;
+    protected string $website_url;
+    protected string $username;
 
     /**
      * @param array     $config
@@ -21,7 +18,7 @@ class TalkAssignEmailService extends BaseEmailService
      * @param TalkModel $talk
      * @param string    $username
      */
-    public function __construct(array $config, array $recipients, array $event, TalkModel $talk, $username)
+    public function __construct(array $config, array $recipients, array $event, TalkModel $talk, string $username)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
@@ -33,7 +30,7 @@ class TalkAssignEmailService extends BaseEmailService
         $this->username    = $username;
     }
 
-    public function sendEmail()
+    public function sendEmail(): void
     {
         $this->setSubject("Joind.in: A talk has been assigned to you");
 

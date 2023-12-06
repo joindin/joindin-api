@@ -12,7 +12,7 @@ final class TestRouter3 extends BaseRouter
     /**
      * {@inheritdoc}
      */
-    public function dispatch(Route $route, Request $request, $db)
+    public function dispatch(Route $route, Request $request, \PDO $db): never
     {
         throw new BadMethodCallException('Method not implemented');
     }
@@ -20,12 +20,12 @@ final class TestRouter3 extends BaseRouter
     /**
      * {@inheritdoc}
      */
-    public function getRoute(Request $request)
+    public function getRoute(Request $request): Route
     {
         throw new BadMethodCallException('Method not implemented');
     }
 
-    public function route(Request $request, $db)
+    public function route(Request $request, \PDO $db): void
     {
     }
 }

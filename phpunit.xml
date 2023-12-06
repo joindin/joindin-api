@@ -1,37 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-    backupGlobals="false"
-    backupStaticAttributes="false"
-    beStrictAboutOutputDuringTests="true"
-    beStrictAboutTestsThatDoNotTestAnything="true"
-    bootstrap="./tests/bootstrap.php"
-    cacheResultFile="build/.phpunit.result.cache"
-    colors="true"
-    executionOrder="random"
-    verbose="true"
->
-    <testsuite name="Joind.in Test Suite">
-        <directory>tests/</directory>
-    </testsuite>
-    <logging>
-        <log type="coverage-html" target="build/coverage"
-             lowUpperBound="35" highLowerBound="70"/>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-        <log type="junit" target="build/logs/junit.xml"/>
-    </logging>
-
-    <groups>
-        <exclude>
-            <group>uses_pdo</group>
-        </exclude>
-    </groups>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="false">
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" backupGlobals="false" backupStaticAttributes="false" beStrictAboutOutputDuringTests="true" beStrictAboutTestsThatDoNotTestAnything="true" bootstrap="./tests/bootstrap.php" cacheResultFile="build/.phpunit.result.cache" colors="true" executionOrder="random" verbose="true">
+  <coverage processUncoveredFiles="false">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <report>
+      <clover outputFile="build/logs/clover.xml"/>
+      <html outputDirectory="build/coverage" lowUpperBound="35" highLowerBound="70"/>
+    </report>
+  </coverage>
+  <testsuite name="Joind.in Test Suite">
+    <directory>tests/</directory>
+  </testsuite>
+  <logging>
+    <junit outputFile="build/logs/junit.xml"/>
+  </logging>
+  <groups>
+    <exclude>
+      <group>uses_pdo</group>
+    </exclude>
+  </groups>
 </phpunit>

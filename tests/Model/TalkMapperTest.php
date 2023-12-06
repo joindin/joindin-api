@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class TalkMapperTest extends TestCase
 {
-    public function testMediaTypesAreAddedCorrectly()
+    public function testMediaTypesAreAddedCorrectly(): void
     {
         $request = new Request(
             [],
@@ -53,7 +53,7 @@ final class TalkMapperTest extends TestCase
         );
     }
 
-    private function getValidMediaRows()
+    private function getValidMediaRows(): array
     {
         return [
             [
@@ -67,7 +67,7 @@ final class TalkMapperTest extends TestCase
         ];
     }
 
-    private function transformMediaRows($rows)
+    private function transformMediaRows(array $rows): array
     {
         $transformedRows = [];
 
@@ -78,7 +78,7 @@ final class TalkMapperTest extends TestCase
         return $transformedRows;
     }
 
-    public function testThatTalkLinksAreDeletedCorrectly()
+    public function testThatTalkLinksAreDeletedCorrectly(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
@@ -95,7 +95,7 @@ final class TalkMapperTest extends TestCase
         $this->assertTrue($mapper->removeAllTalkLinks(12));
     }
 
-    public function testThatRemovingTalkFromAllTracksWorksCorrectly()
+    public function testThatRemovingTalkFromAllTracksWorksCorrectly(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
@@ -112,7 +112,7 @@ final class TalkMapperTest extends TestCase
         $this->assertTrue($mapper->removeTalkFromAllTracks(12));
     }
 
-    public function testThatSpeakersAreDeletedFromTalkCorrectly()
+    public function testThatSpeakersAreDeletedFromTalkCorrectly(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
@@ -129,7 +129,7 @@ final class TalkMapperTest extends TestCase
         $this->assertTrue($mapper->removeAllSpeakersFromTalk(12));
     }
 
-    public function testThatBrokenTalkLinksDeletionRollsBack()
+    public function testThatBrokenTalkLinksDeletionRollsBack(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
@@ -148,7 +148,7 @@ final class TalkMapperTest extends TestCase
         $this->assertFalse($mapper->delete(12));
     }
 
-    public function testThatBrokenTracksDeletionRollsBack()
+    public function testThatBrokenTracksDeletionRollsBack(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
@@ -171,7 +171,7 @@ final class TalkMapperTest extends TestCase
         $this->assertFalse($mapper->delete(12));
     }
 
-    public function testThatBrokenSpeakerDeletionRollsBack()
+    public function testThatBrokenSpeakerDeletionRollsBack(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
@@ -195,7 +195,7 @@ final class TalkMapperTest extends TestCase
         $this->assertFalse($mapper->delete(12));
     }
 
-    public function testThatBrokenTalkDeletionRollsBack()
+    public function testThatBrokenTalkDeletionRollsBack(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')
@@ -220,7 +220,7 @@ final class TalkMapperTest extends TestCase
         $this->assertFalse($mapper->delete(12));
     }
 
-    public function testThatWorkingTalkDeletionCommits()
+    public function testThatWorkingTalkDeletionCommits(): void
     {
         $stmt = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
         $stmt->method('execute')

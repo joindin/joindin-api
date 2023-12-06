@@ -29,7 +29,7 @@ final class UsersControllerTest extends TestCase
      *
      * @group uses_pdo
      */
-    public function testDeleteUserWithoutBeingLoggedInThrowsException()
+    public function testDeleteUserWithoutBeingLoggedInThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to delete data');
@@ -51,7 +51,7 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteUserWithNonAdminIdThrowsException()
+    public function testDeleteUserWithNonAdminIdThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You do not have permission to do that');
@@ -83,7 +83,7 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteUserWithAdminAccessThrowsExceptionOnFailedDelete()
+    public function testDeleteUserWithAdminAccessThrowsExceptionOnFailedDelete(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('There was a problem trying to delete the user');
@@ -122,7 +122,7 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteUserWithAdminAccessDeletesSuccessfully()
+    public function testDeleteUserWithAdminAccessDeletesSuccessfully(): void
     {
         $request = new Request([], ['REQUEST_URI' => "http://api.dev.joind.in/v2.1/users/3", 'REQUEST_METHOD' => 'DELETE']);
         $request->user_id = 1;
@@ -148,7 +148,7 @@ final class UsersControllerTest extends TestCase
             ->willReturn(true);
 
         $usersController->setUserMapper($userMapper);
-        $this->assertNull($usersController->deleteUser($request, $db));
+        $usersController->deleteUser($request, $db);
     }
 
     public function testDeleteTalkCommentsWithoutBeingLoggedInThrowsException(): void
@@ -234,13 +234,14 @@ final class UsersControllerTest extends TestCase
         $usersController->deleteTalkComments($request, $db);
     }
 
-    public function testThatUserDataIsNotDoubleEscapedOnUserCreation()
+    public function testThatUserDataIsNotDoubleEscapedOnUserCreation(): void
     {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        // If we create a user we should be redirected to that user, *not* the current user
         $request->user_id = 1;
         $request->base = 'base';
         $request->path_info = 'path_info';
-        $request->method('getParameter')
+        $request->method('getStringParameter')
             ->withConsecutive(
                 ['username'],
                 ['full_name'],
@@ -259,7 +260,7 @@ final class UsersControllerTest extends TestCase
             );
 
         $view = $this->getMockBuilder(ApiView::class)->disableOriginalConstructor()->getMock();
-        $view->expects($this->once())->method('setHeader')->with('Location', 'basepath_info/1');
+        $view->expects($this->once())->method('setHeader')->with('Location', 'basepath_info/123');
         $view->expects($this->once())->method('setResponseCode')->with(Http::CREATED);
         $request->method('getView')->willReturn($view);
 
@@ -276,7 +277,7 @@ final class UsersControllerTest extends TestCase
             'password' => 'pass"\'stuff',
             'twitter_username' => 'twitter"\'stuff',
             'biography' => 'Bio"\'stuff'
-        ])->willReturn(true);
+        ])->willReturn(123);
 
         $emailService = $this->getMockBuilder(UserRegistrationEmailService::class)->disableOriginalConstructor()->getMock();
         $emailService->method('sendEmail');
@@ -288,11 +289,13 @@ final class UsersControllerTest extends TestCase
         $controller->postAction($request, $db);
     }
 
-    public function testThatUserDataIsNotDoubleEscapedOnUserEdit()
+    public function testThatUserDataIsNotDoubleEscapedOnUserEdit(): void
     {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->url_elements = [3 => 1];
+        $request->method('getAccessToken')->willReturn('foo');
         $request->method('getUserId')->willReturn(1);
-        $request->method('getParameter')->withConsecutive(
+        $request->method('getStringParameter')->withConsecutive(
             ['password'],
             ['full_name'],
             ['email'],
@@ -328,7 +331,7 @@ final class UsersControllerTest extends TestCase
             'email' => 'mailstuff@example.com',
             'twitter_username' => 'twitter"\'stuff',
             'biography' => 'Bio"\'stuff',
-            'user_id' => false,
+            'user_id' => 1,
         ])->willReturn(true);
 
         $controller = new UsersController();
@@ -345,7 +348,7 @@ final class UsersControllerTest extends TestCase
      *
      * @group uses_pdo
      */
-    public function testSetTrustedWithNoUserIdThrowsException()
+    public function testSetTrustedWithNoUserIdThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('You must be logged in to change a user account');
@@ -394,13 +397,14 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testSetTrustedWithoutStateThrowsException()
+    public function testSetTrustedWithoutStateThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must provide a trusted state');
         $this->expectExceptionCode(Http::BAD_REQUEST);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->url_elements = [3 => 2];
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("trusted")
@@ -428,13 +432,14 @@ final class UsersControllerTest extends TestCase
      *
      * @return void
      */
-    public function testSetTrustedWithFailureThrowsException()
+    public function testSetTrustedWithFailureThrowsException(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Unable to update status');
         $this->expectExceptionCode(Http::INTERNAL_SERVER_ERROR);
 
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->url_elements = [3 => 2];
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("trusted")
@@ -463,13 +468,14 @@ final class UsersControllerTest extends TestCase
 
     /**
      * Ensures that if the setTrusted method is called by an admin,
-     * and the update succeeds, a view is created and null is returned
+     * and the update succeeds, a view is created
      *
      * @return void
      */
-    public function testSetTrustedWithSuccessCreatesView()
+    public function testSetTrustedWithSuccessCreatesView(): void
     {
         $request = $this->getMockBuilder(Request::class)->disableOriginalConstructor()->getMock();
+        $request->url_elements = [3 => 2];
         $request->method('getUserId')->willReturn(2);
         $request->method('getParameter')
             ->with("trusted")
@@ -477,13 +483,11 @@ final class UsersControllerTest extends TestCase
 
         $view = $this->getMockBuilder(JsonView::class)->getMock();
         $view->expects($this->once())
-            ->method("setHeader")
-            ->willReturn(true);
+            ->method("setHeader");
 
         $view->expects($this->once())
             ->method("setResponseCode")
-            ->with(Http::NO_CONTENT)
-            ->willReturn(true);
+            ->with(Http::NO_CONTENT);
 
         $request->expects($this->once())
             ->method("getView")
@@ -507,6 +511,6 @@ final class UsersControllerTest extends TestCase
             ->willReturn(true);
 
         $usersController->setUserMapper($userMapper);
-        $this->assertNull($usersController->setTrusted($request, $db));
+        $usersController->setTrusted($request, $db);
     }
 }

@@ -15,34 +15,27 @@ use Teapot\StatusCode\Http;
 
 class BaseTalkController extends BaseApiController
 {
-    /** @var PDO */
-    protected $db;
-    /** @var Request */
-    protected $request;
+    protected PDO $db;
+    protected Request $request;
 
-    protected $classMappings = [
+    protected array $classMappings = [
         'talk'        => TalkMapper::class,
         'talkcomment' => TalkCommentMapper::class,
     ];
 
-    protected $classMaps = [];
+    protected array $classMaps = [];
+
+    protected EventMapper $event_mapper;
+
+    private TalkMapper $talk_mapper;
+
+    private UserMapper $user_mapper;
 
     /**
-     * @var EventMapper
+     * @phpstan-assert !null $request->user_id
+     * @phpstan-assert !null $request->getUserId()
      */
-    protected $event_mapper;
-
-    /**
-     * @var TalkMapper
-     */
-    private $talk_mapper;
-
-    /**
-     * @var UserMapper
-     */
-    private $user_mapper;
-
-    protected function checkLoggedIn(Request $request)
+    protected function checkLoggedIn(Request $request): void
     {
         $failMessages = [
             'POST'   => 'create data',
@@ -62,12 +55,12 @@ class BaseTalkController extends BaseApiController
         }
     }
 
-    public function setTalkMapper(TalkMapper $talk_mapper)
+    public function setTalkMapper(TalkMapper $talk_mapper): void
     {
         $this->talk_mapper = $talk_mapper;
     }
 
-    public function getTalkMapper(PDO $db, Request $request)
+    public function getTalkMapper(PDO $db, Request $request): TalkMapper
     {
         if (!isset($this->talk_mapper)) {
             $this->talk_mapper = new TalkMapper($db, $request);
@@ -76,12 +69,12 @@ class BaseTalkController extends BaseApiController
         return $this->talk_mapper;
     }
 
-    public function setEventMapper(EventMapper $event_mapper)
+    public function setEventMapper(EventMapper $event_mapper): void
     {
         $this->event_mapper = $event_mapper;
     }
 
-    public function getEventMapper(PDO $db, Request $request)
+    public function getEventMapper(PDO $db, Request $request): EventMapper
     {
         if (!isset($this->event_mapper)) {
             $this->event_mapper = new EventMapper($db, $request);
@@ -90,12 +83,12 @@ class BaseTalkController extends BaseApiController
         return $this->event_mapper;
     }
 
-    public function setUserMapper(UserMapper $user_mapper)
+    public function setUserMapper(UserMapper $user_mapper): void
     {
         $this->user_mapper = $user_mapper;
     }
 
-    public function getUserMapper(PDO $db, Request $request)
+    public function getUserMapper(PDO $db, Request $request): UserMapper
     {
         if (!isset($this->user_mapper)) {
             $this->user_mapper = new UserMapper($db, $request);
@@ -118,13 +111,13 @@ class BaseTalkController extends BaseApiController
     protected function getTalkById(
         Request $request,
         PDO $db,
-        $talk_id = 0,
-        $verbose = false
-    ) {
+        int $talk_id = 0,
+        bool $verbose = false
+    ): TalkModel {
         $mapper = $this->getTalkMapper($db, $request);
 
         if (0 === $talk_id) {
-            $talk_id = $this->getItemId($request);
+            $talk_id = $this->getItemId($request, 'Talk not found');
         }
 
         $talk = $mapper->getTalkById($talk_id, $verbose);
@@ -136,7 +129,7 @@ class BaseTalkController extends BaseApiController
         return $talk;
     }
 
-    protected function setDbAndRequest(PDO $db, Request $request)
+    protected function setDbAndRequest(PDO $db, Request $request): void
     {
         $this->db      = $db;
         $this->request = $request;
@@ -149,7 +142,7 @@ class BaseTalkController extends BaseApiController
      *
      * @return ApiMapper
      */
-    protected function getMapper($type, PDO $db = null, Request $request = null)
+    protected function getMapper(string $type, PDO $db = null, Request $request = null): ApiMapper
     {
         if (is_null($db)) {
             $db = $this->db;
@@ -166,7 +159,7 @@ class BaseTalkController extends BaseApiController
         return $this->classMaps[$type];
     }
 
-    public function setMapper($type, $object)
+    public function setMapper(string $type, ApiMapper $object): void
     {
         $this->classMaps[$type] = $object;
     }

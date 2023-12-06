@@ -11,9 +11,9 @@ use Joindin\Api\Request;
 class ClientModelCollection extends BaseModelCollection
 {
     /** @var array|ClientModel[] */
-    protected $list;
+    protected array $list;
 
-    protected $total;
+    protected int $total;
 
     /**
      * Take arrays of data and create a collection of models; store metadata
@@ -39,7 +39,7 @@ class ClientModelCollection extends BaseModelCollection
      * Present this collection ready for the output handlers
      *
      * This creates the expected output structure, converting each resource
-     * to it's presentable representation and adding the meta fields for totals
+     * to its presentable representation and adding the meta fields for totals
      * and pagination
      *
      * @param Request $request
@@ -47,9 +47,8 @@ class ClientModelCollection extends BaseModelCollection
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false): array
     {
-        $retval = [];
         // handle the collection first
         $retval = ['clients' => []];
 
@@ -65,10 +64,8 @@ class ClientModelCollection extends BaseModelCollection
 
     /**
      * Return the list of talks (internal representation)
-     *
-     * @return array
      */
-    public function getClients()
+    public function getClients(): array
     {
         return $this->list;
     }

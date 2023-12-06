@@ -15,7 +15,7 @@ class UserRegistrationEmailService extends BaseEmailService
      * @param array  $recipients
      * @param string $token
      */
-    public function __construct(array $config, array $recipients, $token)
+    public function __construct(array $config, array $recipients, string $token)
     {
         // set up the common stuff first
         parent::__construct($config, $recipients);
@@ -24,7 +24,7 @@ class UserRegistrationEmailService extends BaseEmailService
         $this->website_url = $config['website_url'];
     }
 
-    public function sendEmail()
+    public function sendEmail(): void
     {
         $this->setSubject('Welcome to joind.in');
 

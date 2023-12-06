@@ -4,7 +4,6 @@ namespace Joindin\Api\Controller;
 
 use Exception;
 use Joindin\Api\Service\ContactEmailService;
-use Joindin\Api\Service\SpamCheckService;
 use Joindin\Api\Service\SpamCheckServiceInterface;
 use PDO;
 use Joindin\Api\Request;
@@ -15,28 +14,15 @@ use Teapot\StatusCode\Http;
  */
 class ContactController extends BaseApiController
 {
-    private $emailService;
-    private $spamCheckService;
-
-    /**
-     * ContactController constructor.
-     *
-     * @param ContactEmailService       $emailService
-     * @param SpamCheckServiceInterface $spamCheckService
-     * @param array                     $config
-     */
     public function __construct(
-        ContactEmailService $emailService,
-        SpamCheckServiceInterface $spamCheckService,
+        private ContactEmailService $emailService,
+        private SpamCheckServiceInterface $spamCheckService,
         array $config = []
     ) {
-        $this->emailService     = $emailService;
-        $this->spamCheckService = $spamCheckService;
-
         parent::__construct($config);
     }
 
-    public function handle(Request $request, PDO $db)
+    public function handle(Request $request, PDO $db): void
     {
         // really need to not require this to be declared
     }
@@ -58,14 +44,18 @@ class ContactController extends BaseApiController
      * @throws Exception
      * @return void
      */
-    public function contact(Request $request, PDO $db)
+    public function contact(Request $request, PDO $db): void
     {
         // only trusted clients can contact us to save on spam
         $clientId     = $request->getParameter('client_id');
         $clientSecret = $request->getParameter('client_secret');
         $oauthModel   = $request->getOauthModel($db);
 
-        if (!$oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)) {
+        if (
+            ! is_string($clientId)
+            || !is_string($clientSecret)
+            || !$oauthModel->isClientPermittedPasswordGrant($clientId, $clientSecret)
+        ) {
             throw new Exception("This client cannot perform this action", Http::FORBIDDEN);
         }
 
@@ -84,20 +74,17 @@ class ContactController extends BaseApiController
 
         if (!empty($error)) {
             $message = 'The field';
-            $message .= count($error) == 1 ? ' ' : 's ';
+            $message .= count($error) === 1 ? ' ' : 's ';
             $message .= implode(', ', $error);
-            $message .= count($error) == 1 ? ' is ' : ' are ';
+            $message .= count($error) === 1 ? ' is ' : ' are ';
             $message .= 'required.';
 
             throw new Exception($message, Http::BAD_REQUEST);
         }
 
         if (
-            !$this->spamCheckService->isCommentAcceptable(
-                $data['comment'],
-                $request->getClientIP(),
-                $request->getClientUserAgent()
-            )
+            ! is_string($data['comment'])
+            || !$this->spamCheckService->isCommentAcceptable($data['comment'], $request->getClientIP(), $request->getClientUserAgent())
         ) {
             throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
         }
@@ -107,6 +94,6 @@ class ContactController extends BaseApiController
         $view = $request->getView();
 
         $view->setResponseCode(Http::ACCEPTED);
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
     }
 }

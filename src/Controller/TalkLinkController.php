@@ -10,7 +10,7 @@ use Teapot\StatusCode\Http;
 
 class TalkLinkController extends BaseTalkController
 {
-    public function getTalkLinks(Request $request, PDO $db)
+    public function getTalkLinks(Request $request, PDO $db): array
     {
         $talk        = $this->getTalkById($request, $db);
         $talk_id     = $talk->ID;
@@ -19,7 +19,7 @@ class TalkLinkController extends BaseTalkController
         return ['talk_links' => ($talk_mapper->getTalkMediaLinks($talk_id))];
     }
 
-    public function getTalkLink(Request $request, PDO $db)
+    public function getTalkLink(Request $request, PDO $db): array
     {
         $talk        = $this->getTalkById($request, $db);
         $talk_id     = $talk->ID;
@@ -36,7 +36,7 @@ class TalkLinkController extends BaseTalkController
         return $links[0];
     }
 
-    public function updateTalkLink(Request $request, PDO $db)
+    public function updateTalkLink(Request $request, PDO $db): true
     {
         $talk        = $this->getTalkById($request, $db);
         $talk_id     = $talk->ID;
@@ -45,8 +45,8 @@ class TalkLinkController extends BaseTalkController
         $this->checkAdminOrSpeaker($request, $talk_mapper, $talk_id);
 
         $link_id      = $request->url_elements[5];
-        $display_name = $request->getParameter('display_name');
-        $url          = $request->getParameter('url');
+        $display_name = $request->getStringParameter('display_name');
+        $url          = $request->getStringParameter('url');
 
         if (!$talk_mapper->updateTalkLink($talk_id, $link_id, $display_name, $url)) {
             throw new Exception(
@@ -60,7 +60,7 @@ class TalkLinkController extends BaseTalkController
         return true;
     }
 
-    public function removeTalkLink(Request $request, PDO $db)
+    public function removeTalkLink(Request $request, PDO $db): true
     {
         $talk        = $this->getTalkById($request, $db);
         $talk_id     = $talk->ID;
@@ -80,7 +80,7 @@ class TalkLinkController extends BaseTalkController
         return true;
     }
 
-    public function addTalkLink(Request $request, PDO $db)
+    public function addTalkLink(Request $request, PDO $db): true
     {
         $talk        = $this->getTalkById($request, $db);
         $talk_id     = $talk->ID;
@@ -88,8 +88,8 @@ class TalkLinkController extends BaseTalkController
         $this->checkAdminOrSpeaker($request, $talk_mapper, $talk_id);
 
         //Check the content is in the correct format
-        $display_name = $request->getParameter('display_name');
-        $url          = $request->getParameter('url');
+        $display_name = $request->getStringParameter('display_name');
+        $url          = $request->getStringParameter('url');
 
         if (!$display_name || ! $url) {
             throw new Exception(
@@ -100,13 +100,6 @@ class TalkLinkController extends BaseTalkController
 
         $link_id = $talk_mapper->addTalkLink($talk_id, $display_name, $url);
 
-        if (!$link_id) {
-            throw new Exception(
-                "The Link has not been inserted",
-                Http::BAD_REQUEST
-            );
-        }
-
         $this->sucessfullyAltered($request, $talk_id, $link_id);
 
         return true;
@@ -115,14 +108,14 @@ class TalkLinkController extends BaseTalkController
     /**
      * @param Request    $request
      * @param TalkMapper $mapper
-     * @param int        $talk_id
+     * @param ?int       $talk_id
      *
      * @throws Exception
      */
-    protected function checkAdminOrSpeaker(Request $request, TalkMapper $mapper, $talk_id)
+    protected function checkAdminOrSpeaker(Request $request, TalkMapper $mapper, ?int $talk_id): void
     {
-        $is_admin   = $mapper->thisUserHasAdminOn($talk_id);
-        $is_speaker = $mapper->isUserASpeakerOnTalk($talk_id, $request->user_id);
+        $is_admin   = $talk_id !== null && $mapper->thisUserHasAdminOn($talk_id);
+        $is_speaker = $talk_id !== null && $request->user_id && $mapper->isUserASpeakerOnTalk($talk_id, $request->user_id ?? -1);
 
         if (!($is_admin || $is_speaker)) {
             throw new Exception(
@@ -133,11 +126,11 @@ class TalkLinkController extends BaseTalkController
     }
 
     /**
-     * @param Request $request
-     * @param int     $talk_id
-     * @param int     $link_id
+     * @param Request    $request
+     * @param int        $talk_id
+     * @param int|string $link_id
      */
-    protected function sucessfullyAltered(Request $request, $talk_id, $link_id)
+    protected function sucessfullyAltered(Request $request, int $talk_id, int|string $link_id): void
     {
         $uri = $request->base . '/' . $request->version . '/talks/' . $talk_id . '/links/' . $link_id;
 

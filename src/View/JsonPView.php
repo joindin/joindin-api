@@ -4,23 +4,19 @@ namespace Joindin\Api\View;
 
 class JsonPView extends JsonView
 {
-    /** @var string */
-    protected $callback;
-
-    public function __construct($callback)
+    public function __construct(protected string $callback)
     {
         parent::__construct();
-        $this->callback = $callback;
     }
 
-    public function render($content)
+    public function render($content): bool
     {
         $this->setHeader('Content-Type', 'text/javascript; charset=utf8');
 
         return parent::render($content);
     }
 
-    public function buildOutput($content)
+    public function buildOutput(mixed $content): string
     {
         return $this->callback . '(' . parent::buildOutput($content) . ');';
     }

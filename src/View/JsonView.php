@@ -4,10 +4,9 @@ namespace Joindin\Api\View;
 
 class JsonView extends ApiView
 {
-    /** @var array */
-    protected $string_fields;
+    protected array $string_fields;
 
-    public function render($content)
+    public function render(array|string $content): bool
     {
         $this->setHeader('Content-Type', 'application/json; charset=utf8');
         $this->setHeader('Access-Control-Allow-Origin', '*');
@@ -18,11 +17,11 @@ class JsonView extends ApiView
     /**
      *  Function to build output, can be used by JSON and JSONP
      *
-     * @param array $content data to be rendered
+     * @param mixed $content data to be rendered
      *
      * @return false|string
      */
-    public function buildOutput($content)
+    public function buildOutput(mixed $content): string|false
     {
         $content = $this->addCount($content);
         // need to work out which fields should have been numbers
@@ -36,7 +35,7 @@ class JsonView extends ApiView
         return json_encode($output);
     }
 
-    protected function numericCheck($data)
+    protected function numericCheck(mixed $data): mixed
     {
         if (!is_array($data)) {
             return $this->scalarNumericCheck('', $data);
@@ -55,7 +54,7 @@ class JsonView extends ApiView
         return $output;
     }
 
-    protected function scalarNumericCheck($key, $value)
+    protected function scalarNumericCheck(string $key, mixed $value): mixed
     {
         if (is_numeric($value) && ! in_array($key, $this->string_fields) && $value < PHP_INT_MAX) {
             return (float) $value;

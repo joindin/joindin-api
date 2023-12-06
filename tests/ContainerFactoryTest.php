@@ -11,7 +11,7 @@ use Psr\Container\ContainerInterface;
 
 final class ContainerFactoryTest extends TestCase
 {
-    private $config = [
+    private array $config = [
         'akismet' => [
             'apiKey' => 'key',
             'blog'   => 'blog'
@@ -30,7 +30,7 @@ final class ContainerFactoryTest extends TestCase
         'website_url' => 'www.example.com'
     ];
 
-    public function testContainerIsCreated()
+    public function testContainerIsCreated(): void
     {
         $this->assertInstanceOf(ContainerInterface::class, ContainerFactory::build($this->config));
     }
@@ -41,7 +41,7 @@ final class ContainerFactoryTest extends TestCase
      * @dataProvider dataProvider
      * @param string $service
      */
-    public function testServiceIsDefined($service)
+    public function testServiceIsDefined($service): void
     {
         $container = ContainerFactory::build($this->config, true);
         $this->assertTrue($container->has($service));
@@ -51,9 +51,9 @@ final class ContainerFactoryTest extends TestCase
      * @covers \Joindin\Api\ContainerFactory::build
      *
      * @dataProvider dataProvider
-     * @param string $service
+     * @param class-string<object> $service
      */
-    public function testServicesCanBeCreated($service)
+    public function testServicesCanBeCreated($service): void
     {
         $container = ContainerFactory::build($this->config, true);
         $this->assertInstanceOf($service, $container->get($service));
@@ -62,7 +62,7 @@ final class ContainerFactoryTest extends TestCase
     /**
      * @covers \Joindin\Api\ContainerFactory::build
      */
-    public function testSpamCheckServiceIsNullCheckerWhenDisabled()
+    public function testSpamCheckServiceIsNullCheckerWhenDisabled(): void
     {
         $container = ContainerFactory::build([], true);
         $this->assertTrue($container->has(SpamCheckServiceInterface::class));

@@ -16,7 +16,7 @@ final class RouterTest extends TestCase
      *
      * @return array
      */
-    public function constructProvider()
+    public function constructProvider(): array
     {
         return [
             [ // #0
@@ -33,7 +33,7 @@ final class RouterTest extends TestCase
      *
      * @param array $config
      */
-    public function testConstruct(array $config)
+    public function testConstruct(array $config): void
     {
         $obj = new TestRouter3($config);
         $this->assertEquals($config, $obj->getConfig());

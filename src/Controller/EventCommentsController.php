@@ -12,12 +12,11 @@ use Joindin\Api\Service\SpamCheckServiceInterface;
 use PDO;
 use Joindin\Api\Request;
 use Teapot\StatusCode\Http;
-use UnexpectedValueException;
 
 class EventCommentsController extends BaseApiController
     // @codingStandardsIgnoreEnd
 {
-    private $spamCheckService;
+    private SpamCheckServiceInterface $spamCheckService;
 
     public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [])
     {
@@ -26,9 +25,9 @@ class EventCommentsController extends BaseApiController
         $this->spamCheckService = $spamCheckService;
     }
 
-    public function getComments(Request $request, PDO $db)
+    public function getComments(Request $request, PDO $db): array
     {
-        $comment_id = $this->getItemId($request);
+        $comment_id = $this->getItemId($request, 'Comment not found');
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -39,26 +38,18 @@ class EventCommentsController extends BaseApiController
 
         $mapper = new EventCommentMapper($db, $request);
 
-        if ($comment_id) {
-            $list = $mapper->getCommentById($comment_id, $verbose);
+        $list = $mapper->getCommentById($comment_id, $verbose);
 
-            if (false === $list) {
-                throw new Exception('Comment not found', Http::NOT_FOUND);
-            }
-
-            return $list;
+        if (false === $list) {
+            throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
-        return false;
+        return $list;
     }
 
-    public function getReported(Request $request, PDO $db)
+    public function getReported(Request $request, PDO $db): array
     {
-        $event_id = $this->getItemId($request);
-
-        if (empty($event_id)) {
-            throw new UnexpectedValueException("Event not found", Http::NOT_FOUND);
-        }
+        $event_id = $this->getItemId($request, 'Event not found');
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -79,10 +70,10 @@ class EventCommentsController extends BaseApiController
         return $list->getOutputView($request);
     }
 
-    public function createComment(Request $request, PDO $db)
+    public function createComment(Request $request, PDO $db): void
     {
         $comment             = [];
-        $comment['event_id'] = $this->getItemId($request);
+        $comment['event_id'] = $this->getItemId($request, 'Event not found');
 
         if (empty($comment['event_id'])) {
             throw new Exception(
@@ -97,11 +88,15 @@ class EventCommentsController extends BaseApiController
         }
         $user_mapper = new UserMapper($db, $request);
         $users       = $user_mapper->getUserById($request->user_id);
+
+        if (!$users) {
+            throw new Exception("Unable retrieve users data", Http::BAD_REQUEST);
+        }
         $thisUser    = $users['users'][0];
 
-        $rating = $request->getParameter('rating', false);
+        $rating = $request->getParameter('rating', '');
 
-        if (false === $rating) {
+        if ('' === $rating) {
             throw new Exception('The field "rating" is required', Http::BAD_REQUEST);
         }
 
@@ -109,9 +104,9 @@ class EventCommentsController extends BaseApiController
             throw new Exception('The field "rating" must be a number', Http::BAD_REQUEST);
         }
 
-        $commentText = $request->getParameter('comment');
+        $commentText = $request->getStringParameter('comment');
 
-        if (empty($commentText)) {
+        if ($commentText === '') {
             throw new Exception('The field "comment" is required', Http::BAD_REQUEST);
         }
 
@@ -125,13 +120,14 @@ class EventCommentsController extends BaseApiController
         $comment['cname']   = $thisUser['full_name'];
         $comment['source']  = $consumer_name;
 
-        $isValid = $this->spamCheckService->isCommentAcceptable(
-            $commentText,
-            $request->getClientIP(),
-            $request->getClientUserAgent()
-        );
+        $clientIp = $request->getClientIP();
+        $userAgent = $request->getClientUserAgent();
 
-        if (!$isValid) {
+        if (
+            ! is_string($clientIp)
+            || ! is_string($userAgent)
+            || ! $this->spamCheckService->isCommentAcceptable($commentText, $clientIp, $userAgent)
+        ) {
             throw new Exception("Comment failed spam check", Http::BAD_REQUEST);
         }
 
@@ -169,19 +165,18 @@ class EventCommentsController extends BaseApiController
         $view->setResponseCode(Http::CREATED);
     }
 
-    public function reportComment(Request $request, PDO $db)
+    public function reportComment(Request $request, PDO $db): void
     {
         // must be logged in to report a comment
-        if (!isset($request->user_id) || empty($request->user_id)) {
+        if (empty($request->user_id)) {
             throw new Exception('You must log in to report a comment', Http::UNAUTHORIZED);
         }
 
         $comment_mapper = new EventCommentMapper($db, $request);
 
-        $commentId   = $this->getItemId($request);
-        $commentInfo = $comment_mapper->getCommentInfo($commentId);
+        $commentId   = $this->getItemId($request, 'Comment not found');
 
-        if (false === $commentInfo) {
+        if (false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
@@ -191,6 +186,10 @@ class EventCommentsController extends BaseApiController
 
         // notify event admins
         $comment      = $comment_mapper->getCommentById($commentId, true, true);
+
+        if (! $comment) {
+            throw new Exception('Comment not found', Http::NOT_FOUND);
+        }
         $event_mapper = new EventMapper($db, $request);
         $recipients   = $event_mapper->getHostsEmailAddresses($eventId);
         $event        = $event_mapper->getEventById($eventId, true, true);
@@ -220,30 +219,28 @@ class EventCommentsController extends BaseApiController
      *
      * @throws Exception
      */
-    public function moderateReportedComment(Request $request, PDO $db)
+    public function moderateReportedComment(Request $request, PDO $db): void
     {
         // must be logged in
-        if (!isset($request->user_id) || empty($request->user_id)) {
+        if (empty($request->user_id)) {
             throw new Exception('You must log in to moderate a comment', Http::UNAUTHORIZED);
         }
 
         $comment_mapper = new EventCommentMapper($db, $request);
+        $commentId   = $this->getItemId($request, 'Comment not found');
 
-        $commentId   = $this->getItemId($request);
-        $commentInfo = $comment_mapper->getCommentInfo($commentId);
-
-        if (false === $commentInfo) {
+        if (false === ($commentInfo = $comment_mapper->getCommentInfo($commentId))) {
             throw new Exception('Comment not found', Http::NOT_FOUND);
         }
 
         $event_mapper = new EventMapper($db, $request);
         $event_id     = $commentInfo['event_id'];
 
-        if (false == $event_mapper->thisUserHasAdminOn($event_id)) {
+        if (! $event_mapper->thisUserHasAdminOn($event_id)) {
             throw new Exception("You don't have permission to do that", Http::FORBIDDEN);
         }
 
-        $decision = $request->getParameter('decision');
+        $decision = $request->getStringParameter('decision');
 
         if (!in_array($decision, ['approved', 'denied'])) {
             throw new Exception('Unexpected decision', Http::BAD_REQUEST);

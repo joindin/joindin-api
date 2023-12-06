@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 final class HeaderTest extends TestCase
 {
-    public function testParseParamsWithEmbededSeparator()
+    public function testParseParamsWithEmbededSeparator(): void
     {
         $headerStr = 'For=10.0.0.1,For=10.0.0.2;user-agent="test;test;test;test";For=10.0.0.3';
         $header    = new Header('Forwarded', $headerStr, ';');
@@ -16,7 +16,7 @@ final class HeaderTest extends TestCase
         $this->assertEquals(3, $header->count());
     }
 
-    public function testParseParamsWithTwoGlues()
+    public function testParseParamsWithTwoGlues(): void
     {
         $headerStr = 'For=10.0.0.1,For=10.0.0.2;user-agent="test;test;test;test";For=10.0.0.3;user-agent="secondLevel;some date"';
         $header    = new Header('Forwarded', $headerStr, ';');
@@ -37,7 +37,7 @@ final class HeaderTest extends TestCase
         );
     }
 
-    public function testBuildEntityArray()
+    public function testBuildEntityArray(): void
     {
         $headerStr = 'For=10.0.0.1;user-agent="test;test;test;test";For=10.0.0.2;user-agent="secondLevel;
         some date";for=10.0.0.3;user-agent="thirdLevel"';
@@ -51,7 +51,7 @@ final class HeaderTest extends TestCase
         $this->assertCount(3, $entityArray['User-agent']);
     }
 
-    public function testBuildEntityArrayWithValueOnly()
+    public function testBuildEntityArrayWithValueOnly(): void
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
         $header    = new Header('X-Forwarded-For', $headerStr, ',');
@@ -66,7 +66,7 @@ final class HeaderTest extends TestCase
     /**
      * @test
      */
-    public function getNameReturnsTheHeaderName()
+    public function getNameReturnsTheHeaderName(): void
     {
         $name   = uniqid('headername', true);
         $header = new Header($name, '', ',');
@@ -76,7 +76,7 @@ final class HeaderTest extends TestCase
     /**
      * @test
      */
-    public function getGlueReturnsGlueValue()
+    public function getGlueReturnsGlueValue(): void
     {
         $glue   = uniqid('glue', true);
         $header = new Header('X-Forwarded-For', '', $glue);
@@ -86,7 +86,7 @@ final class HeaderTest extends TestCase
     /**
      * @test
      */
-    public function getIteratorWorks()
+    public function getIteratorWorks(): void
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
         $header    = new Header('X-Forwarded-For', $headerStr, ',');
@@ -106,7 +106,7 @@ final class HeaderTest extends TestCase
     /**
      * @test
      */
-    public function toStringWorks()
+    public function toStringWorks(): void
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
         $header    = new Header('X-Forwarded-For', $headerStr, ',');
@@ -118,7 +118,7 @@ final class HeaderTest extends TestCase
     /**
      * @test
      */
-    public function removeValueWorks()
+    public function removeValueWorks(): void
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
         $header    = new Header('X-Forwarded-For', $headerStr, ',');
@@ -130,7 +130,7 @@ final class HeaderTest extends TestCase
     /**
      * @test
      */
-    public function hasValueReturnsTrueIfValueFound()
+    public function hasValueReturnsTrueIfValueFound(): void
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
         $header    = new Header('X-Forwarded-For', $headerStr, ',');
@@ -143,7 +143,7 @@ final class HeaderTest extends TestCase
     /**
      * @test
      */
-    public function hasValueReturnsFalseIfValueNotFound()
+    public function hasValueReturnsFalseIfValueNotFound(): void
     {
         $headerStr = '10.0.0.1,10.0.0.2,10.0.0.3';
         $header    = new Header('X-Forwarded-For', $headerStr, ',');
@@ -154,7 +154,7 @@ final class HeaderTest extends TestCase
     /**
      * @test
      */
-    public function setNameCanBeUsedAfterHeadersAreCreated()
+    public function setNameCanBeUsedAfterHeadersAreCreated(): void
     {
         $headerStr = 'application/json';
         $header    = new Header('Accept', $headerStr, '/');
@@ -168,7 +168,7 @@ final class HeaderTest extends TestCase
     /**
      * @test
      */
-    public function coverageForParseParams()
+    public function coverageForParseParams(): void
     {
         $headerChunks = [
             ';abc',

@@ -4,10 +4,9 @@ namespace Joindin\Api\Service;
 
 class UserPasswordResetEmailService extends BaseEmailService
 {
-    protected $user;
+    protected array $user;
 
-    /** @var string */
-    protected $website_url;
+    protected string $website_url;
 
     /**
      * @var string
@@ -30,7 +29,7 @@ class UserPasswordResetEmailService extends BaseEmailService
         $this->website_url = $config['website_url'];
     }
 
-    public function sendEmail()
+    public function sendEmail(): void
     {
         $this->setSubject('Resetting your joind.in password');
 

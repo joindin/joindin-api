@@ -6,14 +6,15 @@ use Exception;
 use Joindin\Api\Controller\TokenController;
 use Joindin\Api\Request;
 use PDO;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teapot\StatusCode\Http;
 
 final class TokenControllerTest extends TestCase
 {
-    private $request;
+    private Request&MockObject $request;
 
-    private $pdo;
+    private PDO&MockObject $pdo;
 
     public function setup(): void
     {
@@ -24,7 +25,7 @@ final class TokenControllerTest extends TestCase
     /**
      * @group uses_pdo
      */
-    public function testThatDeletingATokenWithoutLoginThrowsException()
+    public function testThatDeletingATokenWithoutLoginThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in');
@@ -38,7 +39,7 @@ final class TokenControllerTest extends TestCase
     /**
      * @group uses_pdo
      */
-    public function testThatRetrievingTokensWithoutLoginThrowsException()
+    public function testThatRetrievingTokensWithoutLoginThrowsException(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('You must be logged in');

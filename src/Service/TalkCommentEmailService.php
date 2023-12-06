@@ -6,9 +6,9 @@ use Joindin\Api\Model\TalkModel;
 
 class TalkCommentEmailService extends BaseEmailService
 {
-    protected $talk;
-    protected $comment;
-    protected $config;
+    protected TalkModel $talk;
+    protected array $comment;
+    protected array $config;
 
     public function __construct(array $config, array $recipients, TalkModel $talk, array $comment)
     {
@@ -21,7 +21,7 @@ class TalkCommentEmailService extends BaseEmailService
         $this->config  = $config;
     }
 
-    public function sendEmail()
+    public function sendEmail(): void
     {
         $this->setSubject("New feedback on " . $this->talk->talk_title);
 

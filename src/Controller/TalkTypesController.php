@@ -10,7 +10,7 @@ use Teapot\StatusCode\Http;
 
 class TalkTypesController extends BaseApiController
 {
-    public function getAllTalkTypes(Request $request, PDO $db)
+    public function getAllTalkTypes(Request $request, PDO $db): false|array
     {
         // verbosity - here for consistency as we don't have verbose talk type details to return at the moment
         $verbose = $this->getVerbosity($request);
@@ -24,16 +24,16 @@ class TalkTypesController extends BaseApiController
         return $mapper->getTalkTypeList($resultsperpage, $start, $verbose);
     }
 
-    public function getTalkType(Request $request, PDO $db)
+    public function getTalkType(Request $request, PDO $db): false|array
     {
-        $talk_type_id = $this->getItemId($request);
+        $talk_type_id = $this->getItemId($request, 'Talk type not found');
         // verbosity - here for consistency as we don't have verbose talk type details to return at the moment
         $verbose = $this->getVerbosity($request);
 
         $mapper = new TalkTypeMapper($db, $request);
         $list   = $mapper->getTalkTypeById($talk_type_id, $verbose);
 
-        if (count($list['talk_types']) == 0) {
+        if ($list === false || count($list['talk_types']) === 0) {
             throw new Exception('Talk type not found', Http::NOT_FOUND);
         }
 

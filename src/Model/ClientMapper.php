@@ -14,20 +14,18 @@ class ClientMapper extends ApiMapper
      * add sub-resource data
      *
      * @param  array $results
-     *
-     * @return array
      */
-    private function processResults($results)
+    private function processResults($results): array
     {
         if (!is_array($results)) {
             // $results isn't an array. This shouldn't happen as an exception
-            // should have been raised by PDO. However if it does, return an
+            // should have been raised by PDO. However, if it does, return an
             // empty array.
             return [];
         }
 
         if (!count($results)) {
-            // $results is an array but empty. So let's return an empty arra
+            // $results is an array but empty. So let's return an empty array
             return [];
         }
 
@@ -41,9 +39,9 @@ class ClientMapper extends ApiMapper
      * @param int $resultsperpage How many results to return on each page
      * @param int $start          Which result to start with
      *
-     * @return false|ClientModelCollection
+     * @return ClientModelCollection
      */
-    public function getClientsForUser($user_id, $resultsperpage, $start)
+    public function getClientsForUser(int $user_id, int $resultsperpage, int $start): ClientModelCollection
     {
         $sql = 'SELECT * FROM oauth_consumers WHERE user_id = :user_id ';
         $sql .= $this->buildLimit($resultsperpage, $start);
@@ -54,7 +52,7 @@ class ClientMapper extends ApiMapper
         ]);
 
         if (!$response) {
-            return false;
+            throw new \RuntimeException('Database call failed');
         }
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -70,10 +68,14 @@ class ClientMapper extends ApiMapper
      * @param string $clientId
      * @param string $userId
      *
-     * @return false|ClientModelCollection
+     * @return ClientModelCollection
      */
-    public function getClientByIdAndUser($clientId, $userId)
+    public function getClientByIdAndUser(string|int|false|null $clientId, string|int|false|null $userId): ClientModelCollection
     {
+        if (! $clientId || ! $userId) {
+            return new ClientModelCollection([], 0);
+        }
+
         $sql = 'SELECT * FROM oauth_consumers WHERE user_id = :user_id and id = :client_id';
         $sql .= $this->buildLimit(1, 0);
 
@@ -84,7 +86,7 @@ class ClientMapper extends ApiMapper
         ]);
 
         if (!$response) {
-            return false;
+            throw new \RuntimeException('Database call failed');
         }
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -99,9 +101,9 @@ class ClientMapper extends ApiMapper
      * @param array $data
      *
      * @throws Exception
-     * @return int
+     * @return string
      */
-    public function createClient(array $data)
+    public function createClient(array $data): string
     {
         $clientSql = 'INSERT INTO oauth_consumers (consumer_key, consumer_secret,'
                      . 'created_date, user_id, application, description, '
@@ -111,8 +113,8 @@ class ClientMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($clientSql);
         $stmt->execute([
-            ':consumer_key'          => base64_encode(openssl_random_pseudo_bytes(48)),
-            ':consumer_secret'       => base64_encode(openssl_random_pseudo_bytes(48)),
+            ':consumer_key'          => base64_encode(random_bytes(48)),
+            ':consumer_secret'       => base64_encode(random_bytes(48)),
             ':created_date'          => (new DateTime())->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
             ':user_id'               => $data['user_id'],
             ':application'           => $data['name'],
@@ -123,7 +125,7 @@ class ClientMapper extends ApiMapper
 
         $clientId = $this->_db->lastInsertId();
 
-        if (0 == $clientId) {
+        if ($clientId === false || (int) $clientId === 0) {
             throw new Exception('There has been an error storing the application');
         }
 
@@ -133,13 +135,13 @@ class ClientMapper extends ApiMapper
     /**
      * Update an existing Client
      *
-     * @param int   $clientId
+     * @param string $clientId
      * @param array $data
      *
      * @throws Exception
-     * @return int
+     * @return string
      */
-    public function updateClient($clientId, array $data)
+    public function updateClient(string $clientId, array $data): string
     {
         $clientSql = 'UPDATE oauth_consumers SET '
                      . 'application = :application, description = :description, '
@@ -168,7 +170,7 @@ class ClientMapper extends ApiMapper
      *
      * @throws Exception
      */
-    public function deleteClient($clientId)
+    public function deleteClient(int $clientId): void
     {
         $clientSql = 'DELETE FROM oauth_consumers WHERE id = :client_id';
 
