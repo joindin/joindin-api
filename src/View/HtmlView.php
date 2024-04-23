@@ -72,15 +72,7 @@ class HtmlView extends ApiView
         return null;
     }
 
-    /**
-     * Renders the passed value, either raw or as a link (if prepended by http
-     * or https)
-     *
-     * @param string|bool $value
-     *
-     * @return void
-     */
-    protected function printUrlOrString(string|bool $value): void
+    protected function printUrlOrString(string|bool|null $value): void
     {
         if (is_bool($value)) {
             $value = $value ? 'true' : 'false';
