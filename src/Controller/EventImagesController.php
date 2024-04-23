@@ -53,7 +53,11 @@ class EventImagesController extends BaseApiController
         // check the file meets our expectations
         $uploaded_name = $_FILES['image']['tmp_name'];
 
-        list($width, $height, $filetype) = (array) getimagesize($uploaded_name);
+        $imageSizeStats = getimagesize($uploaded_name);
+        if (!$imageSizeStats) { // getimagesize may fail
+            throw new Exception("Supplied image must be a PNC, JPG or GIF", Http::BAD_REQUEST);
+        }
+        list($width, $height, $filetype) = $imageSizeStats;
 
         // must be gif, jpg or png
         if (!in_array($filetype, [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG], true)) {

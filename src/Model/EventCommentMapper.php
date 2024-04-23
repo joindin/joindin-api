@@ -317,11 +317,13 @@ class EventCommentMapper extends ApiMapper
                         . " and ec.ID = :comment_id";
         $comment_stmt = $this->_db->prepare($comment_sql);
 
-        while ( /** @var array|false */ $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            /** @var array $row */
             $total++;
             $comment_result = $comment_stmt->execute(['comment_id' => $row['event_comment_id']]);
 
-            if ($comment_result &&  /** @var array|false $comment */ $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($comment_result && ($comment = $comment_stmt->fetch(PDO::FETCH_ASSOC))) {
+                /** @var array $comment */
                 // work around the existing transform logic
                 $comment_array  = [$comment];
                 $comment_array  = parent::transformResults($comment_array, true);
