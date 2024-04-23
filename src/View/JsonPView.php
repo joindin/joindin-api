@@ -9,7 +9,7 @@ class JsonPView extends JsonView
         parent::__construct();
     }
 
-    public function render($content): bool
+    public function render(array|string|null $content): bool
     {
         $this->setHeader('Content-Type', 'text/javascript; charset=utf8');
 

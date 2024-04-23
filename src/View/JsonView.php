@@ -6,7 +6,7 @@ class JsonView extends ApiView
 {
     protected array $string_fields;
 
-    public function render(array|string $content): bool
+    public function render(array|string|null $content): bool
     {
         $this->setHeader('Content-Type', 'application/json; charset=utf8');
         $this->setHeader('Access-Control-Allow-Origin', '*');

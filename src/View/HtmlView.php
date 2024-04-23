@@ -13,12 +13,7 @@ namespace Joindin\Api\View;
  */
 class HtmlView extends ApiView
 {
-    /**
-     * @param array|string $content
-     *
-     * @return bool
-     */
-    public function render(array|string $content): bool
+    public function render(array|string|null $content): bool
     {
         $this->setHeader('Content-Type', 'text/html; charset=utf8');
 

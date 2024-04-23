@@ -46,12 +46,7 @@ class ApiView
         $this->noRender = $noRender;
     }
 
-    /**
-     * @param array|string $content
-     *
-     * @return bool
-     */
-    public function render(array|string $content): bool
+    public function render(array|string|null $content): bool
     {
         ob_start();
         $body = '';
