@@ -9,16 +9,13 @@ use Joindin\Api\Request;
  */
 abstract class BaseRouter
 {
-    protected $config;
-
     /**
      * Constructs a new Router
      *
      * @param array $config The application configuration
      */
-    public function __construct(array $config)
+    public function __construct(protected array $config)
     {
-        $this->config = $config;
     }
 
     /**
@@ -26,7 +23,7 @@ abstract class BaseRouter
      *
      * @return array
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return $this->config;
     }
@@ -38,5 +35,5 @@ abstract class BaseRouter
      *
      * @return Route
      */
-    abstract public function getRoute(Request $request);
+    abstract public function getRoute(Request $request): Route;
 }

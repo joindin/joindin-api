@@ -17,6 +17,8 @@ use Teapot\StatusCode\Http;
 
 class Request
 {
+    public const LATEST_API_VERSION_NUMBER = '2.1';
+
     /**
      * Output formats
      */
@@ -37,76 +39,61 @@ class Request
     public const HTTP_PUT = 'PUT';
     public const HTTP_DELETE = 'DELETE';
 
-    /**
-     * @var string HTTP verb
-     */
-    protected $verb;
-    public $url_elements;
-    public $path_info;
-    public $accept = [];
-    public $host;
-    public $parameters = [];
-    public $user_id;
-    public $access_token;
-    public $version;
-    protected $clientIP;
-    protected $clientUserAgent;
+    protected string $verb = 'GET';
+    public array $url_elements;
+    public string $path_info = '';
+    public array $accept = [];
+    public ?string $host = null;
+    public array $parameters = [];
+    public ?int $user_id = null;
+    public ?string $access_token = null;
+    public string $version = 'v' . self::LATEST_API_VERSION_NUMBER;
+    protected ?string $clientIP = null;
+    protected ?string $clientUserAgent = null;
 
-    protected $oauthModel;
-    protected $config;
+    protected ?OAuthModel $oauthModel = null;
+    protected array $config = [];
 
     /**
-     * @var ApiView|null This Request's View
+     * This Request's View
      */
-    protected $view = null;
+    protected ?ApiView $view = null;
 
     /**
-     * @var array The priority-ordered list of format choices
+     * The priority-ordered list of format choices
      */
-    protected $formatChoices = [self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML];
+    protected array $formatChoices = [self::CONTENT_TYPE_JSON, self::CONTENT_TYPE_HTML];
 
     /**
      * A list of parameters provided from a Route
-     *
-     * @var array
      */
-    protected $routeParams = [];
+    protected array $routeParams = [];
 
-    /**
-     * @var string
-     */
-    public $base;
+    public string $base = '';
 
-    /**
-     * @var array
-     */
-    public $paginationParameters = [];
+    public array $paginationParameters = [];
 
-    /**
-     * @var string
-     */
-    public $scheme;
+    public string $scheme;
 
     /**
      * Builds the request object
      *
      * @param array|false $config        The application configuration
      * @param array       $server        The $_SERVER global, injected for testability
-     * @param bool        $parseParams   Set to false to skip parsing parameters on
-     *                                   construction
+     * @param bool        $parseParams   Skips parsing params on-construct if set to false
      */
-    public function __construct($config, array $server, $parseParams = true)
+    public function __construct(array|false $config, array $server, bool $parseParams = true)
     {
-        $this->config = $config;
+        $this->config = $config ?: [];
 
         if (isset($server['REQUEST_METHOD'])) {
             $this->setVerb($server['REQUEST_METHOD']);
         }
 
-        if (isset($server['PATH_INFO']) && !empty($server['PATH_INFO'])) {
+        if (!empty($server['PATH_INFO'])) {
             $this->setPathInfo($server['PATH_INFO']);
         } elseif (isset($server['REQUEST_URI'])) {
-            $this->setPathInfo(parse_url($server['REQUEST_URI'], PHP_URL_PATH));
+            $this->setPathInfo(parse_url($server['REQUEST_URI'], PHP_URL_PATH) ?: '');
         }
 
         if (isset($server['HTTP_ACCEPT'])) {
@@ -137,10 +124,15 @@ class Request
      * If both of these headers is present, the Forwarded header takes precedence.
      * If the header is not present, it defaults to the REMOTE_ADDR value
      */
-    public function setClientInfo()
+    public function setClientInfo(): void
     {
-        $ipAddress = $_SERVER['REMOTE_ADDR'] ?? null;
-        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        if (is_string($_SERVER['REMOTE_ADDR'] ?? false)) {
+            $this->clientIP = $_SERVER['REMOTE_ADDR'];
+        }
+
+        if (is_string($_SERVER['HTTP_USER_AGENT'] ?? false)) {
+            $this->clientUserAgent = $_SERVER['HTTP_USER_AGENT'];
+        }
 
         if (array_key_exists('HTTP_FORWARDED', $_SERVER)) {
             $header = new Header('Forwarded', $_SERVER['HTTP_FORWARDED'], ';');
@@ -150,21 +142,19 @@ class Request
             $elementArray = $header->buildEntityArray();
             $elementArray = array_change_key_case($elementArray);
 
-            if (isset($elementArray['for']) && count($elementArray['for'])) {
-                $ipAddress = $elementArray['for'][0];
+            if (is_string($elementArray['for'][0] ?? false)) {
+                $this->clientIP = $elementArray['for'][0];
             }
 
-            if (isset($elementArray['user-agent']) && count($elementArray['user-agent'])) {
-                $userAgent = $elementArray['user-agent'][0];
+            if (is_string($elementArray['user-agent'][0] ?? false)) {
+                $this->clientUserAgent = $elementArray['user-agent'][0];
             }
         } elseif (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
             $header = new Header('X-Forwarded-For', $_SERVER['HTTP_X_FORWARDED_FOR'], ',');
             $header->parseParams();
             $elementArray = $header->buildEntityArray();
-            $ipAddress    = count($elementArray) ? $elementArray[0][0] : null;
+            $this->clientIP = is_string($elementArray[0][0]) ? $elementArray[0][0] : null;
         }
-        $this->clientIP        = $ipAddress;
-        $this->clientUserAgent = $userAgent;
     }
 
     /**
@@ -172,7 +162,7 @@ class Request
      *
      * @return array
      */
-    public function getFormatChoices()
+    public function getFormatChoices(): array
     {
         return $this->formatChoices;
     }
@@ -182,7 +172,7 @@ class Request
      *
      * @param array $formatChoices
      */
-    public function setFormatChoices(array $formatChoices)
+    public function setFormatChoices(array $formatChoices): void
     {
         $this->formatChoices = $formatChoices;
     }
@@ -192,7 +182,7 @@ class Request
      *
      * @return array
      */
-    public function getRouteParams()
+    public function getRouteParams(): array
     {
         return $this->routeParams;
     }
@@ -202,7 +192,7 @@ class Request
      *
      * @param array $routeParams
      */
-    public function setRouteParams(array $routeParams)
+    public function setRouteParams(array $routeParams): void
     {
         $this->routeParams = $routeParams;
     }
@@ -212,12 +202,12 @@ class Request
      * is provided and the parameter doesn't exist, the default value
      * will be returned instead
      *
-     * @param string $param   Parameter to retrieve
-     * @param string $default Default to return if parameter doesn't exist
+     * @param string $param Parameter to retrieve
+     * @param string|bool|null $default Default to return if parameter doesn't exist
      *
      * @return mixed
      */
-    public function getParameter($param, $default = '')
+    public function getParameter(string $param, string|bool|null $default = ''): mixed
     {
         if (!array_key_exists($param, $this->parameters)) {
             return $default;
@@ -227,7 +217,37 @@ class Request
     }
 
     /**
-     * Retrieves a url element by numerical index. If it doesn't exist, and
+     * Retrieves the value of a parameter from the request as a string,
+     * since it's the most common case.
+     *
+     * If the requested parameter is numeric, is casted to a string;
+     * if it's not a string, an exception is thrown, with a 400 Bad Request
+     * status code attached.
+     *
+     * If a default is provided and the parameter doesn't exist, the default
+     * value will be returned instead
+     */
+    public function getStringParameter(string $param, string $default = ''): string
+    {
+        $parameter = $this->getParameter($param, $default);
+
+        if ($parameter === null) {
+            return '';
+        }
+
+        if (is_numeric($parameter)) {
+            return (string) $parameter;
+        }
+
+        if (is_string($parameter)) {
+            return $parameter;
+        }
+
+        throw new \Exception(sprintf('Expected parameter %s is not a readable string', $param), Http::BAD_REQUEST);
+    }
+
+    /**
+     * Retrieves URL element by numerical index. If it doesn't exist, and
      * a default is provided, the default value will be returned.
      *
      * @param integer $index Index to retrieve
@@ -235,15 +255,9 @@ class Request
      *
      * @return string
      */
-    public function getUrlElement($index, $default = '')
+    public function getUrlElement(int $index, string $default = ''): string
     {
-        $index = (int) $index;
-
-        if (!isset($this->url_elements[$index])) {
-            return $default;
-        }
-
-        return $this->url_elements[$index];
+        return $this->url_elements[$index] ?? $default;
     }
 
     /**
@@ -254,10 +268,10 @@ class Request
      *
      * @return bool
      */
-    public function accepts($header)
+    public function accepts(string $header): bool
     {
         foreach ($this->accept as $accept) {
-            if (strpos($accept, $header) !== false) {
+            if (str_contains($accept, $header)) {
                 return true;
             }
         }
@@ -277,7 +291,7 @@ class Request
      *
      * @return string
      */
-    public function preferredContentTypeOutOf(array $formats = null)
+    public function preferredContentTypeOutOf(?array $formats = null): string
     {
         if (!$formats) {
             $formats = $this->getFormatChoices();
@@ -298,7 +312,7 @@ class Request
      *
      * @return ApiView
      */
-    public function getView()
+    public function getView(): ApiView
     {
         if (!$this->view) {
             $format = $this->getParameter('format', $this->preferredContentTypeOutOf());
@@ -313,7 +327,7 @@ class Request
                 case self::FORMAT_JSON:
                 default:
                     // JSONP?
-                    $callback = filter_var($this->getParameter('callback'), FILTER_SANITIZE_STRING);
+                    $callback = htmlspecialchars($this->getStringParameter('callback'));
 
                     if ($callback) {
                         $this->view = new JsonPView($callback);
@@ -331,7 +345,7 @@ class Request
      *
      * @param ApiView $view
      */
-    public function setView(ApiView $view)
+    public function setView(ApiView $view): void
     {
         $this->view = $view;
     }
@@ -341,12 +355,12 @@ class Request
      * variable on the request.
      *
      * @param string $auth_header Authorization header to send into model
-     * @param PDO    $db          Database adapter (needed to put into OAuthModel if it's not set already)
+     * @param PDO|null $db        Database adapter (needed to put into OAuthModel if it's not set already)
      *
      * @throws InvalidArgumentException
      * @return bool
      */
-    public function identifyUser($auth_header, PDO $db = null)
+    public function identifyUser(string $auth_header, PDO $db = null): bool
     {
         if (
             ($this->getScheme() === 'https://') ||
@@ -365,7 +379,7 @@ class Request
             }
             $oauth_model = $this->getOauthModel($db);
             $user_id     = $oauth_model->verifyAccessToken($oauth_pieces[1]);
-            $this->setUserId($user_id);
+            $this->setUserId((string) $user_id);
             $this->setAccessToken($oauth_pieces[1]);
 
             return true;
@@ -379,11 +393,11 @@ class Request
      *
      * @param array $server The $_SERVER global, injected for testability
      *
-     * @return boolean true
+     * @return true
      *
      * @todo Make paginationParameters part of this object, add tests for them
      */
-    public function parseParameters(array $server)
+    public function parseParameters(array $server): true
     {
         // first of all, pull the GET vars
         if (isset($server['QUERY_STRING'])) {
@@ -412,7 +426,7 @@ class Request
                 $body_params = json_decode($body);
 
                 if ($body_params) {
-                    foreach ($body_params as $param_name => $param_value) {
+                    foreach ((array) $body_params as $param_name => $param_value) {
                         $this->parameters[$param_name] = $param_value;
                     }
                 }
@@ -427,9 +441,9 @@ class Request
      *
      * @return string
      */
-    public function getRawBody()
+    public function getRawBody(): string
     {
-        return file_get_contents('php://input');
+        return file_get_contents('php://input') ?: '';
     }
 
     /**
@@ -437,7 +451,7 @@ class Request
      *
      * @return string
      */
-    public function getVerb()
+    public function getVerb(): string
     {
         return $this->verb;
     }
@@ -447,9 +461,9 @@ class Request
      *
      * @param string $verb Verb to set
      *
-     * @return Request
+     * @return static
      */
-    public function setVerb($verb)
+    public function setVerb(string $verb): static
     {
         $this->verb = $verb;
 
@@ -461,7 +475,7 @@ class Request
      *
      * @return string|null
      */
-    public function getHost()
+    public function getHost(): ?string
     {
         return $this->host;
     }
@@ -471,9 +485,9 @@ class Request
      *
      * @param string $host Host to set
      *
-     * @return Request
+     * @return static
      */
-    public function setHost($host)
+    public function setHost(string $host): static
     {
         $this->host = $host;
 
@@ -485,7 +499,7 @@ class Request
      *
      * @return string
      */
-    public function getScheme()
+    public function getScheme(): string
     {
         return $this->scheme;
     }
@@ -495,9 +509,9 @@ class Request
      *
      * @param string $scheme Scheme to set
      *
-     * @return Request
+     * @return static
      */
-    public function setScheme($scheme)
+    public function setScheme(string $scheme): static
     {
         $this->scheme = $scheme;
 
@@ -510,12 +524,12 @@ class Request
      * been built already, then you must provide a PDO object to put into the
      * model.
      *
-     * @param PDO $db [optional] PDO db adapter to put into OAuthModel object
+     * @param PDO|null $db [optional] PDO db adapter to put into OAuthModel object
      *
      * @throws InvalidArgumentException
      * @return OAuthModel
      */
-    public function getOauthModel(PDO $db = null)
+    public function getOauthModel(?PDO $db = null): OAuthModel
     {
         if ($this->oauthModel === null) {
             if ($db === null) {
@@ -532,9 +546,9 @@ class Request
      *
      * @param OAuthModel $model Model to set
      *
-     * @return Request
+     * @return static
      */
-    public function setOauthModel(OAuthModel $model)
+    public function setOauthModel(OAuthModel $model): static
     {
         $this->oauthModel = $model;
 
@@ -544,13 +558,13 @@ class Request
     /**
      * Sets a user id
      *
-     * @param string $userId User id to set
+     * @param string|int $userId User id to set
      *
-     * @return Request
+     * @return static
      */
-    public function setUserId($userId)
+    public function setUserId(string|int $userId): static
     {
-        $this->user_id = $userId;
+        $this->user_id = (int) $userId;
 
         return $this;
     }
@@ -558,9 +572,9 @@ class Request
     /**
      * Retrieves the user id that's been set on the request
      *
-     * @return string|null
+     * @return int|null
      */
-    public function getUserId()
+    public function getUserId(): ?int
     {
         return $this->user_id;
     }
@@ -570,9 +584,9 @@ class Request
      *
      * @param string $pathInfo Path info to set
      *
-     * @return self
+     * @return static
      */
-    public function setPathInfo($pathInfo)
+    public function setPathInfo(string $pathInfo): static
     {
         $this->path_info    = $pathInfo;
         $this->url_elements = explode('/', $pathInfo);
@@ -585,7 +599,7 @@ class Request
      *
      * @return string
      */
-    public function getPathInfo()
+    public function getPathInfo(): string
     {
         return $this->path_info;
     }
@@ -595,9 +609,9 @@ class Request
      *
      * @param string $accepts Accepts header string
      *
-     * @return self
+     * @return static
      */
-    public function setAccept($accepts)
+    public function setAccept(string $accepts): static
     {
         $this->accept = explode(',', $accepts);
 
@@ -609,9 +623,9 @@ class Request
      *
      * @param string $base Base to set
      *
-     * @return Request
+     * @return static
      */
-    public function setBase($base)
+    public function setBase(string $base): static
     {
         $this->base = $base;
 
@@ -623,7 +637,7 @@ class Request
      *
      * @return string
      */
-    public function getBase()
+    public function getBase(): string
     {
         return $this->base;
     }
@@ -633,9 +647,9 @@ class Request
      *
      * @param string $token Access token to store
      *
-     * @return Request
+     * @return static
      */
-    public function setAccessToken($token)
+    public function setAccessToken(string $token): static
     {
         $this->access_token = $token;
 
@@ -647,27 +661,23 @@ class Request
      *
      * @return string|null
      */
-    public function getAccessToken()
+    public function getAccessToken(): ?string
     {
         return $this->access_token;
     }
 
     /**
      * Retrieves the client's IP address
-     *
-     * @return mixed
      */
-    public function getClientIP()
+    public function getClientIP(): ?string
     {
         return $this->clientIP;
     }
 
     /**
      * Retrieves the client's user agent
-     *
-     * @return mixed
      */
-    public function getClientUserAgent()
+    public function getClientUserAgent(): ?string
     {
         return $this->clientUserAgent;
     }
@@ -681,12 +691,8 @@ class Request
      *
      * @return string
      */
-    public function getConfigValue($key, $default = '')
+    public function getConfigValue(string $key, string $default = ''): string
     {
-        if (!array_key_exists($key, $this->config)) {
-            return $default;
-        }
-
-        return $this->config[$key];
+        return array_key_exists($key, $this->config) ? $this->config[$key] : $default;
     }
 }

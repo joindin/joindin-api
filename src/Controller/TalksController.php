@@ -11,6 +11,7 @@ use Joindin\Api\Model\LanguageMapper;
 use Joindin\Api\Model\PendingTalkClaimMapper;
 use Joindin\Api\Model\TalkCommentMapper;
 use Joindin\Api\Model\TalkMapper;
+use Joindin\Api\Model\TalkModel;
 use Joindin\Api\Model\TalkModelCollection;
 use Joindin\Api\Model\TalkTypeMapper;
 use Joindin\Api\Service\SpamCheckServiceInterface;
@@ -29,8 +30,8 @@ class TalksController extends BaseTalkController
     /**
      * @var PendingTalkClaimMapper
      */
-    private $pending_talk_claim_mapper;
-    private $spamCheckService;
+    private ?PendingTalkClaimMapper $pending_talk_claim_mapper;
+    private SpamCheckServiceInterface $spamCheckService;
 
     public function __construct(SpamCheckServiceInterface $spamCheckService, array $config = [])
     {
@@ -39,10 +40,10 @@ class TalksController extends BaseTalkController
         $this->spamCheckService = $spamCheckService;
     }
 
-    public function getAction(Request $request, PDO $db)
+    public function getAction(Request $request, PDO $db): array
     {
         $this->setDbAndRequest($db, $request);
-        $talk_id = $this->getItemId($request);
+        $talk_id = $this->getItemId($request, 'Talk not found');
 
         $verbose = $this->getVerbosity($request);
 
@@ -52,10 +53,10 @@ class TalksController extends BaseTalkController
         return $collection->getOutputView($request, $verbose);
     }
 
-    public function getTalkComments(Request $request, PDO $db)
+    public function getTalkComments(Request $request, PDO $db): false|array
     {
         $this->setDbAndRequest($db, $request);
-        $talk_id = $this->getItemId($request);
+        $talk_id = $this->getItemId($request, 'Talk not found');
         $verbose = $this->getVerbosity($this->request);
 
         // pagination settings
@@ -68,10 +69,10 @@ class TalksController extends BaseTalkController
         return $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
     }
 
-    public function getTalkStarred(Request $request, PDO $db)
+    public function getTalkStarred(Request $request, PDO $db): array
     {
         $this->setDbAndRequest($db, $request);
-        $talk_id = $this->getItemId($request);
+        $talk_id = $this->getItemId($request, 'Talk not found');
 
         /** @var TalkMapper $mapper */
         $mapper  = $this->getMapper('talk');
@@ -79,7 +80,7 @@ class TalksController extends BaseTalkController
         return $mapper->getUserStarred($talk_id, $this->request->user_id);
     }
 
-    public function getTalkByKeyWord(Request $request, PDO $db)
+    public function getTalkByKeyWord(Request $request, PDO $db): array
     {
         if (!isset($request->parameters['title'])) {
             throw new Exception('Generic talks listing not supported', Http::METHOD_NOT_ALLOWED);
@@ -87,10 +88,9 @@ class TalksController extends BaseTalkController
 
         $this->setDbAndRequest($db, $request);
 
-        $keyword = filter_var(
+        $keyword = htmlspecialchars(
             $request->parameters['title'],
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+            ENT_NOQUOTES
         );
 
         $verbose = $this->getVerbosity($this->request);
@@ -101,14 +101,17 @@ class TalksController extends BaseTalkController
         /** @var TalkMapper $mapper */
         $mapper = $this->getMapper('talk');
         $talks  = $mapper->getTalksByTitleSearch($keyword, $resultsperpage, $start);
+        if (!$talks) {
+            return [];
+        }
 
         return $talks->getOutputView($this->request, $verbose);
     }
 
-    public function postAction(Request $request, PDO $db)
+    public function postAction(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
-        $talk_id = $this->getItemId($request);
+        $talk_id = $this->getItemId($request, 'Talk not found');
 
         // Retrieve the talk. It if doesn't exist, then 404 with talk not found
         $talk = $this->getTalkById($request, $db, $talk_id);
@@ -116,7 +119,7 @@ class TalksController extends BaseTalkController
         if (isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case "comments":
-                    $comment = $request->getParameter('comment');
+                    $comment = $request->getStringParameter('comment');
 
                     if (empty($comment)) {
                         throw new Exception('The field "comment" is required', Http::BAD_REQUEST);
@@ -138,7 +141,7 @@ class TalksController extends BaseTalkController
                     /** @var TalkCommentMapper $comment_mapper */
                     $comment_mapper = $this->getMapper('talkcomment', $db, $request);
 
-                    $data['user_id'] = $request->user_id;
+                    $data['user_id'] = $request->user_id ?? 0;
                     $data['talk_id'] = $talk_id;
                     $data['comment'] = $comment;
                     $data['rating']  = $rating;
@@ -219,24 +222,24 @@ class TalksController extends BaseTalkController
         }
     }
 
-    public function removeStarFromTalk(Request $request, PDO $db)
+    public function removeStarFromTalk(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
 
-        $talk_id     = $this->getItemId($request);
+        $talk_id     = $this->getItemId($request, 'Talk not found');
         $talk_mapper = $this->getTalkMapper($db, $request);
         $talk_mapper->setUserNonStarred($talk_id, $request->user_id);
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::RESET_CONTENT);
     }
 
-    public function deleteTalk(Request $request, PDO $db)
+    public function deleteTalk(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
 
-        $talk_id     = $this->getItemId($request);
+        $talk_id     = $this->getItemId($request, 'Talk not found');
         $talk_mapper = $this->getTalkMapper($db, $request);
 
         $talk = $talk_mapper->getTalkById($talk_id);
@@ -250,7 +253,7 @@ class TalksController extends BaseTalkController
         }
 
         $view = $request->getView();
-        $view->setHeader('Content-Length', 0);
+        $view->setHeader('Content-Length', '0');
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
@@ -263,7 +266,7 @@ class TalksController extends BaseTalkController
      *
      * @throws Exception
      */
-    public function addTrackToTalk(Request $request, PDO $db)
+    public function addTrackToTalk(Request $request, PDO $db): void
     {
         try {
             $this->checkLoggedIn($request);
@@ -284,13 +287,13 @@ class TalksController extends BaseTalkController
             throw new Exception("You do not have permission to add this talk to a track", Http::BAD_REQUEST);
         }
 
-        $track_uri = $request->getParameter("track_uri");
+        $track_uri = $request->getStringParameter("track_uri");
         $pattern   = '@/' . $request->version . '/tracks/([\d]+)$@';
 
         if (!preg_match($pattern, $track_uri, $matches)) {
             throw new Exception('Invalid track_uri', Http::BAD_REQUEST);
         }
-        $track_id = $matches[1];
+        $track_id = (int) $matches[1];
 
         // is this track on this event?
         $event_mapper = new EventMapper($db, $request);
@@ -301,7 +304,7 @@ class TalksController extends BaseTalkController
         }
         $track_event_id = $track_events[0]['ID'];
 
-        if ($talk->event_id != $track_event_id) {
+        if ($talk->event_id !== $track_event_id) {
             throw new Exception("This talk cannot be added to this track", Http::BAD_REQUEST);
         }
 
@@ -323,7 +326,7 @@ class TalksController extends BaseTalkController
      *
      * @throws Exception
      */
-    public function removeTrackFromTalk(Request $request, PDO $db)
+    public function removeTrackFromTalk(Request $request, PDO $db): void
     {
         try {
             $this->checkLoggedIn($request);
@@ -381,10 +384,10 @@ class TalksController extends BaseTalkController
      * @throws Exception
      * @return array
      */
-    public function createTalkAction(Request $request, PDO $db)
+    public function createTalkAction(Request $request, PDO $db): array
     {
         $this->checkLoggedIn($request);
-        $event_id = $this->getItemId($request);
+        $event_id = $this->getItemId($request, 'Event not found');
 
         if (empty($event_id)) {
             throw new Exception(
@@ -441,11 +444,11 @@ class TalksController extends BaseTalkController
      * @throws Exception
      * @return void
      */
-    public function editTalk(Request $request, PDO $db)
+    public function editTalk(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
 
-        $talk_id = $this->getItemId($request);
+        $talk_id = $this->getItemId($request, 'Talk not found');
 
         $talk_mapper = new TalkMapper($db, $request);
 
@@ -482,7 +485,7 @@ class TalksController extends BaseTalkController
      * @throws Exception
      * @return array
      */
-    protected function getTalkDataFromRequest(PDO $db, Request $request, $event_id)
+    protected function getTalkDataFromRequest(PDO $db, Request $request, $event_id): array
     {
         // get the event so we can get the timezone info & it
         $event_mapper = new EventMapper($db, $request);
@@ -493,30 +496,27 @@ class TalksController extends BaseTalkController
         }
         $event = $list['events'][0];
 
-        $talk['title'] = filter_var(
-            $request->getParameter('talk_title'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+        $talk['title'] = htmlspecialchars(
+            $request->getStringParameter('talk_title'),
+            ENT_NOQUOTES
         );
 
         if (empty($talk['title'])) {
             throw new Exception("The talk title field is required", Http::BAD_REQUEST);
         }
 
-        $talk['description'] = filter_var(
-            $request->getParameter('talk_description'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+        $talk['description'] = htmlspecialchars(
+            $request->getStringParameter('talk_description'),
+            ENT_NOQUOTES
         );
 
         if (empty($talk['description'])) {
             throw new Exception("The talk description field is required", Http::BAD_REQUEST);
         }
 
-        $talk['type'] = filter_var(
-            $request->getParameter('type', 'Talk'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+        $talk['type'] = htmlspecialchars(
+            $request->getStringParameter('type', 'Talk'),
+            ENT_NOQUOTES
         );
 
         $talk_type_mapper = new TalkTypeMapper($db, $request);
@@ -527,10 +527,9 @@ class TalksController extends BaseTalkController
         }
         $talk['type_id'] = $talk_types[$talk['type']];
 
-        $start_date = filter_var(
-            $request->getParameter('start_date'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+        $start_date = htmlspecialchars(
+            $request->getStringParameter('start_date'),
+            ENT_NOQUOTES
         );
 
         if (empty($start_date)) {
@@ -546,10 +545,9 @@ class TalksController extends BaseTalkController
             throw new Exception("The talk must be held between the start and end date of the event", Http::BAD_REQUEST);
         }
 
-        $talk['language'] = filter_var(
-            $request->getParameter('language'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+        $talk['language'] = htmlspecialchars(
+            $request->getStringParameter('language'),
+            ENT_NOQUOTES
         );
 
         if (empty($talk['language'])) {
@@ -578,27 +576,24 @@ class TalksController extends BaseTalkController
         );
 
         $talk['speakers'] = array_map(
-            static function ($speaker) {
-                $speaker = filter_var($speaker, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-                $speaker = trim($speaker);
-
-                return $speaker;
-            },
+            static fn ($speaker) => is_string($speaker)
+                ? trim(htmlspecialchars($speaker, ENT_NOQUOTES))
+                : throw new \RuntimeException('Speaker names must be strings', Http::BAD_REQUEST),
             (array) $request->getParameter('speakers')
         );
 
         return $talk;
     }
 
-    public function getSpeakersForTalk(Request $request, PDO $db)
+    public function getSpeakersForTalk(Request $request, PDO $db): array
     {
-        $talk_id = $this->getItemId($request);
+        $talk_id = $this->getItemId($request, 'Talk not found');
         $talk    = $this->getTalkById($request, $db, $talk_id);
 
         return $talk->speakers;
     }
 
-    public function setSpeakerForTalk(Request $request, PDO $db)
+    public function setSpeakerForTalk(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
 
@@ -612,7 +607,13 @@ class TalksController extends BaseTalkController
 
         $user_id     = $request->user_id;
         $user_mapper = $this->getUserMapper($db, $request);
-        $user        = $user_mapper->getUserById($user_id)['users'][0];
+        $userResult   = $user_mapper->getUserById($user_id);
+
+        if (!$userResult) {
+            throw new \Exception('User not found', Http::INTERNAL_SERVER_ERROR);
+        }
+
+        $user = $userResult['users'][0];
 
         $data = $this->getLinkUserDataFromRequest($request);
 
@@ -638,7 +639,11 @@ class TalksController extends BaseTalkController
         if (!$speaker_id) {
             throw new Exception("Specified user not found", Http::NOT_FOUND);
         }
-        $speaker_name = $user_mapper->getUserById($speaker_id)['users'][0]['full_name'];
+        $speakerResult = $user_mapper->getUserById($speaker_id);
+        if (!$speakerResult) {
+            throw new \Exception('Speaker not found', Http::INTERNAL_SERVER_ERROR);
+        }
+        $speaker_name = $speakerResult['users'][0]['full_name'];
 
         $pending_talk_claim_mapper = $this->getPendingTalkClaimMapper($db, $request);
         $claim_exists              = $pending_talk_claim_mapper->claimExists($talk_id, $speaker_id, $claim['ID']);
@@ -718,20 +723,23 @@ class TalksController extends BaseTalkController
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
-    private function getLinkUserDataFromRequest(Request $request)
+    /**
+     * @return array{display_name: string, username: string}
+     */
+    private function getLinkUserDataFromRequest(Request $request): array
     {
         return [
-            'display_name' => trim($request->getParameter('display_name', '')),
-            'username'     => trim($request->getParameter('username', '')),
+            'display_name' => trim($request->getStringParameter('display_name', '')),
+            'username'     => trim($request->getStringParameter('username', '')),
         ];
     }
 
-    public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper)
+    public function setPendingTalkClaimMapper(PendingTalkClaimMapper $pending_talk_claim_mapper): void
     {
         $this->pending_talk_claim_mapper = $pending_talk_claim_mapper;
     }
 
-    public function getPendingTalkClaimMapper(PDO $db, Request $request)
+    public function getPendingTalkClaimMapper(PDO $db, Request $request): PendingTalkClaimMapper
     {
         if (!isset($this->pending_talk_claim_mapper)) {
             $this->pending_talk_claim_mapper = new PendingTalkClaimMapper($db, $request);
@@ -740,10 +748,10 @@ class TalksController extends BaseTalkController
         return $this->pending_talk_claim_mapper;
     }
 
-    public function removeApprovedSpeakerFromTalk(Request $request, PDO $db)
+    public function removeApprovedSpeakerFromTalk(Request $request, PDO $db): void
     {
         $this->checkLoggedIn($request);
-        $talk_id    = $this->getItemId($request);
+        $talk_id    = $this->getItemId($request, 'Talk not found');
         $speaker_id = $request->url_elements[5];
 
         $talk_mapper = new TalkMapper($db, $request);
@@ -772,12 +780,16 @@ class TalksController extends BaseTalkController
         $view->setResponseCode(Http::NO_CONTENT);
     }
 
-    public function getTalkCommentEmailService($config, $recipients, $talk, $comment)
-    {
+    public function getTalkCommentEmailService(
+        array $config,
+        array $recipients,
+        TalkModel $talk,
+        array $comment
+    ): TalkCommentEmailService {
         return new TalkCommentEmailService($config, $recipients, $talk, $comment);
     }
 
-    public function removeSpeakerForTalk(Request $request, PDO $db)
+    public function removeSpeakerForTalk(Request $request, PDO $db): true
     {
         $this->checkLoggedIn($request);
         $talk        = $this->getTalkById($request, $db);

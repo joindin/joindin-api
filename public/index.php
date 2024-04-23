@@ -42,9 +42,11 @@ function handle_exception(Throwable $e)
         }
 
         $message = $e->getMessage();
+
         if ($e instanceof PDOException && (!isset($config['mode']) || $config['mode'] !== "development")) {
             $message = "Database error";
         }
+
         if ($e instanceof RateLimitExceededException) {
             $request->getView()->setHeader('Retry-After', $e->getRateLimitRefresh());
         }
@@ -86,10 +88,10 @@ if (isset($headers['authorization'])) {
     $request->identifyUser($headers['authorization'], $ji_db);
 }
 
-$rules = require __DIR__ . '/../src/config/routes/2.1.php';
+$rules = require __DIR__ . '/../src/config/routes/' . Request::LATEST_API_VERSION_NUMBER . '.php';
 
 $routers = [
-    "v2.1" => new VersionedRouter('2.1', $config, $rules),
+    "v" . Request::LATEST_API_VERSION_NUMBER => new VersionedRouter(Request::LATEST_API_VERSION_NUMBER, $config, $rules),
     '' => new DefaultRouter($config),
 ];
 $router = new ApiRouter($config, $routers, ['2']);

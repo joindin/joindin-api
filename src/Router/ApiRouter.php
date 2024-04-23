@@ -11,9 +11,8 @@ use Teapot\StatusCode\Http;
  */
 class ApiRouter extends BaseRouter
 {
-    protected $config;
-    private $routers;
-    private $oldVersions;
+    protected array $config;
+    private array $routers;
 
     /**
      * @var string The latest version of the API
@@ -27,23 +26,22 @@ class ApiRouter extends BaseRouter
      * @param array $routers
      * @param array $oldVersions
      */
-    public function __construct(array $config, array $routers, array $oldVersions)
+    public function __construct(array $config, array $routers, private array $oldVersions)
     {
         parent::__construct($config);
         $this->setRouters($routers);
-        $this->oldVersions = $oldVersions;
     }
 
     /**
      * Sets the list of Router classes this ApiRouter uses
      *
-     * @param array $routers A list of Routers indexed by version
+     * @param array<int,string> $routers A list of Routers indexed by version
      */
-    public function setRouters(array $routers)
+    public function setRouters(array $routers): void
     {
         $k = array_keys($routers);
         rsort($k);
-        $this->latestVersion = current($k);
+        $this->latestVersion = (string) current($k);
         $this->routers       = $routers;
     }
 
@@ -52,7 +50,7 @@ class ApiRouter extends BaseRouter
      *
      * @return array
      */
-    public function getRouters()
+    public function getRouters(): array
     {
         return $this->routers;
     }
@@ -60,7 +58,7 @@ class ApiRouter extends BaseRouter
     /**
      * {@inheritdoc}
      */
-    public function getRoute(Request $request)
+    public function getRoute(Request $request): Route
     {
         $version = $request->getUrlElement(1);
 

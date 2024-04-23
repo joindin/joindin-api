@@ -5,6 +5,8 @@ namespace Joindin\Api\Model;
 use DateTime;
 use Exception;
 use PDO;
+use Teapot\StatusCode\Http;
+use const http\Client\Curl\Features\HTTP2;
 
 /**
  * EventModel
@@ -19,7 +21,7 @@ class EventMapper extends ApiMapper
      *
      * @return array with keys as API fields and values as db columns
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'name'                 => 'event_name',
@@ -50,7 +52,7 @@ class EventMapper extends ApiMapper
      *
      * @return array with keys as API fields and values as db columns
      */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             'name'                 => 'event_name',
@@ -89,17 +91,17 @@ class EventMapper extends ApiMapper
      * @param bool $verbose  used to determine how many fields are needed
      * @param bool $activeEventsOnly
      *
-     * @return false|array the event detail
+     * @return array the event detail
      */
-    public function getEventById($event_id, $verbose = false, $activeEventsOnly = true)
+    public function getEventById(int $event_id, bool $verbose = false, bool $activeEventsOnly = true): array
     {
         $results = $this->getEvents(1, 0, ["event_id" => $event_id, 'active' => $activeEventsOnly]);
 
-        if ($results) {
-            return $this->transformResults($results, $verbose);
+        if ($results === false) {
+            throw new Exception(sprintf('There is no event with ID "%s"', $event_id), Http::NOT_FOUND);
         }
 
-        return false;
+        return $this->transformResults($results, $verbose);
     }
 
     /**
@@ -112,9 +114,9 @@ class EventMapper extends ApiMapper
      * @param bool $activeEventsOnly
      * @param bool $transform
      *
-     * @return bool|array the event detail
+     * @return array|false the event detail
      */
-    public function getEventByTrackId($track_id, $verbose = false, $activeEventsOnly = true, $transform = true)
+    public function getEventByTrackId(int $track_id, bool $verbose = false, bool $activeEventsOnly = true, bool $transform = true): array|false
     {
         $results = $this->getEvents(1, 0, ["track_id" => $track_id, 'active' => $activeEventsOnly]);
 
@@ -133,12 +135,12 @@ class EventMapper extends ApiMapper
      * Internal function called by other event-fetching code, with changeable SQL
      *
      * @param int      $resultsperpage how many records to return
-     * @param int|null $start          offset to start returning records from
+     * @param ?int      $start         offset to start returning records from; null to ensure we get first upcoming event
      * @param array    $params         filters and other parameters to limit/order the collection
      *
      * @return false|array the raw database results
      */
-    protected function getEvents($resultsperpage, $start, array $params = [])
+    protected function getEvents(int $resultsperpage, ?int $start, array $params = []): array|false
     {
         $data  = [];
         $order = " order by ";
@@ -304,7 +306,7 @@ class EventMapper extends ApiMapper
         $sql .= $order;
 
         // limit clause
-        $sql      .= $this->buildLimit($resultsperpage, $start);
+        $sql      .= $this->buildLimit($resultsperpage, $start ?? 0);
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
 
@@ -322,13 +324,13 @@ class EventMapper extends ApiMapper
      * getEventList
      *
      * @param int   $resultsperpage how many records to return
-     * @param int   $start          offset to start returning records from
+     * @param ?int  $start          offset to start returning records from; null to ensure we get first upcoming event
      * @param array $params         filters and other parameters to limit/order the collection
      * @param bool  $verbose        used to determine how many fields are needed
      *
      * @return false|array the data, or false if something went wrong
      */
-    public function getEventList($resultsperpage, $start, array $params, $verbose = false)
+    public function getEventList(int $resultsperpage, ?int $start, array $params, bool $verbose = false): array|false
     {
         $results = $this->getEvents($resultsperpage, $start, $params);
 
@@ -347,7 +349,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool
      */
-    public function setUserAttendance($event_id, $user_id)
+    public function setUserAttendance(int $event_id, int $user_id): bool
     {
         $sql  = 'insert ignore into user_attend (uid,eid) values (:uid, :eid)';
         $stmt = $this->_db->prepare($sql);
@@ -364,7 +366,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool
      */
-    public function setUserNonAttendance($event_id, $user_id)
+    public function setUserNonAttendance(int $event_id, int $user_id): bool
     {
         $sql  = 'delete from user_attend where uid = :uid and eid = :eid';
         $stmt = $this->_db->prepare($sql);
@@ -378,11 +380,11 @@ class EventMapper extends ApiMapper
      * User attending an event?
      *
      * @param int $event_id the event to check
-     * @param int $user_id  the user you're interested in
+     * @param ?int $user_id the user you're interested in
      *
      * @return array
      */
-    public function getUserAttendance($event_id, $user_id)
+    public function getUserAttendance(int $event_id, ?int $user_id): array
     {
         return ['is_attending' => $this->isUserAttendingEvent($event_id, $user_id)];
     }
@@ -391,12 +393,16 @@ class EventMapper extends ApiMapper
      * Is this user attending this event?
      *
      * @param int $event_id the Event of interest
-     * @param int $user_id  which user (often the current one)
+     * @param ?int $user_id which user (often the current one)
      *
      * @return bool
      */
-    protected function isUserAttendingEvent($event_id, $user_id)
+    protected function isUserAttendingEvent(int $event_id, ?int $user_id): bool
     {
+        if (!$user_id) {
+            return false;
+        }
+
         $sql  = "select * from user_attend where eid = :event_id and uid = :user_id";
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["event_id" => $event_id, "user_id" => $user_id]);
@@ -407,7 +413,7 @@ class EventMapper extends ApiMapper
     /**
      * @inheritdoc
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, bool $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);
@@ -493,7 +499,7 @@ class EventMapper extends ApiMapper
      *
      * @return array The list of people hosting the event
      */
-    protected function getHosts($event_id)
+    protected function getHosts(int $event_id): array
     {
         $base    = $this->_request->base;
         $version = $this->_request->version;
@@ -503,7 +509,7 @@ class EventMapper extends ApiMapper
         $host_stmt->execute(["event_id" => $event_id]);
         $hosts = $host_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if (!is_array($hosts)) {
+        if (!$hosts) {
             return [];
         }
 
@@ -524,7 +530,7 @@ class EventMapper extends ApiMapper
      *
      * @return string SQL to fetch hosts, containing an :event_id named parameter
      */
-    protected function getHostSql()
+    protected function getHostSql(): string
     {
         return 'select a.uid as user_id, u.full_name'
                . ' from user_admin a '
@@ -539,7 +545,7 @@ class EventMapper extends ApiMapper
      *
      * @return array The email addresses of people hosting the event
      */
-    public function getHostsEmailAddresses($event_id)
+    public function getHostsEmailAddresses(int $event_id): array
     {
         $base    = $this->_request->base;
         $version = $this->_request->version;
@@ -561,7 +567,7 @@ class EventMapper extends ApiMapper
      *
      * @return array An array of tags
      */
-    protected function getTags($event_id)
+    protected function getTags(int $event_id): array
     {
         $tag_sql  = 'select tag_value as tag'
                     . ' from tags_events te'
@@ -571,7 +577,7 @@ class EventMapper extends ApiMapper
         $tag_stmt->execute(["event_id" => $event_id]);
         $tags = $tag_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if (!is_array($tags)) {
+        if (!$tags) {
             return [];
         }
 
@@ -594,9 +600,9 @@ class EventMapper extends ApiMapper
      *
      * @return false|array the data, or false if something went wrong
      */
-    public function getEventsHostedByUser($user_id, $resultsperpage, $start, $verbose = false)
+    public function getEventsHostedByUser(int $user_id, int $resultsperpage, int $start, bool $verbose = false): array|false
     {
-        $data = ["user_id" => (int) $user_id];
+        $data = ["user_id" => $user_id];
 
         $sql = 'select events.*, '
                . '(select count(*) from user_attend where user_attend.eid = events.ID) as attendee_count, '
@@ -626,7 +632,7 @@ class EventMapper extends ApiMapper
      *
      * @return false|array the data, or false if something went wrong
      */
-    public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false)
+    public function getEventsAttendedByUser(int $user_id, int $resultsperpage, int $start, bool $verbose = false): array|false
     {
         $data = ["user_id" => (int) $user_id];
         $sql  = 'select events.*, '
@@ -662,7 +668,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool if the user has privileges
      */
-    public function thisUserHasAdminOn($event_id)
+    public function thisUserHasAdminOn(int $event_id): bool
     {
         // do we even have an authenticated user?
         if (!isset($this->_request->user_id)) {
@@ -685,7 +691,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool if the user has rights
      */
-    public function thisUserCanApproveEvents()
+    public function thisUserCanApproveEvents(): bool
     {
         // do we even have an authenticated user?
         if (!isset($this->_request->user_id)) {
@@ -706,7 +712,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool if the user is a host
      */
-    public function isUserAHostOn($user_id, $event_id)
+    public function isUserAHostOn(int $user_id, int $event_id): bool
     {
         $sql  = $this->getHostSql();
         $sql  .= ' AND u.ID = :user_id';
@@ -726,7 +732,7 @@ class EventMapper extends ApiMapper
      *
      * @return int Number of comments across all talks
      */
-    protected function getTalkCommentCount($event_id)
+    protected function getTalkCommentCount(int $event_id): int
     {
         $comment_sql  = 'select count(*) as comment_count from talk_comments tc '
                         . 'inner join talks t on tc.talk_id = t.ID '
@@ -734,9 +740,12 @@ class EventMapper extends ApiMapper
                         . 'where e.ID = :event_id';
         $comment_stmt = $this->_db->prepare($comment_sql);
         $comment_stmt->execute(["event_id" => $event_id]);
+        /**
+         * @var array<string,string|int> $comments
+         */
         $comments = $comment_stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $comments['comment_count'];
+        return (int) $comments['comment_count'];
     }
 
     /**
@@ -750,7 +759,7 @@ class EventMapper extends ApiMapper
      *
      * @return string|false The value we stored
      */
-    protected function generateInflectedName($name, $event_id, $start_date)
+    protected function generateInflectedName(string $name, int $event_id, string $start_date): string|false
     {
         $date           = new DateTime($start_date);
         $inflected_name = $this->inflect($name);
@@ -793,9 +802,9 @@ class EventMapper extends ApiMapper
      * @param bool  $auto_approve if false an event is registered as 'pending' first and must be actively approved.
      *
      * @throws Exception
-     * @return integer|false
+     * @return integer
      */
-    public function createEvent(array $event, $auto_approve = false)
+    public function createEvent(array $event, bool $auto_approve = false): int
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields = [
@@ -838,10 +847,10 @@ class EventMapper extends ApiMapper
         $result = $stmt->execute($event);
 
         if ($result) {
-            return $this->_db->lastInsertId();
+            return (int) $this->_db->lastInsertId();
         }
 
-        return false;
+        throw new \RuntimeException('Could not create event', Http::INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -855,7 +864,7 @@ class EventMapper extends ApiMapper
      * @throws Exception
      * @return integer|false
      */
-    public function editEvent(array $event, $event_id)
+    public function editEvent(array $event, int $event_id): int|false
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields = [
@@ -913,7 +922,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool
      */
-    public function addUserAsHost($event_id, $user_id)
+    public function addUserAsHost(int $event_id, int $user_id): bool
     {
         $sql  = "insert into user_admin set rtype = 'event', rid = :event_id, uid = :user_id";
         $stmt = $this->_db->prepare($sql);
@@ -929,7 +938,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool
      */
-    public function removeUserAsHost($event_id, $user_id)
+    public function removeUserAsHost(int $event_id, int $user_id): bool
     {
         $sql  = "delete from user_admin where rtype = 'event' and rid = :event_id and uid = :user_id";
         $stmt = $this->_db->prepare($sql);
@@ -944,7 +953,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool
      */
-    public function cacheTalkCount($event_id)
+    public function cacheTalkCount(int $event_id): bool
     {
         $sql  = "UPDATE events e SET talk_count = (SELECT COUNT(*) FROM talks t WHERE t.event_id = e.ID) " .
                 "WHERE e.ID = :event_id;";
@@ -960,7 +969,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool
      */
-    public function cacheCommentCount($event_id)
+    public function cacheCommentCount(int $event_id): bool
     {
         $sql  = "UPDATE events e SET comment_count = " .
                 "(SELECT COUNT(*) FROM event_comments ec WHERE ec.event_id = e.ID) WHERE e.ID = :event_id;";
@@ -976,7 +985,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool
      */
-    public function cacheTrackCount($event_id)
+    public function cacheTrackCount(int $event_id): bool
     {
         $sql  = "UPDATE events e SET track_count = (SELECT COUNT(*) FROM event_track et WHERE et.event_id = e.ID) " .
                 "WHERE e.ID = :event_id;";
@@ -991,9 +1000,9 @@ class EventMapper extends ApiMapper
      *
      * @param int $event_id The event you want
      *
-     * @return false|array The event details, or false if it wasn't found
+     * @return array The event details
      */
-    public function getPendingEventById($event_id)
+    public function getPendingEventById(int $event_id): array
     {
         $sql = 'select events.* '
                . 'from events '
@@ -1008,7 +1017,7 @@ class EventMapper extends ApiMapper
             return parent::transformResults($results, true)[0];
         }
 
-        return false;
+        throw new \RuntimeException('Could not retrieve pending event', Http::INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -1016,17 +1025,16 @@ class EventMapper extends ApiMapper
      *
      * @return int The number of pending events
      */
-    public function getPendingEventsCount()
+    public function getPendingEventsCount(): int
     {
         $sql = 'select count(*) as count '
                . 'from events '
                . 'where pending = 1 and (events.private <> "y" OR events.private IS NULL)';
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute();
-        $result   = $stmt->fetch();
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute();
 
-        return $result['count'];
+        return (int) $stmt->fetchColumn();
     }
 
     /**
@@ -1037,7 +1045,7 @@ class EventMapper extends ApiMapper
      *
      * @return int The number of pending events
      */
-    public function getPendingEventsCountByUser($user_id)
+    public function getPendingEventsCountByUser(int $user_id): int
     {
         $sql = 'select count(*) as count '
                . 'from events e '
@@ -1045,11 +1053,10 @@ class EventMapper extends ApiMapper
                . 'where e.pending = 1 AND ua.rtype="event" '
                . 'AND ua.uid = :user_id ';
 
-        $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(["user_id" => $user_id]);
-        $result   = $stmt->fetch();
+        $stmt = $this->_db->prepare($sql);
+        $stmt->execute(["user_id" => $user_id]);
 
-        return $result['count'];
+        return (int) $stmt->fetchColumn();
     }
 
     /**
@@ -1066,7 +1073,7 @@ class EventMapper extends ApiMapper
      *
      * @return void
      */
-    public function setTags($event_id, array $tags)
+    public function setTags(int $event_id, array $tags): void
     {
         $deleteAllEventTagsSql  = 'DELETE FROM tags_events WHERE event_id = :event_id;';
         $deleteAllEventTagsStmt = $this->_db->prepare($deleteAllEventTagsSql);
@@ -1109,11 +1116,11 @@ class EventMapper extends ApiMapper
      *
      * @return boolean
      */
-    public function approve($event_id, $reviewing_user_id)
+    public function approve(int $event_id, int $reviewing_user_id): bool
     {
         $sql      = "select ID from events where pending = 1 and active = 0 and ID = :event_id";
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(["event_id" => $event_id]);
+        $stmt->execute(["event_id" => $event_id]);
         $result   = $stmt->fetch();
 
         if ($result === false) {
@@ -1136,7 +1143,7 @@ class EventMapper extends ApiMapper
      *
      * @return boolean
      */
-    public function reject($event_id, $reviewing_user_id, string $reason)
+    public function reject(int $event_id, int $reviewing_user_id, string $reason): bool
     {
         $sql      = "select ID from events where pending = 1 and active = 0 and ID = :event_id";
         $stmt     = $this->_db->prepare($sql);
@@ -1165,7 +1172,7 @@ class EventMapper extends ApiMapper
      *
      * @return array The images including metadata
      */
-    public function getImages($event_id)
+    public function getImages(int $event_id): array
     {
         $image_sql  = 'select i.type, i.url, i.width, i.height'
                       . ' from event_images i '
@@ -1195,7 +1202,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool whether the record was saved
      */
-    public function removeImages($event_id)
+    public function removeImages(int $event_id): bool
     {
         $sql  = 'delete from event_images'
                 . ' where event_id = :event_id';
@@ -1219,7 +1226,7 @@ class EventMapper extends ApiMapper
      *
      * @return bool whether the record was saved
      */
-    public function saveNewImage($event_id, $filename, $width, $height, $type)
+    public function saveNewImage(int $event_id, string $filename, int $width, int $height, string $type): bool
     {
         $sql    = 'insert into event_images set '
                   . 'event_id = :event_id, width = :width, height = :height, '
@@ -1250,7 +1257,7 @@ class EventMapper extends ApiMapper
      *
      * @return false|array
      */
-    protected function getTransformedResultsFromSqlAndData($sql, array $data, $verbose = false)
+    protected function getTransformedResultsFromSqlAndData(string $sql, array $data, bool $verbose = false): array|false
     {
         $stmt = $this->_db->prepare($sql);
 
@@ -1259,10 +1266,6 @@ class EventMapper extends ApiMapper
         }
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (!is_array($results)) {
-            return false;
-        }
 
         $results['total'] = $this->getTotalCount($sql, $data);
 
@@ -1275,7 +1278,7 @@ class EventMapper extends ApiMapper
      *
      * @throws Exception
      */
-    protected function verifyMandatoryFields(array $event, array $mandatoryFields)
+    protected function verifyMandatoryFields(array $event, array $mandatoryFields): void
     {
         if (false === empty(array_diff($mandatoryFields, array_keys($event)))) {
             throw new Exception("Missing mandatory fields");

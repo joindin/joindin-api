@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 final class TalkCommentEmailServiceTest extends Testcase
 {
-    protected $config = [
+    protected array $config = [
         'email' => [
             "from" => "test@joind.in",
             'smtp' => [
@@ -24,7 +24,7 @@ final class TalkCommentEmailServiceTest extends Testcase
     /**
      * Check that we can create the service
      */
-    public function testCreateService()
+    public function testCreateService(): void
     {
         $recipients = ["test@joind.in"];
         $talk       = new TalkModel(["talk_title" => "sample talk"]);
@@ -37,7 +37,7 @@ final class TalkCommentEmailServiceTest extends Testcase
     /**
      * Test email override
      */
-    public function testCreateServiceWithEmailRedirect()
+    public function testCreateServiceWithEmailRedirect(): void
     {
         $config                   = $this->config;
         $config["email"]["forward_all_to"] = "blackhole@joind.in";
@@ -52,7 +52,7 @@ final class TalkCommentEmailServiceTest extends Testcase
     /**
      * Test replacements work into templates
      */
-    public function testTemplateReplacements()
+    public function testTemplateReplacements(): void
     {
         $recipients = ["test@joind.in"];
         $talk       = new TalkModel(["talk_title" => "sample talk"]);
@@ -78,7 +78,7 @@ Questions? Comments?  Get in touch: [feedback@joind.in](mailto:feedback@joind.in
     /**
      * Should be able to get markdown to HTML
      */
-    public function testMarkdownTransform()
+    public function testMarkdownTransform(): void
     {
         $markdown   = "A *sunny* day";
         $recipients = ["test@joind.in"];
@@ -89,8 +89,8 @@ Questions? Comments?  Get in touch: [feedback@joind.in](mailto:feedback@joind.in
 
         $html = $service->markdownToHtml($markdown);
         $this->assertEquals(
-            $html,
-            "<p>A <em>sunny</em> day</p>\n"
+            "<p>A <em>sunny</em> day</p>\n",
+            $html
         );
     }
 }

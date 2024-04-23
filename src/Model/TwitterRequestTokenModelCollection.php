@@ -11,7 +11,7 @@ use Joindin\Api\Request;
 class TwitterRequestTokenModelCollection extends BaseModelCollection
 {
     /** @var array|TwitterRequestTokenModel[] */
-    protected $list = [];
+    protected array $list = [];
 
     /**
      * Take arrays of data and create a collection of models; store metadata
@@ -19,7 +19,7 @@ class TwitterRequestTokenModelCollection extends BaseModelCollection
      * @param array $data
      * @param int   $total
      */
-    public function __construct(array $data, $total = 0)
+    public function __construct(array $data, int $total = 0)
     {
         $this->total = $total;
 

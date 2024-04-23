@@ -5,14 +5,12 @@ namespace Joindin\Api\Model;
 use Exception;
 use Joindin\Api\Exception\RateLimitExceededException;
 use PDO;
+use Teapot\StatusCode\Http;
 use function sprintf;
 
 class TalkCommentMapper extends ApiMapper
 {
-    /**
-     * @return array
-     */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'rating'            => 'rating',
@@ -24,10 +22,7 @@ class TalkCommentMapper extends ApiMapper
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             'rating'            => 'rating',
@@ -48,7 +43,7 @@ class TalkCommentMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose = false)
+    public function getCommentsByTalkId(int $talk_id, int $resultsperpage, int $start, bool $verbose = false): array|false
     {
         $sql = $this->getBasicSQL();
         $sql .= 'and talk_id = :talk_id';
@@ -61,7 +56,7 @@ class TalkCommentMapper extends ApiMapper
         ]);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results          = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, [':talk_id' => $talk_id]);
 
             return $this->transformResults($results, $verbose);
@@ -78,7 +73,7 @@ class TalkCommentMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getCommentsByEventId($event_id, $resultsperpage, $start, $verbose = false)
+    public function getCommentsByEventId(int $event_id, int $resultsperpage, int $start, bool $verbose = false): array|false
     {
         $sql = $this->getBasicSQL();
         $sql .= 'and event_id = :event_id ';
@@ -94,7 +89,7 @@ class TalkCommentMapper extends ApiMapper
         ]);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results          = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, [':event_id' => $event_id]);
 
             return $this->transformResults($results, $verbose);
@@ -111,7 +106,7 @@ class TalkCommentMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getCommentsByUserId($user_id, $resultsperpage, $start, $verbose = false)
+    public function getCommentsByUserId(int $user_id, int $resultsperpage, int $start, bool $verbose = false): array|false
     {
         $sql = $this->getBasicSQL();
         $sql .= 'and tc.user_id = :user_id ';
@@ -127,7 +122,7 @@ class TalkCommentMapper extends ApiMapper
         ]);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results          = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, [':user_id' => $user_id]);
 
             return $this->transformResults($results, $verbose);
@@ -141,9 +136,9 @@ class TalkCommentMapper extends ApiMapper
      * @param bool $verbose
      * @param bool $include_hidden
      *
-     * @return false|array
+     * @return array
      */
-    public function getCommentById($comment_id, $verbose = false, $include_hidden = false)
+    public function getCommentById(int $comment_id, bool $verbose = false, bool $include_hidden = false): array
     {
         $sql      = $this->getBasicSQL($include_hidden);
         $sql      .= ' and tc.ID = :comment_id ';
@@ -162,20 +157,20 @@ class TalkCommentMapper extends ApiMapper
             }
         }
 
-        return false;
+        throw new Exception('Comment not found', Http::NOT_FOUND);
     }
 
     /**
      * @inheritdoc
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, bool $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);
         $list = parent::transformResults($results, $verbose);
 
         // add per-item links
-        if (is_array($list) && count($list)) {
+        if (count($list)) {
             foreach ($results as $key => $row) {
                 $list[$key] = array_merge(
                     $list[$key],
@@ -196,7 +191,7 @@ class TalkCommentMapper extends ApiMapper
      *
      * @return array
      */
-    protected function formatOneComment(array $row, $verbose)
+    protected function formatOneComment(array $row, bool $verbose): array
     {
         $base    = $this->_request->base;
         $version = $this->_request->version;
@@ -226,7 +221,7 @@ class TalkCommentMapper extends ApiMapper
      *
      * @return string
      */
-    protected function getBasicSQL($include_hidden = false)
+    protected function getBasicSQL(bool $include_hidden = false): string
     {
         $sql = 'select tc.*, '
                . 'user.username, user.email, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
@@ -253,8 +248,8 @@ class TalkCommentMapper extends ApiMapper
         $duration_minutes = 60;
 
         if (isset($this->_request)) {
-            $max_comments = (int) $this->_request->getConfigValue('talk_comments_rate_limit_limit', 30);
-            $duration_minutes = (int) $this->_request->getConfigValue('talk_comments_rate_limit_reset', 60);
+            $max_comments = (int) $this->_request->getConfigValue('talk_comments_rate_limit_limit', '30');
+            $duration_minutes = (int) $this->_request->getConfigValue('talk_comments_rate_limit_reset', '60');
         }
 
         $rate_limit_time = (new \DateTimeImmutable())
@@ -278,7 +273,7 @@ class TalkCommentMapper extends ApiMapper
             return;
         }
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = (array) $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row['cnt'] < $max_comments) {
             // The user has less than the number of comments to hit the rate limit
@@ -298,9 +293,9 @@ class TalkCommentMapper extends ApiMapper
      * @param array $data
      *
      * @throws Exception
-     * @return string
+     * @return int
      */
-    public function save(array $data)
+    public function save(array $data): int
     {
         // check for a duplicate first
         $dupe_sql = 'select tc.ID from talk_comments tc '
@@ -333,7 +328,7 @@ class TalkCommentMapper extends ApiMapper
             ':source'  => $data['source'],
         ]);
 
-        return $this->_db->lastInsertId();
+        return (int) $this->_db->lastInsertId();
     }
 
     /**
@@ -344,7 +339,7 @@ class TalkCommentMapper extends ApiMapper
      *
      * @return boolean
      */
-    public function hasUserRatedThisTalk($user_id, $talk_id)
+    public function hasUserRatedThisTalk(int $user_id, int $talk_id): bool
     {
         $sql = 'select ID from talk_comments '
                . 'where talk_id = :talk_id and user_id = :user_id and rating > 0';
@@ -355,11 +350,7 @@ class TalkCommentMapper extends ApiMapper
             ':user_id' => $user_id,
         ]);
 
-        if ($stmt->fetch()) {
-            return true;
-        }
-
-        return false;
+        return (bool) $stmt->fetch();
     }
 
     /**
@@ -367,9 +358,10 @@ class TalkCommentMapper extends ApiMapper
      *
      * @param int $comment_id The comment in question
      *
-     * @return false|array Some info
+     * @return array Some info
+     * @throws Exception
      */
-    public function getCommentInfo($comment_id)
+    public function getCommentInfo(int $comment_id): array
     {
         $sql = "select t.event_id, tc.talk_id
             from talk_comments tc
@@ -380,10 +372,10 @@ class TalkCommentMapper extends ApiMapper
         $stmt->execute(["talk_comment_id" => $comment_id]);
 
         if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return $row;
+            return (array) $row;
         }
 
-        return false;
+        throw new Exception('Comment not found', Http::NOT_FOUND);
     }
 
     /**
@@ -393,7 +385,7 @@ class TalkCommentMapper extends ApiMapper
      * @param int $comment_id the comment that was reported
      * @param int $user_id    the user that reported it
      */
-    public function userReportedComment($comment_id, $user_id)
+    public function userReportedComment(int $comment_id, int $user_id): void
     {
         $report_sql = "insert into reported_talk_comments
             set talk_comment_id = :talk_comment_id,
@@ -408,8 +400,7 @@ class TalkCommentMapper extends ApiMapper
 
         $hide_sql  = "update talk_comments
             set active = 0 where ID = :talk_comment_id";
-        $hide_stmt = $this->_db->prepare($hide_sql);
-        $result    = $hide_stmt->execute(["talk_comment_id" => $comment_id]);
+        $this->_db->prepare($hide_sql)->execute(["talk_comment_id" => $comment_id]);
     }
 
     /**
@@ -422,7 +413,7 @@ class TalkCommentMapper extends ApiMapper
      *
      * @return TalkCommentReportModelCollection
      */
-    public function getReportedCommentsByEventId($event_id, $moderated = false)
+    public function getReportedCommentsByEventId(int $event_id, bool $moderated = false): TalkCommentReportModelCollection
     {
         $sql = "select rc.reporting_user_id, rc.deciding_user_id, rc.decision,
             rc.talk_comment_id, t.event_id, tc.talk_id,
@@ -452,6 +443,8 @@ class TalkCommentMapper extends ApiMapper
         $comment_stmt = $this->_db->prepare($comment_sql);
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row = (array) $row;
+
             $total++;
             $comment_result = $comment_stmt->execute(['comment_id' => $row['talk_comment_id']]);
 
@@ -459,8 +452,8 @@ class TalkCommentMapper extends ApiMapper
                 // work around the existing transform logic
                 $comment_array  = [$comment];
                 $comment_array  = parent::transformResults($comment_array, true);
-                $item           = current($comment_array);
-                $row['comment'] = array_merge($item, $this->formatOneComment($comment, true));
+                $item           = (array) current($comment_array);
+                $row['comment'] = array_merge($item, $this->formatOneComment((array) $comment, true));
             }
             $list[] = new TalkCommentReportModel($row);
         }
@@ -476,7 +469,7 @@ class TalkCommentMapper extends ApiMapper
      * @param int    $comment_id the comment that was reported
      * @param int    $user_id    the user that reported it
      */
-    public function moderateReportedComment($decision, $comment_id, $user_id)
+    public function moderateReportedComment(string $decision, int $comment_id, int $user_id): void
     {
         if (in_array($decision, ['approved', 'denied'])) {
             // record the decision
@@ -506,17 +499,19 @@ class TalkCommentMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getRawComment($comment_id)
+    public function getRawComment(int $comment_id): array|false
     {
         $sql      = "select tc.* from talk_comments tc where tc.ID = :comment_id";
         $stmt     = $this->_db->prepare($sql);
         $response = $stmt->execute([':comment_id' => $comment_id]);
         $utc = new \DateTimeZone('UTC');
+
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (isset($results[0])) {
                 $results[0]['created_at'] = new \DateTimeImmutable($results[0]['created_at'], $utc);
+
                 return $results[0];
             }
         }
@@ -530,7 +525,7 @@ class TalkCommentMapper extends ApiMapper
      *
      * @return bool
      */
-    public function updateCommentBody($comment_id, $new_comment_body)
+    public function updateCommentBody(int $comment_id, string $new_comment_body): bool
     {
         $sql  = "update talk_comments set comment = :new_comment_body where ID = :comment_id";
         $stmt = $this->_db->prepare($sql);

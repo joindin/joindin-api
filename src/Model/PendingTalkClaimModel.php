@@ -16,7 +16,7 @@ class PendingTalkClaimModel extends BaseModel
      *
      * @return array
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'date_added'   => 'date_added',
@@ -33,7 +33,7 @@ class PendingTalkClaimModel extends BaseModel
      *
      * @return array
      */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         $fields = $this->getDefaultFields();
 
@@ -46,11 +46,11 @@ class PendingTalkClaimModel extends BaseModel
      * Return an array with client-facing fields and hypermedia, ready for output
      *
      * @param Request $request
-     * @param bool    $verbose
+     * @param bool $verbose
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false): array
     {
         $item = parent::getOutputView($request, $verbose);
 

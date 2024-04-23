@@ -4,9 +4,9 @@ namespace Joindin\Api\Service;
 
 class EventCommentReportedEmailService extends BaseEmailService
 {
-    protected $comment;
-    protected $event;
-    protected $website_url;
+    protected array $comment;
+    protected array $event;
+    protected string $website_url;
 
     public function __construct(array $config, array $recipients, array $comment, array $event)
     {
@@ -19,7 +19,7 @@ class EventCommentReportedEmailService extends BaseEmailService
         $this->website_url = $config['website_url'];
     }
 
-    public function sendEmail()
+    public function sendEmail(): void
     {
         $this->setSubject("Joind.in: A comment was reported");
 
@@ -60,7 +60,7 @@ class EventCommentReportedEmailService extends BaseEmailService
         $this->dispatchEmail();
     }
 
-    private function linkToReportedCommentsForEvent()
+    private function linkToReportedCommentsForEvent(): string
     {
         return '[' . $this->website_url
                . '/event/' . $this->event['url_friendly_name']

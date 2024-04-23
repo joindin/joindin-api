@@ -70,8 +70,8 @@ class TalkTypesControllerTest extends TestCase
                 [
                     'title' => 'Talk',
                     'description' => 'Talk',
-                    'uri' => '//talk_types/1',
-                    'verbose_uri' => '//talk_types/1?verbose=yes',
+                    'uri' => '/v2.1/talk_types/1',
+                    'verbose_uri' => '/v2.1/talk_types/1?verbose=yes',
                 ]
             ],
             'meta' => [
@@ -110,8 +110,8 @@ class TalkTypesControllerTest extends TestCase
                 [
                     'title' => 'Talk',
                     'description' => 'Talk',
-                    'uri' => '//talk_types/1',
-                    'verbose_uri' => '//talk_types/1?verbose=yes',
+                    'uri' => '/v2.1/talk_types/1',
+                    'verbose_uri' => '/v2.1/talk_types/1?verbose=yes',
                 ]
             ],
             'meta' => [

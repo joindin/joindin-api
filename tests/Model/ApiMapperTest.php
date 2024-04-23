@@ -7,6 +7,7 @@ use Joindin\Api\Model\ApiMapper;
 use Joindin\Api\Request;
 use PDO;
 use PDOStatement;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -15,8 +16,8 @@ use ReflectionClass;
  */
 final class ApiMapperTest extends TestCase
 {
-    private $pdo;
-    private $request;
+    private PDO&MockObject $pdo;
+    private Request&MockObject $request;
 
     public function setup(): void
     {
@@ -28,7 +29,7 @@ final class ApiMapperTest extends TestCase
             ->getMock();
     }
 
-    public function testThatApiMapperHasNoDefaultFields()
+    public function testThatApiMapperHasNoDefaultFields(): void
     {
         $mapper = new ApiMapper($this->pdo, $this->request);
 
@@ -36,7 +37,7 @@ final class ApiMapperTest extends TestCase
         $this->assertEquals([], $mapper->getVerboseFields());
     }
 
-    public function testThatDefaultMapperReturnsNothing()
+    public function testThatDefaultMapperReturnsNothing(): void
     {
         $mapper = new ApiMapper($this->pdo, $this->request);
 
@@ -49,14 +50,14 @@ final class ApiMapperTest extends TestCase
     }
 
     /** @dataProvider defaultMapperConvertsDateTimeFieldsCorrectlyProvider */
-    public function testThatDefaultMapperConvertsDateTimeFieldsCorrectly($expected, $values)
+    public function testThatDefaultMapperConvertsDateTimeFieldsCorrectly(array $expected, array $values): void
     {
         $mapper = new TestApiMapper($this->pdo, $this->request);
 
         $this->assertEquals($expected, $mapper->transformResults($values, false));
     }
 
-    public function defaultMapperConvertsDateTimeFieldsCorrectlyProvider()
+    public function defaultMapperConvertsDateTimeFieldsCorrectlyProvider(): array
     {
         return [
             [
@@ -96,7 +97,7 @@ final class ApiMapperTest extends TestCase
         ];
     }
 
-    public function testThatDefaultMappingReturnsOnlyDefaultFields()
+    public function testThatDefaultMappingReturnsOnlyDefaultFields(): void
     {
         $mapper = new TestApiMapper($this->pdo, $this->request);
 
@@ -108,18 +109,22 @@ final class ApiMapperTest extends TestCase
         ], $mapper->getDefaultFields());
     }
 
-    public function testBuildingTheLimitClause()
+    public function testBuildingTheLimitClause(): void
     {
         $mapper = new TestApiMapper($this->pdo, $this->request);
 
         $this->assertEquals('', $mapper->buildLimit(0, 12));
         $this->assertEquals(' LIMIT 12,1', $mapper->buildLimit(1, 12));
-        $this->assertEquals(' LIMIT 12,1', $mapper->buildLimit("1", "12"));
     }
 
     /** @dataProvider retrievingTotalCountFromQueryWorksProvider */
-    public function testThatRetrievingTotalCountFromQueryWorks($query, $countquery, $data, $returns, $exception = false)
-    {
+    public function testThatRetrievingTotalCountFromQueryWorks(
+        string $query,
+        string $countquery,
+        array $data,
+        int $returns,
+        bool $exception = false
+    ): void {
         $result = $this->getMockBuilder(PDOStatement::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -152,7 +157,7 @@ final class ApiMapperTest extends TestCase
         $this->assertEquals($returns, $method->invoke($mapper, $query, $data));
     }
 
-    public function retrievingTotalCountFromQueryWorksProvider()
+    public function retrievingTotalCountFromQueryWorksProvider(): array
     {
         return [
             [
@@ -178,13 +183,13 @@ final class ApiMapperTest extends TestCase
     }
 
     /** @dataProvider inflectionWorksProvider */
-    public function testThatInflectionWorks($string, $inflected)
+    public function testThatInflectionWorks(string $string, string $inflected): void
     {
         $mapper = new TestApiMapper($this->pdo, $this->request);
         $this->assertEquals($inflected, $mapper->inflect($string));
     }
 
-    public function inflectionWorksProvider()
+    public function inflectionWorksProvider(): array
     {
         return [
             ['test', 'test'],

@@ -15,14 +15,9 @@ use function sprintf;
 class EventHostsController extends BaseApiController
     // @codingStandardsIgnoreEnd
 {
-    /** @var EventHostMapper */
-    protected $eventHostMapper = null;
-
-    /** @var EventMapper */
-    protected $eventMapper = null;
-
-    /** @var UserMapper */
-    protected $userMapper = null;
+    protected ?EventHostMapper $eventHostMapper = null;
+    protected ?EventMapper $eventMapper = null;
+    protected ?UserMapper $userMapper = null;
 
     /**
      * @param Request $request
@@ -31,9 +26,9 @@ class EventHostsController extends BaseApiController
      * @throws Exception
      * @return array
      */
-    public function listHosts(Request $request, PDO $db)
+    public function listHosts(Request $request, PDO $db): array
     {
-        $event_id = $this->getItemId($request);
+        $event_id = $this->getItemId($request, 'Event not found');
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -48,7 +43,7 @@ class EventHostsController extends BaseApiController
             throw new Exception('Event not found', Http::NOT_FOUND);
         }
 
-        $list = $mapper->getHostsByEventId($event_id, $verbose, $start, $resultsperpage);
+        $list = $mapper->getHostsByEventId($event_id, $resultsperpage, $start, $verbose);
 
         if (false === $list) {
             throw new Exception('Event not found', Http::NOT_FOUND);
@@ -72,24 +67,19 @@ class EventHostsController extends BaseApiController
             throw new Exception("You must be logged in to create data", Http::UNAUTHORIZED);
         }
 
-        $event_id = $this->getItemId($request);
+        $event_id = $this->getItemId($request, 'Event not found');
 
         $eventMapper = $this->getEventMapper($request, $db);
         $event       = $eventMapper->getEventById($event_id);
-
-        if (false === $event) {
-            throw new Exception('Event not found', Http::NOT_FOUND);
-        }
 
         $isAdmin = $eventMapper->thisUserHasAdminOn($event_id);
 
         if (!$isAdmin) {
             throw new Exception("You do not have permission to add hosts to this event", Http::FORBIDDEN);
         }
-        $username   = filter_var(
-            $request->getParameter('host_name'),
-            FILTER_SANITIZE_STRING,
-            FILTER_FLAG_NO_ENCODE_QUOTES
+        $username   = htmlspecialchars(
+            $request->getStringParameter('host_name'),
+            ENT_NOQUOTES
         );
         $userMapper = $this->getUserMapper($request, $db);
         $user_id    = $userMapper->getUserIdFromUsername($username);
@@ -97,6 +87,7 @@ class EventHostsController extends BaseApiController
         if (false === $user_id) {
             throw new Exception('No User found', Http::NOT_FOUND);
         }
+
         if ($eventMapper->isUserAHostOn($user_id, $event_id)) {
             throw new Exception('User is already a host');
         }
@@ -135,18 +126,16 @@ class EventHostsController extends BaseApiController
         }
 
         $user_id = $request->url_elements[5];
-        $event_id = $this->getItemId($request);
+        $event_id = $this->getItemId($request, 'Event not found');
 
         if ($user_id === $request->user_id) {
             throw new Exception('You are not allowed to remove yourself from the host-list', Http::FORBIDDEN);
         }
 
         $eventMapper = $this->getEventMapper($request, $db);
-        $event       = $eventMapper->getEventById($event_id);
 
-        if (false === $event) {
-            throw new Exception('Event not found', Http::NOT_FOUND);
-        }
+        // This will throw a 404 if not found - but the result is not used if it is found
+        $eventMapper->getEventById($event_id);
 
         $isAdmin = $eventMapper->thisUserHasAdminOn($event_id);
 
@@ -187,7 +176,7 @@ class EventHostsController extends BaseApiController
      *
      * @return EventHostMapper
      */
-    public function getEventHostMapper(Request $request, PDO $db)
+    public function getEventHostMapper(Request $request, PDO $db): EventHostMapper
     {
         if ($this->eventHostMapper === null) {
             $this->eventHostMapper = new EventHostMapper($db, $request);
@@ -196,12 +185,12 @@ class EventHostsController extends BaseApiController
         return $this->eventHostMapper;
     }
 
-    public function setEventHostMapper(EventHostMapper $mapper)
+    public function setEventHostMapper(EventHostMapper $mapper): void
     {
         $this->eventHostMapper = $mapper;
     }
 
-    public function getEventMapper(Request $request, PDO $db)
+    public function getEventMapper(Request $request, PDO $db): EventMapper
     {
         if ($this->eventMapper === null) {
             $this->eventMapper = new EventMapper($db, $request);
@@ -210,12 +199,12 @@ class EventHostsController extends BaseApiController
         return $this->eventMapper;
     }
 
-    public function setEventMapper(EventMapper $eventMapper)
+    public function setEventMapper(EventMapper $eventMapper): void
     {
         $this->eventMapper = $eventMapper;
     }
 
-    public function getUserMapper(Request $request, PDO $db)
+    public function getUserMapper(Request $request, PDO $db): UserMapper
     {
         if ($this->userMapper === null) {
             $this->userMapper = new UserMapper($db, $request);
@@ -224,7 +213,7 @@ class EventHostsController extends BaseApiController
         return $this->userMapper;
     }
 
-    public function setUserMapper(UserMapper $userMapper)
+    public function setUserMapper(UserMapper $userMapper): void
     {
         $this->userMapper = $userMapper;
     }

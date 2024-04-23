@@ -10,9 +10,9 @@ use Joindin\Api\Request;
 class PendingTalkClaimModelCollection extends BaseModelCollection
 {
     /** @var array|PendingTalkClaimModel[] */
-    protected $list;
+    protected array $list;
 
-    protected $total;
+    protected int $total;
 
     /**
      * Take arrays of data and create a collection of models; store metadata
@@ -48,7 +48,6 @@ class PendingTalkClaimModelCollection extends BaseModelCollection
      */
     public function getOutputView(Request $request, $verbose = false)
     {
-        $retval = [];
         // handle the collection first
         $retval = ['claims' => []];
 

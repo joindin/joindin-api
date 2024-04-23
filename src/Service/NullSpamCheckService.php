@@ -8,12 +8,12 @@ class NullSpamCheckService implements SpamCheckServiceInterface
      * Check your comment against the spam check service
      *
      * @param string $comment
-     * @param string $userIp
-     * @param string $userAgent
+     * @param string|null $userIp
+     * @param string|null $userAgent
      *
      * @return bool true if the comment is okay, false if it got rated as spam
      */
-    public function isCommentAcceptable(string $comment, $userIp, $userAgent)
+    public function isCommentAcceptable(string $comment, ?string $userIp, ?string $userAgent): bool
     {
         return true;
     }

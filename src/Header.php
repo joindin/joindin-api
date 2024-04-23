@@ -24,16 +24,16 @@ use ArrayIterator;
  */
 class Header
 {
-    protected $values = [];
-    protected $header;
-    protected $glue;
+    protected array $values = [];
+    protected string $header;
+    protected string $glue;
 
     /**
      * @param string       $header Name of the header
      * @param array|string $values Values of the header as an array or a scalar
      * @param string       $glue   Glue used to combine multiple values into a string
      */
-    public function __construct($header, $values = [], $glue = ',')
+    public function __construct(string $header, array|string $values = [], string $glue = ',')
     {
         $this->header = trim($header);
         $this->glue   = $glue;
@@ -50,26 +50,26 @@ class Header
         return implode($this->glue . ' ', $this->toArray());
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->header;
     }
 
-    public function setName($name)
+    public function setName(string $name): static
     {
         $this->header = $name;
 
         return $this;
     }
 
-    public function setGlue($glue)
+    public function setGlue(string $glue): static
     {
         $this->glue = $glue;
 
         return $this;
     }
 
-    public function getGlue()
+    public function getGlue(): string
     {
         return $this->glue;
     }
@@ -80,16 +80,16 @@ class Header
      * If any values of the header contains the glue string value (e.g. ","), then the value will be exploded into
      * multiple entries in the header.
      *
-     * @return self
+     * @return static
      */
-    public function normalize()
+    public function normalize(): static
     {
         $values = $this->toArray();
 
         for ($i = 0, $total = count($values); $i < $total; $i++) {
             if (strpos($values[$i], $this->glue) !== false) {
                 // Explode on glue when the glue is not inside of a comma
-                foreach (preg_split('/' . preg_quote($this->glue, '/') . '(?=([^"]*"[^"]*")*[^"]*$)/', $values[$i]) as $v) {
+                foreach (preg_split('/' . preg_quote($this->glue, '/') . '(?=([^"]*"[^"]*")*[^"]*$)/', $values[$i]) ?: [] as $v) {
                     $values[] = trim($v);
                 }
                 unset($values[$i]);
@@ -101,12 +101,12 @@ class Header
         return $this;
     }
 
-    public function hasValue($searchValue)
+    public function hasValue(string $searchValue): bool
     {
         return in_array($searchValue, $this->toArray(), false);
     }
 
-    public function removeValue($searchValue)
+    public function removeValue(mixed $searchValue): static
     {
         $this->values = array_values(
             array_filter(
@@ -120,22 +120,25 @@ class Header
         return $this;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->values;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->toArray());
     }
 
-    public function getIterator()
+    /**
+     * @return ArrayIterator<int, array>
+     */
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->toArray());
     }
 
-    public function buildEntityArray()
+    public function buildEntityArray(): array
     {
         $assocArray = [];
 
@@ -161,7 +164,7 @@ class Header
         return $assocArray;
     }
 
-    public function parseParams()
+    public function parseParams(): array
     {
         $params   = $matches = [];
         $callback = [$this, 'trimHeader'];
@@ -170,7 +173,7 @@ class Header
         foreach ($this->normalize()->toArray() as $val) {
             $part = [];
 
-            foreach (preg_split('/;(?=([^"]*"[^"]*")*[^"]*$)/', $val) as $kvp) {
+            foreach (preg_split('/;(?=([^"]*"[^"]*")*[^"]*$)/', $val) ?: [] as $kvp) {
                 if (!preg_match_all('/<[^>]+>|[^=]+/', $kvp, $matches)) {
                     continue;
                 }
@@ -193,7 +196,7 @@ class Header
      *
      * @return string
      */
-    protected function trimHeader($str)
+    protected function trimHeader(string $str): string
     {
         static $trimmed = "\"'  \n\t";
 

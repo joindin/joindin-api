@@ -11,9 +11,9 @@ use Joindin\Api\Request;
 class TalkModelCollection extends BaseModelCollection
 {
     /** @var array|TalkModel[] */
-    protected $list;
+    protected array $list;
 
-    protected $total;
+    protected int $total;
 
     /**
      * Take arrays of data and create a collection of models; store metadata
@@ -47,7 +47,7 @@ class TalkModelCollection extends BaseModelCollection
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false)
     {
         // handle the collection first
         $retval = ['talks' => []];

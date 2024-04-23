@@ -18,7 +18,7 @@ class HtmlView extends ApiView
      *
      * @return bool
      */
-    public function render($content)
+    public function render(array|string $content): bool
     {
         $this->setHeader('Content-Type', 'text/html; charset=utf8');
 
@@ -32,7 +32,7 @@ class HtmlView extends ApiView
      *
      * @return null
      */
-    public function buildOutput($content)
+    public function buildOutput(array|string|bool $content): null
     {
         $content = $this->addCount($content);
 
@@ -40,7 +40,7 @@ class HtmlView extends ApiView
 
         if (is_array($content)) {
             $this->printArray($content);
-        } else {
+        } elseif (is_string($content) || is_bool($content)) {
             $this->printUrlOrString($content);
         }
         $this->layoutStop();
@@ -55,7 +55,7 @@ class HtmlView extends ApiView
      *
      * @return null
      */
-    protected function printArray(array $content)
+    protected function printArray(array $content): null
     {
         echo "<ul>\n";
 
@@ -73,6 +73,8 @@ class HtmlView extends ApiView
             echo "</li>\n";
         }
         echo "</ul>\n";
+
+        return null;
     }
 
     /**
@@ -83,7 +85,7 @@ class HtmlView extends ApiView
      *
      * @return void
      */
-    protected function printUrlOrString($value)
+    protected function printUrlOrString(string|bool $value): void
     {
         if (is_bool($value)) {
             $value = $value ? 'true' : 'false';
@@ -100,9 +102,9 @@ class HtmlView extends ApiView
     /**
      * Render start of HTML page
      *
-     * @return null
+     * @return void
      */
-    protected function layoutStart()
+    protected function layoutStart(): void
     {
         echo <<<EOT
 <!DOCTYPE html>
@@ -121,7 +123,7 @@ class HtmlView extends ApiView
     ul {
         padding-bottom: 15px;
         padding-left: 20px;
-    } 
+    }
     a {
         color: #2368AF;
     }
@@ -134,9 +136,9 @@ EOT;
     /**
      * Render end of HTML page
      *
-     * @return null
+     * @return void
      */
-    protected function layoutStop()
+    protected function layoutStop(): void
     {
         echo <<<EOT
 </body>

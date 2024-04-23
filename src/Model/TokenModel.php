@@ -18,7 +18,7 @@ class TokenModel extends BaseModel
      *
      * @return array
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'token'             => 'id',
@@ -36,7 +36,7 @@ class TokenModel extends BaseModel
      *
      * @return array
      */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return $this->getDefaultFields();
     }
@@ -45,11 +45,11 @@ class TokenModel extends BaseModel
      * Return this object with client-facing fields and hypermedia, ready for output
      *
      * @param Request $request
-     * @param bool    $verbose
+     * @param bool $verbose
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false): array
     {
         $item = parent::getOutputView($request, $verbose);
 

@@ -15,24 +15,18 @@ class Route
 {
     /**
      * The name of the Controller this Route will target
-     *
-     * @var string
      */
-    private $controller;
+    private string $controller;
 
     /**
      * The method name this Route will target
-     *
-     * @var string
      */
-    private $action;
+    private string $action;
 
     /**
      * Parameters derived from the URL this Route was created from
-     *
-     * @var array
      */
-    private $params;
+    private array $params;
 
     /**
      * Constructs a new Route
@@ -41,7 +35,7 @@ class Route
      * @param string $action     The name of the action this Route is for
      * @param array  $params     Parameters as determined from the URL
      */
-    public function __construct($controller, $action, array $params = [])
+    public function __construct(string $controller, string $action, array $params = [])
     {
         $this->setController($controller);
         $this->setAction($action);
@@ -53,7 +47,7 @@ class Route
      *
      * @return string
      */
-    public function getController()
+    public function getController(): string
     {
         return $this->controller;
     }
@@ -63,7 +57,7 @@ class Route
      *
      * @param string $controller
      */
-    public function setController($controller)
+    public function setController($controller): void
     {
         $this->controller = $controller;
     }
@@ -73,7 +67,7 @@ class Route
      *
      * @return string
      */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
@@ -83,7 +77,7 @@ class Route
      *
      * @param string $action
      */
-    public function setAction($action)
+    public function setAction($action): void
     {
         $this->action = $action;
     }
@@ -93,7 +87,7 @@ class Route
      *
      * @return array
      */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->params;
     }
@@ -103,7 +97,7 @@ class Route
      *
      * @param array $params
      */
-    public function setParams(array $params)
+    public function setParams(array $params): void
     {
         $this->params = $params;
     }
@@ -112,12 +106,12 @@ class Route
      * Dispatches the Request to the specified Route
      *
      * @param Request            $request   The Request to process
-     * @param PDO                $db        The Database object
+     * @param PDO|string         $db        The Database object
      * @param ContainerInterface $container The application configuration
      *
      * @return mixed
      */
-    public function dispatch(Request $request, $db, ContainerInterface $container)
+    public function dispatch(Request $request, PDO|string $db, ContainerInterface $container): mixed
     {
         $className = $this->getController();
         $method    = $this->getAction();
@@ -126,12 +120,19 @@ class Route
             throw new RuntimeException('Unknown controller ' . $request->getUrlElement(2), Http::BAD_REQUEST);
         }
 
-        if (!method_exists($controller = $container->get($className), $method)) {
+        $controller = $container->get($className);
+
+        if (!is_object($controller)) {
+            throw new RuntimeException('Retrieved controller is not an object', Http::INTERNAL_SERVER_ERROR);
+        }
+
+        if (!method_exists($controller, $method)) {
             throw new RuntimeException('Action not found', Http::INTERNAL_SERVER_ERROR);
         }
 
         if (function_exists('newrelic_name_transaction')) {
-            $controllerWithoutNamespace = @end(explode('\\', $className));
+            $classPathComponents = explode('\\', $className);
+            $controllerWithoutNamespace = end($classPathComponents);
             newrelic_name_transaction($controllerWithoutNamespace . '.' . $method);
         }
 

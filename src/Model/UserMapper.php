@@ -4,6 +4,7 @@ namespace Joindin\Api\Model;
 
 use Exception;
 use PDO;
+use Teapot\StatusCode\Http;
 
 /**
  * UserMapper
@@ -18,7 +19,7 @@ class UserMapper extends ApiMapper
      *
      * @return array with keys as API fields and values as db columns
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             "username"         => "username",
@@ -35,7 +36,7 @@ class UserMapper extends ApiMapper
      *
      * @return array with keys as API fields and values as db columns
      */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return [
             "username"         => "username",
@@ -47,20 +48,14 @@ class UserMapper extends ApiMapper
     }
 
     /**
-     * @param int  $user_id
+     * @param int $user_id
      * @param bool $verbose
-     *
-     * @return false|array
      */
-    public function getUserById($user_id, $verbose = false)
+    public function getUserById(int $user_id, bool $verbose = false): array|false
     {
-        $results = $this->getUsers(1, 0, 'user.ID=' . (int) $user_id, null);
+        $results = $this->getUsers(1, 0, 'user.ID=' . $user_id, null);
 
-        if ($results) {
-            return $this->transformResults($results, $verbose);
-        }
-
-        return false;
+        return $results ? $this->transformResults($results, $verbose) : false;
     }
 
     /**
@@ -69,7 +64,7 @@ class UserMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getUserByUsername($username, $verbose = false)
+    public function getUserByUsername(string $username, bool $verbose = false): array|false
     {
         $sql = 'select user.* '
                . 'from user '
@@ -85,12 +80,10 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results          = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
 
-            if ($results) {
-                return $this->transformResults($results, $verbose);
-            }
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -104,9 +97,9 @@ class UserMapper extends ApiMapper
      * @param int    $start
      * @param bool   $verbose
      *
-     * @return array|bool Result collection or false on failure
+     * @return array|false Result collection or false on failure
      */
-    public function getUserByKeyword($keyword, $resultsperpage, $start, $verbose)
+    public function getUserByKeyword(string $keyword, int $resultsperpage, int $start, bool $verbose): array|false
     {
         $sql = 'select user.* '
                . 'from user '
@@ -127,7 +120,7 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results          = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
 
             return $this->transformResults($results, $verbose);
@@ -137,22 +130,16 @@ class UserMapper extends ApiMapper
     }
 
     /**
-     * @return false|array
+     * @return array
      */
-    public function getSiteAdminEmails()
+    public function getSiteAdminEmails(): array
     {
         $sql  = 'select email from user where admin = 1';
         $stmt = $this->_db->prepare($sql);
 
-        $response = $stmt->execute();
-
-        if ($response) {
-            $results = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-            return $results;
-        }
-
-        return false;
+        return $stmt->execute()
+            ? $stmt->fetchAll(PDO::FETCH_COLUMN)
+            : throw new \RuntimeException('Could not retrieve site admin emails', Http::INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -163,7 +150,7 @@ class UserMapper extends ApiMapper
      *
      * @return false|array
      */
-    protected function getUsers($resultsperpage, $start, $where = null, $order = null)
+    protected function getUsers(int $resultsperpage, int $start, ?string $where = null, ?string $order = null): array|false
     {
         $sql = 'select user.username, user.ID, user.email, '
                . 'user.full_name, user.biography, user.twitter_username, user.admin, user.trusted '
@@ -192,7 +179,7 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute();
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results          = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql);
 
             return $results;
@@ -208,16 +195,12 @@ class UserMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getUserList($resultsperpage, $start, $verbose = false)
+    public function getUserList(int $resultsperpage, int $start, bool $verbose = false): array|false
     {
         $order   = 'user.ID';
         $results = $this->getUsers($resultsperpage, $start, null, $order);
 
-        if (is_array($results)) {
-            return $this->transformResults($results, $verbose);
-        }
-
-        return false;
+        return is_array($results) ? $this->transformResults($results, $verbose) : false;
     }
 
     /**
@@ -228,22 +211,20 @@ class UserMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getUsersAttendingEventId($event_id, $resultsperpage, $start, $verbose)
+    public function getUsersAttendingEventId(int $event_id, int $resultsperpage, int $start, bool $verbose): array|false
     {
         $where   = "ua.eid = " . $event_id;
         $results = $this->getUsers($resultsperpage, $start, $where);
 
-        if (is_array($results)) {
-            return $this->transformResults($results, $verbose);
-        }
-
-        return false;
+        return is_array($results) ? $this->transformResults($results, $verbose) : false;
     }
 
     /**
      * @inheritdoc
+     *
+     * @return array{users: array, meta: array}
      */
-    public function transformResults(array $results, $verbose)
+    public function transformResults(array $results, $verbose): array
     {
         $total = $results['total'];
         unset($results['total']);
@@ -253,7 +234,7 @@ class UserMapper extends ApiMapper
         $version = $this->_request->version;
 
         // add per-item links
-        if (is_array($list) && count($list)) {
+        if (count($list)) {
             $userIsSiteAdmin = false;
 
             if ($this->_request->user_id && $this->isSiteAdmin($this->_request->user_id)) {
@@ -261,7 +242,7 @@ class UserMapper extends ApiMapper
             }
 
             foreach ($results as $key => $row) {
-                // can the logged in user edit this user?
+                // can the logged-in user edit this user?
                 $canEdit = false;
 
                 if ($userIsSiteAdmin || $row['ID'] == $this->_request->user_id) {
@@ -303,13 +284,17 @@ class UserMapper extends ApiMapper
     }
 
     /**
-     * @param int $user_id
+     * @param ?int $user_id
      *
      * @return bool
      */
-    public function isSiteAdmin($user_id)
+    public function isSiteAdmin(?int $user_id): bool
     {
-        $results = $this->getUsers(1, 0, 'user.ID=' . (int) $user_id, null);
+        if (!$user_id) {
+            return false;
+        }
+
+        $results = $this->getUsers(1, 0, 'user.ID=' . $user_id, null);
 
         if (isset($results[0]) && $results[0]['admin'] == 1) {
             return true;
@@ -325,9 +310,9 @@ class UserMapper extends ApiMapper
      *
      * @return bool
      */
-    public function isTrusted($user_id)
+    public function isTrusted(int $user_id): bool
     {
-        $results = $this->getUsers(1, 0, 'user.ID=' . (int) $user_id, null);
+        $results = $this->getUsers(1, 0, 'user.ID=' . $user_id, null);
 
         if (isset($results[0]) && $results[0]['trusted'] == 1) {
             return true;
@@ -344,7 +329,7 @@ class UserMapper extends ApiMapper
      *
      * @return bool
      */
-    public function setTrustedStatus($trustedStatus, $user_id)
+    public function setTrustedStatus(bool $trustedStatus, int $user_id): bool
     {
         $verify_sql = "update user set trusted = :trusted_status "
                       . "where ID = :user_id";
@@ -359,9 +344,9 @@ class UserMapper extends ApiMapper
      * @param array $user
      *
      * @throws Exception
-     * @return false|string user ID
+     * @return int user ID
      */
-    public function createUser($user)
+    public function createUser(array $user): int
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields          = [
@@ -373,7 +358,7 @@ class UserMapper extends ApiMapper
         $contains_mandatory_fields = ! array_diff($mandatory_fields, array_keys($user));
 
         if (!$contains_mandatory_fields) {
-            throw new Exception("Missing mandatory fields");
+            throw new Exception("Missing mandatory fields", Http::BAD_REQUEST);
         }
 
         // encode the password
@@ -398,14 +383,11 @@ class UserMapper extends ApiMapper
         // comma separate all pairs and add to SQL string
         $sql .= implode(', ', $pairs);
 
-        $stmt   = $this->_db->prepare($sql);
-        $result = $stmt->execute($user);
-
-        if ($result) {
-            return $this->_db->lastInsertId();
+        if ($this->_db->prepare($sql)->execute($user)) {
+            return (int) $this->_db->lastInsertId();
         }
 
-        return false;
+        throw new \RuntimeException('Could not create user', Http::INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -414,7 +396,7 @@ class UserMapper extends ApiMapper
      *
      * @return false|array
      */
-    public function getUserByEmail($email, $verbose = false)
+    public function getUserByEmail(string $email, bool $verbose = false): array|false
     {
         $sql = 'select user.* '
                . 'from user '
@@ -430,12 +412,10 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
-            $results          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results          = (array) $stmt->fetchAll(PDO::FETCH_ASSOC);
             $results['total'] = $this->getTotalCount($sql, $data);
 
-            if ($results) {
-                return $this->transformResults($results, $verbose);
-            }
+            return $this->transformResults($results, $verbose);
         }
 
         return false;
@@ -450,7 +430,7 @@ class UserMapper extends ApiMapper
      *
      * @return true|array Either true if it's fine, or an array of remarks about why it isn't
      */
-    public function checkPasswordValidity($password)
+    public function checkPasswordValidity(string $password): true|array
     {
         if (strlen($password) < 6) {
             return ["Passwords must be at least 6 characters long"];
@@ -466,11 +446,12 @@ class UserMapper extends ApiMapper
      *
      * @param int $user_id
      *
-     * @return false|string token
+     * @return string token
+     * @throws Exception
      */
-    public function generateEmailVerificationTokenForUserId($user_id)
+    public function generateEmailVerificationTokenForUserId(int $user_id): string
     {
-        $token = bin2hex(openssl_random_pseudo_bytes(8));
+        $token = bin2hex(random_bytes(8));
 
         $sql = "insert into email_verification_tokens set "
                . "user_id = :user_id, token = :token";
@@ -481,13 +462,11 @@ class UserMapper extends ApiMapper
             "token"   => $token
         ];
 
-        $response = $stmt->execute($data);
-
-        if ($response) {
-            return $token;
+        if (!$stmt->execute($data)) {
+            throw new Exception("Error while generating verification token", Http::INTERNAL_SERVER_ERROR);
         }
 
-        return false;
+        return $token;
     }
 
     /**
@@ -497,7 +476,7 @@ class UserMapper extends ApiMapper
      *
      * @return bool             True if the token was found
      */
-    public function verifyUser($token)
+    public function verifyUser(string $token): bool
     {
         // does the token exist, and whose is it?
         $select_sql = "select user_id from email_verification_tokens "
@@ -541,7 +520,7 @@ class UserMapper extends ApiMapper
      *
      * @return false|int $user_id The user's ID (or false, if we didn't find her)
      */
-    public function getUserIdFromEmail($email)
+    public function getUserIdFromEmail(string $email): false|int
     {
         $sql = "select ID from user "
                . "where email = :email and active = 1";
@@ -551,6 +530,9 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
+            /**
+             * @var array<string,int> $row
+             */
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (isset($row['ID'])) {
@@ -568,9 +550,9 @@ class UserMapper extends ApiMapper
      *
      * @param int $user_id
      *
-     * @return bool
+     * @return true
      */
-    public function verifyThisTestUser($user_id)
+    public function verifyThisTestUser(int $user_id): true
     {
         return $this->markUserVerified($user_id);
     }
@@ -578,9 +560,9 @@ class UserMapper extends ApiMapper
     /**
      * @param int $user_id
      *
-     * @return bool
+     * @return true
      */
-    protected function markUserVerified($user_id)
+    protected function markUserVerified(int $user_id): true
     {
         $verify_sql = "update user set verified = 1 "
                       . "where ID = :user_id";
@@ -602,7 +584,7 @@ class UserMapper extends ApiMapper
      *
      * @return bool if the user has privileges
      */
-    public function thisUserHasAdminOn($user_id)
+    public function thisUserHasAdminOn(int $user_id): bool
     {
         // do we even have an authenticated user?
         $loggedInUser = $this->_request->getUserId();
@@ -632,7 +614,7 @@ class UserMapper extends ApiMapper
      * @throws Exception
      * @return bool if successful
      */
-    public function editUser(array $user, $userId)
+    public function editUser(array $user, int $userId): bool
     {
         // Sanity check: ensure all mandatory fields are present.
         $mandatory_fields          = [
@@ -688,7 +670,7 @@ class UserMapper extends ApiMapper
      *
      * @return false|int $user_id The user's ID (or false, if we didn't find her)
      */
-    public function getUserIdFromUsername($username)
+    public function getUserIdFromUsername(string $username): int|false
     {
         $sql = "select ID from user where username = :username";
 
@@ -697,6 +679,9 @@ class UserMapper extends ApiMapper
         $response = $stmt->execute($data);
 
         if ($response) {
+            /**
+             * @var array<string,int> $row
+             */
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (isset($row['ID'])) {
@@ -715,21 +700,12 @@ class UserMapper extends ApiMapper
      *
      * @return false|string $email The email address
      */
-    public function getEmailByUserId($user_id)
+    public function getEmailByUserId(int $user_id): false|string
     {
         $sql      = "select email from user where ID = :user_id";
         $stmt     = $this->_db->prepare($sql);
-        $response = $stmt->execute(["user_id" => $user_id]);
 
-        if ($response) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (isset($row['email'])) {
-                return $row['email'];
-            }
-        }
-
-        return false;
+        return $stmt->execute(["user_id" => $user_id]) ? (string) $stmt->fetchColumn() : false;
     }
 
     /**
@@ -740,27 +716,19 @@ class UserMapper extends ApiMapper
      * @param int $user_id
      *
      * @return false|string
+     * @throws Exception
      */
-    public function generatePasswordResetTokenForUserId($user_id)
+    public function generatePasswordResetTokenForUserId(int $user_id): false|string
     {
-        $token = bin2hex(openssl_random_pseudo_bytes(8));
+        $token = bin2hex(random_bytes(8));
 
         $sql = "insert into password_reset_tokens set "
                . "user_id = :user_id, token = :token";
 
-        $stmt = $this->_db->prepare($sql);
-        $data = [
+        return $this->_db->prepare($sql)->execute([
             "user_id" => $user_id,
             "token"   => $token
-        ];
-
-        $response = $stmt->execute($data);
-
-        if ($response) {
-            return $token;
-        }
-
-        return false;
+        ]) ? $token : false;
     }
 
     /**
@@ -773,7 +741,7 @@ class UserMapper extends ApiMapper
      *
      * @return bool
      */
-    public function resetPassword($token, $password)
+    public function resetPassword(string $token, string $password): bool
     {
         // does the token exist, and whose is it?
         $select_sql = "select user_id from password_reset_tokens "
@@ -823,7 +791,7 @@ class UserMapper extends ApiMapper
      *
      * @return bool
      */
-    public function delete($user_id)
+    public function delete(int $user_id): bool
     {
         try {
             $this->_db->beginTransaction();

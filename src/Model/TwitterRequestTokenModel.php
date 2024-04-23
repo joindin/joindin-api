@@ -18,7 +18,7 @@ class TwitterRequestTokenModel extends BaseModel
      *
      * @return array
      */
-    protected function getDefaultFields()
+    protected function getDefaultFields(): array
     {
         return [
             'token' => 'token',
@@ -32,7 +32,7 @@ class TwitterRequestTokenModel extends BaseModel
      *
      * @return array
      */
-    protected function getVerboseFields()
+    protected function getVerboseFields(): array
     {
         return [
             'token'  => 'token',
@@ -44,11 +44,11 @@ class TwitterRequestTokenModel extends BaseModel
      * Return this object with client-facing fields and hypermedia, ready for output
      *
      * @param Request $request
-     * @param bool    $verbose
+     * @param bool $verbose
      *
      * @return array
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false): array
     {
         $item = parent::getOutputView($request, $verbose);
 

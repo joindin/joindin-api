@@ -19,7 +19,7 @@ class EventCommentReportModel extends BaseModel
      *
      * @return array
      */
-    public function getDefaultFields()
+    public function getDefaultFields(): array
     {
         return [
             'reporting_date'          => 'reporting_date',
@@ -37,7 +37,7 @@ class EventCommentReportModel extends BaseModel
      *
      * @return array
      */
-    public function getVerboseFields()
+    public function getVerboseFields(): array
     {
         return $this->getDefaultFields();
     }
@@ -50,7 +50,7 @@ class EventCommentReportModel extends BaseModel
      *
      * @return array
      */
-    public function getSubResources()
+    public function getSubResources(): array
     {
         return [
             'comment' => 'comment',
@@ -59,11 +59,11 @@ class EventCommentReportModel extends BaseModel
 
     /**
      * @param Request $request
-     * @param bool    $verbose
+     * @param bool $verbose
      *
      * @return array with client-facing fields and hypermedia, ready for output
      */
-    public function getOutputView(Request $request, $verbose = false)
+    public function getOutputView(Request $request, bool $verbose = false): array
     {
         $item = parent::getOutputView($request, $verbose);
 
