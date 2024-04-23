@@ -29,7 +29,11 @@ class EventsController extends BaseApiController
 
     public function getAction(Request $request, PDO $db): array|false
     {
-        $event_id = $this->getItemId($request, 'Event not found');
+        try {
+            $event_id = $this->getItemId($request, 'Event not found');
+        } catch (\Exception) {
+            $event_id = false;
+        }
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -38,7 +42,7 @@ class EventsController extends BaseApiController
         $start          = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
-        if (isset($request->url_elements[4])) {
+        if ($event_id && isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'talks':
                     $talk_mapper = new TalkMapper($db, $request);
