@@ -77,7 +77,7 @@ class HtmlView extends ApiView
         if (is_bool($value)) {
             $value = $value ? 'true' : 'false';
         }
-        $value = htmlentities($value, ENT_COMPAT, 'UTF-8');
+        $value = htmlentities($value ?? '', ENT_COMPAT, 'UTF-8');
 
         if ((strpos($value, 'http://') === 0) || (strpos($value, 'https://') === 0)) {
             echo "<a href=\"" . $value . "\">" . $value . "</a>";
