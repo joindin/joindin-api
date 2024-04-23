@@ -1062,6 +1062,10 @@ class TalkMapper extends ApiMapper
      */
     public function addTalkMediaTypes(array $talk): array
     {
+        if (!$talk) {
+            return $talk;
+        }
+
         $links = $this->getTalkMediaLinks($talk[0]['ID']);
 
         foreach ($links as $link) {
