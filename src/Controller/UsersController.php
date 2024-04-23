@@ -28,7 +28,11 @@ class UsersController extends BaseApiController
      */
     public function getAction(Request $request, PDO $db): array|false
     {
-        $userId = $this->getItemId($request, 'User not found');
+        try {
+            $userId = $this->getItemId($request, 'User not found');
+        } catch (\Exception) {
+            $userId = false;
+        }
 
         // verbosity
         $verbose = $this->getVerbosity($request);
@@ -37,7 +41,7 @@ class UsersController extends BaseApiController
         $start          = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
 
-        if (isset($request->url_elements[4])) {
+        if ($userId && isset($request->url_elements[4])) {
             switch ($request->url_elements[4]) {
                 case 'talks':
                     $talkMapper = new TalkMapper($db, $request);
