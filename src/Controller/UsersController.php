@@ -516,7 +516,7 @@ class UsersController extends BaseApiController
 
     public function getUserMapper(PDO $db, Request $request): UserMapper
     {
-        if (!$this->userMapper) {
+        if (!isset($this->userMapper)) {
             $this->userMapper = new UserMapper($db, $request);
         }
 
@@ -530,7 +530,7 @@ class UsersController extends BaseApiController
 
     public function initializeTalkCommentMapper(PDO $db, Request $request): void
     {
-        if (!$this->talkCommentMapper instanceof TalkCommentMapper) {
+        if (!isset($this->talkCommentMapper)) {
             $this->talkCommentMapper = new TalkCommentMapper($db, $request);
         }
     }
@@ -542,7 +542,7 @@ class UsersController extends BaseApiController
 
     public function getUserRegistrationEmailService(array $config, array $recipient, string $token): UserRegistrationEmailService
     {
-        if (!$this->userRegistrationEmailService) {
+        if (!isset($this->userRegistrationEmailService)) {
             $this->userRegistrationEmailService = new UserRegistrationEmailService(
                 $config,
                 $recipient,
