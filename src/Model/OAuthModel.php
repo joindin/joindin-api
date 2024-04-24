@@ -125,8 +125,10 @@ class OAuthModel
         $stmt = $this->_db->prepare($sql);
         $stmt->execute(["username" => $username]);
 
-        /** @var array<string, string|int> $result */
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!is_array($result)) {
+            return false;
+        }
 
         if ($result['verified'] != 1) {
             throw new Exception("Not verified", Http::UNAUTHORIZED);
