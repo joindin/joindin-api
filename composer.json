@@ -22,7 +22,7 @@
     "guzzlehttp/guzzle": "^7.8.1",
     "guzzlehttp/oauth-subscriber": "^0.6",
     "michelf/php-markdown": "^2",
-    "pimple/pimple": "^3.5",
+    "pimple/pimple": "^3.6",
     "psr/container": "^2.0.2",
     "swiftmailer/swiftmailer": "^6.3",
     "teapot/status-code": "^2.3"
