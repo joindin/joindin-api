@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3733daa827efb978fc97afa3108aadb",
+    "content-hash": "ef9bebe281773ed3d98cd5e64c50d7c5",
     "packages": [
         {
             "name": "doctrine/deprecations",
@@ -1491,25 +1491,27 @@
         },
         {
             "name": "teapot/status-code",
-            "version": "2.3.0",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/teapot-php/status-code.git",
-                "reference": "16bbcb1ac08352735235e603fbbd5a059e9caee5"
+                "reference": "37668b9c1dd756e54bca489fb5c62c14223cb87e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/teapot-php/status-code/zipball/16bbcb1ac08352735235e603fbbd5a059e9caee5",
-                "reference": "16bbcb1ac08352735235e603fbbd5a059e9caee5",
+                "url": "https://api.github.com/repos/teapot-php/status-code/zipball/37668b9c1dd756e54bca489fb5c62c14223cb87e",
+                "reference": "37668b9c1dd756e54bca489fb5c62c14223cb87e",
                 "shasum": ""
             },
             "require": {
-                "php": "~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0"
+                "php": "~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
             },
             "require-dev": {
-                "ergebnis/composer-normalize": "^2.42.0",
-                "ergebnis/php-cs-fixer-config": "^6.21.0",
-                "vimeo/psalm": "^5.21.1"
+                "ergebnis/composer-normalize": "^2.48.2",
+                "ergebnis/php-cs-fixer-config": "^6.56.1",
+                "phpstan/phpstan": "^2.1.32",
+                "phpstan/phpstan-deprecation-rules": "^2.0.3",
+                "phpstan/phpstan-strict-rules": "^2.0.7"
             },
             "type": "library",
             "autoload": {
@@ -1538,9 +1540,9 @@
             ],
             "support": {
                 "issues": "https://github.com/teapot-php/status-code/issues",
-                "source": "https://github.com/teapot-php/status-code/tree/2.3.0"
+                "source": "https://github.com/teapot-php/status-code/tree/2.5.0"
             },
-            "time": "2024-02-05T11:37:05+00:00"
+            "time": "2025-11-20T08:53:39+00:00"
         }
     ],
     "packages-dev": [
@@ -7341,6 +7343,6 @@
         "ext-openssl": "*",
         "ext-pdo": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
